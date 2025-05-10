@@ -88,7 +88,7 @@ const SignupScreen = props => {
             email,
             nhi,
             password,
-            dob,
+            dob: dob.toISOString() ,
         },
       });
     }
