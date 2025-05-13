@@ -1,4 +1,4 @@
-import createDataContext from '../createDataContext';
+/*import createDataContext from '../createDataContext';
 import axiosApi from '../../api/axios';
 
 const ClinicReducer = (state, action) => {
@@ -58,3 +58,4 @@ export const { Provider, Context } = createDataContext(
   { getAllClinics, addClinic, searchClinics, getClinicNames },
   [],
 );
+*/

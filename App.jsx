@@ -44,7 +44,7 @@ const AccountStack = () => (
         <Stack.Screen name="Account" component={AccountScreen} />
         <Stack.Screen name="User" component={UserScreen} />
         <Stack.Screen name="DisconnectChild" component={DisconnectChildScreen} />
-        <Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />
+        {/*<Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />*/}
         <Stack.Screen name="Password" component={PasswordChangeScreen} />
         <Stack.Screen name="UserAccount" component={UserAccountScreen} />
     </Stack.Navigator>
@@ -59,9 +59,9 @@ const EducationStack = () => (
 );
 
 // 诊所流程导航
-const ClinicStack = () => (
+/*const ClinicStack = () => (
     <Stack.Navigator initialRouteName="clinic">
-        <Stack.Screen name="clinic" component={ClinicScreen} />
+        {/*<Stack.Screen name="clinic" component={ClinicScreen} />
         <Stack.Screen name="chart" component={DentalChartScreen} />
         <Stack.Screen name="appointment" component={AppointmentScreen} />
         <Stack.Screen name="invoice" component={InvoiceScreen} />
@@ -73,11 +73,11 @@ const ClinicStack = () => (
 // 儿童诊所流程
 const ChildClinicStack = () => (
     <Stack.Navigator initialRouteName="list">
-        <Stack.Screen name="list" component={ClinicScreen} />
+        {/*<Stack.Screen name="list" component={ClinicScreen} />
         <Stack.Screen name="chart" component={DentalChartScreen} />
         <Stack.Screen name="content" component={AppointmentScreen} />
     </Stack.Navigator>
-);
+);*/
 
 // 儿童账户流程
 const ChildAccountStack = () => (
@@ -85,7 +85,7 @@ const ChildAccountStack = () => (
         <Stack.Screen name="Account" component={ChildAccountScreen} />
         <Stack.Screen name="User" component={UserScreen} />
         <Stack.Screen name="DisconnectChild" component={DisconnectChildScreen} />
-        <Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />
+        {/*<Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />*/}
         <Stack.Screen name="Password" component={PasswordChangeScreen} />
         <Stack.Screen name="UserAccount" component={UserAccountScreen} />
     </Stack.Navigator>
@@ -110,14 +110,14 @@ const MainFlow = () => (
                 tabBarIcon: ({color, size}) => <Entypo name="open-book" size={size} color={color} />
             }}
         />
-        <Tab.Screen
+        {/*<Tab.Screen
             name="ClinicFlow"
             component={ClinicStack}
             options={{
                 title: 'Clinic',
                 tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="toothbrush-paste" size={size} color={color} />
-            }}
-        />
+            }}*/}
+        
     </Tab.Navigator>
 );
 
@@ -140,14 +140,14 @@ const ChildFlow = () => (
                 tabBarIcon: ({color, size}) => <Entypo name="open-book" size={size} color={color} />
             }}
         />
-        <Tab.Screen
+        {/*<Tab.Screen
             name="Clinic"
             component={ChildClinicStack}
             options={{
                 title: 'Clinic',
                 tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="toothbrush-paste" size={size} color={color} />
             }}
-        />
+        />*/}
     </Tab.Navigator>
 );
 
@@ -166,7 +166,7 @@ const AppNavigator = () => {
                     {() => (
                         <Stack.Navigator>
                             <Stack.Screen name="Signup" component={SignupScreen} />
-                            <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
+                            {/*<Stack.Screen name="SelectClinic" component={SelectClinicScreen} />*/}
                             <Stack.Screen name="Signin" component={SigninScreen} />
                         </Stack.Navigator>
                     )}
@@ -183,7 +183,7 @@ const AppNavigator = () => {
                     {() => (
                         <Stack.Navigator>
                             <Stack.Screen name="Signupchild" component={SignupChildScreen} />
-                            <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
+                            {/*<Stack.Screen name="SelectClinic" component={SelectClinicScreen} />*/}
                         </Stack.Navigator>
                     )}
                 </Stack.Screen>
@@ -196,7 +196,7 @@ const AppNavigator = () => {
 export default function App() {
     return (
         <AuthProvider>
-            <ClinicProvider>
+            {/*<ClinicProvider>*/}
                 <EducationProvider>
                     <AppointmentProvider>
                         <UserProvider>
@@ -204,7 +204,7 @@ export default function App() {
                         </UserProvider>
                     </AppointmentProvider>
                 </EducationProvider>
-            </ClinicProvider>
+            {/*</ClinicProvider>*/}
         </AuthProvider>
     );
 }
