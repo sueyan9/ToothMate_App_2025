@@ -5,8 +5,8 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"
   },
@@ -20,12 +20,14 @@
     "@react-navigation/native": "^7.1.8",
     "@react-navigation/native-stack": "^7.3.12",
     "@react-navigation/stack": "^7.3.1",
+    "@react-three/drei": "^10.0.7",
     "axios": "^1.9.0",
     "dayjs": "^1.11.13",
     "expo": "~53.0.7",
     "expo-blur": "~14.1.4",
     "expo-constants": "~17.1.5",
     "expo-font": "~13.3.1",
+    "expo-gl": "~15.1.5",
     "expo-haptics": "~14.1.4",
     "expo-image": "~2.1.6",
     "expo-linear-gradient": "~14.1.4",
@@ -34,6 +36,7 @@
     "expo-status-bar": "~2.2.3",
     "expo-symbols": "~0.4.4",
     "expo-system-ui": "~5.0.7",
+    "expo-three": "^8.0.0",
     "expo-web-browser": "~14.1.6",
     "intl": "^1.2.5",
     "react": "19.0.0",
@@ -52,7 +55,7 @@
     "react-native-switch-toggle": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "^13.13.5"
+    "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -82,21 +82,8 @@ const SignupScreen = props => {
       // });
 
       // ORIGINAL CODE
-      // navigation.navigate('loginFlow', {
-      //   screen: 'SelectClinic',
-      //   params: {
-      //       firstname,
-      //       lastname,
-      //       email,
-      //       nhi,
-      //       password,
-      //       dob: dob.toISOString() ,
-      //   },
-      // });
-
-      // Updated code to navigate directly to DentalChart
       navigation.navigate('loginFlow', {
-        screen: 'DentalChart',
+        screen: 'SelectClinic',
         params: {
             firstname,
             lastname,
@@ -106,6 +93,19 @@ const SignupScreen = props => {
             dob: dob.toISOString() ,
         },
       });
+
+      // Updated code to navigate directly to DentalChart
+      // navigation.navigate('loginFlow', {
+      //   screen: 'DentalChart',
+      //   params: {
+      //       firstname,
+      //       lastname,
+      //       email,
+      //       nhi,
+      //       password,
+      //       dob: dob.toISOString() ,
+      //   },
+      // });
     }
   };
 

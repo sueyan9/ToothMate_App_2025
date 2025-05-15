@@ -164,10 +164,13 @@ const AppNavigator = () => {
                     {() => (
                         <Stack.Navigator>
                             <Stack.Screen name="Signup" component={SignupScreen} />
+
                             {/* took out clinic screen */}
-                            {/* <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
-                            <Stack.Screen name="Signin" component={SigninScreen} /> */}
-                            <Stack.Screen name="DentalChart" component={DentalChartScreen} />
+                            <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
+                            <Stack.Screen name="Signin" component={SigninScreen} />
+
+                            {/* move directly to dental chart */}
+                            {/* <Stack.Screen name="DentalChart" component={DentalChartScreen} /> */}
                         </Stack.Navigator>
                     )}
                 </Stack.Screen>

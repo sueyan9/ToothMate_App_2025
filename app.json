@@ -8,7 +8,10 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "plugins": [
+        "react-native-webview"
+      ]
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,7 +26,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.anonymous.ToothMate"
     },
     "web": {
       "favicon": "./assets/favicon.png"
