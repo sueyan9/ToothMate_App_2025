@@ -1,7 +1,7 @@
-import React, { useRef, Suspense, useEffect } from 'react'
-import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useGLTF } from '@react-three/drei'
+import { Canvas, useThree } from '@react-three/fiber'
+import React, { Suspense, useEffect, useRef } from 'react'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -23,83 +23,105 @@ const LeftUpperCanine = ({ ...props }) => {
 
   const { nodes, materials } = useGLTF('/assets/Left_Upper_Canine.glb')
 
+ 
+   // Colors for teethset (Rename according to dental charting standards)
+   const middleFront = 'blue'
+   const middleBack = 'pink'
+   const middleLeft = 'purple'
+   const middleRight = 'green'
+    
   return (
     <group ref={group} {...props} dispose={null}>
       <group position={[-0.01, -1.41, -0.01]} rotation={[-Math.PI / 2, 0, 0.02]} scale={-0.47}>
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_1.geometry}
           material={materials['1']}
-          material-color={'lightblue'}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_6.geometry}
           material={materials['2']}
-          material-color={'lightblue'}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_3.geometry}
           material={materials['3']}
-          material-color={'lightblue'}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_7.geometry}
           material={materials['4']}
+          material-color={'blue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_8.geometry}
           material={materials['5']}
+          material-color={'blue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_9.geometry}
           material={materials['6']}
+          material-color={'pink'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_10.geometry}
           material={materials['7']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_11.geometry}
           material={materials['8']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_12.geometry}
           material={materials['9']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_13.geometry}
           material={materials['10']}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_14.geometry}
           material={materials['11']}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_15.geometry}
           material={materials['12']}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_16.geometry}
           material={materials['13']}
+          material-color={'blue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_17.geometry}
           material={materials['14']}
+          material-color={'pink'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_18.geometry}
           material={materials['15']}
+          material-color={'pink'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_19.geometry}
           material={materials['16']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_20.geometry}
           material={materials['17']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_21.geometry}
           material={materials['18']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo005_22.geometry}
