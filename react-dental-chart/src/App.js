@@ -71,6 +71,8 @@ export default function App() {
                               onClick={e => { e.stopPropagation(); setShowMenu(true); }}
                           >☰ Filter</button>
                           )}
+                      <p className="tooth-label">Tap and drag to interact with the mouth. Tap a tooth to view further details.</p>
+
                     </div>
                   </div>
                 }

@@ -101,7 +101,7 @@ const WholeMouthModel = ({ filter, ...props }) => {
 export default function WholeMouth({ filter }) {
     return (
         <>
-            <Canvas>
+             <Canvas>
                 <CameraController />
                 <ambientLight intensity={0.7} />
                 <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
@@ -109,7 +109,7 @@ export default function WholeMouth({ filter }) {
                     <WholeMouthModel filter={filter} />
                 </Suspense>
             </Canvas>
-            <p>Tap and drag to interact with the mouth. Tap a tooth to view further details.</p>
+
         </>
     )
 }

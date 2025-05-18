@@ -2,6 +2,8 @@ import React, { useRef, Suspense, useEffect } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useGLTF } from '@react-three/drei'
+import { toothTreatments } from '../../data/toothTreatments';
+import { getToothSegmentColor } from '../Util/getToothSegmentColor';
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -22,7 +24,10 @@ const RightLowerWisdom = ({ ...props }) => {
   const group = useRef()
 
   const { nodes, materials } = useGLTF('/assets/Right_Lower_Wisdom.glb')
-
+// tooth name and color
+  const toothName = 'lower_right_wisdom';
+  const treatment = toothTreatments[toothName];
+  const color = getToothSegmentColor(treatment);
   return (
     <group ref={group} {...props} dispose={null}>
       <group
@@ -33,19 +38,22 @@ const RightLowerWisdom = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Third_Molar029_2.geometry}
           material={materials['1']}
-          material-color={'lightblue'}
+          material-color={color}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Third_Molar029_30.geometry}
           material={materials['2']}
+          material-color={color}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Third_Molar029_3.geometry}
           material={materials['3']}
+          material-color={color}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Third_Molar029_4.geometry}
           material={materials['4']}
+          material-color={color}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Third_Molar029_5.geometry}
@@ -167,7 +175,7 @@ export const LowerRightWisdomTooth = () => {
           <RightLowerWisdom />
         </Suspense>
       </Canvas>
-      <div>Clicked on lower right wisdom tooth</div>
+      <div className="tooth-label">Clicked on lower right wisdom tooth</div>
     </>
   )
 }
