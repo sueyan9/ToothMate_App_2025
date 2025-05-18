@@ -23,6 +23,12 @@ const RightUpperLateralIncisor = ({ ...props }) => {
 
   const { nodes, materials } = useGLTF('/assets/Right_Upper_Lateral_Incisor.glb')
 
+  const middleFront = 'blue'
+  const middle = 'red'
+  const middleBack = 'pink'
+  const middleLeft = 'purple'
+  const middleRight = 'green'
+
   return (
     <group ref={group} {...props} dispose={null}>
       <group position={[-0.05, -1.27, 0.08]} rotation={[Math.PI / 2, 0, -0.04]} scale={0.66}>

@@ -1,7 +1,7 @@
-import React, { useRef, Suspense, useEffect } from 'react'
-import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useGLTF } from '@react-three/drei'
+import { Canvas, useThree } from '@react-three/fiber'
+import React, { Suspense, useEffect, useRef } from 'react'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -23,83 +23,104 @@ const RightUpperFirstMolar = ({ ...props }) => {
 
   const { nodes, materials } = useGLTF('/assets/Right_Upper_First_Molar.glb')
 
+  const middleFront = 'blue'
+  const middle = 'red'
+  const middleBack = 'pink'
+  const middleLeft = 'purple'
+  const middleRight = 'green'
+  
   return (
     <group ref={group} {...props} dispose={null}>
       <group position={[-0.04, -1.23, 0]} rotation={[Math.PI / 2, 0, 0.04]} scale={0.54}>
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_1.geometry}
           material={materials['1']}
-          material-color={'lightgreen'}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_3.geometry}
           material={materials['2']}
-          material-color={'lightgreen'}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_4.geometry}
           material={materials['3']}
-          material-color={'lightgreen'}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_5.geometry}
           material={materials['4']}
+          material-color={'blue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_6.geometry}
           material={materials['5']}
+          material-color={'red'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_7.geometry}
           material={materials['6']}
+          material-color={'pink'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_8.geometry}
           material={materials['7']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_9.geometry}
           material={materials['8']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_10.geometry}
           material={materials['9']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_11.geometry}
           material={materials['10']}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_12.geometry}
           material={materials['11']}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_13.geometry}
           material={materials['12']}
+          material-color={'purple'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_14.geometry}
           material={materials['13']}
+          material-color={'blue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_15.geometry}
           material={materials['14']}
+          material-color={'blue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_16.geometry}
           material={materials['15']}
+          material-color={'pink'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_17.geometry}
           material={materials['16']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_18.geometry}
           material={materials['17']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_19.geometry}
           material={materials['18']}
+          material-color={'green'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_First_Molar_Geo001_20.geometry}
