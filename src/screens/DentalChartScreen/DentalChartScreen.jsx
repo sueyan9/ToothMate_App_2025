@@ -6,7 +6,9 @@ const DentalChartScreen = () => (
     <View style={{ flex: 1 }}>
       <Text style={styles.header}>3D Mouth Model</Text>
       <WebView
+
           source={{ uri: 'http://172.29.1.220:3001/' }} // H5 page url   'http://172.29.1.220:3001/'  http://192.168.1.166
+
           style={{ flex: 1 }}
       />
     </View>

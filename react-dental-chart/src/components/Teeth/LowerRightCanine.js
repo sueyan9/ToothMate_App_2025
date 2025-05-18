@@ -2,7 +2,8 @@ import React, { useRef, Suspense, useEffect } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useGLTF } from '@react-three/drei'
-
+import { toothTreatments } from '../../data/toothTreatments';
+import { getToothSegmentColor } from '../Util/getToothSegmentColor';
 const CameraController = () => {
   const { camera, gl } = useThree()
 
