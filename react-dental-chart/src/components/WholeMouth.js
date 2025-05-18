@@ -22,59 +22,58 @@ const CameraController = () => {
 const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
   const group = useRef()
 
-  const ToothFilling = new THREE.MeshStandardMaterial({
-    color: '#2A2E45',
-    roughness: 0.5,
-    metalness: 0.5,
-  })
-
-  const ToothCrown = new THREE.MeshStandardMaterial({
-    color: '#ED217C',
-    roughness: 0.5,
-    metalness: 0.5,
-  })
-
-  const ToothBridge = new THREE.MeshStandardMaterial({
-    color: '#FE9920',
-    roughness: 0.5,
-    metalness: 0.5,
-  })
-
-  const ToothImplant = new THREE.MeshStandardMaterial({
-    color: '#96F550',
-    roughness: 0.5,
-    metalness: 0.5,
-  })
-
-  const ToothExtraction = new THREE.MeshStandardMaterial({
-    color: '#A11692',
-    roughness: 0.5,
-    metalness: 0.5,
-  })
-
-  const ToothRootCanal = new THREE.MeshStandardMaterial({
-    color: '#FFD639',
-    roughness: 0.5,
-    metalness: 0.5,
-  })
-
-  const ToothVeneers = new THREE.MeshStandardMaterial({
-    color: '#007CBE',
-    roughness: 0.5,
-    metalness: 0.5,
-  })
-
-  const ToothSealant = new THREE.MeshStandardMaterial({
-    color: '#EA3546',
-    roughness: 0.5,
-    metalness: 0.5,
-  })
-
-  const ToothMissing = new THREE.MeshStandardMaterial({
-    color: '',
-    roughness: 0.5,
-    metalness: 0.5,
-  })
+  const toothMaterials = {
+    filling: new THREE.MeshStandardMaterial({
+      color: '#C00A0A',
+      roughness: 0.1,
+      metalness: 0.1,
+    }),
+    crown : new THREE.MeshStandardMaterial({
+      color: '#FF5100',
+      roughness: 0.1,
+      metalness: 0.1,
+    }),
+    bridge: new THREE.MeshStandardMaterial({
+      color: '#FFD500',
+      roughness: 0.1,
+      metalness: 0.1,
+    }),
+    implant: new THREE.MeshStandardMaterial({
+      color: '#007610',
+      roughness: 0.1,
+      metalness: 0.1,
+    }),
+    extraction: new THREE.MeshStandardMaterial({
+      color: '#0022FF',
+      roughness: 0.1,
+      metalness: 0.1,
+    }),
+    rootCanal: new THREE.MeshStandardMaterial({
+      color: '#0080FF',
+      roughness: 0.1,
+      metalness: 0.1,
+    }),
+    veneer: new THREE.MeshStandardMaterial({  
+      color: '#7B00FF',
+      roughness: 0.1,
+      metalness: 0.1,
+    }),
+    sealant: new THREE.MeshStandardMaterial({
+      color: '#FF0099',
+      roughness: 0.1,
+      metalness: 0.1,
+    }),
+    missing: new THREE.MeshStandardMaterial({
+      color: 'white',
+      opacity: 0.0,
+      transparent: true,
+    }),
+    normal: new THREE.MeshStandardMaterial({
+      color: '#5C5C5C',
+      roughness: 0.1,
+      metalness: 0.1,
+    }),
+  }
 
   const { nodes, materials } = useGLTF('/assets/adult_whole_mouth.glb')
 
@@ -106,7 +105,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
 
       <mesh
         geometry={nodes.lower_right_wisdom.geometry}
-        material={ToothFilling}
+        material={toothMaterials.filling}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -114,16 +113,15 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_right_second_molar.geometry}
-        material={ToothMissing}
+        material={toothMaterials.missing}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
-        visible={!missingTeeth.includes('lower_right_second_molar')}
         onClick={() => (window.location = '/lower-right-second-molar')}
       />
       <mesh
         geometry={nodes.lower_right_first_molar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -131,7 +129,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_right_second_premolar.geometry}
-        material={ToothImplant}
+        material={toothMaterials.implant}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -139,7 +137,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_right_first_premolar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -147,7 +145,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_right_canine.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -155,7 +153,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_right_lateral_incisor.geometry}
-        material={ToothRootCanal}
+        material={toothMaterials.rootCanal}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -163,7 +161,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_right_central_incisor.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.missing}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -174,7 +172,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
 
       <mesh
         geometry={nodes.lower_left_wisdom.geometry}
-        material={ToothFilling}
+        material={toothMaterials.filling}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -182,7 +180,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_left_second_molar.geometry}
-        material={ToothSealant}
+        material={toothMaterials.sealant}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -190,7 +188,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_left_first_molar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -198,7 +196,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_left_second_premolar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -206,7 +204,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_left_first_premolar.geometry}
-        material={ToothVeneers}
+        material={toothMaterials.veneer}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -214,7 +212,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_left_canine.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -222,7 +220,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_left_lateral_incisor.geometry}
-        material={ToothCrown}
+        material={toothMaterials.crown}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -230,7 +228,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.lower_left_central_incisor.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -241,7 +239,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
 
       <mesh
         geometry={nodes.upper_right_wisdom.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -249,7 +247,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_right_second_molar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -257,7 +255,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_right_first_molar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.missing}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -265,7 +263,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_right_second_premolar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -273,7 +271,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_right_first_premolar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -281,7 +279,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_right_canine.geometry}
-        material={ToothBridge}
+        material={toothMaterials.bridge}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -289,7 +287,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_right_lateral_incisor.geometry}
-        material={ToothRootCanal}
+        material={toothMaterials.rootCanal}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -297,7 +295,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_right_central_incisor.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -308,7 +306,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
 
       <mesh
         geometry={nodes.upper_left_wisdom.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -316,7 +314,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_left_second_molar.geometry}
-        material={ToothImplant}
+        material={toothMaterials.implant}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -324,7 +322,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_left_first_molar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.missing}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -332,7 +330,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_left_second_premolar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -340,7 +338,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_left_first_premolar.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.normal}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -348,7 +346,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_left_canine.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.missing}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -356,7 +354,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_left_lateral_incisor.geometry}
-        material={ToothExtraction}
+        material={toothMaterials.extraction}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -364,7 +362,7 @@ const WholeMouthModel = ({ missingTeeth = [], ...props }) => {
       />
       <mesh
         geometry={nodes.upper_left_central_incisor.geometry}
-        material={materials.Teeths}
+        material={toothMaterials.missing}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}

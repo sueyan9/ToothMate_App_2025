@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview'; // need npm install react-native-webview
 
 const DentalChartScreen = () => (
     <View style={{ flex: 1 }}>
-      <Text style={styles.header}>3D Mouth Model</Text>
+      {/* <Text style={styles.header}>3D Mouth Model</Text> */}
       <WebView
-          source={{ uri: 'https://a049-156-62-117-28.ngrok-free.app' }} // H5 page url
+          source={{ uri: 'https://50b0-115-188-135-140.ngrok-free.app' }} // H5 page url
           style={{ flex: 1 }}
       />
     </View>
