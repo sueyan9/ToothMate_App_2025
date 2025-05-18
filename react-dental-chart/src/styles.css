@@ -18,10 +18,53 @@ p {
   border-radius: 5px;
   font-size: 15px;
 }
+.main-3d {
+  flex: 1;
+  position: relative;
+  height: 100vh;
 
+}
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
 .container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+ /* flex-direction: column;
+  align-items: center;*/
+  flex-direction: row;
   height: 100vh;
+  width: 100vw;
+}
+.filter-menu {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #fffbe9;
+  z-index: 10;
+  width: 180px;
+  height: 100vh;
+  padding: 24px;
+}
+.filter-title {
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 24px;
+}
+.filter-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+  cursor: pointer;
+}
+.filter-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  margin-right: 12px;
+  display: inline-block;
+}
+.filter-label {
+  font-size: 16px;
 }

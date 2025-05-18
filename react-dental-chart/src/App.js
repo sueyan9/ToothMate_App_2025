@@ -1,5 +1,5 @@
 import WholeMouth from './components/WholeMouth'
-import React from 'react'
+import React, { useState }  from 'react'
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor'
 import { LowerLeftFirstMolar } from './components/Teeth/LowerLeftFirstMolar'
@@ -33,15 +33,48 @@ import { UpperLeftSecondPremolar } from './components/Teeth/UpperLeftSecondPremo
 import { UpperLeftCanine } from './components/Teeth/UpperLeftCanine'
 import { UpperLeftFirstMolar } from './components/Teeth/UpperLeftFirstMolar'
 import { UpperLeftSecondMolar } from './components/Teeth/UpperLeftSecondMolar'
-
+import FilterMenu from './components/FilterMenu';
+import './styles.css';
 export default function App() {
+  const [filter, setFilter] = useState(null);
+  const [showMenu, setShowMenu] = useState(true);
+
   return (
     <div>
       <Router>
         <div className="container">
           <Routes>
-            <Route exact path="/" element={<WholeMouth />} />
-
+            <Route
+                exact
+                path="/"
+                element={
+                  <div className="container">
+                    {showMenu && (
+                    <div className="filter-menu">
+                      <FilterMenu selected={filter} onSelect={key => {
+                        setFilter(key);
+                        setShowMenu(false);
+                      }} />
+                    </div>
+                        )}
+                    <div className="main-3d"
+                      onClick={() => setShowMenu(false)} // click  to fold the menu
+                      style={{ cursor: showMenu ? 'pointer' : 'default' }}
+                      >
+                      <WholeMouth filter={filter} />
+                      {!showMenu && (
+                          <button
+                              style={{
+                                position: 'absolute', left: 10, top: 10, zIndex: 20,
+                                background: '#fffbe9', border: '1px solid #ccc', borderRadius: 4, padding: '4px 10px'
+                              }}
+                              onClick={e => { e.stopPropagation(); setShowMenu(true); }}
+                          >☰ Filter</button>
+                          )}
+                    </div>
+                  </div>
+                }
+            />
             {/* LOWER LEFT */}
 
             <Route path="/lower-left-wisdom" element={<LowerLeftWisdomTooth />} />

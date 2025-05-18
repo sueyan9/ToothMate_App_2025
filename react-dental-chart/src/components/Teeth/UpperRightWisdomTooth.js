@@ -2,7 +2,7 @@ import React, { useRef, Suspense, useEffect } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useGLTF } from '@react-three/drei'
-import {getToothSegmentColor} from '../Util/ToothSegmentColorUtil'
+import {getToothSegmentColor} from '../Util/getToothSegmentColor'
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -35,12 +35,12 @@ const UpperRightWisdom = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo003_4.geometry}
           material={materials['2']}
-          material-color={getToothSegmentColor("")}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo003_5.geometry}
           material={materials['3']}
-          material-color={getToothSegmentColor("test")}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo003_6.geometry}
