@@ -5,7 +5,7 @@ const DentalChartScreen = () => (
     <View style={{ flex: 1 }}>
       {/* <Text style={styles.header}>3D Mouth Model</Text> */}
       <WebView
-          source={{ uri: 'https://50b0-115-188-135-140.ngrok-free.app' }} // H5 page url
+          source={{ uri: 'https://f1c4-115-188-135-140.ngrok-free.app' }} // H5 page url
           style={{ flex: 1 }}
       />
     </View>
