@@ -49,6 +49,8 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       color: '#0022FF',
       roughness: 0.1,
       metalness: 0.1,
+      opacity: 0.6,
+      transparent: true,
     }),
     rootCanal: new THREE.MeshStandardMaterial({
       color: '#0080FF',

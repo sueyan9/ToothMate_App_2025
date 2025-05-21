@@ -1,4 +1,5 @@
 export const toothData = {
+    //upper right
     11: {treatment: 'rootCanal'},
     12: {treatment: 'crown'},
     13: {treatment: 'missing'},
@@ -8,6 +9,7 @@ export const toothData = {
     17: {treatment: 'normal'},
     18: {treatment: 'extraction'},
 
+    //upper left
     21: {treatment: 'normal'},
     22: {treatment: 'normal'},
     23: {treatment: 'filling'},
@@ -17,6 +19,7 @@ export const toothData = {
     27: {treatment: 'bridge'},
     28: {treatment: 'bridge'},
 
+    //lower left
     31: {treatment: 'normal'},
     32: {treatment: 'rootCanal'},
     33: {treatment: 'normal'},
@@ -25,7 +28,8 @@ export const toothData = {
     36: {treatment: 'normal'},
     37: {treatment: 'normal'},
     38: {treatment: 'missing'},
-    
+
+    //lower right
     41: {treatment: 'sealant'},
     42: {treatment: 'normal'},
     43: {treatment: 'veneer'},
