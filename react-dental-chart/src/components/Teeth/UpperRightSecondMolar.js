@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import React, { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 const CameraController = () => {
