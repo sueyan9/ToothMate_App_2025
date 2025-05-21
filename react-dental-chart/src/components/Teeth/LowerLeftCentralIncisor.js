@@ -1,7 +1,7 @@
-import React, { useRef, Suspense, useEffect } from 'react'
-import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useGLTF } from '@react-three/drei'
+import { Canvas, useThree } from '@react-three/fiber'
+import { Suspense, useEffect, useRef } from 'react'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -155,7 +155,23 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
 export const LowerLeftCentralIncisor = () => {
   return (
     <>
-      <Canvas>
+    <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
+      <img 
+        src="../assets/back_arrow.png" 
+        alt="Back"
+        onClick={() => (window.location = '/')}
+        style={{
+          position: 'absolute',
+          top: '32px',
+          left: '32px',
+          width: '24px',
+          height: '24px',
+          cursor: 'pointer',
+          zIndex: 100
+        }}
+      />
+    </div>
+      <Canvas style={{ width: '100%', height: '500%' }}>
         <CameraController />
         <ambientLight intensity={0.7} />
         <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
@@ -163,7 +179,7 @@ export const LowerLeftCentralIncisor = () => {
           <LeftLowerCentralIncisor />
         </Suspense>
       </Canvas>
-      <div>Clicked on lower left central incisor</div>
+      <div>Lower left central incisor</div>
     </>
   )
 }

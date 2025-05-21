@@ -1,9 +1,7 @@
-import React, { useRef, Suspense, useEffect } from 'react'
-import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useGLTF } from '@react-three/drei'
-import { toothTreatments } from '../../data/toothTreatments';
-import { getToothSegmentColor } from '../Util/getToothSegmentColor';
+import { Canvas, useThree } from '@react-three/fiber'
+import { Suspense, useEffect, useRef } from 'react'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -24,10 +22,7 @@ const RightLowerWisdom = ({ ...props }) => {
   const group = useRef()
 
   const { nodes, materials } = useGLTF('/assets/Right_Lower_Wisdom.glb')
-// tooth name and color
-  const toothName = 'lower_right_wisdom';
-  const treatment = toothTreatments[toothName];
-  const color = getToothSegmentColor(treatment);
+
   return (
     <group ref={group} {...props} dispose={null}>
       <group
@@ -38,22 +33,19 @@ const RightLowerWisdom = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Third_Molar029_2.geometry}
           material={materials['1']}
-          material-color={color}
+          material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Third_Molar029_30.geometry}
           material={materials['2']}
-          material-color={color}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Third_Molar029_3.geometry}
           material={materials['3']}
-          material-color={color}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Third_Molar029_4.geometry}
           material={materials['4']}
-          material-color={color}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Third_Molar029_5.geometry}
@@ -167,7 +159,23 @@ const RightLowerWisdom = ({ ...props }) => {
 export const LowerRightWisdomTooth = () => {
   return (
     <>
-      <Canvas>
+    <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
+      <img 
+        src="../assets/back_arrow.png" 
+        alt="Back"
+        onClick={() => (window.location = '/')}
+        style={{
+          position: 'absolute',
+          top: '32px',
+          left: '32px',
+          width: '24px',
+          height: '24px',
+          cursor: 'pointer',
+          zIndex: 100
+        }}
+      />
+    </div>
+      <Canvas style={{ width: '100%', height: '500%' }}>
         <CameraController />
         <ambientLight intensity={0.7} />
         <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
@@ -175,7 +183,7 @@ export const LowerRightWisdomTooth = () => {
           <RightLowerWisdom />
         </Suspense>
       </Canvas>
-      <div className="tooth-label">Clicked on lower right wisdom tooth</div>
+      <div>Lower right wisdom tooth</div>
     </>
   )
 }
