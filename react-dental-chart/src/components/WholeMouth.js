@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import '../styles.css';
+import { toothData } from './ToothData';
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -119,7 +120,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
 
       <mesh
         geometry={nodes.lower_right_wisdom.geometry}
-        material={getToothMaterial('filling')}
+        material={getToothMaterial(toothData[48].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -127,7 +128,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_right_second_molar.geometry}
-        material={getToothMaterial('missing')}
+        material={getToothMaterial(toothData[47].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -135,7 +136,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_right_first_molar.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[46].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -143,7 +144,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_right_second_premolar.geometry}
-        material={getToothMaterial('implant')}
+        material={getToothMaterial(toothData[45].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -151,7 +152,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_right_first_premolar.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[44].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -159,7 +160,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_right_canine.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[43].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -167,7 +168,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_right_lateral_incisor.geometry}
-        material={getToothMaterial('rootCanal')}
+        material={getToothMaterial(toothData[42].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -175,7 +176,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_right_central_incisor.geometry}
-        material={getToothMaterial('missing')}
+        material={getToothMaterial(toothData[41].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -186,7 +187,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
 
       <mesh
         geometry={nodes.lower_left_wisdom.geometry}
-        material={getToothMaterial('filling')}
+        material={getToothMaterial(toothData[38].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -194,7 +195,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_left_second_molar.geometry}
-        material={getToothMaterial('sealant')}
+        material={getToothMaterial(toothData[37].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -202,7 +203,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_left_first_molar.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[36].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -210,7 +211,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_left_second_premolar.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[35].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -218,7 +219,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_left_first_premolar.geometry}
-        material={getToothMaterial('veneer')}
+        material={getToothMaterial(toothData[34].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -226,7 +227,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_left_canine.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[33].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -234,7 +235,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_left_lateral_incisor.geometry}
-        material={getToothMaterial('crown')}
+        material={getToothMaterial(toothData[32].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -242,7 +243,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.lower_left_central_incisor.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[31].treatment)}
         position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
@@ -253,7 +254,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
 
       <mesh
         geometry={nodes.upper_right_wisdom.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[18].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -261,7 +262,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_right_second_molar.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[17].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -269,7 +270,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_right_first_molar.geometry}
-        material={getToothMaterial('missing')}
+        material={getToothMaterial(toothData[16].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -277,7 +278,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_right_second_premolar.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[15].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -285,7 +286,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_right_first_premolar.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[14].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -293,7 +294,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_right_canine.geometry}
-        material={getToothMaterial('bridge')}
+        material={getToothMaterial(toothData[13].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -301,7 +302,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_right_lateral_incisor.geometry}
-        material={getToothMaterial('rootCanal')}
+        material={getToothMaterial(toothData[12].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -309,7 +310,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_right_central_incisor.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[11].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -320,7 +321,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
 
       <mesh
         geometry={nodes.upper_left_wisdom.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[28].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -328,7 +329,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_left_second_molar.geometry}
-        material={getToothMaterial('implant')}
+        material={getToothMaterial(toothData[27].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -336,7 +337,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_left_first_molar.geometry}
-        material={getToothMaterial('missing')}
+        material={getToothMaterial(toothData[26].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -344,7 +345,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_left_second_premolar.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[25].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -352,7 +353,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_left_first_premolar.geometry}
-        material={getToothMaterial('normal')}
+        material={getToothMaterial(toothData[24].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -360,7 +361,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_left_canine.geometry}
-        material={getToothMaterial('missing')}
+        material={getToothMaterial(toothData[23].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -368,7 +369,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_left_lateral_incisor.geometry}
-        material={getToothMaterial('extraction')}
+        material={getToothMaterial(toothData[22].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
@@ -376,7 +377,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       />
       <mesh
         geometry={nodes.upper_left_central_incisor.geometry}
-        material={getToothMaterial('missing')}
+        material={getToothMaterial(toothData[21].treatment)}
         position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
