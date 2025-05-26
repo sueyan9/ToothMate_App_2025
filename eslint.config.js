@@ -10,11 +10,14 @@ module.exports = defineConfig([
     files: [
       '**/*.test.js',
       '**/*.spec.js',
+      '**/*.test.jsx',
+      '**/*.spec.jsx',
+      'test/**/*.js',
       'test/**/*.js',
       'tests/**/*.js'
     ],
     env: {
-      jest: ture,
+      jest: true,
     },
     rules:{
 

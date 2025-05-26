@@ -1,0 +1,49 @@
+name: Tooth Mate CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test-react-native:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies (React Native App)
+        working-directory: ./app
+        run: npm install
+
+      - name: Install dependencies (React Dental Chart with Tests)
+        working-directory: ./react-dental-chart
+        run: npm install
+
+      - name: Run Jest tests in react-dental-chart
+        working-directory: ./react-dental-chart
+        run: npm test -- --ci
+
+  backend-setup-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Skip backend tests (to be added)
+        run: echo "No backend tests implemented yet"
