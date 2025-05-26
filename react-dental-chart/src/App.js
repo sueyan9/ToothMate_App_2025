@@ -69,11 +69,15 @@ export default function App() {
                           >☰</div>
                           )}
                   <div className="container">
-                    {showMenu && (
-                    <div className="filter-menu">
+                    <div className="filter-menu.active">
+                    <FilterMenu
+                    selected={selectedTreatment}
+                    onSelect={handleSelect}
+                    isOpen={showMenu}
+                  />
+                  </div>
+                    
                       <FilterMenu selected={selectedTreatment} onSelect={handleSelect}/>
-                    </div>
-                        )}
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
                       style={{ cursor: showMenu ? 'pointer' : 'default' }}
