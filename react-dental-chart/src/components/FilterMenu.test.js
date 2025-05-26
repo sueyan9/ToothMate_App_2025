@@ -5,23 +5,23 @@ import FilterMenu from './FilterMenu';
 
 jest.mock('./Treatment', () => ({
     TREATMENTS: [
-        { key: 'a', label: 'A', colour: 'red' },
-        { key: 'b', label: 'B', colour: 'blue' },
+        { key: 'filling', label: 'Filling', colour: '#C00A0A' },
+        { key: 'crown', label: 'Crown', colour: '#FF5100' },
     ],
 }));
 
 describe('FilterMenu', () => {
     it('renders all treatment items', () => {
         const { getByText } = render(<FilterMenu selected={[]} onSelect={() => {}} />);
-        expect(getByText('A')).toBeInTheDocument();
-        expect(getByText('B')).toBeInTheDocument();
+        expect(getByText('Filling')).toBeInTheDocument();
+        expect(getByText('Crown')).toBeInTheDocument();
     });
 
     it('calls onSelect when a treatment is clicked', () => {
         const onSelect = jest.fn();
         const { getByText } = render(<FilterMenu selected={[]} onSelect={onSelect} />);
-        fireEvent.click(getByText('A'));
-        expect(onSelect).toHaveBeenCalledWith('a');
+        fireEvent.click(getByText('Filling'));
+        expect(onSelect).toHaveBeenCalledWith('filling');
     });
 
     it('calls onSelect with "all" when Show All is clicked', () => {
