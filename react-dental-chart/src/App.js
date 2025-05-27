@@ -1,46 +1,96 @@
-import WholeMouth from './components/WholeMouth'
-import React from 'react'
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
+import { useState } from 'react'
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
+import FilterMenu from './components/FilterMenu'
+import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine'
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor'
 import { LowerLeftFirstMolar } from './components/Teeth/LowerLeftFirstMolar'
-import { LowerLeftWisdomTooth } from './components/Teeth/LowerLeftWisdomTooth'
-import { LowerLeftSecondMolar } from './components/Teeth/LowerLeftSecondMolar'
 import { LowerLeftFirstPremolar } from './components/Teeth/LowerLeftFirstPremolar'
-import { LowerLeftSecondPremolar } from './components/Teeth/LowerLeftSecondPremolar'
-import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine'
 import { LowerLeftLateralIncisor } from './components/Teeth/LowerLeftLateralIncisor'
+import { LowerLeftSecondMolar } from './components/Teeth/LowerLeftSecondMolar'
+import { LowerLeftSecondPremolar } from './components/Teeth/LowerLeftSecondPremolar'
+import { LowerLeftWisdomTooth } from './components/Teeth/LowerLeftWisdomTooth'
+import { LowerRightCanine } from './components/Teeth/LowerRightCanine'
 import { LowerRightCentralIncisor } from './components/Teeth/LowerRightCentralIncisor'
 import { LowerRightFirstMolar } from './components/Teeth/LowerRightFirstMolar'
-import { LowerRightWisdomTooth } from './components/Teeth/LowerRightWisdomTooth'
-import { LowerRightSecondMolar } from './components/Teeth/LowerRightSecondMolar'
 import { LowerRightFirstPremolar } from './components/Teeth/LowerRightFirstPremolar'
-import { LowerRightSecondPremolar } from './components/Teeth/LowerRightSecondPremolar'
-import { LowerRightCanine } from './components/Teeth/LowerRightCanine'
 import { LowerRightLateralIncisor } from './components/Teeth/LowerRightLateralIncisor'
-import { UpperRightFirstPremolar } from './components/Teeth/UpperRightFirstPremolar'
-import { UpperLeftWisdomTooth } from './components/Teeth/UpperLeftWisdomTooth'
-import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPremolar'
-import { UpperLeftLateralIncisor } from './components/Teeth/UpperLeftLateralIncisor'
-import { UpperRightFirstMolar } from './components/Teeth/UpperRightFirstMolar'
-import { UpperRightSecondMolar } from './components/Teeth/UpperRightSecondMolar'
-import { UpperRightCanine } from './components/Teeth/UpperRightCanine'
-import { UpperLeftCentralIncisor } from './components/Teeth/UpperLeftCentralIncisor'
-import { UpperRightCentralIncisor } from './components/Teeth/UpperRightCentralIncisor'
-import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
-import { UpperRightLateralIncisor } from './components/Teeth/UpperRightLateralIncisor'
-import { UpperLeftFirstPremolar } from './components/Teeth/UpperLeftFirstPremolar'
-import { UpperLeftSecondPremolar } from './components/Teeth/UpperLeftSecondPremolar'
+import { LowerRightSecondMolar } from './components/Teeth/LowerRightSecondMolar'
+import { LowerRightSecondPremolar } from './components/Teeth/LowerRightSecondPremolar'
+import { LowerRightWisdomTooth } from './components/Teeth/LowerRightWisdomTooth'
 import { UpperLeftCanine } from './components/Teeth/UpperLeftCanine'
+import { UpperLeftCentralIncisor } from './components/Teeth/UpperLeftCentralIncisor'
 import { UpperLeftFirstMolar } from './components/Teeth/UpperLeftFirstMolar'
+import { UpperLeftFirstPremolar } from './components/Teeth/UpperLeftFirstPremolar'
+import { UpperLeftLateralIncisor } from './components/Teeth/UpperLeftLateralIncisor'
 import { UpperLeftSecondMolar } from './components/Teeth/UpperLeftSecondMolar'
+import { UpperLeftSecondPremolar } from './components/Teeth/UpperLeftSecondPremolar'
+import { UpperLeftWisdomTooth } from './components/Teeth/UpperLeftWisdomTooth'
+import { UpperRightCanine } from './components/Teeth/UpperRightCanine'
+import { UpperRightCentralIncisor } from './components/Teeth/UpperRightCentralIncisor'
+import { UpperRightFirstMolar } from './components/Teeth/UpperRightFirstMolar'
+import { UpperRightFirstPremolar } from './components/Teeth/UpperRightFirstPremolar'
+import { UpperRightLateralIncisor } from './components/Teeth/UpperRightLateralIncisor'
+import { UpperRightSecondMolar } from './components/Teeth/UpperRightSecondMolar'
+import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPremolar'
+import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
+import WholeMouth from './components/WholeMouth'
 
 export default function App() {
+  const [showMenu, setShowMenu] = useState(false);
+  const [selectedTreatment, setSelectedTreatment] = useState([])
+
+  const handleSelect = (key) => {
+        if (key === 'all') {
+    setSelectedTreatment([]);
+  } else if (key === 'none') {
+    setSelectedTreatment(['none']);
+  } else {
+    setSelectedTreatment(prev => {
+      if (prev.includes(key)) {
+        return prev.filter(k => k !== key);
+      } else {
+        return [...prev.filter(k => k !== 'none'), key];
+      }
+    });
+  }
+  };
+
   return (
     <div>
       <Router>
         <div className="container">
           <Routes>
+            <Route
+                exact path="/" element={
+                  <div className='top-icon'>
+                    {!showMenu && (
+                          <div className='top-icon-text'
+                              onClick={e => { e.stopPropagation(); setShowMenu(true); }}
+                          >☰</div>
+                          )}
+                  <div className="container">
+                    <div className="filter-menu.active">
+                    <FilterMenu
+                    selected={selectedTreatment}
+                    onSelect={handleSelect}
+                    isOpen={showMenu}
+                  />
+                  </div>
+                    
+                      <FilterMenu selected={selectedTreatment} onSelect={handleSelect}/>
+                    <div className="main-3d"
+                      onClick={() => setShowMenu(false)}
+                      style={{ cursor: showMenu ? 'pointer' : 'default' }}
+                      >
+                      <WholeMouth selectedTreatment={selectedTreatment} setSelectedTreatment={setSelectedTreatment}/>
+                    </div>
+                  </div>
+                  </div>
+                }
+            />
+            
             <Route exact path="/" element={<WholeMouth />} />
+
 
             {/* LOWER LEFT */}
 
@@ -86,11 +136,6 @@ export default function App() {
             <Route path="/upper-right-lateral-incisor" element={<UpperRightLateralIncisor />} />
             <Route path="/upper-right-central-incisor" element={<UpperRightCentralIncisor />} />
           </Routes>
-          <div
-            style={{
-              marginBottom: 105 /* temp fix until I figure out a way to accurately represent 100vh on mobile */,
-            }}
-          ></div>
         </div>
       </Router>
     </div>

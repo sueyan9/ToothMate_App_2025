@@ -5,23 +5,147 @@ body,
   padding: 0;
   width: 100vw;
   height: 100vh;
+  background-color: #E9F1F8;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 p {
   text-align: center;
-  width: 200px;
-  font-family: sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   pointer-events: none;
-  background-color: papayawhip;
-  color: dimgrey;
   padding: 7px;
   border-radius: 5px;
   font-size: 15px;
+}
+
+.mouth-info {
+  background-color: #EDDFD3;
+  color: #656B69;
+  width: 200px;
+}
+
+.tooth-info {
+  bottom: 0;
+  background-color: #EDDFD3;
+  color: #656B69;
+  width: 100vw;
+  margin-top: 20px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  max-width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transform: translateY(-95%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.tooth-info.active {
+  height: 90vh;
+  transform: translateY(0);
+}
+
+.top-icon {
+  position: 'relative';
+  width: 100%;
+  height: 10vh;
+}
+
+.top-icon-text {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  z-Index: 100;
+}
+
+.top-icon image {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  z-Index: 100;
 }
 
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  height: 90vh;
+}
+
+.main-3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.mouth-instructions {
+  margin-top: 20px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  max-width: 80%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.mouth-container canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 80vh;
+}
+
+.mouth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.filter-menu {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #FFFDF6;
+  color: #656B69;
+  z-index: 10;
+  width: 180px;
+  height: 100%;
+  padding: 32px;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.filter-menu.active {
+  transform: translateX(0);
+}
+
+.filter-title {
+  font-size: 20px;
+  margin-bottom: 32px;
+  color: #333333;
+}
+.filter-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+.filter-label {
+  font-size: 16px;
 }
