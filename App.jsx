@@ -74,7 +74,7 @@ const ChildClinicStack = () => (
         <Stack.Screen name="chart" component={DentalChartScreen} options={{ title: '' }}/>
         <Stack.Screen name="content" component={AppointmentScreen} options={{ title: '' }}/>
     </Stack.Navigator>
-);*/
+);
 
 // Child account flow
 const ChildAccountStack = () => (
