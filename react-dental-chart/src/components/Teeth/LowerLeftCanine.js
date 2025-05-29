@@ -68,13 +68,7 @@ const LeftLowerCanine = ({ ...props }) => {
 
 export const LowerLeftCanine = () => {
   return (
-    <div style={{
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative',
-    }}>
-    <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
+    <div>      
       <img 
         src="../assets/back_arrow.png" 
         alt="Back"
@@ -89,6 +83,8 @@ export const LowerLeftCanine = () => {
           zIndex: 100
         }}
       />
+    <div style={{ position: 'relative', width: '100%', height: '10vh', display: 'flex',
+      flexDirection: 'column' }}>
     </div>
       <Canvas style={{ width: '100%', height: '80%' }}>
         <CameraController />
@@ -98,7 +94,7 @@ export const LowerLeftCanine = () => {
           <LeftLowerCanine />
         </Suspense>
       </Canvas>
-      <div style={{ textAlign: 'center', padding: '8px' }}>
+      <div style={{ textAlign: 'center', fontSize: '24px'}}>
         Lower left canine
       </div>
       <br></br>
