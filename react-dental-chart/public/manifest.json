@@ -1,0 +1,8 @@
+{
+  "short_name": "ToothMate Chart",
+  "name": "ToothMate 3D Dental Chart",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

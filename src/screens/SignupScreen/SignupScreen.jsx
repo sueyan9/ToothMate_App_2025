@@ -1,14 +1,14 @@
-import React, { useState, useContext } from 'react';
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';  // New import
-import { Text, Input, Button } from 'react-native-elements';
+import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
+import { useFocusEffect } from '@react-navigation/native'; // New import
+import dayjs from 'dayjs';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useContext, useState } from 'react';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import { Button, Input, Text } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts, Righteous_400Regular } from '@expo-google-fonts/righteous';
-import dayjs from 'dayjs';
-import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import Spacer from '../../components/Spacer';
+import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import styles from './styles';
 
 const MIN_DATE = dayjs().subtract(100, 'years');
@@ -81,14 +81,14 @@ const SignupScreen = props => {
       //   dob,
       // });
       navigation.navigate('loginFlow', {
-        screen: 'SelectClinic',
+        screen: 'DentalChart',
         params: {
             firstname,
             lastname,
             email,
             nhi,
             password,
-            dob,
+            dob: dob.toISOString() ,
         },
       });
     }
