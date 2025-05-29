@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// import all screens
+// 导入所有screens
 import AccountScreen from './src/screens/AccountScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 import AppointmentScreen from './src/screens/AppointmentScreen';
@@ -29,13 +29,13 @@ import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext'
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
 import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
 import { Provider as UserProvider } from './src/context/UserContext/UserContext';
-import { navigationRef } from './src/navigationRef';
+import { navigationRef } from './src/navigationRef'; // 需要更新这个文件
 
-//  Create stack and tab navigators
+// 创建堆栈导航器
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Account flow navigation
+// 账户流程导航
 const AccountStack = () => (
     <Stack.Navigator initialRouteName="Account">
         <Stack.Screen name="Account" component={AccountScreen} />
@@ -47,36 +47,36 @@ const AccountStack = () => (
     </Stack.Navigator>
 );
 
-// Education flow navigation
+// 教育流程导航
 const EducationStack = () => (
     <Stack.Navigator initialRouteName="list">
-        <Stack.Screen name="list" component={EducationScreen} options={{ title: '' }}/>
-        <Stack.Screen name="content" component={EducationContentScreen} options={{ title: '' }}/>
+        <Stack.Screen name="list" component={EducationScreen} />
+        <Stack.Screen name="content" component={EducationContentScreen} />
     </Stack.Navigator>
 );
 
-// Clinic flow navigation
+// 诊所流程导航
 const ClinicStack = () => (
-    <Stack.Navigator initialRouteName="clinic" >
-        <Stack.Screen name="clinic" component={ClinicScreen} options={{ title: '' }}/>
-        <Stack.Screen name="chart"  component={DentalChartScreen}options={{ title: '' }} />
-        <Stack.Screen name="appointment" component={AppointmentScreen} options={{ title: '' }}/>
-        <Stack.Screen name="invoice" component={InvoiceScreen} options={{ title: '' }}/>
-        <Stack.Screen name="images" component={ImagesScreen} options={{ title: '' }}/>
-        <Stack.Screen name="allimages" component={AllImagesScreen} options={{ title: '' }}/>
+    <Stack.Navigator initialRouteName="clinic">
+        <Stack.Screen name="clinic" component={ClinicScreen} />
+        <Stack.Screen name="chart" component={DentalChartScreen} />
+        <Stack.Screen name="appointment" component={AppointmentScreen} />
+        <Stack.Screen name="invoice" component={InvoiceScreen} />
+        <Stack.Screen name="images" component={ImagesScreen} />
+        <Stack.Screen name="allimages" component={AllImagesScreen} />
     </Stack.Navigator>
 );
 
-// Child clinic flow
+// 儿童诊所流程
 const ChildClinicStack = () => (
     <Stack.Navigator initialRouteName="list">
-        <Stack.Screen name="list" component={ClinicScreen} options={{ title: '' }}/>
-        <Stack.Screen name="chart" component={DentalChartScreen} options={{ title: '' }}/>
-        <Stack.Screen name="content" component={AppointmentScreen} options={{ title: '' }}/>
+        <Stack.Screen name="list" component={ClinicScreen} />
+        <Stack.Screen name="chart" component={DentalChartScreen} />
+        <Stack.Screen name="content" component={AppointmentScreen} />
     </Stack.Navigator>
 );
 
-// Child account flow
+// 儿童账户流程
 const ChildAccountStack = () => (
     <Stack.Navigator initialRouteName="Account">
         <Stack.Screen name="Account" component={ChildAccountScreen} />
@@ -88,7 +88,7 @@ const ChildAccountStack = () => (
     </Stack.Navigator>
 );
 
-//  Main flow with bottom tab navigation
+// 主要流程底部导航
 const MainFlow = () => (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen
@@ -118,7 +118,7 @@ const MainFlow = () => (
     </Tab.Navigator>
 );
 
-// Child flow with bottom tab navigation
+// 儿童流程底部导航
 const ChildFlow = () => (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen
@@ -148,7 +148,7 @@ const ChildFlow = () => (
     </Tab.Navigator>
 );
 
-// Main app navigator
+// 主应用导航
 const AppNavigator = () => {
     return (
         <NavigationContainer ref={navigationRef}>
@@ -158,7 +158,7 @@ const AppNavigator = () => {
             >
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
 
-                {/* Login flow  */}
+                {/* 登录流程 */}
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
@@ -170,13 +170,13 @@ const AppNavigator = () => {
                     )}
                 </Stack.Screen>
 
-                {/* main flow */}
+                {/* 主要流程 */}
                 <Stack.Screen name="mainFlow" component={MainFlow} />
 
-                {/* child flow */}
+                {/* 儿童流程 */}
                 <Stack.Screen name="childFlow" component={ChildFlow} />
 
-                {/* Sign up child flow */}
+                {/* 注册儿童流程 */}
                 <Stack.Screen name="signUpChildFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
@@ -190,7 +190,7 @@ const AppNavigator = () => {
     );
 };
 
-// Wrap the app with all providers
+// 包装应用程序与所有提供者
 export default function App() {
     return (
         <AuthProvider>
