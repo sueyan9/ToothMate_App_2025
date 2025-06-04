@@ -34,6 +34,7 @@ import { UpperRightSecondMolar } from './components/Teeth/UpperRightSecondMolar'
 import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPremolar'
 import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
 import WholeMouth from './components/WholeMouth'
+import WholeMouthKid from './components/WholeMouthKid';
 
 export default function App() {
   const [showMenu, setShowMenu] = useState(false);
@@ -60,6 +61,7 @@ export default function App() {
       <Router>
         <div className="container">
           <Routes>
+
             <Route
                 exact path="/" element={
                   <div className='top-icon'>
@@ -84,7 +86,7 @@ export default function App() {
                   </div>
                 }
             />
-            
+            <Route path="/kid-mouth" element={<WholeMouthKid />} />
             <Route exact path="/" element={<WholeMouth />} />
 
 

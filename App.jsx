@@ -26,7 +26,7 @@ import ImagesScreen from './src/screens/ImagesScreen';
 import DisconnectChildScreen from './src/screens/DisconnectChildScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 
-// 导入所有Provider
+// import all Provider
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';

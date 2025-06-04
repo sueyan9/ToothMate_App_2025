@@ -1,4 +1,3 @@
-// src/components/WholeMouthModel.test.jsx
 global.ResizeObserver = class {
     observe() {}
     unobserve() {}
