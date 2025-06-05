@@ -64,7 +64,7 @@
     "typescript": "~5.8.3"
   },
   "private": true,
-    "jest": {
+  "jest": {
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.js"
     ]
