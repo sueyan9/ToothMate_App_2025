@@ -3,7 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber'
 import { Suspense, useEffect, useRef ,useState} from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { getTreatmentInfoByToothId } from '../Util/treatmentInfo';
-
+import { motion } from "framer-motion";
 const CameraController = () => {
   const { camera, gl } = useThree()
 
@@ -192,18 +192,35 @@ export const LowerLeftFirstMolar = () => {
       </Canvas>
       {/* ✅ display treatments info  */}
       {treatmentInfo && (
-          <div style={{
-            padding: '16px',
-            backgroundColor: '#f0f0f0',
-            borderTop: '1px solid #ccc',
-            marginTop: '16px',
-            borderRadius: '12px'
-          }}>
-            <h2>{treatmentInfo.toothName}</h2>
-            <p><strong>Treatments:</strong> {treatmentInfo.treatments.join(', ')}</p>
-            <p><strong>Date:</strong> {treatmentInfo.date}</p>
-            <p><strong>Notes:</strong> {treatmentInfo.notes}</p>
-          </div>
+          <motion.div
+              initial={{ y: "100%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 80, damping: 18 }}
+              style={{
+                position: 'fixed',
+                left: 0,
+                bottom: 0,
+                width: '100vw',
+                margin: 0,
+                padding: '24px 12px',
+                background: '#faf8f6',
+                borderRadius: '12px 12px 0 0',
+                boxSizing: 'border-box',
+                zIndex: 100
+              }}
+          >
+
+            <h2 style={{ fontWeight: 700, fontSize: 22, marginBottom: 20 }}>{treatmentInfo.toothName}</h2>
+            <div style={{ background: '#f3e6da', borderRadius: 10, padding: 12, marginBottom: 12 }}>
+              <strong>Treatments:</strong> {treatmentInfo.treatments.join(', ')}
+            </div>
+            <div style={{ background: '#f3e6da', borderRadius: 10, padding: 12, marginBottom: 12 }}>
+              <strong>Date:</strong> {treatmentInfo.date}
+            </div>
+            <div style={{ background: '#f3e6da', borderRadius: 10, padding: 12 }}>
+              <strong>Notes:</strong> {treatmentInfo.notes}
+            </div>
+          </motion.div>
       )}
       {/*<div>Lower left first molar</div>*/}
     </>
