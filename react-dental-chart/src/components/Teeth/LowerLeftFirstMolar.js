@@ -1,7 +1,8 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef ,useState} from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { getTreatmentInfoByToothId } from '../Util/treatmentInfo';
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -153,6 +154,16 @@ const LeftLowerFirstMolar = ({ ...props }) => {
 }
 
 export const LowerLeftFirstMolar = () => {
+  const [treatmentInfo, setTreatmentInfo] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getTreatmentInfoByToothId(33); // 未来可传入 props
+      setTreatmentInfo(data);
+    };
+    fetchData();
+  }, []);
+
   return (
     <>
     <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
@@ -179,7 +190,22 @@ export const LowerLeftFirstMolar = () => {
           <LeftLowerFirstMolar />
         </Suspense>
       </Canvas>
-      <div>Lower left first molar</div>
+      {/* ✅ display treatments info  */}
+      {treatmentInfo && (
+          <div style={{
+            padding: '16px',
+            backgroundColor: '#f0f0f0',
+            borderTop: '1px solid #ccc',
+            marginTop: '16px',
+            borderRadius: '12px'
+          }}>
+            <h2>{treatmentInfo.toothName}</h2>
+            <p><strong>Treatments:</strong> {treatmentInfo.treatments.join(', ')}</p>
+            <p><strong>Date:</strong> {treatmentInfo.date}</p>
+            <p><strong>Notes:</strong> {treatmentInfo.notes}</p>
+          </div>
+      )}
+      {/*<div>Lower left first molar</div>*/}
     </>
   )
 }

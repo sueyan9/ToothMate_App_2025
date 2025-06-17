@@ -1,7 +1,8 @@
 import { useGLTF } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
-import { Suspense, useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef  } from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { getTreatmentInfoByToothId } from '../Util/treatmentInfo';
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -20,10 +21,11 @@ const CameraController = () => {
 
 const LeftLowerCanine = ({ ...props }) => {
   const group = useRef()
-
   const { nodes, materials } = useGLTF('/assets/Left_Lower_Canine.glb')
 
+
   return (
+
     <group ref={group} {...props} dispose={null}>
       <group position={[0, -1.54, 0]} rotation={[Math.PI / 2, 0, 0]} scale={0.68}>
         <mesh
@@ -66,6 +68,7 @@ const LeftLowerCanine = ({ ...props }) => {
 }
 
 export const LowerLeftCanine = () => {
+
   return (
     <>
     <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
@@ -92,6 +95,7 @@ export const LowerLeftCanine = () => {
           <LeftLowerCanine />
         </Suspense>
       </Canvas>
+
       <div>Lower left canine</div>
     </>
   )
