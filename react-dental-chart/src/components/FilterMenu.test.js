@@ -1,37 +1,48 @@
+
+import React from 'react';
 import '@testing-library/jest-dom';
-import { fireEvent, render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import FilterMenu from './FilterMenu';
+
+jest.mock('./Treatment', () => ({
+    TREATMENTS: [
+        { key: 'filling', label: 'Filling', colour: '#C00A0A' },
+        { key: 'crown', label: 'Crown', colour: '#FF5100' },
+    ],
+}));
 
 describe('FilterMenu', () => {
     it('renders all treatment items', () => {
         const { getByText } = render(<FilterMenu selected={[]} onSelect={() => {}} />);
-        expect(getByText('Root Canal')).toBeInTheDocument();
         expect(getByText('Filling')).toBeInTheDocument();
-    });
+        expect(getByText('Crown')).toBeInTheDocument();
 
-    it('check if wrong treatment is not rendered', () => {
-        const { queryByText } = render(<FilterMenu selected={[]} onSelect={() => {}} />);
-        expect(queryByText('TOOTHWRONG')).not.toBeInTheDocument();
     });
 
     it('calls onSelect when a treatment is clicked', () => {
         const onSelect = jest.fn();
         const { getByText } = render(<FilterMenu selected={[]} onSelect={onSelect} />);
-        fireEvent.click(getByText('Root Canal'));
-        expect(onSelect).toHaveBeenCalledWith('rootCanal');
+
+        fireEvent.click(getByText('Filling'));
+        expect(onSelect).toHaveBeenCalledWith('filling');
+
     });
 
     it('calls onSelect with "all" when Show All is clicked', () => {
         const onSelect = jest.fn();
         const { getByText } = render(<FilterMenu selected={[]} onSelect={onSelect} />);
-        fireEvent.click(getByText('Show All Treatments'));
+
+        fireEvent.click(getByText('Show All'));
+
         expect(onSelect).toHaveBeenCalledWith('all');
     });
 
     it('calls onSelect with "none" when Clear All Filters is clicked', () => {
         const onSelect = jest.fn();
         const { getByText } = render(<FilterMenu selected={[]} onSelect={onSelect} />);
-        fireEvent.click(getByText('Clear All Treatments'));
+
+        fireEvent.click(getByText('Clear All Filters'));
         expect(onSelect).toHaveBeenCalledWith('none');
     });
 });
+

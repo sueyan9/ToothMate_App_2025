@@ -1,10 +1,12 @@
 import { TREATMENTS } from './Treatment';
 
-export default function FilterMenu({selected, onSelect, isOpen}) {
+
+export default function FilterMenu({selected, onSelect}) {
 
     return (
-        <div className={`filter-menu ${isOpen ? 'active' : ''}`}>
-            <div className="filter-title">☰ Select Treatments</div>
+        <div className="filter-menu">
+            <div className="filter-title">☰ Filter</div>
+
             {TREATMENTS.map(item => {
         const isSelected = selected.includes(item.key);
         return (
@@ -26,11 +28,13 @@ export default function FilterMenu({selected, onSelect, isOpen}) {
         );
       })}
       <div className="filter-item" onClick={() => onSelect('all')}>
-        <span className="filter-label" style={{ color: selected.length === 0 ? '#333' : '#656B69' }}>Show All Treatments</span>
+
+        <span className="filter-label" style={{ color: selected.length === 0 ? '#333' : '#656B69' }}>Show All</span>
       </div>
 
       <div className="filter-item" onClick={() => onSelect('none')}>
-        <span className="filter-label" style={{ color: '#656B69' }}>Clear All Treatments</span>
+        <span className="filter-label" style={{ color: '#656B69' }}>Clear All Filters</span>
+
       </div>
     </div>
   );

@@ -55,10 +55,13 @@ router.post("/signupchild", async (req, res) => {
       clinic,
     });
     await user.save();
-    parentInfo = await User.findByIdAndUpdate(parent, {
+    await User.findByIdAndUpdate(parent, {
       $push: { children: user._id },
     });
-    res.send();
+
+    const token = jwt.sign({ userId: user._id }, "MY_SECRET_KEY");
+
+    res.send({ token, id: user._id, parentId: parent });
   } catch (err) {
     return res.status(422).send(err.message);
   }

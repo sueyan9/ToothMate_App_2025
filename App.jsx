@@ -23,7 +23,7 @@ import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
-// 导入所有Provider
+// import all Provider
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';

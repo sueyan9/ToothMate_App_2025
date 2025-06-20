@@ -24,6 +24,7 @@ const SignupScreen = props => {
   const [lastname, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [clinicCode, setClinicCode] = useState('');
   const [nhi, setNhi] = useState('');
   const [dob, setDob] = useState(DEFAULT_DATE.toDate());
   const modalDate = React.useMemo(() => (dob ? dayjs(dob).toDate() : ''), [dob]);
@@ -71,6 +72,8 @@ const SignupScreen = props => {
       setErrorMessage('Please enter a password with at least one number');
     } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password) === false) {
       setErrorMessage('Please enter a password with at least one special character');
+    } else if (clinicCode.trim() === '') {
+      setErrorMessage('Please enter your clinic code');
     } else {
       // navigation.navigate('SelectClinic', {
       //   firstname,
@@ -89,6 +92,7 @@ const SignupScreen = props => {
             nhi,
             password,
             dob: dob.toISOString() ,
+            clinicCode: clinicCode.trim(),
         },
       });
     }
@@ -160,6 +164,17 @@ const SignupScreen = props => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 secureTextEntry
+                inputContainerStyle={styles.inputContainerStyle}
+                inputStyle={styles.textStyle}
+                labelStyle={styles.labelStyle}
+            />
+            <Input
+                label="Clinic Code"
+                leftIcon={{ type: 'font-awesome', name: 'building' }}
+                value={clinicCode}
+                onChangeText={setClinicCode}
+                autoCapitalize="characters"
+                autoCorrect={false}
                 inputContainerStyle={styles.inputContainerStyle}
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
