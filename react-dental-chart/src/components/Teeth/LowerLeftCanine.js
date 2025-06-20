@@ -1,8 +1,10 @@
 import { useGLTF } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
-import { Suspense, useEffect, useRef  } from 'react';
+
+import { Suspense, useEffect, useRef } from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { getTreatmentInfoByToothId } from '../Util/treatmentInfo';
+import ToothInformation from '../ToothInformation';
+
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -70,7 +72,14 @@ const LeftLowerCanine = ({ ...props }) => {
 export const LowerLeftCanine = () => {
 
   return (
-    <>
+
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+    }}>
+
     <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
       <img 
         src="../assets/back_arrow.png" 
@@ -87,7 +96,10 @@ export const LowerLeftCanine = () => {
         }}
       />
     </div>
-      <Canvas style={{ width: '100%', height: '500%' }}>
+
+     
+      <Canvas style={{ width: '100%', height: '80%' }}>
+
         <CameraController />
         <ambientLight intensity={0.7} />
         <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
@@ -96,7 +108,12 @@ export const LowerLeftCanine = () => {
         </Suspense>
       </Canvas>
 
-      <div>Lower left canine</div>
-    </>
+      <div style={{ textAlign: 'center', padding: '8px' }}>
+        Lower left canine
+      </div>
+      <br></br>
+      <ToothInformation tooth="Lower Left Canine"/>
+    </div>
+
   )
 }

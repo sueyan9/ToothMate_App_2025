@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -60,6 +61,7 @@ const DentalChartScreen = () => {
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     header: {

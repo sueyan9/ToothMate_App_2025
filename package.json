@@ -13,6 +13,7 @@
   "dependencies": {
     "@expo-google-fonts/righteous": "^0.3.0",
     "@expo-google-fonts/varela-round": "^0.3.0",
+    "@expo/metro-runtime": "~5.0.4",
     "@expo/vector-icons": "^14.1.0",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-navigation/bottom-tabs": "^7.3.12",
@@ -23,14 +24,14 @@
     "axios": "^1.9.0",
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
-    "expo": "~53.0.7",
+    "expo": "~53.0.9",
     "expo-blur": "~14.1.4",
-    "expo-constants": "~17.1.5",
+    "expo-constants": "~17.1.6",
     "expo-font": "~13.3.1",
     "expo-haptics": "~14.1.4",
-    "expo-image": "~2.1.6",
+    "expo-image": "2.1.7",
     "expo-linear-gradient": "~14.1.4",
-    "expo-linking": "~7.1.4",
+    "expo-linking": "7.1.5",
     "expo-splash-screen": "~0.30.8",
     "expo-status-bar": "~2.2.3",
     "expo-symbols": "~0.4.4",
@@ -59,7 +60,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
+
     "@types/react": "~19.0.10",
     "commander": "@babel/plugin-proposal-private-property-in-object",
     "eslint": "^9.25.0",
@@ -68,7 +69,9 @@
     "typescript": "~5.8.3"
   },
   "private": true,
-  "jest": {
+
+    "jest": {
+
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.js"
     ]

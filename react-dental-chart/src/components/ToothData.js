@@ -1,5 +1,6 @@
 export const toothData = {
 
+
       //upper right
       11: {treatment: 'rootCanal'},
       12: {treatment: 'crown'},
@@ -74,3 +75,4 @@ export const toothData = {
       98: {treatment: 'crown'},
       99: {treatment: 'sealant'},
 };
+
