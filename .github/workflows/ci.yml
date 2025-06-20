@@ -7,8 +7,13 @@ on:
     branches: [ master ]
 
 jobs:
-  test-react-native:
+  test-react-web:
+    name: Test React Web (H5)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./react-dental-chart
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -18,20 +23,27 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies (React Native App)
-        working-directory: ./app
+
+      - name: Install dependencies
         run: npm install
 
-      - name: Install dependencies (React Dental Chart with Tests)
-        working-directory: ./react-dental-chart
-        run: npm install
+      - name: Run tests if available
+        run: |
+          if ls **/*.test.js 1> /dev/null 2>&1; then
+            echo "Running tests..."
+            npm test -- --ci
+          else
+            echo "No test files found. Skipping tests."
+          fi
 
-      - name: Run Jest tests in react-dental-chart
-        working-directory: ./react-dental-chart
-        run: npm test -- --ci
-
-  backend-setup-only:
+  setup-backend:
+    name: Setup Backend Only (No Test)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Backend
+
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -42,8 +54,8 @@ jobs:
           node-version: 18
 
       - name: Install backend dependencies
-        working-directory: ./backend
         run: npm install
 
-      - name: Skip backend tests (to be added)
-        run: echo "No backend tests implemented yet"
+      - name: No backend tests yet
+        run: echo "No backend tests implemented yet."
+

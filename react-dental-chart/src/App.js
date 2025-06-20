@@ -1,7 +1,9 @@
+
 // ====================== React Imports ======================
 import { useState,useEffect } from 'react';
 import {  BrowserRouter as Router, Routes , Route} from 'react-router-dom';
 // =====teeth components======
+
 import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine'
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor'
 import { LowerLeftFirstMolar } from './components/Teeth/LowerLeftFirstMolar'
@@ -34,18 +36,22 @@ import { UpperRightLateralIncisor } from './components/Teeth/UpperRightLateralIn
 import { UpperRightSecondMolar } from './components/Teeth/UpperRightSecondMolar'
 import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPremolar'
 import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
+
 // ====================== Component Imports ======================
 import WholeMouth from './components/WholeMouth'
 import WholeMouthKid from './components/WholeMouthKid';
 import FilterMenu from './components/FilterMenu';
 
+
 export default function App() {
   const [showMenu, setShowMenu] = useState(false);
   const [selectedTreatment, setSelectedTreatment] = useState([])
+
   const [currentUser, setCurrentUser] = useState(null);
   const [mode, setMode] = useState(null); // default is adult
 
 // handle filter menu selection function
+
   const handleSelect = (key) => {
         if (key === 'all') {
     setSelectedTreatment([]);
@@ -61,6 +67,7 @@ export default function App() {
     });
   }
   };
+
 // Parse query parameters to determine user type (parent/child)
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -103,15 +110,18 @@ export default function App() {
   };
 
 // ======= Render =======
+
   return (
     <div>
       <Router>
         <div className="container">
           <Routes>
+
             {/* ========== Home Route (3D Mouth) ========== */}
             <Route
                 exact path="/"
                 element={
+
                   <div className='top-icon'>
                     {!showMenu && (
                           <div className='top-icon-text'
@@ -119,15 +129,18 @@ export default function App() {
                           >☰</div>
                           )}
                   <div className="container">
+
                     {showMenu && (
                     <div className="filter-menu">
                       <FilterMenu selected={selectedTreatment} onSelect={handleSelect}/>
                     </div>
                         )}
+
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
                       style={{ cursor: showMenu ? 'pointer' : 'default' }}
                       >
+
                       {currentUser ? (
                           mode === 'child' ? (
                           <WholeMouthKid selectedTreatment={selectedTreatment} />
@@ -147,6 +160,7 @@ export default function App() {
             />
 
             {/* ========== Tooth Detail Routes ========== */}
+
 
             {/* LOWER LEFT */}
 
