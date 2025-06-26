@@ -180,3 +180,15 @@ canvas {
 .filter-label {
   font-size: 16px;
 }
+
+.treatment-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.treatment-item {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+}

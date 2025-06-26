@@ -1,7 +1,8 @@
-import { useGLTF } from '@react-three/drei'
-import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { useGLTF } from '@react-three/drei';
+import { Canvas, useThree } from '@react-three/fiber';
+import { Suspense, useEffect, useRef } from 'react';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import ToothInformation from '../ToothInformation';
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -153,6 +154,7 @@ const LeftLowerFirstMolar = ({ ...props }) => {
 }
 
 export const LowerLeftFirstMolar = () => {
+
   return (
     <>
     <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
@@ -180,6 +182,8 @@ export const LowerLeftFirstMolar = () => {
         </Suspense>
       </Canvas>
       <div>Lower left first molar</div>
+      <br></br>
+      <ToothInformation toothNumber={36}/>
     </>
   )
 }

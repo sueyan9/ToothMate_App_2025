@@ -68,7 +68,7 @@ const LeftLowerCanine = ({ ...props }) => {
 
 export const LowerLeftCanine = () => {
   return (
-    <div>      
+    <>      
       <img 
         src="../assets/back_arrow.png" 
         alt="Back"
@@ -98,7 +98,7 @@ export const LowerLeftCanine = () => {
         Lower left canine
       </div>
       <br></br>
-      <ToothInformation tooth="Lower Left Canine"/>
-    </div>
+      <ToothInformation toothNumber={33}/>
+    </>
   )
 }
