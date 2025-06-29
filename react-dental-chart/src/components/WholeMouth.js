@@ -46,7 +46,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       metalness: 0.1,
     }),
     extraction: new THREE.MeshStandardMaterial({
-      color: '#0022FF',
+      color: '#5C5C5C',
       roughness: 0.1,
       metalness: 0.1,
       opacity: 0.6,
@@ -80,6 +80,9 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
   }
 
   const getToothMaterial = (type) => {
+  if (type === 'missing') {
+    return toothMaterials.missing;
+  }
   if (!selectedTreatment || selectedTreatment[0] === 'none') {
     return toothMaterials.normal;
   }
