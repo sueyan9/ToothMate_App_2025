@@ -42,7 +42,7 @@ jobs:
           node-version: 18
 
       - name: Install backend dependencies
-        working-directory: /Backend
+        working-directory: ./Backend
         run: npm install
 
       - name: Skip backend tests (to be added)
