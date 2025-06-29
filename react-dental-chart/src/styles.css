@@ -25,27 +25,58 @@ p {
 }
 
 .tooth-info {
+  position: fixed;
+  left: 0;
   bottom: 0;
   background-color: #EDDFD3;
   color: #656B69;
   width: 100vw;
   margin-top: 20px;
   text-align: center;
-  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   border-radius: 5px;
   max-width: 100%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transform: translateY(-95%);
+  transform: translateY(calc(100% - 60px));
   transition: transform 0.3s ease-in-out;
+  height: auto;
+  max-height: 300vh;
 }
 
 .tooth-info.active {
-  height: 90vh;
   transform: translateY(0);
+  max-height: 300vh;
+}
+
+.tooth-info-header {
+  font-size: 24px;
+  font-weight: bold;
+  padding-bottom: 8px;
+  text-align: center;
+  color: #656B69;
+}
+
+.tooth-info-content {
+  font-size: 16px;
+  max-height: calc(66.5vh - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flow-root;
+  padding-top: 24px;
+  padding-bottom: 32px;
+}
+
+.tooth-info-content p {
+  word-wrap: break-word;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 90%;
 }
 
 .top-icon {
-  position: 'relative';
+  position: relative;
   width: 100%;
   height: 10vh;
 }
@@ -75,6 +106,7 @@ p {
   flex-direction: column;
   align-items: center;
   height: 90vh;
+  overflow: hidden;
 }
 
 .main-3d {
@@ -125,7 +157,7 @@ canvas {
   color: #656B69;
   z-index: 10;
   width: 180px;
-  height: 100%;
+  height: 100vh !important;
   padding: 32px;
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
@@ -148,4 +180,16 @@ canvas {
 }
 .filter-label {
   font-size: 16px;
+}
+
+.treatment-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.treatment-item {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
 }
