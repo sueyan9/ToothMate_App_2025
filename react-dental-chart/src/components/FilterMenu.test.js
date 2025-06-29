@@ -1,6 +1,5 @@
-import React from 'react';
 import '@testing-library/jest-dom';
-import { render, fireEvent } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import FilterMenu from './FilterMenu';
 
 jest.mock('./Treatment', () => ({
@@ -27,14 +26,14 @@ describe('FilterMenu', () => {
     it('calls onSelect with "all" when Show All is clicked', () => {
         const onSelect = jest.fn();
         const { getByText } = render(<FilterMenu selected={[]} onSelect={onSelect} />);
-        fireEvent.click(getByText('Show All'));
+        fireEvent.click(getByText('Show All Treatments'));
         expect(onSelect).toHaveBeenCalledWith('all');
     });
 
     it('calls onSelect with "none" when Clear All Filters is clicked', () => {
         const onSelect = jest.fn();
         const { getByText } = render(<FilterMenu selected={[]} onSelect={onSelect} />);
-        fireEvent.click(getByText('Clear All Filters'));
+        fireEvent.click(getByText('Clear All Treatments'));
         expect(onSelect).toHaveBeenCalledWith('none');
     });
 });
