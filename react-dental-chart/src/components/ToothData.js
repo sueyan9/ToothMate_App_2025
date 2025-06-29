@@ -48,29 +48,22 @@ export const toothData = {
       53: {treatment: 'crown'},
       54: {treatment: 'sealant'},
       55: {treatment: 'extraction'},
+
       61: {treatment: 'normal'},
       62: {treatment: 'filling'},
       63: {treatment: 'crown'},
       64: {treatment: 'sealant'},
       65: {treatment: 'extraction'},
+
       71: {treatment: 'normal'},
       72: {treatment: 'filling'},
       73: {treatment: 'crown'},
       74: {treatment: 'sealant'},
       75: {treatment: 'extraction'},
+
       81: {treatment: 'normal'},
       82: {treatment: 'filling'},
       83: {treatment: 'crown'},
       84: {treatment: 'sealant'},
-      85: {treatment: 'extraction'},
-      // 91-99
-      91: {treatment: 'filling'},
-      92: {treatment: 'crown'},
-      93: {treatment: 'sealant'},
-      94: {treatment: 'extraction'},
-      95: {treatment: 'veneer'},
-      96: {treatment: 'normal'},
-      97: {treatment: 'filling'},
-      98: {treatment: 'crown'},
-      99: {treatment: 'sealant'},
+      85: {treatment: 'extraction'}
 };

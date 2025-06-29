@@ -61,7 +61,6 @@ export default function App() {
       <Router>
         <div className="container">
           <Routes>
-
             <Route
                 exact path="/" element={
                   <div className='top-icon'>
