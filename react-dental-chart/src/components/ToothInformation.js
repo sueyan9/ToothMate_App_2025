@@ -11,7 +11,8 @@ useEffect(() => {
     const tooth = teethData.teeth[toothNumber];
     setToothInfo(tooth || {
       name: `Tooth ${toothNumber}`,
-      treatments: []
+      treatments: [],
+      futuretreatments: []
     });
   }, [toothNumber]);
 
