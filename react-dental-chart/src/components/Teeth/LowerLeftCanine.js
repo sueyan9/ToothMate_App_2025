@@ -1,8 +1,8 @@
 import { useGLTF } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
-import { Suspense, useEffect, useRef  } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { getTreatmentInfoByToothId } from '../Util/treatmentInfo';
+import ToothInformation from '../ToothInformation';
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -97,6 +97,7 @@ export const LowerLeftCanine = () => {
       </Canvas>
 
       <div>Lower left canine</div>
+      <ToothInformation toothNumber={33} />
     </>
   )
 }

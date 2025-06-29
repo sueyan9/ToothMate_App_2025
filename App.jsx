@@ -1,37 +1,34 @@
-import React from 'react';
+import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
 // 导入所有screens
 import AccountScreen from './src/screens/AccountScreen';
-import SigninScreen from './src/screens/SigninScreen';
-import SignupScreen from './src/screens/SignupScreen';
-import ClinicScreen from './src/screens/ClinicScreen';
-import SignupChildScreen from './src/screens/SignupChildScreen';
-import ChildAccountScreen from './src/screens/ChildAccountScreen';
-import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
-import EducationScreen from './src/screens/EducationScreen';
-import EducationContentScreen from './src/screens/EducationContentScreen';
-import AppointmentScreen from './src/screens/AppointmentScreen';
-import SelectClinicScreen from './src/screens/SelectClinicScreen';
-import UserScreen from './src/screens/UserScreen';
-import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
-import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
-import UserAccountScreen from './src/screens/UserAccountScreen';
-import DentalChartScreen from './src/screens/DentalChartScreen';
-import InvoiceScreen from './src/screens/InvoiceScreen';
-import ImagesScreen from './src/screens/ImagesScreen';
-import DisconnectChildScreen from './src/screens/DisconnectChildScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
+import AppointmentScreen from './src/screens/AppointmentScreen';
+import ChildAccountScreen from './src/screens/ChildAccountScreen';
+import ClinicScreen from './src/screens/ClinicScreen';
+import DentalChartScreen from './src/screens/DentalChartScreen';
+import DisconnectChildScreen from './src/screens/DisconnectChildScreen';
+import EducationContentScreen from './src/screens/EducationContentScreen';
+import EducationScreen from './src/screens/EducationScreen';
+import ImagesScreen from './src/screens/ImagesScreen';
+import InvoiceScreen from './src/screens/InvoiceScreen';
+import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
+import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
+import SelectClinicScreen from './src/screens/SelectClinicScreen';
+import SignupChildScreen from './src/screens/SignupChildScreen';
+import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
+import UserAccountScreen from './src/screens/UserAccountScreen';
+import UserScreen from './src/screens/UserScreen';
 
 // import all Provider
-import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
-import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
-import { Provider as UserProvider } from './src/context/UserContext/UserContext';
+import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
+import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
+import { Provider as UserProvider } from './src/context/UserContext/UserContext';
 import { navigationRef } from './src/navigationRef'; // 需要更新这个文件
 
 // 创建堆栈导航器
@@ -165,9 +162,10 @@ const AppNavigator = () => {
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
-                            <Stack.Screen name="Signup" component={SignupScreen} />
-                            <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
-                            <Stack.Screen name="Signin" component={SigninScreen} />
+                            {/* <Stack.Screen name="Signup" component={SignupScreen} /> */}
+                            {/* <Stack.Screen name="SelectClinic" component={SelectClinicScreen} /> */}
+                            {/* <Stack.Screen name="Signin" component={SigninScreen} /> */}
+                            <Stack.Screen name="chart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}
                 </Stack.Screen>

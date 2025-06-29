@@ -34,7 +34,7 @@ import { UpperRightSecondMolar } from './components/Teeth/UpperRightSecondMolar'
 import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPremolar'
 import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
 import WholeMouth from './components/WholeMouth'
-import WholeMouthKid from './components/WholeMouthKid';
+import WholeMouthKid from './components/WholeMouthKid'
 
 export default function App() {
   const [showMenu, setShowMenu] = useState(false);
@@ -71,11 +71,15 @@ export default function App() {
                           >☰</div>
                           )}
                   <div className="container">
-                    {showMenu && (
-                    <div className="filter-menu">
+                    <div className="filter-menu.active">
+                    <FilterMenu
+                    selected={selectedTreatment}
+                    onSelect={handleSelect}
+                    isOpen={showMenu}
+                  />
+                  </div>
+                    
                       <FilterMenu selected={selectedTreatment} onSelect={handleSelect}/>
-                    </div>
-                        )}
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
                       style={{ cursor: showMenu ? 'pointer' : 'default' }}
@@ -86,6 +90,7 @@ export default function App() {
                   </div>
                 }
             />
+            
             <Route path="/kid-mouth" element={<WholeMouthKid />} />
             <Route exact path="/" element={<WholeMouth />} />
 
