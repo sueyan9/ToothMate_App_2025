@@ -39,6 +39,7 @@ import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
 
 // ====================== Component Imports ======================
 import WholeMouth from './components/WholeMouth'
+
 import WholeMouthKid from './components/WholeMouthKid';
 import FilterMenu from './components/FilterMenu';
 
@@ -117,7 +118,9 @@ export default function App() {
         <div className="container">
           <Routes>
 
+
             {/* ========== Home Route (3D Mouth) ========== */}
+
             <Route
                 exact path="/"
                 element={
@@ -130,11 +133,13 @@ export default function App() {
                           )}
                   <div className="container">
 
+
                     {showMenu && (
                     <div className="filter-menu">
                       <FilterMenu selected={selectedTreatment} onSelect={handleSelect}/>
                     </div>
                         )}
+
 
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
@@ -159,7 +164,9 @@ export default function App() {
             }
             />
 
+
             {/* ========== Tooth Detail Routes ========== */}
+
 
 
             {/* LOWER LEFT */}

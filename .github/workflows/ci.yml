@@ -54,8 +54,9 @@ jobs:
           node-version: 18
 
       - name: Install backend dependencies
+        working-directory: ./Backend
         run: npm install
 
-      - name: No backend tests yet
-        run: echo "No backend tests implemented yet."
+      - name: Skip backend tests (to be added)
+        run: echo "No backend tests implemented yet"
 
