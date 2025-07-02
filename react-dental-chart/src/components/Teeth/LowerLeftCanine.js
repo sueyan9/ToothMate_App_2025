@@ -108,12 +108,10 @@ export const LowerLeftCanine = () => {
         </Suspense>
       </Canvas>
 
-      <div style={{ textAlign: 'center', padding: '8px' }}>
-        Lower left canine
-      </div>
-      <br></br>
-      <ToothInformation tooth="Lower Left Canine"/>
-    </div>
+
+      <div>Lower left canine</div>
+      <ToothInformation toothNumber={33} />
+    </>
 
   )
 }
