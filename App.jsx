@@ -23,13 +23,14 @@ import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
-// 导入所有Provider
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
 import { Provider as UserProvider } from './src/context/UserContext/UserContext';
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
-import { navigationRef } from './src/navigationRef'; 
+import { navigationRef } from './src/navigationRef';
+import SignupScreen from "./src/screens/SignupScreen";
+import SigninScreen from "./src/screens/SigninScreen";
 
 //  Create stack and tab navigators
 const Stack = createNativeStackNavigator();
@@ -162,9 +163,9 @@ const AppNavigator = () => {
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
-                            {/* <Stack.Screen name="Signup" component={SignupScreen} /> */}
-                            {/* <Stack.Screen name="SelectClinic" component={SelectClinicScreen} /> */}
-                            {/* <Stack.Screen name="Signin" component={SigninScreen} /> */}
+                             <Stack.Screen name="Signup" component={SignupScreen} />
+                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
+                             <Stack.Screen name="Signin" component={SigninScreen} />
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}

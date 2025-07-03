@@ -3,7 +3,7 @@ import { View, TouchableOpacity, ImageBackground } from 'react-native';
 import { Text, Input, Button } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts, Righteous_400Regular } from '@expo-google-fonts/righteous';
-import {useFocusEffect, useNavigation} from '@react-navigation/native'; // 引入 useFocusEffect
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import Spacer from '../../components/Spacer';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import ToothLogo from '../../assets/t_logo_crop2.png';
