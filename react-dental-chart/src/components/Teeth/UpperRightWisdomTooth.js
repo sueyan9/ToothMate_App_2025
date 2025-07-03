@@ -4,9 +4,6 @@ import { Suspense, useEffect, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
-import { getToothSegmentColor } from '../Util/ToothSegmentColorUtil'
-
-
 const CameraController = () => {
   const { camera, gl } = useThree()
 
