@@ -23,14 +23,16 @@ import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
-import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
-import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
+// import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
-import { Provider as UserProvider } from './src/context/UserContext/UserContext';
+import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
+import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
+import { Provider as UserProvider } from './src/context/UserContext/UserContext';
 import { navigationRef } from './src/navigationRef';
 import SignupScreen from "./src/screens/SignupScreen";
 import SigninScreen from "./src/screens/SigninScreen";
+
 
 //  Create stack and tab navigators
 const Stack = createNativeStackNavigator();

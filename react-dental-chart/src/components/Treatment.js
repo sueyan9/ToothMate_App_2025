@@ -7,4 +7,5 @@ export const TREATMENTS = [
     {key: 'veneer', label: 'Veneers', colour: '#7B00FF'},
     {key: 'sealant', label: 'Sealant', colour: '#FF0099'},
     {key: 'extraction', label: 'Extraction', colour: '#5C5C5C'},
+
 ];
