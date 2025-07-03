@@ -1,8 +1,9 @@
+import axios from 'axios';
 import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
 import { useFocusEffect } from '@react-navigation/native'; // New import
 import dayjs from 'dayjs';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState  ,useEffect } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -18,8 +19,9 @@ const DEFAULT_DATE = dayjs('2000-01-01');
 const SignupScreen = props => {
   const { navigation } = props;
 
-  const { clearErrorMessage } = useContext(AuthContext);
-
+  const { clearErrorMessage, signUp } = useContext(AuthContext);
+  const [clinicInfo, setClinicInfo] = useState(null);
+  const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
   const [firstname, setFirstName] = useState('');
   const [lastname, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -35,7 +37,31 @@ const SignupScreen = props => {
   const [fontsLoaded] = useFonts({
     Righteous_400Regular,
   });
+  useEffect(() => {
+    const checkClinicCode = async () => {
+      if (clinicCode.trim() === '') {
+        setClinicInfo(null);
+        setClinicCodeStatus(null);
+        return;
+      }
 
+      try {
+        const response = await axios.get(`http://192.168.1.166:3000/checkClinicCode/${clinicCode.trim()}`);
+        if (response.data.valid) {
+          setClinicInfo(response.data);
+          setClinicCodeStatus('valid');
+        } else {
+          setClinicInfo(null);
+          setClinicCodeStatus('invalid');
+        }
+      } catch (err) {
+        setClinicInfo(null);
+        setClinicCodeStatus('invalid');
+      }
+    };
+
+    checkClinicCode();
+  }, [clinicCode]);
   // Replacing NavigationEvents with useFocusEffect
   useFocusEffect(
       React.useCallback(() => {
@@ -49,7 +75,7 @@ const SignupScreen = props => {
     setDob(currentDate);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (firstname === '') {
       setErrorMessage('Please enter your first name');
     } else if (lastname === '') {
@@ -83,18 +109,20 @@ const SignupScreen = props => {
       //   password,
       //   dob,
       // });
-      navigation.navigate('loginFlow', {
-        screen: 'DentalChart',
-        params: {
-            firstname,
-            lastname,
-            email,
-            nhi,
-            password,
-            dob: dob.toISOString() ,
-            clinicCode: clinicCode.trim(),
-        },
-      });
+      try {
+        await signUp({
+          firstname,
+          lastname,
+          email,
+          nhi: nhi.toUpperCase(),
+          password,
+          dob: dob.toISOString(),
+          clinic: clinicCode.trim(),
+        });
+      } catch (err) {
+        console.log("Signup failed:", err.response?.data || err.message);
+        setErrorMessage(err.response?.data?.error || 'Failed to register');
+      }
     }
   };
 
@@ -179,6 +207,15 @@ const SignupScreen = props => {
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
+            {clinicCodeStatus === 'valid' && clinicInfo && (
+                <Text style={{ color: 'green', marginLeft: 10 }}>
+                  Clinic found: {clinicInfo.name}
+                </Text>
+            )}
+
+            {clinicCodeStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>Invalid clinic code</Text>
+            )}
             <Text style={styles.clinicTextStyle}>Date of Birth</Text>
             <View>
               <View style={styles.androidModalViewStyle}>

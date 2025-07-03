@@ -9,9 +9,16 @@ const router = express.Router();
 
 //Whenever someone makes a POST request to /signup, the following callback function will be called
 router.post("/signup", async (req, res) => {
-  const { firstname, lastname, email, nhi, password, dob, clinic } = req.body; //req.body contains the user sign up details
-
+  const { firstname, lastname, email, nhi, password, dob, clinicCode  } = req.body; //req.body contains the user sign up details
   try {
+    // find the clinic
+    const foundClinic = await mongoose.model("Clinic").findOne({ code: clinicCode });
+
+    if (!foundClinic) {
+      return res.status(400).send({ error: "Invalid clinic code." });
+    }
+
+    // create new user and linked with clinic
     const user = new User({
       firstname,
       lastname,
@@ -19,14 +26,36 @@ router.post("/signup", async (req, res) => {
       nhi,
       password,
       dob,
-      clinic,
-    }); //creating instance of user
+      clinic: foundClinic._id.toString(), // save clinic ID
+    });
+ //creating instance of user
     await user.save(); //saves the user - async operation to save user to DB
 
     const token = jwt.sign({ userId: user._id }, "MY_SECRET_KEY"); //creating JWT, assigning it its id from the DB to the token
     res.send({ token, id: user._id });
   } catch (err) {
     return res.status(422).send(err.message); //422 indicates user sent us invalid data
+  }
+});
+// check whether the invite code is valide
+router.get("/checkClinicCode/:code", async (req, res) => {
+  const clinicCode = req.params.code;
+
+  try {
+    const clinic = await mongoose.model("Clinic").findOne({ code: clinicCode });
+
+    if (!clinic) {
+      return res.status(404).send({ valid: false, message: "Invalid clinic code" });
+    }
+
+    return res.send({
+      valid: true,
+      name: clinic.name,
+      phone: clinic.phone,
+      email: clinic.email,
+    });
+  } catch (err) {
+    return res.status(500).send({ valid: false, message: "Server error" });
   }
 });
 

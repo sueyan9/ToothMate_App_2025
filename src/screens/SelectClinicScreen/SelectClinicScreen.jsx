@@ -14,10 +14,10 @@ import LoadingScreen from '../LoadingScreen';
 const SelectClinicScreen = ({ route, navigation }) => {
   const {
     state: { errorMessage },
-    signup,
+    signUp,
   } = useContext(AuthContext);
 
-  // 使用 route.params 获取传递的参数
+  // use route.params get the parameters
   const { firstname, lastname, email, nhi, password, dob } = route.params;
 
   const { state: clinicState, getClinicNames } = useContext(ClinicContext);
