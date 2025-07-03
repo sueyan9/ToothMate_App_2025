@@ -4,6 +4,7 @@ const expoConfig = require('eslint-config-expo/flat');
 module.exports = defineConfig([
   expoConfig,
   {
+
     ignores: ['dist/', 'build/'],
   },
   {
@@ -15,9 +16,12 @@ module.exports = defineConfig([
     ],
     env: {
       jest: ture,
+
     },
     rules:{
 
     }
   }
+
 ]);
+
