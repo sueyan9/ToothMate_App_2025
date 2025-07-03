@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';  // 确保正确导入 useMemo
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, Platform, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Input, Button } from 'react-native-elements';
@@ -32,7 +32,7 @@ const UserScreen = () => {
     Righteous_400Regular,
   });
 
-  // 不使用 useMemo，而是直接赋值
+  // do not use  useMemo，just directly give the value
   const modalDate = dob ? dayjs(dob).toDate() : '';
   const displayDate = dob ? dayjs(dob).format('DD/MM/YYYY') : '';
 

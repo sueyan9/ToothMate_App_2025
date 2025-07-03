@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import teethData from './Util/toothData.json';
 
@@ -83,6 +84,7 @@ useEffect(() => {
           </div>
 
           </div>
+
         </div>
       )}
     </div>

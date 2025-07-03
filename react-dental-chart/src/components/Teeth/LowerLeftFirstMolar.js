@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef } from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import ToothInformation from '../ToothInformation';
 
+
 const CameraController = () => {
   const { camera, gl } = useThree()
 
@@ -180,8 +181,10 @@ export const LowerLeftFirstMolar = () => {
           <LeftLowerFirstMolar />
         </Suspense>
       </Canvas>
+
       <div>Lower left first molar</div>
       <ToothInformation toothNumber={33}/>
+
     </>
   )
 }

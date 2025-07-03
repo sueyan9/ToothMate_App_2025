@@ -29,7 +29,8 @@ import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext'
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
 import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
 import { Provider as UserProvider } from './src/context/UserContext/UserContext';
-import { navigationRef } from './src/navigationRef'; // 需要更新这个文件
+import { navigationRef } from './src/navigationRef'; 
+
 
 //  Create stack and tab navigators
 const Stack = createNativeStackNavigator();

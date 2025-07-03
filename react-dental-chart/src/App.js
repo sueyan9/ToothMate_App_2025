@@ -1,6 +1,9 @@
-import { useState } from 'react'
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
-import FilterMenu from './components/FilterMenu'
+
+// ====================== React Imports ======================
+import { useState,useEffect } from 'react';
+import {  BrowserRouter as Router, Routes , Route} from 'react-router-dom';
+// =====teeth components======
+
 import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine'
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor'
 import { LowerLeftFirstMolar } from './components/Teeth/LowerLeftFirstMolar'
@@ -33,12 +36,22 @@ import { UpperRightLateralIncisor } from './components/Teeth/UpperRightLateralIn
 import { UpperRightSecondMolar } from './components/Teeth/UpperRightSecondMolar'
 import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPremolar'
 import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
+
+// ====================== Component Imports ======================
 import WholeMouth from './components/WholeMouth'
-import WholeMouthKid from './components/WholeMouthKid'
+
+import WholeMouthKid from './components/WholeMouthKid';
+import FilterMenu from './components/FilterMenu';
+
 
 export default function App() {
   const [showMenu, setShowMenu] = useState(false);
   const [selectedTreatment, setSelectedTreatment] = useState([])
+
+  const [currentUser, setCurrentUser] = useState(null);
+  const [mode, setMode] = useState(null); // default is adult
+
+// handle filter menu selection function
 
   const handleSelect = (key) => {
         if (key === 'all') {
@@ -56,13 +69,62 @@ export default function App() {
   }
   };
 
+// Parse query parameters to determine user type (parent/child)
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const parent = query.get('parent') === 'true';
+
+    const user = {parent };
+
+    setCurrentUser(user);
+    setMode(parent ? 'parent' : 'child');
+  }, []);
+
+  //  Render the main 3D chart area
+  const renderMainChart = () => {
+    if (!currentUser || mode === null) {
+      return <div>Loading 3D chart...</div>;
+    }
+    return (
+        <div className="container">
+          {showMenu && (
+              <div className="filter-menu">
+                <FilterMenu selected={selectedTreatment} onSelect={handleSelect} />
+              </div>
+          )}
+          <div
+              className="main-3d"
+              onClick={() => setShowMenu(false)}
+              style={{ cursor: showMenu ? 'pointer' : 'default' }}
+          >
+            {mode === 'child' ? (
+                <WholeMouthKid selectedTreatment={selectedTreatment} />
+            ) : (
+                <WholeMouth
+                    selectedTreatment={selectedTreatment}
+                    setSelectedTreatment={setSelectedTreatment}
+                />
+            )}
+          </div>
+        </div>
+    );
+  };
+
+// ======= Render =======
+
   return (
     <div>
       <Router>
         <div className="container">
           <Routes>
+
+
+            {/* ========== Home Route (3D Mouth) ========== */}
+
             <Route
-                exact path="/" element={
+                exact path="/"
+                element={
+
                   <div className='top-icon'>
                     {!showMenu && (
                           <div className='top-icon-text'
@@ -70,28 +132,41 @@ export default function App() {
                           >☰</div>
                           )}
                   <div className="container">
-                    <div className="filter-menu.active">
-                    <FilterMenu
-                    selected={selectedTreatment}
-                    onSelect={handleSelect}
-                    isOpen={showMenu}
-                  />
-                  </div>
-                    
+
+
+                    {showMenu && (
+                    <div className="filter-menu">
                       <FilterMenu selected={selectedTreatment} onSelect={handleSelect}/>
+                    </div>
+                        )}
+
+
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
                       style={{ cursor: showMenu ? 'pointer' : 'default' }}
                       >
-                      <WholeMouth selectedTreatment={selectedTreatment} setSelectedTreatment={setSelectedTreatment}/>
+
+                      {currentUser ? (
+                          mode === 'child' ? (
+                          <WholeMouthKid selectedTreatment={selectedTreatment} />
+                      ) : (
+                          <WholeMouth
+                              selectedTreatment={selectedTreatment}
+                              setSelectedTreatment={setSelectedTreatment}
+                          />
+                          )
+                      ) : (
+                          <p>Loading...</p>
+                      )}
                     </div>
                   </div>
                   </div>
-                }
+            }
             />
-            
-            <Route path="/kid-mouth" element={<WholeMouthKid />} />
-            <Route exact path="/" element={<WholeMouth />} />
+
+
+            {/* ========== Tooth Detail Routes ========== */}
+
 
 
             {/* LOWER LEFT */}

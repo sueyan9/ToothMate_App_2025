@@ -48,9 +48,14 @@ const AccountScreen = () => {
           buttonStyle={styles.childButtonStyle}
           titleStyle={styles.childTextStyle}
           onPress={async () => {
+              const parentId = await AsyncStorage.getItem('id');
             await AsyncStorage.setItem('parentId', await AsyncStorage.getItem('id'));
             await AsyncStorage.setItem('id', child.item._id);
-            navigation.navigate('childFlow');
+              if (global.webViewRef && global.webViewRef.current) {
+                  global.webViewRef.current.postMessage('childMode');
+              }
+
+              navigation.navigate('childFlow');
           }}
       />
   );
