@@ -15,7 +15,12 @@ const clinicSchema = mongoose.Schema({
     },
     bookingURL: {
         type: String
-    }
+    },
+    code:
+        { type: String,
+            required: true,
+            unique: true
+        }
 });
 
 mongoose.model('Clinic', clinicSchema);
