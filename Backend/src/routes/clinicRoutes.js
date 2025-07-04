@@ -40,4 +40,35 @@ router.post("/addClinic", async (req, res) => {
   }
 });
 
+// check whether the invite code is valide
+router.get("/checkClinicCode/:code", async (req, res) => {
+  const clinicCode = req.params.code?.trim();
+
+  try {
+    const clinic = await Clinic.findOne({ code: clinicCode });
+
+    if (!clinic) {
+      return res.status(404).json({
+        valid: false,
+        message: "Invalid clinic code",
+      });
+    }
+
+    return res.status(200).json({
+      valid: true,
+      id: clinic._id,
+      name: clinic.name,
+      phone: clinic.phone,
+      email: clinic.email,
+    });
+  } catch (err) {
+    console.error("Error checking clinic code:", err);
+    return res.status(500).json({
+      valid: false,
+      message: "Server error",
+    });
+  }
+});
+
+
 module.exports = router;
