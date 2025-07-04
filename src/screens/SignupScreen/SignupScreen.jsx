@@ -11,6 +11,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Spacer from '../../components/Spacer';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import styles from './styles';
+import axiosApi from "../../api/axios";
 
 const MIN_DATE = dayjs().subtract(100, 'years');
 const MAX_DATE = dayjs();
@@ -37,6 +38,7 @@ const SignupScreen = props => {
   const [fontsLoaded] = useFonts({
     Righteous_400Regular,
   });
+
   useEffect(() => {
     const checkClinicCode = async () => {
       if (clinicCode.trim() === '') {
@@ -46,7 +48,7 @@ const SignupScreen = props => {
       }
 
       try {
-        const response = await axios.get(`http://192.168.1.166:3000/checkClinicCode/${clinicCode.trim()}`);
+        const response = await axiosApi.get(`/checkClinicCode/${clinicCode.trim()}`);
         if (response.data.valid) {
           setClinicInfo(response.data);
           setClinicCodeStatus('valid');
@@ -62,6 +64,7 @@ const SignupScreen = props => {
 
     checkClinicCode();
   }, [clinicCode]);
+
   // Replacing NavigationEvents with useFocusEffect
   useFocusEffect(
       React.useCallback(() => {
@@ -98,7 +101,7 @@ const SignupScreen = props => {
       setErrorMessage('Please enter a password with at least one number');
     } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password) === false) {
       setErrorMessage('Please enter a password with at least one special character');
-    } else if (clinicCode.trim() === '') {
+    } else if (clinicInfo === null) {
       setErrorMessage('Please enter your clinic code');
     } else {
       // navigation.navigate('SelectClinic', {
@@ -117,7 +120,7 @@ const SignupScreen = props => {
           nhi: nhi.toUpperCase(),
           password,
           dob: dob.toISOString(),
-          clinic: clinicCode.trim(),
+          clinic: clinicInfo.id,
         });
       } catch (err) {
         console.log("Signup failed:", err.response?.data || err.message);

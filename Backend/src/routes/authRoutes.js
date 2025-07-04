@@ -37,27 +37,6 @@ router.post("/signup", async (req, res) => {
     return res.status(422).send(err.message); //422 indicates user sent us invalid data
   }
 });
-// check whether the invite code is valide
-router.get("/checkClinicCode/:code", async (req, res) => {
-  const clinicCode = req.params.code;
-
-  try {
-    const clinic = await mongoose.model("Clinic").findOne({ code: clinicCode });
-
-    if (!clinic) {
-      return res.status(404).send({ valid: false, message: "Invalid clinic code" });
-    }
-
-    return res.send({
-      valid: true,
-      name: clinic.name,
-      phone: clinic.phone,
-      email: clinic.email,
-    });
-  } catch (err) {
-    return res.status(500).send({ valid: false, message: "Server error" });
-  }
-});
 
 router.post("/disconnectchild", async (req, res) => {
   const id = req.body.id;
