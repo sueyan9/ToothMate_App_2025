@@ -104,7 +104,7 @@ const signUp =
         console.log("Sign Up Child Success:", response.data);
         await AsyncStorage.setItem('token', response.data.token);
         await AsyncStorage.setItem('id', response.data.id);
-        await AsyncStorage.setItem('parentid', parentid);
+        await AsyncStorage.setItem('parentId', parentid);
         navigate('childFlow', { screen: 'AccountFlow' });
       }
     } catch (err) {
