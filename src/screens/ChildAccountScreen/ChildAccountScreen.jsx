@@ -22,6 +22,7 @@ const AccountScreen = props => {
   const handleBackToParentPress = async () => {
     try {
       const parentId = await AsyncStorage.getItem('parentId');
+
       if (parentId) {
         await AsyncStorage.setItem('id', parentId);
         await AsyncStorage.removeItem('parentId');
