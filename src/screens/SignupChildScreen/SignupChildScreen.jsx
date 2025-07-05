@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { View, TouchableOpacity, Platform } from 'react-native';
 import { Text, Input, Button } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -11,6 +11,7 @@ import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import Spacer from '../../components/Spacer';
 import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
+import axiosApi from "../../api/axios";
 
 const MIN_DATE = dayjs().subtract(100, 'years');
 const MAX_DATE = dayjs();
@@ -19,7 +20,7 @@ const DEFAULT_DATE = dayjs('2000-01-01');
 const SignupChildScreen = props => {
   const { navigation } = props;
 
-  const { clearErrorMessage } = useContext(AuthContext);
+  const { clearErrorMessage, signUp} = useContext(AuthContext);
 
   const [firstname, setFirstName] = useState('');
   const [lastname, setLastName] = useState('');
@@ -27,6 +28,10 @@ const SignupChildScreen = props => {
   const [password, setPassword] = useState('');
   const [nhi, setNhi] = useState('');
   const [dob, setDob] = useState(DEFAULT_DATE.toDate());
+
+  const [clinicInfo, setClinicInfo] = useState(null);
+  const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
+  const [clinicCode, setClinicCode] = useState('');
 
   const modalDate = React.useMemo(() => (dob ? dayjs(dob).toDate() : ''), [dob]);
   const displayDate = React.useMemo(() => (dob ? dayjs(dob).format('DD/MM/YYYY') : ''), [dob]);
@@ -44,7 +49,7 @@ const SignupChildScreen = props => {
     setDob(currentDate);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (firstname === '') {
       setErrorMessage('Please enter your first name');
     } else if (lastname === '') {
@@ -67,15 +72,31 @@ const SignupChildScreen = props => {
       setErrorMessage('Please enter a password with at least one number');
     } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password) === false) {
       setErrorMessage('Please enter a password with at least one special character');
+    }else if (clinicInfo === null) {
+      setErrorMessage('Please enter your clinic code');
     } else {
-      navigation.navigate('SelectClinic', {
-        firstname,
-        lastname,
-        email,
-        nhi,
-        password,
-        dob,
-      });
+      // navigation.navigate('SelectClinic', {
+      //   firstname,
+      //   lastname,
+      //   email,
+      //   nhi,
+      //   password,
+      //   dob,
+      // });
+      try {
+        await signUp({
+          firstname,
+          lastname,
+          email,
+          nhi: nhi.toUpperCase(),
+          password,
+          dob: dob.toISOString(),
+          clinic: clinicInfo.id,
+        });
+      } catch (err) {
+        console.log("Signup failed:", err.response?.data || err.message);
+        setErrorMessage(err.response?.data?.error || 'Failed to register');
+      }
     }
   };
 
@@ -85,6 +106,32 @@ const SignupChildScreen = props => {
         clearErrorMessage();
       }, [])
   );
+
+  useEffect(() => {
+    const checkClinicCode = async () => {
+      if (clinicCode.trim() === '') {
+        setClinicInfo(null);
+        setClinicCodeStatus(null);
+        return;
+      }
+
+      try {
+        const response = await axiosApi.get(`/checkClinicCode/${clinicCode.trim()}`);
+        if (response.data.valid) {
+          setClinicInfo(response.data);
+          setClinicCodeStatus('valid');
+        } else {
+          setClinicInfo(null);
+          setClinicCodeStatus('invalid');
+        }
+      } catch (err) {
+        setClinicInfo(null);
+        setClinicCodeStatus('invalid');
+      }
+    };
+
+    checkClinicCode();
+  }, [clinicCode]);
 
   if (!fontsLoaded) {
     return <LoadingScreen />;
@@ -152,6 +199,26 @@ const SignupChildScreen = props => {
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
+            <Input
+                label="Clinic Code"
+                leftIcon={{ type: 'font-awesome', name: 'building' }}
+                value={clinicCode}
+                onChangeText={setClinicCode}
+                autoCapitalize="characters"
+                autoCorrect={false}
+                inputContainerStyle={styles.inputContainerStyle}
+                inputStyle={styles.textStyle}
+                labelStyle={styles.labelStyle}
+            />
+            {clinicCodeStatus === 'valid' && clinicInfo && (
+                <Text style={{ color: 'green', marginLeft: 10 }}>
+                  Clinic found: {clinicInfo.name}
+                </Text>
+            )}
+
+            {clinicCodeStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>Invalid clinic code</Text>
+            )}
             <Text style={styles.clinicTextStyle}>Date of Birth</Text>
             <View>
               <View style={styles.androidModalViewStyle}>
