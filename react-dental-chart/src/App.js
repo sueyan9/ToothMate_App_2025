@@ -88,7 +88,7 @@ export default function App() {
     return (
         <div className="container">
           {showMenu && (
-              <div className="filter-menu">
+              <div className={`filter-menu ${showMenu ? 'active' : ''}`}>
                 <FilterMenu selected={selectedTreatment} onSelect={handleSelect} />
               </div>
           )}
@@ -118,28 +118,30 @@ export default function App() {
         <div className="container">
           <Routes>
 
-
             {/* ========== Home Route (3D Mouth) ========== */}
 
             <Route
                 exact path="/"
                 element={
-
                   <div className='top-icon'>
                     {!showMenu && (
                           <div className='top-icon-text'
-                              onClick={e => { e.stopPropagation(); setShowMenu(true); }}
-                          >☰</div>
+                              onClick={e => {
+                                e.stopPropagation();
+                                setShowMenu(true);
+                              }}
+                          >
+                            ☰
+                          </div>
                           )}
                   <div className="container">
-
-
                     {showMenu && (
-                    <div className="filter-menu">
-                      <FilterMenu selected={selectedTreatment} onSelect={handleSelect}/>
-                    </div>
-                        )}
-
+                        <FilterMenu
+                            selected={selectedTreatment}
+                            onSelect={handleSelect}
+                            isOpen={showMenu}
+                        />
+                    )}
 
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
@@ -164,10 +166,7 @@ export default function App() {
             }
             />
 
-
             {/* ========== Tooth Detail Routes ========== */}
-
-
 
             {/* LOWER LEFT */}
 
