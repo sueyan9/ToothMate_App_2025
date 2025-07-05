@@ -23,11 +23,12 @@ const SignupScreen = props => {
   const { clearErrorMessage, signUp } = useContext(AuthContext);
   const [clinicInfo, setClinicInfo] = useState(null);
   const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
+  const [clinicCode, setClinicCode] = useState('');
+
   const [firstname, setFirstName] = useState('');
   const [lastname, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [clinicCode, setClinicCode] = useState('');
   const [nhi, setNhi] = useState('');
   const [dob, setDob] = useState(DEFAULT_DATE.toDate());
   const modalDate = React.useMemo(() => (dob ? dayjs(dob).toDate() : ''), [dob]);
