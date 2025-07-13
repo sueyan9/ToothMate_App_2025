@@ -109,6 +109,10 @@ const MainFlow = () => (
             position: 'absolute',
             overflow: 'hidden',
             elevation: 5,
+            shadowColor: '#333333',
+            shadowOffset: {width: 0, height: -3},
+            shadowOpacity: 0.1,
+            shadowRadius: 5,
         }
     })}>
         <Tab.Screen
