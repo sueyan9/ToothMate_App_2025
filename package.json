@@ -22,6 +22,7 @@
     "@react-navigation/native-stack": "^7.3.12",
     "@react-navigation/stack": "^7.3.1",
     "axios": "^1.9.0",
+    "cors": "^2.8.5",
     "dayjs": "^1.11.13",
     "expo": "~53.0.9",
     "expo-blur": "~14.1.4",
@@ -37,6 +38,7 @@
     "expo-system-ui": "~5.0.7",
     "expo-web-browser": "~14.1.6",
     "intl": "^1.2.5",
+    "mongodb": "^6.16.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
@@ -50,6 +52,7 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
     "react-native-searchable-dropdown": "^1.1.3",
+    "react-native-svg": "^15.12.0",
     "react-native-switch-toggle": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.20.0",
@@ -59,12 +62,14 @@
     "@babel/core": "^7.25.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@types/react": "~19.0.10",
+    "commander": "@babel/plugin-proposal-private-property-in-object",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
+    "jest": "^29.7.0",
     "typescript": "~5.8.3"
   },
   "private": true,
-    "jest": {
+  "jest": {
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.js"
     ]

@@ -2,7 +2,7 @@ import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
 import { Suspense, useEffect, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { getToothSegmentColor } from '../Util/ToothSegmentColorUtil'
+import ToothInformation from '../ToothInformation'
 
 const CameraController = () => {
   const { camera, gl } = useThree()
@@ -30,17 +30,16 @@ const UpperRightWisdom = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo003.geometry}
           material={materials['1']}
-          material-color={getToothSegmentColor("test")}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo003_4.geometry}
           material={materials['2']}
-          material-color={getToothSegmentColor("")}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo003_5.geometry}
           material={materials['3']}
-          material-color={getToothSegmentColor("test")}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo003_6.geometry}
@@ -183,6 +182,7 @@ export const UpperRightWisdomTooth = () => {
         </Suspense>
       </Canvas>
       <div>Upper right wisdom tooth</div>
+      <ToothInformation toothNumber={18} />
     </>
   )
 }

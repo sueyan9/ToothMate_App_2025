@@ -16,20 +16,26 @@ import EducationScreen from './src/screens/EducationScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
-import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import SelectClinicScreen from './src/screens/SelectClinicScreen';
 import SignupChildScreen from './src/screens/SignupChildScreen';
 import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
-// 导入所有Provider
-import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
-import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
+// import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
-import { Provider as UserProvider } from './src/context/UserContext/UserContext';
+import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
-import { navigationRef } from './src/navigationRef'; 
+import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
+import { Provider as UserProvider } from './src/context/UserContext/UserContext';
+import { navigationRef } from './src/navigationRef';
+
+//splash screen
+import { useEffect, useState } from 'react';
+import ToothIcon from './src/assets/ToothIcon';
+import Icon from './src/assets/icons';
+import SplashScreen from './src/screens/SplashScreen/SplashScreen';
+
 
 //  Create stack and tab navigators
 const Stack = createNativeStackNavigator();
@@ -50,8 +56,8 @@ const AccountStack = () => (
 // Education flow navigation
 const EducationStack = () => (
     <Stack.Navigator initialRouteName="list">
-        <Stack.Screen name="list" component={EducationScreen} options={{ title: '' }}/>
-        <Stack.Screen name="content" component={EducationContentScreen} options={{ title: '' }}/>
+        <Stack.Screen name="list" component={EducationScreen}/>
+        <Stack.Screen name="content" component={EducationContentScreen}/>
     </Stack.Navigator>
 );
 
@@ -90,21 +96,47 @@ const ChildAccountStack = () => (
 
 //  Main flow with bottom tab navigation
 const MainFlow = () => (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarActiveTintColor: '#875B51',
+        tabBarInactiveTintColor: '#333333',
+        tabBarStyle: {
+            backgroundColor: '#FFFDF6',
+            borderTopWidth: 0,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            height: 60,
+            position: 'absolute',
+            overflow: 'hidden',
+            elevation: 5,
+            shadowColor: '#333333',
+            shadowOffset: {width: 0, height: -3},
+            shadowOpacity: 0.1,
+            shadowRadius: 5,
+        }
+    })}>
         <Tab.Screen
             name="AccountFlow"
             component={AccountStack}
             options={{
                 title: 'Home',
-                tabBarIcon: ({color, size}) => <Entypo name="home" size={size} color={color} />
+                tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
             }}
         />
         <Tab.Screen
             name="Education"
-            component={EducationStack}
+            component={EducationScreen}
             options={{
                 title: 'Education',
-                tabBarIcon: ({color, size}) => <Entypo name="open-book" size={size} color={color} />
+                tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
+            }}
+        />
+        <Tab.Screen
+            name="DentalChartFlow"
+            component={DentalChartScreen}
+            options={{
+                title: 'Dental Chart',
+                tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
             }}
         />
         {/*<Tab.Screen
@@ -112,9 +144,23 @@ const MainFlow = () => (
             component={ClinicStack}
             options={{
                 title: 'Clinic',
+<<<<<<< HEAD
                 tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="toothbrush-paste" size={size} color={color} />
             }}*/}
         
+=======
+                tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
+            }}
+        />
+        <Tab.Screen
+            name="Profile"
+            component={EducationScreen}
+            options={{
+                title: 'Profile',
+                tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
+            }}
+        />
+>>>>>>> origin/AbbyEdu
     </Tab.Navigator>
 );
 
@@ -153,22 +199,23 @@ const AppNavigator = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                initialRouteName="ResolveAuth"
+                initialRouteName="mainFlow"
                 screenOptions={{ headerShown: false }}
             >
-                <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
+                {/*<Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
 
                 {/* Login flow  */}
-                <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
+                {/*<Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
-                            {/* <Stack.Screen name="Signup" component={SignupScreen} /> */}
-                            {/* <Stack.Screen name="SelectClinic" component={SelectClinicScreen} /> */}
-                            {/* <Stack.Screen name="Signin" component={SigninScreen} /> */}
+                             <Stack.Screen name="Signup" component={SignupScreen} />
+                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
+                             <Stack.Screen name="Signin" component={SigninScreen} />
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}
-                </Stack.Screen>
+                </Stack.Screen>*/}
+                
 
                 {/* main flow */}
                 <Stack.Screen name="mainFlow" component={MainFlow} />
@@ -192,6 +239,18 @@ const AppNavigator = () => {
 
 // Wrap the app with all providers
 export default function App() {
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000); // 2 seconds delay
+    }, []);
+
+    if (isLoading) {
+        return <SplashScreen />;
+    }
+
     return (
         <AuthProvider>
             {/*<ClinicProvider>*/}
