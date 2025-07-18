@@ -144,23 +144,9 @@ const MainFlow = () => (
             component={ClinicStack}
             options={{
                 title: 'Clinic',
-<<<<<<< HEAD
                 tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="toothbrush-paste" size={size} color={color} />
             }}*/}
         
-=======
-                tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
-            }}
-        />
-        <Tab.Screen
-            name="Profile"
-            component={EducationScreen}
-            options={{
-                title: 'Profile',
-                tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
-            }}
-        />
->>>>>>> origin/AbbyEdu
     </Tab.Navigator>
 );
 
@@ -208,14 +194,14 @@ const AppNavigator = () => {
                 {/*<Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
-                             <Stack.Screen name="Signup" component={SignupScreen} />
-                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
-                             <Stack.Screen name="Signin" component={SigninScreen} />
+                            <Stack.Screen name="Signup" component={SignupScreen} />
+                            <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
+                            <Stack.Screen name="Signin" component={SigninScreen} />
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}
-                </Stack.Screen>*/}
-                
+                </Stack.Screen>
+
 
                 {/* main flow */}
                 <Stack.Screen name="mainFlow" component={MainFlow} />

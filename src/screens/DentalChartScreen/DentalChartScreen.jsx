@@ -59,18 +59,6 @@ const DentalChartScreen = () => {
     );
 };
 
-<<<<<<< HEAD
-const DentalChartScreen = () => (
-    <View style={{ flex: 1 }}>
-      {/* <Text style={styles.header}>3D Mouth Model</Text> */}
-      <WebView
-          source={{ uri: 'https://11dd-27-252-150-214.ngrok-free.app ' }} // H5 page url
-          style={{ flex: 1 }}
-      />
-    </View>
-);
-=======
->>>>>>> origin/AbbyEdu
 
 const styles = StyleSheet.create({
     header: {
