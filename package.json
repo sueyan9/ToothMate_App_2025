@@ -52,6 +52,7 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
     "react-native-searchable-dropdown": "^1.1.3",
+    "react-native-svg": "^15.12.0",
     "react-native-switch-toggle": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.20.0",
@@ -60,7 +61,6 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@testing-library/jest-dom": "^6.6.3",
-
     "@types/react": "~19.0.10",
     "commander": "@babel/plugin-proposal-private-property-in-object",
     "eslint": "^9.25.0",
@@ -69,9 +69,7 @@
     "typescript": "~5.8.3"
   },
   "private": true,
-
-    "jest": {
-
+  "jest": {
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.js"
     ]

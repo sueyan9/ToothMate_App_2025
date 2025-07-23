@@ -1,10 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { WebView } from 'react-native-webview';
 import axiosApi from "../../api/axios";
-import dayjs from "dayjs";
 
 const DentalChartScreen = () => {
     const webViewRef = useRef(null);
