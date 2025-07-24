@@ -16,6 +16,7 @@ import EducationScreen from './src/screens/EducationScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
+import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import SelectClinicScreen from './src/screens/SelectClinicScreen';
 import SignupChildScreen from './src/screens/SignupChildScreen';
 import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
@@ -196,10 +197,10 @@ const AppNavigator = () => {
                 initialRouteName="mainFlow"
                 screenOptions={{ headerShown: false }}
             >
-                {/*<Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
+                <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
 
                 {/* Login flow  */}
-                {/*<Stack.Screen name="loginFlow" options={{ headerShown: false }}>
+                <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
                              <Stack.Screen name="Signup" component={SignupScreen} />
@@ -208,7 +209,7 @@ const AppNavigator = () => {
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}
-                </Stack.Screen>*/}
+                </Stack.Screen>
                 
 
                 {/* main flow */}
