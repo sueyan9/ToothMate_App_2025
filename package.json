@@ -23,7 +23,11 @@
     "@react-navigation/stack": "^7.3.1",
     "axios": "^1.9.0",
     "dayjs": "^1.11.13",
+<<<<<<< Updated upstream
     "expo": "~53.0.9",
+=======
+    "expo": "^53.0.9",
+>>>>>>> Stashed changes
     "expo-blur": "~14.1.4",
     "expo-constants": "~17.1.6",
     "expo-font": "~13.3.1",
