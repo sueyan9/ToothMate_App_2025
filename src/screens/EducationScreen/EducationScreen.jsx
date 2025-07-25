@@ -85,7 +85,7 @@ const EducationScreen = () => {
 
     return (
             <View style={styles.container}>
-                <Text style={styles.titleText}>Education Library</Text>
+                <Text testID="education-title" style={styles.titleText}>Education Library</Text>
 
                 {/* filtering area */}
                 <View style={{height: 45, marginBottom: 24}}>
@@ -97,7 +97,10 @@ const EducationScreen = () => {
                             <TouchableOpacity 
                             key={filter}
                             onPress={() => setActiveFilter(filter)} 
-                            style={[styles.filterPill, activeFilter === filter && styles.activeFilter]}>
+                            style={[styles.filterPill, activeFilter === filter && styles.activeFilter]}
+                            testID={`filter-${filter}`}
+                            >
+
                                 <Text style={[styles.filterText, activeFilter === filter && styles.activeFilterText]}>{filter}</Text>
                             </TouchableOpacity>
                         ))}
@@ -111,6 +114,7 @@ const EducationScreen = () => {
                         key={item.id} 
                         onPress={() => openContent(item)}
                         style={styles.contentCard}
+                        testID={`card-${item.id}`}
                     >
                         <View style={styles.cardContent}>
                             <Text style={styles.topicText}>{item.topic}</Text>
@@ -128,12 +132,14 @@ const EducationScreen = () => {
                 visible={!!selectedContent}
                 animationType="fade"
                 transparent={false}
+                testID="content-modal"
             >
                 {selectedContent && (
                     <View style={styles.modalContainer}>
                         <TouchableOpacity 
                             style={styles.closeButton}
                             onPress={closeContent}
+                            testID="close-modal-btn"
                         >
                             <MaterialIcons name="close" size={28} color="#333333"/>
                         </TouchableOpacity>
