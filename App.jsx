@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AccountScreen from './src/screens/AccountScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 import AppointmentScreen from './src/screens/AppointmentScreen';
+import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import ChildAccountScreen from './src/screens/ChildAccountScreen';
 import ClinicScreen from './src/screens/ClinicScreen';
 import DentalChartScreen from './src/screens/DentalChartScreen';
@@ -21,6 +22,8 @@ import SignupChildScreen from './src/screens/SignupChildScreen';
 import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
+import SigninScreen from './src/screens/SigninScreen';
+import SignupScreen from './src/screens/SignupScreen';
 
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
@@ -146,6 +149,7 @@ const MainFlow = () => (
                 title: 'Clinic',
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
+
         />
         <Tab.Screen
             name="Profile"
@@ -196,10 +200,10 @@ const AppNavigator = () => {
                 initialRouteName="mainFlow"
                 screenOptions={{ headerShown: false }}
             >
-                {/*<Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
+                <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
 
                 {/* Login flow  */}
-                {/*<Stack.Screen name="loginFlow" options={{ headerShown: false }}>
+                <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
                              <Stack.Screen name="Signup" component={SignupScreen} />
@@ -208,7 +212,7 @@ const AppNavigator = () => {
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}
-                </Stack.Screen>*/}
+                </Stack.Screen>
                 
 
                 {/* main flow */}

@@ -93,7 +93,7 @@ const AccountScreen = () => {
             {children && children.length > 0 ? <Text style={styles.yourAccountStyle}>Your Accounts</Text> : null}
             <View style={{ marginBottom: 10 }}>{childButtons}</View>
           </View>
-          <View style={{ flex: 1, justifyContent: 'center' }}>
+          <View style={{ height: 150, justifyContent: 'center' }}>
             <Button
                 buttonStyle={styles.signOutButton}
                 containerStyle={styles.signOutContainer}
