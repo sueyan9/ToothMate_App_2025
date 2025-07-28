@@ -1,17 +1,16 @@
-import axios from 'axios';
 import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
 import { useFocusEffect } from '@react-navigation/native'; // New import
 import dayjs from 'dayjs';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useContext, useState  ,useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import axiosApi from "../../api/axios";
 import Spacer from '../../components/Spacer';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import styles from './styles';
-import axiosApi from "../../api/axios";
 
 const MIN_DATE = dayjs().subtract(100, 'years');
 const MAX_DATE = dayjs();
@@ -24,6 +23,8 @@ const SignupScreen = props => {
   const [clinicInfo, setClinicInfo] = useState(null);
   const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
   const [clinicCode, setClinicCode] = useState('');
+  
+  const [nhiStatus, setNhiStatus] = useState(null); // null | 'valid' | 'invalid'
 
   const [firstname, setFirstName] = useState('');
   const [lastname, setLastName] = useState('');
@@ -66,6 +67,34 @@ const SignupScreen = props => {
     checkClinicCode();
   }, [clinicCode]);
 
+  useEffect(() => {
+    const checkNhi = async () => {
+      if (nhi.trim() === '') {
+        setNhiStatus(null);
+        return;
+      }
+
+      // First check if NHI format is valid
+      if (!/^[a-zA-Z]{3}[0-9]{4}$/.test(nhi.trim())) {
+        setNhiStatus('invalid_format');
+        return;
+      }
+
+      try {
+        const response = await axiosApi.get(`/checkNhi/${nhi.trim().toUpperCase()}`);
+        if (response.data.exists) {
+          setNhiStatus('exists');
+        } else {
+          setNhiStatus('valid');
+        }
+      } catch (err) {
+        setNhiStatus('invalid');
+      }
+    };
+
+    checkNhi();
+  }, [nhi]);
+
   // Replacing NavigationEvents with useFocusEffect
   useFocusEffect(
       React.useCallback(() => {
@@ -90,8 +119,14 @@ const SignupScreen = props => {
       setErrorMessage('Please enter a valid email');
     } else if (nhi === '') {
       setErrorMessage('Please enter your NHI');
-    } else if (/^[a-zA-Z]{3}[0-9]{4}$/.test(nhi) === false) {
-      setErrorMessage('Please enter a valid NHI');
+    } else if (nhiStatus !== 'valid') {
+      if (nhiStatus === 'exists') {
+        setErrorMessage('NHI already exists');
+      } else if (nhiStatus === 'invalid_format') {
+        setErrorMessage('Please enter a valid NHI format (3 letters + 4 numbers)');
+      } else {
+        setErrorMessage('Please enter a valid NHI');
+      }
     } else if (password === '') {
       setErrorMessage('Please enter your password');
     } else if (password.length < 8) {
@@ -188,6 +223,26 @@ const SignupScreen = props => {
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
+            {nhiStatus === 'valid' && (
+                <Text style={{ color: 'green', marginLeft: 10 }}>
+                  NHI found!
+                </Text>
+            )}
+            {nhiStatus === 'exists' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  NHI already exists
+                </Text>
+            )}
+            {nhiStatus === 'invalid_format' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Invalid NHI format (should be 3 letters + 4 numbers)
+                </Text>
+            )}
+            {nhiStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Error checking NHI
+                </Text>
+            )}
             <Input
                 label="Password"
                 leftIcon={{ type: 'fontawesome5', name: 'lock' }}
