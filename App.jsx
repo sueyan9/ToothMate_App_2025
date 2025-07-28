@@ -7,7 +7,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AccountScreen from './src/screens/AccountScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 import AppointmentScreen from './src/screens/AppointmentScreen';
-import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import ChildAccountScreen from './src/screens/ChildAccountScreen';
 import ClinicScreen from './src/screens/ClinicScreen';
 import DentalChartScreen from './src/screens/DentalChartScreen';
@@ -17,13 +16,14 @@ import EducationScreen from './src/screens/EducationScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
+import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import SelectClinicScreen from './src/screens/SelectClinicScreen';
+import SigninScreen from './src/screens/SigninScreen';
 import SignupChildScreen from './src/screens/SignupChildScreen';
+import SignupScreen from './src/screens/SignupScreen';
 import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
-import SigninScreen from './src/screens/SigninScreen';
-import SignupScreen from './src/screens/SignupScreen';
 
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
@@ -197,7 +197,7 @@ const AppNavigator = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                initialRouteName="mainFlow"
+                initialRouteName="ResolveAuth"
                 screenOptions={{ headerShown: false }}
             >
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />

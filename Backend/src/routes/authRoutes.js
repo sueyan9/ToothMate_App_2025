@@ -210,4 +210,20 @@ router.put("/changePassword/:id", async (req, res) => {
   }
 });
 
+// Route to check if NHI already exists
+router.get("/checkNhi/:nhi", async (req, res) => {
+  try {
+    const nhi = req.params.nhi.toUpperCase();
+    const existingUser = await User.findOne({ nhi: nhi });
+    
+    if (existingUser) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Error checking NHI" });
+  }
+});
+
 module.exports = router;

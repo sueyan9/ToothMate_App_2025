@@ -1,17 +1,17 @@
-import React, {useState, useContext, useEffect} from 'react';
-import { View, TouchableOpacity, Platform } from 'react-native';
-import { Text, Input, Button } from 'react-native-elements';
+import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
+import { useFocusEffect } from '@react-navigation/native'; // 使用新的 hook
+import dayjs from 'dayjs';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useContext, useEffect, useState } from 'react';
+import { Platform, TouchableOpacity, View } from 'react-native';
+import { Button, Input, Text } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { useFocusEffect } from '@react-navigation/native'; // 使用新的 hook
-import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts, Righteous_400Regular } from '@expo-google-fonts/righteous';
-import dayjs from 'dayjs';
-import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
-import Spacer from '../../components/Spacer';
-import styles from './styles';
-import LoadingScreen from '../LoadingScreen';
 import axiosApi from "../../api/axios";
+import Spacer from '../../components/Spacer';
+import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
+import LoadingScreen from '../LoadingScreen';
+import styles from './styles';
 
 const MIN_DATE = dayjs().subtract(100, 'years');
 const MAX_DATE = dayjs();
@@ -32,6 +32,8 @@ const SignupChildScreen = props => {
   const [clinicInfo, setClinicInfo] = useState(null);
   const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
   const [clinicCode, setClinicCode] = useState('');
+  
+  const [nhiStatus, setNhiStatus] = useState(null); // null | 'valid' | 'invalid'
 
   const modalDate = React.useMemo(() => (dob ? dayjs(dob).toDate() : ''), [dob]);
   const displayDate = React.useMemo(() => (dob ? dayjs(dob).format('DD/MM/YYYY') : ''), [dob]);
@@ -60,8 +62,14 @@ const SignupChildScreen = props => {
       setErrorMessage('Please enter a valid email');
     } else if (nhi === '') {
       setErrorMessage('Please enter your NHI');
-    } else if (/^[a-zA-Z]{3}[0-9]{4}$/.test(nhi) === false) {
-      setErrorMessage('Please enter a valid NHI');
+    } else if (nhiStatus !== 'valid') {
+      if (nhiStatus === 'exists') {
+        setErrorMessage('NHI already exists');
+      } else if (nhiStatus === 'invalid_format') {
+        setErrorMessage('Please enter a valid NHI format (3 letters + 4 numbers)');
+      } else {
+        setErrorMessage('Please enter a valid NHI');
+      }
     } else if (password === '') {
       setErrorMessage('Please enter your password');
     } else if (password.length < 8) {
@@ -133,6 +141,34 @@ const SignupChildScreen = props => {
     checkClinicCode();
   }, [clinicCode]);
 
+  useEffect(() => {
+    const checkNhi = async () => {
+      if (nhi.trim() === '') {
+        setNhiStatus(null);
+        return;
+      }
+
+      // First check if NHI format is valid
+      if (!/^[a-zA-Z]{3}[0-9]{4}$/.test(nhi.trim())) {
+        setNhiStatus('invalid_format');
+        return;
+      }
+
+      try {
+        const response = await axiosApi.get(`/checkNhi/${nhi.trim().toUpperCase()}`);
+        if (response.data.exists) {
+          setNhiStatus('exists');
+        } else {
+          setNhiStatus('valid');
+        }
+      } catch (err) {
+        setNhiStatus('invalid');
+      }
+    };
+
+    checkNhi();
+  }, [nhi]);
+
   if (!fontsLoaded) {
     return <LoadingScreen />;
   }
@@ -187,6 +223,26 @@ const SignupChildScreen = props => {
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
+            {nhiStatus === 'valid' && (
+                <Text style={{ color: 'green', marginLeft: 10 }}>
+                  NHI found!
+                </Text>
+            )}
+            {nhiStatus === 'exists' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  NHI already exists
+                </Text>
+            )}
+            {nhiStatus === 'invalid_format' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Invalid NHI format (should be 3 letters + 4 numbers)
+                </Text>
+            )}
+            {nhiStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Error checking NHI
+                </Text>
+            )}
             <Input
                 label="Password"
                 leftIcon={{ type: 'fontawesome5', name: 'lock' }}
