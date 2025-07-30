@@ -19,10 +19,25 @@ module.exports = (req, res, next) => {
             return res.status(401).send({ error: "You must be logged in. "});
         }
 
+        console.log("JWT Payload:", payload); // Debug log
+        
         //No errors found, now get the userId from payload
         const { userId } = payload;
+        
+        console.log("Extracted userId:", userId, "Type:", typeof userId); // Debug log
+        
+        // Validate userId before querying database
+        if (!userId || userId === "null" || userId === null || userId === undefined) {
+            return res.status(401).send({ error: "Invalid token: no user ID found" });
+        }
+        
         //Find the user with matching ID, once found, assign that user to the user variable so we know who made the request
         const user = await User.findById(userId); 
+        
+        if (!user) {
+            return res.status(401).send({ error: "User not found" });
+        }
+        
         //Assign user to person making the request
         req.user = user;
         next();

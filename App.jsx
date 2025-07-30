@@ -16,8 +16,11 @@ import EducationScreen from './src/screens/EducationScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
+import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import SelectClinicScreen from './src/screens/SelectClinicScreen';
+import SigninScreen from './src/screens/SigninScreen';
 import SignupChildScreen from './src/screens/SignupChildScreen';
+import SignupScreen from './src/screens/SignupScreen';
 import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
@@ -146,6 +149,7 @@ const MainFlow = () => (
                 title: 'Clinic',
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
+
         />
         <Tab.Screen
             name="Profile"
@@ -193,13 +197,13 @@ const AppNavigator = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                initialRouteName="mainFlow"
+                initialRouteName="ResolveAuth"
                 screenOptions={{ headerShown: false }}
             >
-                {/*<Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
+                <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
 
                 {/* Login flow  */}
-                {/*<Stack.Screen name="loginFlow" options={{ headerShown: false }}>
+                <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
                              <Stack.Screen name="Signup" component={SignupScreen} />
@@ -208,7 +212,7 @@ const AppNavigator = () => {
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}
-                </Stack.Screen>*/}
+                </Stack.Screen>
                 
 
                 {/* main flow */}
