@@ -89,8 +89,8 @@ p {
   position: absolute;
   top: 32px;
   left: 32px;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   z-Index: 100;
 }
@@ -162,7 +162,6 @@ canvas {
   z-index: 10;
   width: 180px;
   height: 100vh !important;
-
   padding: 32px;
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
@@ -170,7 +169,6 @@ canvas {
 
 .filter-menu.active {
   transform: translateX(0);
-
 }
 
 .filter-title {

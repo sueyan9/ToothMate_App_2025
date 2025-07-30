@@ -40,7 +40,7 @@ const DentalChartScreen = () => {
     }
 
     // Construct WebView URL with user type as a query parameter
-    const url = `http://172.29.117.158:3001/?parent=${parent}`;
+    const url = `http://172.29.10.190:3001/?parent=${parent}`;
 
     return (
         <View style={{ flex: 1 }}>
