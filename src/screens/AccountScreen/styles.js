@@ -26,11 +26,14 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   signOutContainer: {
-    borderRadius: 20,
+
     width: '80%',
     alignSelf: 'center',
+    marginBottom: 60,//add margin without hidden by nav bar
+    height: 60,
   },
   signOutButton: {
+    borderRadius: 20,
     paddingVertical: 10,
     backgroundColor: '#FFF',
     borderColor: '#346185',
