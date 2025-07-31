@@ -89,6 +89,7 @@ p {
   position: absolute;
   top: 32px;
   left: 32px;
+  font-size: 24px;
   width: 32px;
   height: 32px;
   cursor: pointer;
