@@ -197,9 +197,12 @@ const AppNavigator = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                initialRouteName="ResolveAuth"
+                initialRouteName="mainFlow"
                 screenOptions={{ headerShown: false }}
             >
+                {/* main flow */}
+                <Stack.Screen name="mainFlow" component={MainFlow} />
+
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
 
                 {/* Login flow  */}
@@ -215,8 +218,7 @@ const AppNavigator = () => {
                 </Stack.Screen>
                 
 
-                {/* main flow */}
-                <Stack.Screen name="mainFlow" component={MainFlow} />
+                
 
                 {/* child flow */}
                 <Stack.Screen name="childFlow" component={ChildFlow} />

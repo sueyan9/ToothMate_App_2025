@@ -17,7 +17,7 @@ export default StyleSheet.create({
   filterContainer: {
     paddingBottom: 24,
     paddingHorizontal: 8,
-    marginBottom: 24,
+    marginBottom: 16,
   },
   filterPill: {
     backgroundColor: 'none',
@@ -44,7 +44,7 @@ export default StyleSheet.create({
     fontSize: 16,
   },
   contentList: {
-    paddingBottom: 20,
+    marginBottom: 60,
   },
   contentCard: {
     backgroundColor: '#FFFDF6',
@@ -96,6 +96,7 @@ export default StyleSheet.create({
   },
   closeButton: {
       alignSelf: 'flex-end',
+      marginTop: 52,
       padding: 10,
       marginBottom: 10,
       color: '#333333',
@@ -142,4 +143,18 @@ export default StyleSheet.create({
       lineHeight: 24,
       color: '#333333',
   },
+  searchContainer: {
+    paddingHorizontal: 10,
+    marginBottom: 16,
+    marginTop: 24,
+  },
+  searchInput: {
+    backgroundColor: 'none',
+    borderWidth: 2.5,
+    borderColor: '#516287',
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    fontSize: 16,
+  }
 });
