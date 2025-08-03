@@ -108,7 +108,7 @@ const MainFlow = () => (
             borderTopWidth: 0,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
-            height: 60,
+            height: 68,
             position: 'absolute',
             overflow: 'hidden',
             elevation: 5,

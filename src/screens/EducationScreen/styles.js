@@ -44,7 +44,7 @@ export default StyleSheet.create({
     fontSize: 16,
   },
   contentList: {
-    marginBottom: 60,
+    marginBottom: 68,
   },
   contentCard: {
     backgroundColor: '#FFFDF6',
