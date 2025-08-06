@@ -3,5 +3,4 @@ import { API_BASE_URL } from '@env';
 
 export default axios.create({
   baseURL: 'http://172.29.20.208:3000',
-  baseURL: API_BASE_URL,
 });
