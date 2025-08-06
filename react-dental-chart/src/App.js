@@ -141,13 +141,11 @@ export default function App() {
                           </div>
                           )}
                   <div className="container">
-                    {showMenu && (
                         <FilterMenu
                             selected={selectedTreatment}
                             onSelect={handleSelect}
                             isOpen={showMenu}
                         />
-                    )}
 
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
