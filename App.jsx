@@ -206,9 +206,9 @@ const AppNavigator = () => {
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
-                             <Stack.Screen name="Signup" component={SignupScreen} />
-                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
-                             <Stack.Screen name="Signin" component={SigninScreen} />
+                            <Stack.Screen name="Signup" component={SignupScreen} />
+                            <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
+                            <Stack.Screen name="Signin" component={SigninScreen} />
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}
