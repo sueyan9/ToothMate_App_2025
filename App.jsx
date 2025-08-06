@@ -108,7 +108,7 @@ const MainFlow = () => (
             borderTopWidth: 0,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
-            height: 60,
+            height: 68,
             position: 'absolute',
             overflow: 'hidden',
             elevation: 5,
@@ -200,6 +200,7 @@ const AppNavigator = () => {
                 initialRouteName="ResolveAuth"
                 screenOptions={{ headerShown: false }}
             >
+
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
 
                 {/* Login flow  */}
@@ -213,10 +214,10 @@ const AppNavigator = () => {
                         </Stack.Navigator>
                     )}
                 </Stack.Screen>
-                
 
                 {/* main flow */}
                 <Stack.Screen name="mainFlow" component={MainFlow} />
+                
 
                 {/* child flow */}
                 <Stack.Screen name="childFlow" component={ChildFlow} />
