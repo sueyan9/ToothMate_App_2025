@@ -75,7 +75,7 @@ export default function App() {
     const parentParam = query.get('parent');
 
     if (parentParam === null) {
-      setMode('parent');
+      setMode('child');
       setCurrentUser({parent: true});
       return;
     }
@@ -85,36 +85,6 @@ export default function App() {
     setCurrentUser({ parent: isParent });
 
   }, []);
-
-  //  Render the main 3D chart area
-  const renderMainChart = () => {
-    if (!currentUser || mode === null) {
-      return <div>Loading 3D chart...</div>;
-    }
-    return (
-        <div className="container">
-          {showMenu && (
-              <div className={`filter-menu ${showMenu ? 'active' : ''}`}>
-                <FilterMenu selected={selectedTreatment} onSelect={handleSelect} />
-              </div>
-          )}
-          <div
-              className="main-3d"
-              onClick={() => setShowMenu(false)}
-              style={{ cursor: showMenu ? 'pointer' : 'default' }}
-          >
-            {mode === 'child' ? (
-                <WholeMouthKid selectedTreatment={selectedTreatment} />
-            ) : (
-                <WholeMouth
-                    selectedTreatment={selectedTreatment}
-                    setSelectedTreatment={setSelectedTreatment}
-                />
-            )}
-          </div>
-        </div>
-    );
-  };
 
 // ======= Render =======
 
@@ -141,13 +111,12 @@ export default function App() {
                           </div>
                           )}
                   <div className="container">
-                    {showMenu && (
                         <FilterMenu
                             selected={selectedTreatment}
                             onSelect={handleSelect}
                             isOpen={showMenu}
+                            isChild={mode === 'child'}
                         />
-                    )}
 
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}

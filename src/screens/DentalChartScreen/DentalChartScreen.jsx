@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import axiosApi from "../../api/axios";
-import { WEB_DENTAL_CHART_URL } from '@env';
 
 const DentalChartScreen = () => {
     const webViewRef = useRef(null);
@@ -41,7 +40,7 @@ const DentalChartScreen = () => {
     }
 
     // Construct WebView URL with user type as a query parameter
-    const url = `${WEB_DENTAL_CHART_URL}/?parent=${parent}`;
+    const url = `https://tooth-mate-app-2025.vercel.app/?parent=${parent}`;
 
     return (
         <View style={{ flex: 1 }}>
