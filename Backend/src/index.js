@@ -50,6 +50,9 @@ app.get("/", requireAuth, (req, res) => {
 });
 
 //Make app listen on local port
-app.listen(3000, () => {
-  console.log("Listening on Port 3000");
+// app.listen(3000, () => {
+//   console.log("Listening on Port 3000");
+// });
+app.listen(3000, '0.0.0.0', () => {
+    console.log("Listening on Port 3000");
 });

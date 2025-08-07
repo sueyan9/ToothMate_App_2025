@@ -1,8 +1,8 @@
 import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
-import { useFocusEffect } from '@react-navigation/native'; // 使用新的 hook
+import { useFocusEffect } from '@react-navigation/native'; // use new hook
 import dayjs from 'dayjs';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { Platform, TouchableOpacity, View } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -12,6 +12,8 @@ import Spacer from '../../components/Spacer';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import LoadingScreen from '../LoadingScreen';
 import styles from './styles';
+import debounce from 'lodash/debounce';
+import axios from 'axios';
 
 const MIN_DATE = dayjs().subtract(100, 'years');
 const MAX_DATE = dayjs();
@@ -19,7 +21,6 @@ const DEFAULT_DATE = dayjs('2000-01-01');
 
 const SignupChildScreen = props => {
   const { navigation } = props;
-
   const { clearErrorMessage, signUp} = useContext(AuthContext);
 
   const [firstname, setFirstName] = useState('');
@@ -28,22 +29,17 @@ const SignupChildScreen = props => {
   const [password, setPassword] = useState('');
   const [nhi, setNhi] = useState('');
   const [dob, setDob] = useState(DEFAULT_DATE.toDate());
-
   const [clinicInfo, setClinicInfo] = useState(null);
   const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
   const [clinicCode, setClinicCode] = useState('');
-  
   const [nhiStatus, setNhiStatus] = useState(null); // null | 'valid' | 'invalid'
-
-  const modalDate = React.useMemo(() => (dob ? dayjs(dob).toDate() : ''), [dob]);
-  const displayDate = React.useMemo(() => (dob ? dayjs(dob).format('DD/MM/YYYY') : ''), [dob]);
-
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
   const [fontsLoaded] = useFonts({
     Righteous_400Regular,
   });
+  const modalDate = React.useMemo(() => (dob ? dayjs(dob).toDate() : ''), [dob]);
+  const displayDate = React.useMemo(() => (dob ? dayjs(dob).format('DD/MM/YYYY') : ''), [dob]);
 
   const handleDateChange = newDate => {
     const currentDate = newDate ?? dob;
@@ -108,38 +104,45 @@ const SignupChildScreen = props => {
     }
   };
 
-  // 使用 useFocusEffect 来清除错误消息
+  // use  useFocusEffect to clean err message
   useFocusEffect(
       React.useCallback(() => {
         clearErrorMessage();
       }, [])
   );
 
-  useEffect(() => {
-    const checkClinicCode = async () => {
-      if (clinicCode.trim() === '') {
-        setClinicInfo(null);
-        setClinicCodeStatus(null);
-        return;
-      }
-
-      try {
-        const response = await axiosApi.get(`/checkClinicCode/${clinicCode.trim()}`);
-        if (response.data.valid) {
-          setClinicInfo(response.data);
-          setClinicCodeStatus('valid');
-        } else {
-          setClinicInfo(null);
-          setClinicCodeStatus('invalid');
-        }
-      } catch (err) {
+  // Debounced function to reduce API flood when user is typing clinic code
+  const debouncedCheckClinicCode = useMemo(() => debounce(async (code) => {
+    if (code.trim() === '') {
+      setClinicInfo(null);
+      setClinicCodeStatus(null);
+      return;
+    }
+    try {
+      const response = await axiosApi.get(`/checkClinicCode/${code.trim()}`);
+      if (response.data.valid) {
+        setClinicInfo(response.data);
+        setClinicCodeStatus('valid');
+      } else {
         setClinicInfo(null);
         setClinicCodeStatus('invalid');
       }
-    };
+    } catch (err) {
+      setClinicInfo(null);
+      setClinicCodeStatus('invalid');
+    }
+  }, 500), []
+  );
 
-    checkClinicCode();
+// Trigger the debounced API call whenever clinicCode changes
+  useEffect(() => {
+    debouncedCheckClinicCode(clinicCode);
   }, [clinicCode]);
+  useEffect(() => {
+    return () => {
+      debouncedCheckClinicCode.cancel();
+    };
+  }, []);
 
   useEffect(() => {
     const checkNhi = async () => {
