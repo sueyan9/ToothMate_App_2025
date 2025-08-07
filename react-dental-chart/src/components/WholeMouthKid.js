@@ -1,8 +1,6 @@
-import { useGLTF } from '@react-three/drei';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useRef } from 'react';
-import * as THREE from 'three';
-import { OrbitControls } from '@react-three/drei';
 
 
 const WholeMouthKidModel = (props) => {
@@ -48,7 +46,7 @@ export default function WholeMouthKid() {
                     enablePan={false}
                 />
             </Canvas>
-            <p className='mouth-instructions'>kid whole mouth teeth display</p>
+            <p className='mouth-instructions, mouth-info'>Tap and drag to interact with the mouth. Tap a tooth to view further details.</p>
         </div>
     );
 }
