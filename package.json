@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
+    "test": "jest",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -57,7 +58,7 @@
     "react-native-switch-toggle": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "^13.13.5"
+    "react-native-webview": "^13.15.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",
