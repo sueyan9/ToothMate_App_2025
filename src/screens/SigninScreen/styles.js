@@ -1,10 +1,11 @@
-import { StyleSheet, Platform, Dimensions } from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   buttonContainer: {
     borderRadius: 20,
     width: '90%',
     marginLeft: '5%',
+    marginTop: -120,
   },
   button: {
     paddingVertical: 10,

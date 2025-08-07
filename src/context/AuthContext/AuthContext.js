@@ -64,7 +64,7 @@ const clearErrorMessage = dispatch => () => {
 };
 
 // make an api request to sign up with user details
-const signup =
+const signUp =
   dispatch =>
   async ({ firstname, lastname, email, nhi, password, dob, clinic }) => {
     try {
@@ -79,6 +79,7 @@ const signup =
           dob,
           clinic,
         });
+        console.log("Signup success:", response.data);
         await AsyncStorage.setItem('token', response.data.token);
         await AsyncStorage.setItem('id', response.data.id);
 
@@ -86,7 +87,9 @@ const signup =
           type: 'signin',
           payload: { token: response.data.token, id: response.data.id },
         });
+        console.log("Navigating to mainFlow");
         navigate('mainFlow', { screen: 'AccountFlow' });
+
       } else {
         const response = await axiosApi.post('/signupchild', {
           firstname,
@@ -98,6 +101,10 @@ const signup =
           clinic,
           parent: parentid,
         });
+        console.log("Sign Up Child Success:", response.data);
+        await AsyncStorage.setItem('token', response.data.token);
+        await AsyncStorage.setItem('id', response.data.id);
+        await AsyncStorage.setItem('parentid', parentid);
         navigate('childFlow', { screen: 'AccountFlow' });
       }
     } catch (err) {
@@ -255,7 +262,7 @@ const signout = dispatch => async () => {
 export const { Provider, Context } = createDataContext(
   authReducer,
   {
-    signup,
+    signUp,
     signin,
     signout,
     clearErrorMessage,

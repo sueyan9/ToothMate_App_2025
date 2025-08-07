@@ -4,7 +4,7 @@ import { Button } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts, Righteous_400Regular } from '@expo-google-fonts/righteous';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';  // 添加 useFocusEffect
+import { useNavigation, useFocusEffect } from '@react-navigation/native';  // add useFocusEffect
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import styles from './styles';
 import ToothLogo from '../../assets/t_logo_crop2.png';
@@ -25,7 +25,7 @@ const AccountScreen = () => {
     Righteous_400Regular,
   });
 
-  // 使用 useFocusEffect 代替 useEffect + focus/blur 事件监听器
+  // use useFocusEffect instead of  useEffect + focus/blur eventListener
   useFocusEffect(
       React.useCallback(() => {
         const fetchData = async () => {
@@ -36,9 +36,8 @@ const AccountScreen = () => {
 
         fetchData();
 
-        // 返回清理函数
         return () => {
-          // 如果需要在组件失去焦点时执行某些操作，可以在这里添加
+
         };
       }, [])
   );
@@ -49,9 +48,14 @@ const AccountScreen = () => {
           buttonStyle={styles.childButtonStyle}
           titleStyle={styles.childTextStyle}
           onPress={async () => {
+              const parentId = await AsyncStorage.getItem('id');
             await AsyncStorage.setItem('parentId', await AsyncStorage.getItem('id'));
             await AsyncStorage.setItem('id', child.item._id);
-            navigation.navigate('childFlow'); // 确保 'childFlow' 在导航器中存在
+              if (global.webViewRef && global.webViewRef.current) {
+                  global.webViewRef.current.postMessage('childMode');
+              }
+
+              navigation.navigate('childFlow');
           }}
       />
   );
@@ -74,7 +78,7 @@ const AccountScreen = () => {
               <Button
                   buttonStyle={styles.button}
                   title="Settings"
-                  onPress={() => navigation.navigate('UserAccount')} // 确保 'UserAccount' 在导航器中存在
+                  onPress={() => navigation.navigate('UserAccount')}
                   titleStyle={styles.titleContainer}
               />
               <Button
@@ -89,7 +93,7 @@ const AccountScreen = () => {
             {children && children.length > 0 ? <Text style={styles.yourAccountStyle}>Your Accounts</Text> : null}
             <View style={{ marginBottom: 10 }}>{childButtons}</View>
           </View>
-          <View style={{ flex: 1, justifyContent: 'center' }}>
+          <View style={{ height: 150, justifyContent: 'center' }}>
             <Button
                 buttonStyle={styles.signOutButton}
                 containerStyle={styles.signOutContainer}

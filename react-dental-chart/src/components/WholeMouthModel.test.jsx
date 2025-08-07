@@ -3,9 +3,10 @@ global.ResizeObserver = class {
     unobserve() {}
     disconnect() {}
 };
-import { Canvas } from '@react-three/fiber';
-import { fireEvent, render } from '@testing-library/react';
-import WholeMouthModel from './WholeMouth';
+import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
+import { Canvas } from '@react-three/fiber'
+import WholeMouthModel from './WholeMouth'
 
 // Mock OrbitControls
 jest.mock('three/examples/jsm/controls/OrbitControls', () => {

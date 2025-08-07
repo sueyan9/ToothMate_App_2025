@@ -8,7 +8,7 @@ import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import ToothLogo from '../../assets/t_logo_crop2.png';
 import styles from './styles';
 import LoadingScreen from '../LoadingScreen';
-import { useNavigation } from '@react-navigation/native';  // 使用 useNavigation 钩子
+import { useNavigation } from '@react-navigation/native';  // use  useNavigation hook
 
 const UserAccountScreen = () => {
   const navigation = useNavigation(); // 使用钩子直接访问 navigation
@@ -41,7 +41,7 @@ const UserAccountScreen = () => {
     // 添加 focus 事件监听器，使用 unsubscribe 来移除监听器
     const unsubscribe = navigation.addListener('focus', () => {
       setLoading(false); // 页面获得焦点时，结束加载
-      clearErrorMessage(); // 清除错误信息
+      clearErrorMessage();
     });
 
     // 返回清理函数，移除事件监听器

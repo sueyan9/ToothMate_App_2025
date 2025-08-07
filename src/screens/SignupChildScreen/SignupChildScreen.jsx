@@ -1,16 +1,17 @@
-import React, { useState, useContext } from 'react';
-import { View, TouchableOpacity, Platform } from 'react-native';
-import { Text, Input, Button } from 'react-native-elements';
+import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
+import { useFocusEffect } from '@react-navigation/native'; // 使用新的 hook
+import dayjs from 'dayjs';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useContext, useEffect, useState } from 'react';
+import { Platform, TouchableOpacity, View } from 'react-native';
+import { Button, Input, Text } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { useFocusEffect } from '@react-navigation/native'; // 使用新的 hook
-import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts, Righteous_400Regular } from '@expo-google-fonts/righteous';
-import dayjs from 'dayjs';
-import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
+import axiosApi from "../../api/axios";
 import Spacer from '../../components/Spacer';
-import styles from './styles';
+import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import LoadingScreen from '../LoadingScreen';
+import styles from './styles';
 
 const MIN_DATE = dayjs().subtract(100, 'years');
 const MAX_DATE = dayjs();
@@ -19,7 +20,7 @@ const DEFAULT_DATE = dayjs('2000-01-01');
 const SignupChildScreen = props => {
   const { navigation } = props;
 
-  const { clearErrorMessage } = useContext(AuthContext);
+  const { clearErrorMessage, signUp} = useContext(AuthContext);
 
   const [firstname, setFirstName] = useState('');
   const [lastname, setLastName] = useState('');
@@ -27,6 +28,12 @@ const SignupChildScreen = props => {
   const [password, setPassword] = useState('');
   const [nhi, setNhi] = useState('');
   const [dob, setDob] = useState(DEFAULT_DATE.toDate());
+
+  const [clinicInfo, setClinicInfo] = useState(null);
+  const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
+  const [clinicCode, setClinicCode] = useState('');
+  
+  const [nhiStatus, setNhiStatus] = useState(null); // null | 'valid' | 'invalid'
 
   const modalDate = React.useMemo(() => (dob ? dayjs(dob).toDate() : ''), [dob]);
   const displayDate = React.useMemo(() => (dob ? dayjs(dob).format('DD/MM/YYYY') : ''), [dob]);
@@ -44,7 +51,7 @@ const SignupChildScreen = props => {
     setDob(currentDate);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (firstname === '') {
       setErrorMessage('Please enter your first name');
     } else if (lastname === '') {
@@ -55,8 +62,14 @@ const SignupChildScreen = props => {
       setErrorMessage('Please enter a valid email');
     } else if (nhi === '') {
       setErrorMessage('Please enter your NHI');
-    } else if (/^[a-zA-Z]{3}[0-9]{4}$/.test(nhi) === false) {
-      setErrorMessage('Please enter a valid NHI');
+    } else if (nhiStatus !== 'valid') {
+      if (nhiStatus === 'exists') {
+        setErrorMessage('NHI already exists');
+      } else if (nhiStatus === 'invalid_format') {
+        setErrorMessage('Please enter a valid NHI format (3 letters + 4 numbers)');
+      } else {
+        setErrorMessage('Please enter a valid NHI');
+      }
     } else if (password === '') {
       setErrorMessage('Please enter your password');
     } else if (password.length < 8) {
@@ -67,15 +80,31 @@ const SignupChildScreen = props => {
       setErrorMessage('Please enter a password with at least one number');
     } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password) === false) {
       setErrorMessage('Please enter a password with at least one special character');
+    }else if (clinicInfo === null) {
+      setErrorMessage('Please enter your clinic code');
     } else {
-      navigation.navigate('SelectClinic', {
-        firstname,
-        lastname,
-        email,
-        nhi,
-        password,
-        dob,
-      });
+      // navigation.navigate('SelectClinic', {
+      //   firstname,
+      //   lastname,
+      //   email,
+      //   nhi,
+      //   password,
+      //   dob,
+      // });
+      try {
+        await signUp({
+          firstname,
+          lastname,
+          email,
+          nhi: nhi.toUpperCase(),
+          password,
+          dob: dob.toISOString(),
+          clinic: clinicInfo.id,
+        });
+      } catch (err) {
+        console.log("Signup failed:", err.response?.data || err.message);
+        setErrorMessage(err.response?.data?.error || 'Failed to register');
+      }
     }
   };
 
@@ -85,6 +114,60 @@ const SignupChildScreen = props => {
         clearErrorMessage();
       }, [])
   );
+
+  useEffect(() => {
+    const checkClinicCode = async () => {
+      if (clinicCode.trim() === '') {
+        setClinicInfo(null);
+        setClinicCodeStatus(null);
+        return;
+      }
+
+      try {
+        const response = await axiosApi.get(`/checkClinicCode/${clinicCode.trim()}`);
+        if (response.data.valid) {
+          setClinicInfo(response.data);
+          setClinicCodeStatus('valid');
+        } else {
+          setClinicInfo(null);
+          setClinicCodeStatus('invalid');
+        }
+      } catch (err) {
+        setClinicInfo(null);
+        setClinicCodeStatus('invalid');
+      }
+    };
+
+    checkClinicCode();
+  }, [clinicCode]);
+
+  useEffect(() => {
+    const checkNhi = async () => {
+      if (nhi.trim() === '') {
+        setNhiStatus(null);
+        return;
+      }
+
+      // First check if NHI format is valid
+      if (!/^[a-zA-Z]{3}[0-9]{4}$/.test(nhi.trim())) {
+        setNhiStatus('invalid_format');
+        return;
+      }
+
+      try {
+        const response = await axiosApi.get(`/checkNhi/${nhi.trim().toUpperCase()}`);
+        if (response.data.exists) {
+          setNhiStatus('exists');
+        } else {
+          setNhiStatus('valid');
+        }
+      } catch (err) {
+        setNhiStatus('invalid');
+      }
+    };
+
+    checkNhi();
+  }, [nhi]);
 
   if (!fontsLoaded) {
     return <LoadingScreen />;
@@ -140,6 +223,26 @@ const SignupChildScreen = props => {
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
+            {nhiStatus === 'valid' && (
+                <Text style={{ color: 'green', marginLeft: 10 }}>
+                  NHI found!
+                </Text>
+            )}
+            {nhiStatus === 'exists' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  NHI already exists
+                </Text>
+            )}
+            {nhiStatus === 'invalid_format' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Invalid NHI format (should be 3 letters + 4 numbers)
+                </Text>
+            )}
+            {nhiStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Error checking NHI
+                </Text>
+            )}
             <Input
                 label="Password"
                 leftIcon={{ type: 'fontawesome5', name: 'lock' }}
@@ -152,6 +255,26 @@ const SignupChildScreen = props => {
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
+            <Input
+                label="Clinic Code"
+                leftIcon={{ type: 'font-awesome', name: 'building' }}
+                value={clinicCode}
+                onChangeText={setClinicCode}
+                autoCapitalize="characters"
+                autoCorrect={false}
+                inputContainerStyle={styles.inputContainerStyle}
+                inputStyle={styles.textStyle}
+                labelStyle={styles.labelStyle}
+            />
+            {clinicCodeStatus === 'valid' && clinicInfo && (
+                <Text style={{ color: 'green', marginLeft: 10 }}>
+                  Clinic found: {clinicInfo.name}
+                </Text>
+            )}
+
+            {clinicCodeStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>Invalid clinic code</Text>
+            )}
             <Text style={styles.clinicTextStyle}>Date of Birth</Text>
             <View>
               <View style={styles.androidModalViewStyle}>
