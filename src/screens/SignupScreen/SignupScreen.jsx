@@ -81,13 +81,16 @@ const SignupScreen = props => {
       }
 
       try {
+        console.log("Checking NHI:", nhi.trim().toUpperCase());
         const response = await axiosApi.get(`/checkNhi/${nhi.trim().toUpperCase()}`);
+        console.log("NHI check response:", response.data);
         if (response.data.exists) {
           setNhiStatus('exists');
         } else {
           setNhiStatus('valid');
         }
       } catch (err) {
+        console.error("Error checking NHI:", err);
         setNhiStatus('invalid');
       }
     };
