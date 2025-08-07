@@ -1,9 +1,6 @@
-
-// ====================== React Imports ======================
 import { useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 // =====teeth components======
-
 import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine';
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor';
 import { LowerLeftFirstMolar } from './components/Teeth/LowerLeftFirstMolar';
@@ -38,45 +35,72 @@ import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPre
 import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth';
 
 // ====================== Component Imports ======================
-import WholeMouth from './components/WholeMouth';
-
 import FilterMenu from './components/FilterMenu';
+import { toothData } from './components/ToothData';
+import WholeMouth from './components/WholeMouth';
 import WholeMouthKid from './components/WholeMouthKid';
 
+// Mock future treatments for demo
+const futureTreatmentsData = {
+  33: ['crown'],
+  46: ['implant'],
+  // ...add more as needed
+};
+
+function getUniqueTreatmentsByPeriod(period) {
+  if (period === 'historical') {
+    // Collect all unique historical treatments from toothData
+    const all = Object.values(toothData).map(t => t.treatment).filter(Boolean);
+    return [...new Set(all)].filter(t => t !== 'normal' && t !== 'missing');
+  }
+  if (period === 'future') {
+    // Collect all unique future treatments from mock data
+    const all = Object.values(futureTreatmentsData).flat();
+    return [...new Set(all)];
+  }
+  return [];
+}
 
 export default function App() {
   const [showMenu, setShowMenu] = useState(false);
   const [selectedTreatment, setSelectedTreatment] = useState([])
-
   const [currentUser, setCurrentUser] = useState(null);
-  const [mode, setMode] = useState(null); // default is adult
+  const [mode, setMode] = useState(null);
 
-// handle filter menu selection function
+  // New state to manage the historical vs. future view
+  // Initial state changed to `null` so nothing is selected by default.
+  const [activeTimePeriod, setActiveTimePeriod] = useState(null);
 
-  const handleSelect = (key) => {
-        if (key === 'all') {
-    setSelectedTreatment([]);
-  } else if (key === 'none') {
-    setSelectedTreatment(['none']);
-  } else {
-    setSelectedTreatment(prev => {
-      if (prev.includes(key)) {
-        return prev.filter(k => k !== key);
-      } else {
-        return [...prev.filter(k => k !== 'none'), key];
-      }
-    });
-  }
+  // New handler function to update the time period state
+  const handleTimePeriodSelect = (timePeriod) => {
+    setActiveTimePeriod(timePeriod);
+    const treatments = getUniqueTreatmentsByPeriod(timePeriod);
+    setSelectedTreatment(treatments);
   };
 
-// Parse query parameters to determine user type (parent/child)
+  const handleSelect = (key) => {
+    if (key === 'all') {
+      setSelectedTreatment([]);
+    } else if (key === 'none') {
+      setSelectedTreatment(['none']);
+    } else {
+      setSelectedTreatment(prev => {
+        if (prev.includes(key)) {
+          return prev.filter(k => k !== key);
+        } else {
+          return [...prev.filter(k => k !== 'none'), key];
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const parentParam = query.get('parent');
 
     if (parentParam === null) {
       setMode('parent');
-      setCurrentUser({parent: true});
+      setCurrentUser({ parent: true });
       return;
     }
 
@@ -86,96 +110,64 @@ export default function App() {
 
   }, []);
 
-  //  Render the main 3D chart area
-  const renderMainChart = () => {
-    if (!currentUser || mode === null) {
-      return <div>Loading 3D chart...</div>;
-    }
-    return (
-        <div className="container">
-          {showMenu && (
-              <div className={`filter-menu ${showMenu ? 'active' : ''}`}>
-                <FilterMenu selected={selectedTreatment} onSelect={handleSelect} />
-              </div>
-          )}
-          <div
-              className="main-3d"
-              onClick={() => setShowMenu(false)}
-              style={{ cursor: showMenu ? 'pointer' : 'default' }}
-          >
-            {mode === 'child' ? (
-                <WholeMouthKid selectedTreatment={selectedTreatment} />
-            ) : (
-                <WholeMouth
-                    selectedTreatment={selectedTreatment}
-                    setSelectedTreatment={setSelectedTreatment}
-                />
-            )}
-          </div>
-        </div>
-    );
-  };
-
-// ======= Render =======
-
   return (
     <div>
       <Router>
         <div className="container">
           <Routes>
-
-            {/* ========== Home Route (3D Mouth) ========== */}
-
             <Route
-                exact path="/"
-                element={
-                  <div className='top-icon'>
-                    {!showMenu && (
-                          <div className='top-icon-text'
-                              onClick={e => {
-                                e.stopPropagation();
-                                setShowMenu(true);
-                              }}
-                          >
-                            ☰
-                          </div>
-                          )}
+              exact path="/"
+              element={
+                <div className='top-icon'>
+                  {!showMenu && (
+                    <div className='top-icon-text'
+                      onClick={e => {
+                        e.stopPropagation();
+                        setShowMenu(true);
+                      }}
+                    >
+                      ☰
+                    </div>
+                  )}
                   <div className="container">
-                    {showMenu && (
+                    <div
+                      className={`filter-menu-container ${showMenu ? 'active' : ''}`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {showMenu && (
                         <FilterMenu
-                            selected={selectedTreatment}
-                            onSelect={handleSelect}
-                            isOpen={showMenu}
+                          selected={selectedTreatment}
+                          onSelect={handleSelect}
+                          isOpen={showMenu}
+                          activeTimePeriod={activeTimePeriod}
+                          onTimePeriodSelect={handleTimePeriodSelect}
                         />
-                    )}
-
+                      )}
+                    </div>
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
                       style={{ cursor: showMenu ? 'pointer' : 'default' }}
-                      >
-
+                    >
                       {currentUser ? (
-                          mode === 'child' ? (
+                        mode === 'child' ? (
                           <WholeMouthKid selectedTreatment={selectedTreatment} />
-                      ) : (
+                        ) : (
                           <WholeMouth
-                              selectedTreatment={selectedTreatment}
-                              setSelectedTreatment={setSelectedTreatment}
+                            selectedTreatment={selectedTreatment}
+                            setSelectedTreatment={setSelectedTreatment}
+                            activeTimePeriod={activeTimePeriod}
                           />
-                          )
+                        )
                       ) : (
-                          <p>Loading...</p>
+                        <p>Loading...</p>
                       )}
                     </div>
                   </div>
-                  </div>
-            }
+                </div>
+              }
             />
 
-            {/* ========== Tooth Detail Routes ========== */}
-
             {/* LOWER LEFT */}
-
             <Route path="/lower-left-wisdom" element={<LowerLeftWisdomTooth />} />
             <Route path="/lower-left-second-molar" element={<LowerLeftSecondMolar />} />
             <Route path="/lower-left-first-molar" element={<LowerLeftFirstMolar />} />
@@ -186,7 +178,6 @@ export default function App() {
             <Route path="/lower-left-central-incisor" element={<LowerLeftCentralIncisor />} />
 
             {/* LOWER RIGHT */}
-
             <Route path="/lower-right-wisdom" element={<LowerRightWisdomTooth />} />
             <Route path="/lower-right-second-molar" element={<LowerRightSecondMolar />} />
             <Route path="/lower-right-first-molar" element={<LowerRightFirstMolar />} />
@@ -197,7 +188,6 @@ export default function App() {
             <Route path="/lower-right-central-incisor" element={<LowerRightCentralIncisor />} />
 
             {/* UPPER LEFT */}
-
             <Route path="/upper-left-wisdom" element={<UpperLeftWisdomTooth />} />
             <Route path="/upper-left-second-molar" element={<UpperLeftSecondMolar />} />
             <Route path="/upper-left-first-molar" element={<UpperLeftFirstMolar />} />
@@ -208,7 +198,6 @@ export default function App() {
             <Route path="/upper-left-central-incisor" element={<UpperLeftCentralIncisor />} />
 
             {/* UPPER RIGHT */}
-
             <Route path="/upper-right-wisdom" element={<UpperRightWisdomTooth />} />
             <Route path="/upper-right-second-molar" element={<UpperRightSecondMolar />} />
             <Route path="/upper-right-first-molar" element={<UpperRightFirstMolar />} />

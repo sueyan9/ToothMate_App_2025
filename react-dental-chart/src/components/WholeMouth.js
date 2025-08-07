@@ -30,7 +30,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       roughness: 0.1,
       metalness: 0.1,
     }),
-    crown : new THREE.MeshStandardMaterial({
+    crown: new THREE.MeshStandardMaterial({
       color: '#FF5100',
       roughness: 0.1,
       metalness: 0.1,
@@ -59,7 +59,7 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
       roughness: 0.1,
       metalness: 0.1,
     }),
-    veneer: new THREE.MeshStandardMaterial({  
+    veneer: new THREE.MeshStandardMaterial({
       color: '#7B00FF',
       roughness: 0.1,
       metalness: 0.1,
@@ -83,21 +83,21 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
 
   const getToothMaterial = (type) => {
 
-  if (type === 'missing') {
-    return toothMaterials.missing;
-  }
+    if (type === 'missing') {
+      return toothMaterials.missing;
+    }
 
-  if (!selectedTreatment || selectedTreatment[0] === 'none') {
+    if (!selectedTreatment || selectedTreatment[0] === 'none') {
+      return toothMaterials.normal;
+    }
+    if (selectedTreatment.length === 0) {
+      return toothMaterials[type];
+    }
+    if (selectedTreatment.includes(type)) {
+      return toothMaterials[type] || toothMaterials.normal;
+    }
     return toothMaterials.normal;
   }
-  if (selectedTreatment.length === 0) {
-    return toothMaterials[type];
-  }
-  if (selectedTreatment.includes(type)) {
-    return toothMaterials[type] || toothMaterials.normal;
-  }
-  return toothMaterials.normal;
-}
 
   const { nodes, materials } = useGLTF('/assets/adult_whole_mouth.glb')
 
@@ -405,7 +405,7 @@ export default function WholeMouth({ selectedTreatment, setSelectedTreatment }) 
         <ambientLight intensity={0.7} />
         <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
         <Suspense fallback={null}>
-          <WholeMouthModel selectedTreatment={selectedTreatment}/>
+          <WholeMouthModel selectedTreatment={selectedTreatment} />
         </Suspense>
       </Canvas>
 
