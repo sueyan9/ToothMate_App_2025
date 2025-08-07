@@ -1,7 +1,7 @@
+import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import EducationScreen from './EducationScreen';
 import { act } from 'react-test-renderer';
+import EducationScreen from './EducationScreen';
 
 // Group of test cases for the <EducationScreen /> component
 describe('EducationScreen', () => {
@@ -60,4 +60,37 @@ describe('EducationScreen', () => {
             expect(!modal || modal.props.visible === false).toBe(true);
         });
     });
+
+    // Test case 4: ensuring search works and filters out readings
+    it('shows relevant readings when search term matches', async () => {
+        const { getByPlaceholderText, getByText } = render(<EducationScreen />);
+    
+        const searchInput = getByPlaceholderText('Search Educational Readings...');
+    
+        // Type "Dental" into the search bar
+        fireEvent.changeText(searchInput, 'Dental');
+    
+        // Wait for matching results to appear
+        await waitFor(() => {
+            expect(getByText('Dental Hygiene')).toBeTruthy();
+            expect(getByText('Dental Implants')).toBeTruthy();
+        });
+    });
+    
+        // test case 5: No readings show when search term does not match
+        it('shows no readings when search term does not match any topic', async () => {
+            const { getByPlaceholderText, queryByText } = render(<EducationScreen />);
+        
+            const searchInput = getByPlaceholderText('Search Educational Readings...');
+        
+            // Type a non-matching term
+            fireEvent.changeText(searchInput, 'xyz123');
+        
+            // Wait and confirm that no results are shown
+            await waitFor(() => {
+                expect(queryByText('Dental Hygiene')).toBeNull();
+                expect(queryByText('Dental Implants')).toBeNull();
+            });
+        });
+        
 });
