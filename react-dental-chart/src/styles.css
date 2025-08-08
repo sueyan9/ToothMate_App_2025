@@ -87,10 +87,8 @@ p {
 
 .top-icon-text {
   position: absolute;
-  top: 32px;
+  margin-top: 52px;
   left: 32px;
-  width: 24px;
-  height: 24px;
   cursor: pointer;
   z-Index: 100;
   font-size: 32px;
@@ -126,9 +124,8 @@ p {
 }
 
 .mouth-instructions {
-  margin-top: 20px;
+  margin-top: -20px;
   text-align: center;
-  padding: 10px;
   border-radius: 5px;
   max-width: 80%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -147,7 +144,7 @@ p {
   justify-content: center;
   width: 100%;
   height: 90%;
-  padding-bottom: 10%;
+  padding-bottom: 8%;
 }
 
 canvas {
