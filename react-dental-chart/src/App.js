@@ -75,7 +75,7 @@ export default function App() {
     const parentParam = query.get('parent');
 
     if (parentParam === null) {
-      setMode('child');
+      setMode('parent');
       setCurrentUser({parent: true});
       return;
     }
