@@ -88,6 +88,9 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
   }
 
   if (!selectedTreatment || selectedTreatment[0] === 'none') {
+    if (type === 'extraction') {
+      return toothMaterials.missing;
+    }
     return toothMaterials.normal;
   }
   if (selectedTreatment.length === 0) {
@@ -96,6 +99,11 @@ const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => 
   if (selectedTreatment.includes(type)) {
     return toothMaterials[type] || toothMaterials.normal;
   }
+
+  if (type === 'extraction') {
+      return toothMaterials.missing;
+  }
+
   return toothMaterials.normal;
 }
 
