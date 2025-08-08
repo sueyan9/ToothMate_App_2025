@@ -46,7 +46,7 @@ export default function WholeMouthKid() {
                     enablePan={false}
                 />
             </Canvas>
-            <p className='mouth-instructions, mouth-info'>Tap and drag to interact with the mouth. Tap a tooth to view further details.</p>
+            <p className='mouth-instructions mouth-info'>Tap and drag to interact with the mouth. Tap a tooth to view further details.</p>
         </div>
     );
 }

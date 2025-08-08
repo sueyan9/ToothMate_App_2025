@@ -417,7 +417,7 @@ export default function WholeMouth({ selectedTreatment, setSelectedTreatment }) 
         </Suspense>
       </Canvas>
 
-      <p className='mouth-instructions, mouth-info'>Tap and drag to interact with the mouth. Tap a tooth to view further details.</p>
+      <p className='mouth-instructions mouth-info'>Tap and drag to interact with the mouth. Tap a tooth to view further details.</p>
 
     </div>
   )
