@@ -33,10 +33,10 @@ app.use((req, res, next) => {
 });
 
 // routes
-app.use("/auth", authRoutes);
-app.use("/education", educationRoutes);
-app.use("/clinic", clinicRoutes);
-app.use("/appointment", appointmentRoutes);
+app.use(authRoutes);
+app.use(educationRoutes);
+app.use(clinicRoutes);
+app.use(appointmentRoutes);
 
 // check link health
 app.get('/health', (req, res) => {
