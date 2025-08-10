@@ -53,7 +53,17 @@ mongoose.connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify: false
+    useFindAndModify: false,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+    // use the new writeConcern form
+    writeConcern: {
+        w: 'majority',
+        wtimeout: 5000
+    },
+    // setting pool connect
+    maxPoolSize: 10,
+    minPoolSize: 1
 })
     .then(() => {
         console.log("MongoDB connected successfully!");
@@ -78,14 +88,8 @@ app.get("/", requireAuth, (req, res) => {
 
 // start server -  suit Render
 const PORT = process.env.PORT || 3000;
-if (process.env.NODE_ENV !== 'production') {
-    // local develop environment
-    app.listen(PORT, '0.0.0.0', () => {
-        console.log(`Server running on port ${PORT}`);
-    });
-} else {
-    // Render production environment - wont start server，let Render in charge
-    console.log(`App configured for production on port ${PORT}`);
-}
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
 module.exports = app;
