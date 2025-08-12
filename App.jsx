@@ -214,7 +214,6 @@ const AppNavigator = () => {
                         </Stack.Navigator>
                     )}
                 </Stack.Screen>
-                
 
                 {/* main flow */}
                 <Stack.Screen name="mainFlow" component={MainFlow} />

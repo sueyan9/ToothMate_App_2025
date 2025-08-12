@@ -12,9 +12,6 @@ export default StyleSheet.create({
     color: '#333333',
     marginTop: 96,
     marginBottom: 16,
-    color: '#333333',
-    marginTop: 96,
-    marginBottom: 16,
     alignSelf: 'center',
   },
   filterContainer: {

@@ -158,22 +158,22 @@ const RightUpperCentralIncisor = ({ ...props }) => {
 export const UpperRightCentralIncisor = () => {
   return (
     <>
-      <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
-        <img
-          src="../assets/back_arrow.png"
-          alt="Back"
-          onClick={() => (window.location = '/')}
-          style={{
-            position: 'absolute',
-            top: '32px',
-            left: '32px',
-            width: '24px',
-            height: '24px',
-            cursor: 'pointer',
-            zIndex: 100
-          }}
-        />
-      </div>
+    <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
+      <img 
+        src="../assets/back_arrow.png" 
+        alt="Back"
+        onClick={() => (window.location = '/')}
+        style={{
+          position: 'absolute',
+          top: '32px',
+          left: '32px',
+          width: '24px',
+          height: '24px',
+          cursor: 'pointer',
+          zIndex: 100
+        }}
+      />
+    </div>
       <Canvas style={{ width: '100%', height: '500%' }}>
         <CameraController />
         <ambientLight intensity={0.7} />

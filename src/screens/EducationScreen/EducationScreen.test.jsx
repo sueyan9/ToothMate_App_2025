@@ -1,4 +1,5 @@
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import React from 'react';
 import { act } from 'react-test-renderer';
 import EducationScreen from './EducationScreen';
 
