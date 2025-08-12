@@ -40,7 +40,8 @@ const DentalChartScreen = () => {
     }
 
     // Construct WebView URL with user type as a query parameter
-    const url = `https://tooth-mate-app-2025.vercel.app/?parent=${parent}`;
+    // const url = `https://tooth-mate-app-2025.vercel.app/?parent=${parent}`;
+    const url = `https://192.168.1.27:3030/?parent=${parent}`;
 
     return (
         <View style={{ flex: 1 }}>
