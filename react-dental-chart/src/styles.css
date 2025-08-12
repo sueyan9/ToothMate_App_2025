@@ -87,12 +87,12 @@ p {
 
 .top-icon-text {
   position: absolute;
-  top: 32px;
+  margin-top: 52px;
   left: 32px;
-  width: 24px;
-  height: 24px;
   cursor: pointer;
   z-Index: 100;
+  font-size: 32px;
+  color: #656B69;
 }
 
 .top-icon image {
@@ -124,9 +124,8 @@ p {
 }
 
 .mouth-instructions {
-  margin-top: 20px;
+  margin-top: -40px;
   text-align: center;
-  padding: 10px;
   border-radius: 5px;
   max-width: 80%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -143,8 +142,9 @@ p {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 90%;
-  height: 90%;
+  width: 80%;
+  height: 80%;
+  padding-bottom: 8%;
 }
 
 canvas {
@@ -175,6 +175,7 @@ canvas {
 
 .filter-title {
   font-size: 20px;
+  margin-top: 52px;
   margin-bottom: 32px;
   color: #333333;
 }
