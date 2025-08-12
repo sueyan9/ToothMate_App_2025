@@ -34,6 +34,7 @@ const SignupChildScreen = props => {
   const [clinicCode, setClinicCode] = useState('');
   
   const [nhiStatus, setNhiStatus] = useState(null); // null | 'valid' | 'invalid'
+  const [emailStatus, setEmailStatus] = useState(null); // null | 'valid' | 'invalid' | 'exists'
 
   const modalDate = React.useMemo(() => (dob ? dayjs(dob).toDate() : ''), [dob]);
   const displayDate = React.useMemo(() => (dob ? dayjs(dob).format('DD/MM/YYYY') : ''), [dob]);
@@ -58,8 +59,14 @@ const SignupChildScreen = props => {
       setErrorMessage('Please enter your last name');
     } else if (email === '') {
       setErrorMessage('Please enter your email');
-    } else if (email.includes('@') === false) {
-      setErrorMessage('Please enter a valid email');
+    } else if (emailStatus !== 'valid') {
+      if (emailStatus === 'exists') {
+        setErrorMessage('Email already exists');
+      } else if (emailStatus === 'invalid_format') {
+        setErrorMessage('Please enter a valid email format');
+      } else {
+        setErrorMessage('Please enter a valid email');
+      }
     } else if (nhi === '') {
       setErrorMessage('Please enter your NHI');
     } else if (nhiStatus !== 'valid') {
@@ -169,6 +176,34 @@ const SignupChildScreen = props => {
     checkNhi();
   }, [nhi]);
 
+  useEffect(() => {
+    const checkEmail = async () => {
+      if (email.trim() === '') {
+        setEmailStatus(null);
+        return;
+      }
+
+      // First check if email format is valid
+      if (!email.includes('@') || !email.includes('.')) {
+        setEmailStatus('invalid_format');
+        return;
+      }
+
+      try {
+        const response = await axiosApi.get(`/checkEmail/${email.trim().toLowerCase()}`);
+        if (response.data.exists) {
+          setEmailStatus('exists');
+        } else {
+          setEmailStatus('valid');
+        }
+      } catch (err) {
+        setEmailStatus('invalid');
+      }
+    };
+
+    checkEmail();
+  }, [email]);
+
   if (!fontsLoaded) {
     return <LoadingScreen />;
   }
@@ -212,6 +247,26 @@ const SignupChildScreen = props => {
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
+            {emailStatus === 'valid' && (
+                <Text style={{ color: 'green', marginLeft: 10 }}>
+                  Email is available!
+                </Text>
+            )}
+            {emailStatus === 'exists' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Email already exists
+                </Text>
+            )}
+            {emailStatus === 'invalid_format' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Invalid email format
+                </Text>
+            )}
+            {emailStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Error checking email
+                </Text>
+            )}
             <Input
                 label="NHI Number"
                 leftIcon={{ type: 'material-community', name: 'hospital-box' }}
