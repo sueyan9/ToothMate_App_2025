@@ -1,47 +1,47 @@
 
 // ====================== React Imports ======================
-import { useEffect, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { useState,useEffect } from 'react';
+import {  BrowserRouter as Router, Routes , Route} from 'react-router-dom';
 // =====teeth components======
 
-import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine';
-import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor';
-import { LowerLeftFirstMolar } from './components/Teeth/LowerLeftFirstMolar';
-import { LowerLeftFirstPremolar } from './components/Teeth/LowerLeftFirstPremolar';
-import { LowerLeftLateralIncisor } from './components/Teeth/LowerLeftLateralIncisor';
-import { LowerLeftSecondMolar } from './components/Teeth/LowerLeftSecondMolar';
-import { LowerLeftSecondPremolar } from './components/Teeth/LowerLeftSecondPremolar';
-import { LowerLeftWisdomTooth } from './components/Teeth/LowerLeftWisdomTooth';
-import { LowerRightCanine } from './components/Teeth/LowerRightCanine';
-import { LowerRightCentralIncisor } from './components/Teeth/LowerRightCentralIncisor';
-import { LowerRightFirstMolar } from './components/Teeth/LowerRightFirstMolar';
-import { LowerRightFirstPremolar } from './components/Teeth/LowerRightFirstPremolar';
-import { LowerRightLateralIncisor } from './components/Teeth/LowerRightLateralIncisor';
-import { LowerRightSecondMolar } from './components/Teeth/LowerRightSecondMolar';
-import { LowerRightSecondPremolar } from './components/Teeth/LowerRightSecondPremolar';
-import { LowerRightWisdomTooth } from './components/Teeth/LowerRightWisdomTooth';
-import { UpperLeftCanine } from './components/Teeth/UpperLeftCanine';
-import { UpperLeftCentralIncisor } from './components/Teeth/UpperLeftCentralIncisor';
-import { UpperLeftFirstMolar } from './components/Teeth/UpperLeftFirstMolar';
-import { UpperLeftFirstPremolar } from './components/Teeth/UpperLeftFirstPremolar';
-import { UpperLeftLateralIncisor } from './components/Teeth/UpperLeftLateralIncisor';
-import { UpperLeftSecondMolar } from './components/Teeth/UpperLeftSecondMolar';
-import { UpperLeftSecondPremolar } from './components/Teeth/UpperLeftSecondPremolar';
-import { UpperLeftWisdomTooth } from './components/Teeth/UpperLeftWisdomTooth';
-import { UpperRightCanine } from './components/Teeth/UpperRightCanine';
-import { UpperRightCentralIncisor } from './components/Teeth/UpperRightCentralIncisor';
-import { UpperRightFirstMolar } from './components/Teeth/UpperRightFirstMolar';
-import { UpperRightFirstPremolar } from './components/Teeth/UpperRightFirstPremolar';
-import { UpperRightLateralIncisor } from './components/Teeth/UpperRightLateralIncisor';
-import { UpperRightSecondMolar } from './components/Teeth/UpperRightSecondMolar';
-import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPremolar';
-import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth';
+import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine'
+import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor'
+import { LowerLeftFirstMolar } from './components/Teeth/LowerLeftFirstMolar'
+import { LowerLeftFirstPremolar } from './components/Teeth/LowerLeftFirstPremolar'
+import { LowerLeftLateralIncisor } from './components/Teeth/LowerLeftLateralIncisor'
+import { LowerLeftSecondMolar } from './components/Teeth/LowerLeftSecondMolar'
+import { LowerLeftSecondPremolar } from './components/Teeth/LowerLeftSecondPremolar'
+import { LowerLeftWisdomTooth } from './components/Teeth/LowerLeftWisdomTooth'
+import { LowerRightCanine } from './components/Teeth/LowerRightCanine'
+import { LowerRightCentralIncisor } from './components/Teeth/LowerRightCentralIncisor'
+import { LowerRightFirstMolar } from './components/Teeth/LowerRightFirstMolar'
+import { LowerRightFirstPremolar } from './components/Teeth/LowerRightFirstPremolar'
+import { LowerRightLateralIncisor } from './components/Teeth/LowerRightLateralIncisor'
+import { LowerRightSecondMolar } from './components/Teeth/LowerRightSecondMolar'
+import { LowerRightSecondPremolar } from './components/Teeth/LowerRightSecondPremolar'
+import { LowerRightWisdomTooth } from './components/Teeth/LowerRightWisdomTooth'
+import { UpperLeftCanine } from './components/Teeth/UpperLeftCanine'
+import { UpperLeftCentralIncisor } from './components/Teeth/UpperLeftCentralIncisor'
+import { UpperLeftFirstMolar } from './components/Teeth/UpperLeftFirstMolar'
+import { UpperLeftFirstPremolar } from './components/Teeth/UpperLeftFirstPremolar'
+import { UpperLeftLateralIncisor } from './components/Teeth/UpperLeftLateralIncisor'
+import { UpperLeftSecondMolar } from './components/Teeth/UpperLeftSecondMolar'
+import { UpperLeftSecondPremolar } from './components/Teeth/UpperLeftSecondPremolar'
+import { UpperLeftWisdomTooth } from './components/Teeth/UpperLeftWisdomTooth'
+import { UpperRightCanine } from './components/Teeth/UpperRightCanine'
+import { UpperRightCentralIncisor } from './components/Teeth/UpperRightCentralIncisor'
+import { UpperRightFirstMolar } from './components/Teeth/UpperRightFirstMolar'
+import { UpperRightFirstPremolar } from './components/Teeth/UpperRightFirstPremolar'
+import { UpperRightLateralIncisor } from './components/Teeth/UpperRightLateralIncisor'
+import { UpperRightSecondMolar } from './components/Teeth/UpperRightSecondMolar'
+import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPremolar'
+import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
 
 // ====================== Component Imports ======================
-import WholeMouth from './components/WholeMouth';
+import WholeMouth from './components/WholeMouth'
 
-import FilterMenu from './components/FilterMenu';
 import WholeMouthKid from './components/WholeMouthKid';
+import FilterMenu from './components/FilterMenu';
 
 
 export default function App() {
@@ -72,18 +72,12 @@ export default function App() {
 // Parse query parameters to determine user type (parent/child)
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
-    const parentParam = query.get('parent');
+    const parent = query.get('parent') === 'true';
 
-    if (parentParam === null) {
-      setMode('parent');
-      setCurrentUser({parent: true});
-      return;
-    }
+    const user = {parent };
 
-    const isParent = parentParam !== 'false';
-    setMode(isParent ? 'parent' : 'child');
-    setCurrentUser({ parent: isParent });
-
+    setCurrentUser(user);
+    setMode(parent ? 'parent' : 'child');
   }, []);
 
   //  Render the main 3D chart area
@@ -94,7 +88,7 @@ export default function App() {
     return (
         <div className="container">
           {showMenu && (
-              <div className={`filter-menu ${showMenu ? 'active' : ''}`}>
+              <div className="filter-menu">
                 <FilterMenu selected={selectedTreatment} onSelect={handleSelect} />
               </div>
           )}
@@ -124,30 +118,28 @@ export default function App() {
         <div className="container">
           <Routes>
 
+
             {/* ========== Home Route (3D Mouth) ========== */}
 
             <Route
                 exact path="/"
                 element={
+
                   <div className='top-icon'>
                     {!showMenu && (
                           <div className='top-icon-text'
-                              onClick={e => {
-                                e.stopPropagation();
-                                setShowMenu(true);
-                              }}
-                          >
-                            ☰
-                          </div>
+                              onClick={e => { e.stopPropagation(); setShowMenu(true); }}
+                          >☰</div>
                           )}
                   <div className="container">
+
+
                     {showMenu && (
-                        <FilterMenu
-                            selected={selectedTreatment}
-                            onSelect={handleSelect}
-                            isOpen={showMenu}
-                        />
-                    )}
+                    <div className="filter-menu">
+                      <FilterMenu selected={selectedTreatment} onSelect={handleSelect}/>
+                    </div>
+                        )}
+
 
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
@@ -172,7 +164,10 @@ export default function App() {
             }
             />
 
+
             {/* ========== Tooth Detail Routes ========== */}
+
+
 
             {/* LOWER LEFT */}
 

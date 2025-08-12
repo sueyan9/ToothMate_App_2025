@@ -1,13 +1,15 @@
 import { TREATMENTS } from './Treatment';
 
 
-export default function FilterMenu({selected, onSelect, isOpen}) {
+export default function FilterMenu({selected, onSelect, isOpen, isChild = false}) {
+
+  const filteredTreatment = isChild ? TREATMENTS.filter(item => !item.adultOnly) : TREATMENTS;
 
     return (
         <div className={`filter-menu ${isOpen ? 'active' : ''}`}>
             <div className="filter-title">☰ Select Treatments</div>
 
-            {TREATMENTS.map(item => {
+            {filteredTreatment.map(item => {
         const isSelected = selected.includes(item.key);
         return (
           <div key={item.key} className="filter-item" onClick={() => onSelect(item.key)}>
