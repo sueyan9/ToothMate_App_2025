@@ -146,14 +146,12 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
               marginRight: 8,
               border: isSelected ? '2px solid #333333' : '2px solid transparent',
               boxSizing: 'border-box',
-
               opacity: itemStyle.opacity || 1
             }} />
             <span className="filter-label" style={{
               color: isSelected ? '#333' : '#656B69',
               ...itemStyle
             }}>
-
               {item.label}
             </span>
           </div>
@@ -161,14 +159,14 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
       })}
 
       <div className="filter-item" onClick={() => onSelect('all')}>
-
-        <span className="filter-label" style={{ color: selected.length === 0 ? '#333' : '#656B69' }}>Show All Treatments</span>
+        <span className="filter-label" style={{ color: selected.length === 0 ? '#333' : '#656B69' }}>
+          Show All Treatments
+        </span>
       </div>
-
       <div className="filter-item" onClick={() => onSelect('none')}>
-        <span className="filter-label" style={{ color: '#656B69' }}>Clear All Treatments</span>
-
-
+        <span className="filter-label" style={{ color: '#656B69' }}>
+          Clear All Treatments
+        </span>
       </div>
     </div>
   );
