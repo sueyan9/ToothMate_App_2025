@@ -1,7 +1,7 @@
 
 // ====================== React Imports ======================
 import { useEffect, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 // =====teeth components======
 
 import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine';
@@ -75,7 +75,7 @@ export default function App() {
     const parentParam = query.get('parent');
 
     if (parentParam === null) {
-      setMode('child');
+      setMode('parent');
       setCurrentUser({parent: true});
       return;
     }

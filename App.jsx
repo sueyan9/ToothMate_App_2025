@@ -35,8 +35,8 @@ import { navigationRef } from './src/navigationRef';
 
 //splash screen
 import { useEffect, useState } from 'react';
-import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
+import ToothIcon from './src/assets/ToothIcon';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
 
 
@@ -197,7 +197,7 @@ const AppNavigator = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                initialRouteName="ResolveAuth"
+                initialRouteName="mainFlow"
                 screenOptions={{ headerShown: false }}
             >
 
