@@ -96,9 +96,19 @@ p {
   color: #656B69;
 }
 
+.back-button {
+  position: absolute;
+  margin-top: 52px;
+  cursor: pointer;
+  z-Index: 100;
+  width: 32px;
+  height: auto;
+  color: #656B69;
+}
+
 .top-icon image {
   position: absolute;
-  top: 32px;
+  top: 52px;
   left: 32px;
   width: 24px;
   height: 24px;
@@ -200,15 +210,4 @@ canvas {
   padding: 10px;
   margin: 5px 0;
   border-radius: 4px;
-}
-
-.back-button {
-  position: absolute;
-  margin-top: 52px;
-  left: 32px;
-  cursor: pointer;
-  z-Index: 100;
-  width: 32px;
-  height: auto;
-  color: #656B69;
 }
