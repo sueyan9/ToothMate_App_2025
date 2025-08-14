@@ -81,7 +81,7 @@ const WholeMouthModel = ({ selectedTreatment, activeTimePeriod, missingTeeth = [
   }
 
   // Function to convert treatment type strings to match material keys
-  const normalizeeTreatmentType = (treatmentType) => {
+  const normalizeTreatmentType = (treatmentType) => {
     const typeMap = {
       'Root Canal': 'rootCanal',
       'Crown Placement': 'crown',
@@ -106,12 +106,27 @@ const WholeMouthModel = ({ selectedTreatment, activeTimePeriod, missingTeeth = [
       ? toothInfo.treatments
       : toothInfo.futuretreatments;
 
-    return treatmentArray.map(treatment => normalizeeTreatmentType(treatment.type));
+    return treatmentArray.map(treatment => normalizeTreatmentType(treatment.type));
   };
 
   const getToothMaterial = (toothNumber, originalTreatmentType) => {
     // Handle missing teeth
     if (originalTreatmentType === 'missing') {
+      return toothMaterials.missing;
+    }
+
+    // Original filter logic for treatment types
+    if (!selectedTreatment || selectedTreatment[0] === 'none') {
+      if (originalTreatmentType === 'extraction') {
+      return toothMaterials.missing;
+      }
+      return toothMaterials.normal;
+    }
+    if (selectedTreatment.includes(originalTreatmentType)) {
+      return toothMaterials[originalTreatmentType] || toothMaterials.normal;
+    }
+
+    if (originalTreatmentType === 'extraction') {
       return toothMaterials.missing;
     }
 
@@ -127,10 +142,10 @@ const WholeMouthModel = ({ selectedTreatment, activeTimePeriod, missingTeeth = [
   // === MODIFIED LOGIC HERE ===
   // If the selectedTreatment array is empty, it means 'Clear All Treatments' was pressed.
   // In this case, always return the normal tooth material.
-  if (selectedTreatment.length === 0) {
-    if (type === 'extraction') {
+  if (!selectedTreatment || selectedTreatment[0] === 'none') {
+    if (originalTreatmentType === 'extraction') {
       return toothMaterials.missing;
-    }
+      }
     return toothMaterials.normal;
   }
 
@@ -139,32 +154,11 @@ const WholeMouthModel = ({ selectedTreatment, activeTimePeriod, missingTeeth = [
     return toothMaterials.normal;
   }
   if (selectedTreatment.includes(originalTreatmentType)) {
-    if (type === 'extraction') {
-      return toothMaterials.missing;
-    }
     return toothMaterials[originalTreatmentType] || toothMaterials.normal;
   }
-  return toothMaterials.normal;
-};
-
-    // Original filter logic for treatment types
-    if (!selectedTreatment || selectedTreatment[0] === 'none') {
-      if (type === 'extraction') {
-      return toothMaterials.missing;
-      }
-      return toothMaterials.normal;
-    }
-    if (selectedTreatment.length === 0) {
-      return toothMaterials[originalTreatmentType] || toothMaterials.normal;
-    }
-    if (selectedTreatment.includes(originalTreatmentType)) {
-      if (type === 'extraction') {
-      return toothMaterials.missing;
-      }
-      return toothMaterials[originalTreatmentType] || toothMaterials.normal;
-    }
-    return toothMaterials.normal;
-  }
+}
+return toothMaterials.normal;
+}
 
   const { nodes, materials } = useGLTF('/assets/adult_whole_mouth.glb')
 
