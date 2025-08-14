@@ -143,12 +143,11 @@ const MainFlow = () => (
             }}
         />
         <Tab.Screen
+            // NEED TO REFACTOR TO APPOINTMENTS :)
             name="ClinicFlow"
             component={ClinicStack}
             options={{
-
-                title: 'Calendar',
-
+                title: 'Bookings',
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
 
