@@ -200,3 +200,14 @@ canvas {
   margin: 5px 0;
   border-radius: 4px;
 }
+
+.back-button {
+  position: absolute;
+  margin-top: 52px;
+  left: 32px;
+  cursor: pointer;
+  z-Index: 100;
+  width: 32px;
+  height: auto;
+  color: #656B69;
+}
