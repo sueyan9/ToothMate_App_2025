@@ -1,10 +1,11 @@
 import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
 import { VarelaRound_400Regular } from '@expo-google-fonts/varela-round';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useState }  from 'react';
 import { Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import LoadingScreen from '../LoadingScreen';
 import styles from './styles';
+import {useEffect} from "react";
 
 const EducationScreen = () => {
     const [activeFilter, setActiveFilter] = useState('All');
@@ -14,7 +15,15 @@ const EducationScreen = () => {
         Righteous_400Regular,
         VarelaRound_400Regular,
     });
-
+    //test
+    useEffect(() => {
+        console.log('=== STYLES DEBUG ===');
+        console.log('Styles object:', styles);
+        console.log('Styles type:', typeof styles);
+        console.log('FilterPill style:', styles.filterPill);
+        console.log('ActiveFilter style:', styles.activeFilter);
+        console.log('===================');
+    }, []);
         //mock data until backend has been fixed
     const [educationData] = useState([
         { id: '1', topic: 'Dental Hygiene', category: 'Oral Care', recommended: null, details: [
@@ -105,22 +114,53 @@ const EducationScreen = () => {
 
                 {/* filtering area */}
                 <View style={{height: 45, marginBottom: 24}}>
-                    <ScrollView 
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.filterContainer}>
-                        {filters.map((filter) => (
-                            <TouchableOpacity 
-                            key={filter}
-                            onPress={() => setActiveFilter(filter)} 
-                            style={[styles.filterPill, activeFilter === filter && styles.activeFilter]}
-                            testID={`filter-${filter}`}
-                            >
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                       // contentContainerStyle={styles.filterContainer}
+                        >
+                        {filters.map((filter, index) => {
+                            const isLast = index === filters.length - 1;
+                            const isActive = activeFilter === filter;
 
-                                <Text style={[styles.filterText, activeFilter === filter && styles.activeFilterText]}>{filter}</Text>
-                            </TouchableOpacity>
-                        ))}
+                            if (isLast) {
+                                console.log(`Last filter "${filter}" - applying blur styles`);
+                                console.log('Applied styles:', {
+                                    backgroundColor: 'rgba(200, 200, 200, 0.3)',
+                                    borderColor: 'rgba(81, 98, 135, 0.5)',
+                                    opacity: 0.3,
+                                });
+                            }
+                            return (
+                                <TouchableOpacity
+                                    key={filter}
+                                    onPress={() => setActiveFilter(filter)}
+                                    style={[
+                                        styles.filterPill,
+                                        isActive && styles.activeFilter,
+                                        isLast && {backgroundColor: 'rgba(200, 200, 200, 0.3)',
+                                        borderColor: 'rgba(81, 98, 135, 0.5)',
+                                        opacity: 0.3}
+                                    ]}
+                                    testID={`filter-${filter}`}
+                                >
+                                    <Text style={[
+                                        styles.filterText,
+                                        isActive && styles.activeFilterText,
+                                        isLast &&  {
+                                            opacity: 0.3,
+                                            color: 'rgba(51, 51, 51, 0.5)',
+                                        }
+                                    ]}>{filter}</Text>
+                                </TouchableOpacity>
+                            );
+                        })}
                     </ScrollView>
+
+                    {/* arrow direction */}
+                    <View style={styles.arrowContainer}>
+                        <MaterialIcons name="keyboard-arrow-right" size={32} color="#875B51"/>
+                    </View>
                 </View>
 
                 {/* content */}

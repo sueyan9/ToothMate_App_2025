@@ -43,6 +43,25 @@ export default StyleSheet.create({
     color: '#333333',
     fontSize: 16,
   },
+  lastFilterBlur: {
+    opacity: 0.3,
+    backgroundColor: 'rgba(200, 200, 200, 0.3)',
+    borderColor: 'rgba(81, 98, 135, 0.5)',
+  },
+
+  lastFilterTextBlur: {
+    opacity: 0.5,
+    color: 'rgba(51, 51, 51, 0.5)',
+  },
+
+  arrowContainer: {
+    position: 'absolute',
+    right: 16,
+    top: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 3,
+  },
   contentList: {
     marginBottom: 68,
   },
