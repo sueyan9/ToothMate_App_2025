@@ -15,41 +15,81 @@ const appointmentRoutes = require("./routes/appointmentRoutes");
 const requireAuth = require("./middlewares/requireAuth");
 
 const app = express();
+
+// mid-parts
 app.use(express.json());
+
+// CORS deploy
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
+
+// routes
 app.use(authRoutes);
 app.use(educationRoutes);
 app.use(clinicRoutes);
 app.use(appointmentRoutes);
 
+// check link health
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'OK',
+        timestamp: new Date().toISOString(),
+        database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    });
+});
 
-//MongoDB connection
+// MongoDB connection
 const mongoUri = process.env.MONGO_URI;
-// Connect to MongoDB
-mongoose.connect(mongoUri)
+mongoose.connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+    // use the new writeConcern form
+    writeConcern: {
+        w: 'majority',
+        wtimeout: 5000
+    },
+    // setting pool connect
+    maxPoolSize: 10,
+    minPoolSize: 1
+})
     .then(() => {
-      console.log("MongoDB connected successfully!");
+        console.log("MongoDB connected successfully!");
     })
     .catch((err) => {
-      console.error("MongoDB connection error:", err);
+        console.error("MongoDB connection error:", err);
     });
 
-//When the mongoose connection is successful, the following callback function is called
+// monitor connection condition
 mongoose.connection.on("connected", () => {
-  console.log("Connected to mongo instance");
+    console.log("Connected to mongo instance");
 });
 
-//When the mongoose connection fails, the following callback function is called with an error object given
 mongoose.connection.on("error", (err) => {
-  console.error("Error connecting to mongo", err);
+    console.error("Error connecting to mongo", err);
 });
 
-//Root route of application
-//requireAuth is ran first, verifying the JWT, before running the user's request
+// root router
 app.get("/", requireAuth, (req, res) => {
-  res.send(`Your email: ${req.user.email}`);
+    res.send(`Your email: ${req.user.email}`);
 });
 
-//Make app listen on local port
-app.listen(3000, () => {
-  console.log("Listening on Port 3000");
+// start server -  suit Render
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = app;
