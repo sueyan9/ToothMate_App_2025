@@ -4,16 +4,18 @@ import teethData from './Util/toothData.json';
 export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSelect, activeTimePeriod }) {
 
   const getFilterStyle = (filterType) => ({
-    backgroundColor: activeTimePeriod === filterType ? '#875B51' : 'transparent',
-    color: activeTimePeriod === filterType ? 'white' : '#656B69',
-    borderColor: activeTimePeriod === filterType ? '#875B51' : '#E0E0E0',
-    borderWidth: 1,
+    backgroundColor: activeTimePeriod === filterType ? '#EDDFD3' : 'transparent',
+    color: '#333333',
+    borderColor: activeTimePeriod === filterType ? '#875B51' : '#516287',
+    borderWidth: 2.5,
     padding: '8px 16px',
+    borderStyle: 'solid',
     borderRadius: '20px',
     cursor: 'pointer',
     marginRight: 10,
     fontWeight: 'bold',
     transition: 'all 0.3s ease-in-out',
+    outline: 'none',
   });
 
   // Function to get unique treatments from JSON data for a specific time period

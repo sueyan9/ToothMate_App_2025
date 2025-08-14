@@ -158,6 +158,14 @@ const UpperLeftWisdom = ({ ...props }) => {
 export const UpperLeftWisdomTooth = () => {
   return (
     <>
+    <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
+        }}
+      >
     <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
       <img
             src="../assets/back_arrow.png"
@@ -166,7 +174,7 @@ export const UpperLeftWisdomTooth = () => {
             className='back-button'
           />
     </div>
-      <Canvas style={{ width: '100%', height: '500%' }}>
+      <Canvas style={{ width: '100%', height: '80%' }}>
         <CameraController />
         <ambientLight intensity={0.7} />
         <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
@@ -174,6 +182,7 @@ export const UpperLeftWisdomTooth = () => {
           <UpperLeftWisdom />
         </Suspense>
       </Canvas>
+      </div>
       <div>Upper left widsom tooth</div>
       <ToothInformation toothNumber={28} />
     </>

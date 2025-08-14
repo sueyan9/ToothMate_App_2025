@@ -40,7 +40,7 @@ export default function ToothInformation({ toothNumber }) {
         e.stopPropagation();
         setIsOpen(!isOpen);
       }} className="tooth-info-header">
-        {isOpen ? `↓ ${toothInfo.name} (#${toothNumber})` : '↑ More Information'}
+        {isOpen ? `↓ ${toothInfo.name} (#${toothNumber})` : `↑ ${toothInfo.name}`}
       </div>
 
       {isOpen && (
