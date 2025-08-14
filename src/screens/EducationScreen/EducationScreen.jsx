@@ -45,12 +45,14 @@ const EducationScreen = () => {
                 "Visit dentist for regular check-ups",
                 "Limit sugary and acidic foods/drinks"
             ], image: null },
-        { id: '5', topic: 'Dental Implants', category: 'Treatments', recommended: 'Dentist Recommended Readings', details: [
-                "Brush teeth twice daily with fluoride toothpaste",
-                "Floss at least once per day",
-                "Replace toothbrush every 3-4 months",
-                "Visit dentist for regular check-ups",
-                "Limit sugary and acidic foods/drinks"
+        { id: '5', topic: 'Filling', category: 'Treatments', recommended: 'Dentist Recommended Readings', details: [
+                "Numbing – Local anesthetic is applied to prevent pain.",
+                "Decay removal – The dentist removes the decayed or damaged tooth material.",
+                "Cleaning – The tooth is cleaned to remove bacteria and debris.",
+                "Shaping – The cavity is shaped to fit the filling securely.",
+                "Filling placement – Filling material is added (composite, amalgam, or other).",
+                "Hardening – The material is cured/hardened, often with a special light.",
+                "Shaping & polishing – The filling is adjusted to match your bite and smoothed for comfort."
             ], image: null },
         { id: '6', topic: 'Gum Disease', category: 'Conditions', recommended: 'Dentist Recommended Readings', details: [
                 "Brush teeth twice daily with fluoride toothpaste",
