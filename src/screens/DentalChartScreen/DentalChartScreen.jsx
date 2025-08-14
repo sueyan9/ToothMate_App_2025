@@ -1,9 +1,9 @@
+import { WEB_DENTAL_CHART_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import axiosApi from "../../api/axios";
-import { WEB_DENTAL_CHART_URL } from '@env';
 
 const DentalChartScreen = () => {
     const webViewRef = useRef(null);
