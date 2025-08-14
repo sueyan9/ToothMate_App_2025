@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import teethData from './Util/toothData.json';
 
+
 export default function ToothInformation({ toothNumber }) {
   const [isOpen, setIsOpen] = useState(false);
   const [toothInfo, setToothInfo] = useState(null);

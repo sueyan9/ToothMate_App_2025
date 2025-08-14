@@ -128,7 +128,7 @@ const MainFlow = () => (
         />
         <Tab.Screen
             name="Education"
-            component={EducationScreen}
+            component={EducationStack}
             options={{
                 title: 'Education',
                 tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
@@ -197,7 +197,7 @@ const AppNavigator = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                initialRouteName="mainFlow"
+                initialRouteName="ResolveAuth"
                 screenOptions={{ headerShown: false }}
             >
 
