@@ -1,11 +1,18 @@
 import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
 import { VarelaRound_400Regular } from '@expo-google-fonts/varela-round';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useState }  from 'react';
-import { Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useState ,useRef }  from 'react';
+import { Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View, Dimensions } from 'react-native';
 import LoadingScreen from '../LoadingScreen';
 import styles from './styles';
 import {useEffect} from "react";
+useEffect(() => {
+    console.log('=== SCROLL DEBUG ===');
+    console.log('Scroll offset:', scrollOffset);
+    console.log('Rightmost index:', getRightmostVisibleFilterIndex());
+    console.log('Filters length:', filters.length);
+    console.log('===================');
+}, [scrollOffset]);
 
 const EducationScreen = () => {
     const [activeFilter, setActiveFilter] = useState('All');
@@ -15,16 +22,29 @@ const EducationScreen = () => {
         Righteous_400Regular,
         VarelaRound_400Regular,
     });
-    //test
-    useEffect(() => {
-        console.log('=== STYLES DEBUG ===');
-        console.log('Styles object:', styles);
-        console.log('Styles type:', typeof styles);
-        console.log('FilterPill style:', styles.filterPill);
-        console.log('ActiveFilter style:', styles.activeFilter);
-        console.log('===================');
-    }, []);
-        //mock data until backend has been fixed
+
+    const [scrollOffset, setScrollOffset] = useState(0);
+    const scrollViewRef = useRef(null);
+
+    const handleScroll = (event) => {
+        const offsetX = event.nativeEvent.contentOffset.x;
+        setScrollOffset(offsetX);
+    };
+    {/*test*/}
+    const getRightmostVisibleFilterIndex = () => {
+        if (scrollOffset <= 0) return -1; // 没有滚动，不需要模糊
+
+        // 估算每个filter的宽度（包括margin）
+        const estimatedFilterWidth = 120; // 根据你的实际filter宽度调整
+        const screenWidth = Dimensions.get('window').width;
+
+        // 计算当前屏幕最右边应该显示哪个filter
+        const rightmostIndex = Math.floor((scrollOffset + screenWidth) / estimatedFilterWidth);
+
+        // 确保索引在有效范围内
+        return Math.min(rightmostIndex, filters.length - 1);
+    };
+    //mock data until backend has been fixed
     const [educationData] = useState([
         { id: '1', topic: 'Dental Hygiene', category: 'Oral Care', recommended: null, details: [
                 "Brush teeth twice daily with fluoride toothpaste",
@@ -102,6 +122,7 @@ const EducationScreen = () => {
         return <LoadingScreen />;
     }
 
+
     return (
             <View style={styles.container}>
                 <Text testID="education-title" style={styles.titleText}>Education Library</Text>
@@ -113,24 +134,23 @@ const EducationScreen = () => {
                 </View>
 
                 {/* filtering area */}
-                <View style={{height: 45, marginBottom: 24}}>
+                <View style={{height: 45, marginBottom: 24,position: 'relative', }}>
                     <ScrollView
+                        ref ={scrollViewRef}
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                       // contentContainerStyle={styles.filterContainer}
-                        >
-                        {filters.map((filter, index) => {
-                            const isLast = index === filters.length - 1;
+                        contentContainerStyle={styles.filterContainer
+                    }
+                        onScroll={handleScroll}
+                        scrollEventThrottle={16}
+                    >
+                        {filters.map((filter, index) => { // 添加index参数
                             const isActive = activeFilter === filter;
+                            const isRightmostVisible =  index === getRightmostVisibleFilterIndex();
 
-                            if (isLast) {
-                                console.log(`Last filter "${filter}" - applying blur styles`);
-                                console.log('Applied styles:', {
-                                    backgroundColor: 'rgba(200, 200, 200, 0.3)',
-                                    borderColor: 'rgba(81, 98, 135, 0.5)',
-                                    opacity: 0.3,
-                                });
-                            }
+                            console.log(`Filter ${index}: "${filter}" - isRightmostVisible: ${isRightmostVisible}`);
+                            console.log('Current rightmost index:', getRightmostVisibleFilterIndex());
+
                             return (
                                 <TouchableOpacity
                                     key={filter}
@@ -138,29 +158,25 @@ const EducationScreen = () => {
                                     style={[
                                         styles.filterPill,
                                         isActive && styles.activeFilter,
-                                        isLast && {backgroundColor: 'rgba(200, 200, 200, 0.3)',
-                                        borderColor: 'rgba(81, 98, 135, 0.5)',
-                                        opacity: 0.3}
+                                        isRightmostVisible && styles.lastFilterBlur
                                     ]}
                                     testID={`filter-${filter}`}
                                 >
                                     <Text style={[
                                         styles.filterText,
                                         isActive && styles.activeFilterText,
-                                        isLast &&  {
-                                            opacity: 0.3,
-                                            color: 'rgba(51, 51, 51, 0.5)',
-                                        }
+                                        isRightmostVisible && styles.lastFilterTextBlur
                                     ]}>{filter}</Text>
                                 </TouchableOpacity>
                             );
                         })}
                     </ScrollView>
 
-                    {/* arrow direction */}
-                    <View style={styles.arrowContainer}>
-                        <MaterialIcons name="keyboard-arrow-right" size={32} color="#875B51"/>
-                    </View>
+                    {/* direction arrow */}
+                        <View style={styles.arrowContainer}>
+                            <MaterialIcons name="keyboard-arrow-right" size={34} color="#875B51"/>
+                        </View>
+
                 </View>
 
                 {/* content */}

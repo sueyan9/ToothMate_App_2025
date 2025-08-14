@@ -16,7 +16,8 @@ export default StyleSheet.create({
   },
   filterContainer: {
     paddingBottom: 24,
-    paddingHorizontal: 8,
+    paddingLeft: 8,
+    paddingRight: 16,
     marginBottom: 16,
   },
   filterPill: {
@@ -56,10 +57,15 @@ export default StyleSheet.create({
 
   arrowContainer: {
     position: 'absolute',
-    right: 16,
-    top: 18,
+    right: 8,
+    top: 0,
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 8,
+    backgroundColor: 'rgba(233, 241, 248, 0.8)',
+    borderRadius: 12,
+    width: 32,
     zIndex: 3,
   },
   contentList: {
