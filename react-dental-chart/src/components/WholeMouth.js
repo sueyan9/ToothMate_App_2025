@@ -128,6 +128,9 @@ const WholeMouthModel = ({ selectedTreatment, activeTimePeriod, missingTeeth = [
   // If the selectedTreatment array is empty, it means 'Clear All Treatments' was pressed.
   // In this case, always return the normal tooth material.
   if (selectedTreatment.length === 0) {
+    if (type === 'extraction') {
+      return toothMaterials.missing;
+    }
     return toothMaterials.normal;
   }
 
@@ -136,6 +139,9 @@ const WholeMouthModel = ({ selectedTreatment, activeTimePeriod, missingTeeth = [
     return toothMaterials.normal;
   }
   if (selectedTreatment.includes(originalTreatmentType)) {
+    if (type === 'extraction') {
+      return toothMaterials.missing;
+    }
     return toothMaterials[originalTreatmentType] || toothMaterials.normal;
   }
   return toothMaterials.normal;
@@ -143,12 +149,18 @@ const WholeMouthModel = ({ selectedTreatment, activeTimePeriod, missingTeeth = [
 
     // Original filter logic for treatment types
     if (!selectedTreatment || selectedTreatment[0] === 'none') {
+      if (type === 'extraction') {
+      return toothMaterials.missing;
+      }
       return toothMaterials.normal;
     }
     if (selectedTreatment.length === 0) {
       return toothMaterials[originalTreatmentType] || toothMaterials.normal;
     }
     if (selectedTreatment.includes(originalTreatmentType)) {
+      if (type === 'extraction') {
+      return toothMaterials.missing;
+      }
       return toothMaterials[originalTreatmentType] || toothMaterials.normal;
     }
     return toothMaterials.normal;
@@ -460,7 +472,7 @@ export default function WholeMouth({ selectedTreatment, activeTimePeriod, setSel
         </Suspense>
       </Canvas>
 
-      <p className='mouth-instructions, mouth-info'>Tap and drag to interact with the mouth. Tap a tooth to view further details.</p>
+      <p className='mouth-instructions mouth-info'>Tap and drag to interact with the mouth. Tap a tooth to view further details.</p>
 
     </div>
   )
