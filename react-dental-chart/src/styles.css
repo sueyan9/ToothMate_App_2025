@@ -49,7 +49,7 @@ p {
 
 .tooth-info.active {
   transform: translateY(0);
-  max-height: 300vh;
+  max-height: 500vh;
 }
 
 .tooth-info-header {
@@ -67,7 +67,8 @@ p {
   overscroll-behavior: contain;
   display: flow-root;
   padding-top: 24px;
-  padding-bottom: 32px;
+  padding-bottom: 120px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tooth-info-content p {
