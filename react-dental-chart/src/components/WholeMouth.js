@@ -115,21 +115,6 @@ const WholeMouthModel = ({ selectedTreatment, activeTimePeriod, missingTeeth = [
       return toothMaterials.missing;
     }
 
-    // Original filter logic for treatment types
-    if (!selectedTreatment || selectedTreatment[0] === 'none') {
-      if (originalTreatmentType === 'extraction') {
-      return toothMaterials.missing;
-      }
-      return toothMaterials.normal;
-    }
-    if (selectedTreatment.includes(originalTreatmentType)) {
-      return toothMaterials[originalTreatmentType] || toothMaterials.normal;
-    }
-
-    if (originalTreatmentType === 'extraction') {
-      return toothMaterials.missing;
-    }
-
     // If historical or future mode is active, override with JSON data
     if (activeTimePeriod === 'historical' || activeTimePeriod === 'future') {
       const jsonTreatments = getJsonTreatments(toothNumber, activeTimePeriod);
@@ -156,7 +141,29 @@ const WholeMouthModel = ({ selectedTreatment, activeTimePeriod, missingTeeth = [
   if (selectedTreatment.includes(originalTreatmentType)) {
     return toothMaterials[originalTreatmentType] || toothMaterials.normal;
   }
+
+  if (originalTreatmentType === 'extraction') {
+      return toothMaterials.missing;
+    }
+
+  return toothMaterials.normal;
 }
+
+    // Original filter logic for treatment types
+    if (!selectedTreatment || selectedTreatment[0] === 'none') {
+      if (originalTreatmentType === 'extraction') {
+      return toothMaterials.missing;
+      }
+      return toothMaterials.normal;
+    }
+    if (selectedTreatment.includes(originalTreatmentType)) {
+      return toothMaterials[originalTreatmentType] || toothMaterials.normal;
+    }
+
+    if (originalTreatmentType === 'extraction') {
+      return toothMaterials.missing;
+    }
+
 return toothMaterials.normal;
 }
 
