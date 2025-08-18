@@ -25,14 +25,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  children: [{ type: String }],
-  parent: String,
+  children: [{  type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  parent:  { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   dob: {
     type: Date,
     required: true,
   },
   clinic: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
 });

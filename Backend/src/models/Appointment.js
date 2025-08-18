@@ -9,6 +9,8 @@ const appointmentSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  dentalPlan: { type: mongoose.Schema.Types.ObjectId, ref: "DentalPlan" },
+  treatments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Treatment" }],
   date: {
     type: Date,
     required: true,
