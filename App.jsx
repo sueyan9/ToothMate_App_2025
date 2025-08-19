@@ -58,8 +58,8 @@ const AccountStack = () => (
 
 // Education flow navigation
 const EducationStack = () => (
-    <Stack.Navigator initialRouteName="list">
-        <Stack.Screen name="list" component={EducationScreen}/>
+    <Stack.Navigator initialRouteName="Library">
+        <Stack.Screen name="Library" component={EducationScreen}/>
         <Stack.Screen name="content" component={EducationContentScreen}/>
     </Stack.Navigator>
 );
@@ -128,9 +128,9 @@ const MainFlow = () => (
         />
         <Tab.Screen
             name="Education"
-            component={EducationScreen}
+            component={EducationStack}
             options={{
-                title: 'Education',
+                title: 'Library',
                 tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
             }}
         />
@@ -146,12 +146,9 @@ const MainFlow = () => (
             name="ClinicFlow"
             component={ClinicStack}
             options={{
-
                 title: 'Calendar',
-
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
-
         />
         <Tab.Screen
             name="Profile"
@@ -179,7 +176,7 @@ const ChildFlow = () => (
             name="Education"
             component={EducationStack}
             options={{
-                title: 'Education',
+                title: 'Library',
                 tabBarIcon: ({color, size}) => <Entypo name="open-book" size={size} color={color} />
             }}
         />
