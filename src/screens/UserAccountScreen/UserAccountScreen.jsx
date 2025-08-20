@@ -17,6 +17,7 @@ import styles from './styles';
 
 // Import profile pictures
 const profilePictures = [
+  require('../../../assets/profile pictures/p0.png'),
   require('../../../assets/profile pictures/p1.png'),
   require('../../../assets/profile pictures/p2.png'),
   require('../../../assets/profile pictures/p3.png'),
