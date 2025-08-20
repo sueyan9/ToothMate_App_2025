@@ -155,7 +155,7 @@ const MainFlow = () => (
         />
         <Tab.Screen
             name="Profile"
-            component={EducationScreen}
+            component={UserAccountScreen}
             options={{
                 title: 'Profile',
                 tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
