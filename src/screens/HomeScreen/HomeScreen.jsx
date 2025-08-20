@@ -78,7 +78,7 @@ const HomeScreen = () => {
             return (
             <SafeAreaView style={styles.container}>
                 <View style={styles.loadingContainer}>
-                <Text style={styles.loadingText}>Loading profile...</Text>
+                <Text style={styles.loadingText}>Loading ToothMate...</Text>
                 </View>
             </SafeAreaView>
             );
