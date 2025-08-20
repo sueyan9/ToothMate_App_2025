@@ -23,6 +23,8 @@ const profilePictures = [
   require('../../../assets/profile pictures/p4.png'),
   require('../../../assets/profile pictures/p5.png'),
   require('../../../assets/profile pictures/p6.png'),
+  require('../../../assets/profile pictures/p7.png'),
+  require('../../../assets/profile pictures/p8.png'),
 ];
 
 const UserAccountScreen = ({ navigation }) => {
