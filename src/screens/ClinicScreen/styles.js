@@ -57,11 +57,16 @@ const styles = StyleSheet.create({
   appointmentInfo: {
     flex: 1,
   },
+  timeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
   timeText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333333',
-    marginBottom: 4,
+    marginRight: 8,
   },
   locationText: {
     fontSize: 14,
@@ -73,12 +78,10 @@ const styles = StyleSheet.create({
     color: '#666666',
   },
   typeTag: {
-    alignSelf: 'flex-start',
     backgroundColor: '#EDDFD3',
     borderRadius: 12,
     paddingVertical: 4,
     paddingHorizontal: 10,
-    marginTop: 8,
   },
   typeText: {
     fontSize: 12,

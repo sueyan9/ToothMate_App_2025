@@ -160,14 +160,16 @@ const ClinicScreen = () => {
                   >
                     <View style={styles.cardContent}>
                       <View style={styles.appointmentInfo}>
-                        <Text style={styles.timeText}>{appointment.time}</Text>
+                        <View style={styles.timeRow}>
+                          <Text style={styles.timeText}>{appointment.time}</Text>
+                          <View style={styles.typeTag}>
+                            <Text style={styles.typeText}>{appointment.type}</Text>
+                          </View>
+                        </View>
                         <Text style={styles.locationText}>{appointment.location}</Text>
                         <Text style={styles.dentistText}>{appointment.dentist}</Text>
                       </View>
                       <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51"/>
-                    </View>
-                    <View style={styles.typeTag}>
-                      <Text style={styles.typeText}>{appointment.type}</Text>
                     </View>
                   </TouchableOpacity>
                 ))
