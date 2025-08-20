@@ -226,4 +226,20 @@ router.get("/checkNhi/:nhi", async (req, res) => {
   }
 });
 
+// Route to check if email already exists
+router.get("/checkEmail/:email", async (req, res) => {
+  try {
+    const email = req.params.email.toLowerCase();
+    const existingUser = await User.findOne({ email: email });
+    
+    if (existingUser) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Error checking email" });
+  }
+});
+
 module.exports = router;
