@@ -25,6 +25,8 @@ import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
+import HomeScreen from './src/screens/HomeScreen';
+
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
@@ -120,7 +122,7 @@ const MainFlow = () => (
     })}>
         <Tab.Screen
             name="AccountFlow"
-            component={AccountStack}
+            component={HomeScreen}
             options={{
                 title: 'Home',
                 tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
@@ -130,12 +132,12 @@ const MainFlow = () => (
             name="Education"
             component={EducationScreen}
             options={{
-                title: 'Education',
+                title: 'Library',
                 tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
             }}
         />
         <Tab.Screen
-            name="DentalChartFlow"
+            name="DentalChart"
             component={DentalChartScreen}
             options={{
                 title: 'Dental Chart',
@@ -144,7 +146,7 @@ const MainFlow = () => (
         />
         <Tab.Screen
             // NEED TO REFACTOR TO APPOINTMENTS :)
-            name="ClinicFlow"
+            name="Bookings"
             component={ClinicStack}
             options={{
                 title: 'Bookings',
