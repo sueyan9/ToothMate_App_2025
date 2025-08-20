@@ -60,7 +60,6 @@ const DentalChartScreen = () => {
     );
 };
 
-
 const styles = StyleSheet.create({
     header: {
         fontSize: 20,
@@ -69,4 +68,6 @@ const styles = StyleSheet.create({
     },
 });
 
+
 export default DentalChartScreen;
+
