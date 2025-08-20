@@ -14,10 +14,11 @@ export default StyleSheet.create({
         paddingTop: 20,
     },
     profile: {
-        width: 60,
-        height: 60,
+        width: 80,
+        height: 80,
         borderRadius: 40,
-        marginBottom: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     helloContainer: {
         flexDirection: 'row',
@@ -88,5 +89,19 @@ export default StyleSheet.create({
     },
     basicText: {
         color: '#333333'
+    },
+    profileInitials: {
+    fontSize: 42,
+    fontWeight: 'bold',
+    color: '#516287',
+    },
+    profileContainer: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 40,
+        width: 80,
+        height: 80,
+        marginBottom: 20,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 });

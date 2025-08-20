@@ -1,13 +1,24 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { useContext } from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useContext, useState } from 'react';
+import { Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
+import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
 
 const HomeScreen = () => {
 
-    const username = "Sarah Smith";
+    const profilePictures = [
+        require('../../../assets/profile pictures/p0.png'),
+        require('../../../assets/profile pictures/p1.png'),
+        require('../../../assets/profile pictures/p2.png'),
+        require('../../../assets/profile pictures/p3.png'),
+        require('../../../assets/profile pictures/p4.png'),
+        require('../../../assets/profile pictures/p5.png'),
+        require('../../../assets/profile pictures/p6.png'),
+        require('../../../assets/profile pictures/p7.png'),
+        require('../../../assets/profile pictures/p8.png'),
+    ];
 
     const navigation = useNavigation();
 
@@ -15,16 +26,92 @@ const HomeScreen = () => {
         signout,
     } = useContext(AuthContext);
 
+    const handleSignOut = () => {
+    Alert.alert(
+        'Sign Out',
+        'Are you sure you want to sign out?',
+        [
+        {
+            text: 'Cancel',
+            style: 'cancel',
+        },
+        {
+            text: 'Sign Out',
+            style: 'destructive',
+            onPress: () => signout(),
+        },
+        ]
+    );
+    };
+
+        const { 
+        state: { details, selectedProfilePicture }, 
+        getUser, 
+        getDentalClinic, 
+        checkCanDisconnect,
+        getProfilePicture
+        } = useContext(UserContext);
+
+        const [isLoading, setIsLoading] = useState(true);
+
+        useFocusEffect(
+        React.useCallback(() => {
+            const fetchUserData = async () => {
+            setIsLoading(true);
+            try {
+                await getUser();
+                await getDentalClinic();
+                await checkCanDisconnect();
+                await getProfilePicture();
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+            };
+    
+            fetchUserData();
+        }, [])
+        );
+
+        if (isLoading) {
+            return (
+            <SafeAreaView style={styles.container}>
+                <View style={styles.loadingContainer}>
+                <Text style={styles.loadingText}>Loading profile...</Text>
+                </View>
+            </SafeAreaView>
+            );
+        }
+
+        const getInitials = (firstname, lastname) => {
+            if (!firstname && !lastname) return 'U';
+            const first = firstname ? firstname.charAt(0).toUpperCase() : '';
+            const last = lastname ? lastname.charAt(0).toUpperCase() : '';
+            return first + last;
+        };
+
 
     return (
         <View style={styles.container}>
-            {/*needs a confirmation thing for the signout*/}
-            <MaterialCommunityIcons name="logout" size={32} color={'#333333'} style={styles.logout} onPress={signout}/>
+            <MaterialCommunityIcons name="logout" size={32} color={'#333333'} style={styles.logout} onPress={handleSignOut}/>
 
             <View style={styles.helloContainer}>
-            <Image source={{uri: 'https://coolbackgrounds.imgix.net/39sOStld2OCyNn3HmCpqco/21d339122a7cb417c83e6ebdc347ea5c/sea-edge-79ab30e2.png?w=3840&q=60&auto=format,compress'}}
-            style={styles.profile}/>
-            <Text testID="home-title" style={styles.titleText}>Hello, {'\n'}{username}</Text>
+                <View style={styles.profileContainer}>
+                    {selectedProfilePicture !== null ? (
+                        <Image 
+                        source={profilePictures[selectedProfilePicture]} 
+                        style={styles.profile}
+                        />
+                    ) : (
+                        <Text style={styles.profileInitials}>
+                        {getInitials(details.firstname, details.lastname)}
+                        </Text>
+                    )}
+                </View>
+            <Text testID="home-title" style={styles.titleText}>Hello, {'\n'}{details.firstname && details.lastname
+            ? `${details.firstname} ${details.lastname}`
+            : 'User Name'}</Text>
             </View>
 
             <ScrollView showsVerticalScrollIndicator={true} alwaysBounceVertical={false} indicatorStyle="black">

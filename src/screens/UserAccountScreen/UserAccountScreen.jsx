@@ -30,15 +30,15 @@ const profilePictures = [
 
 const UserAccountScreen = ({ navigation }) => {
   const { 
-    state: { details, clinic, canDisconnect }, 
+    state: { details, clinic, canDisconnect, selectedProfilePicture }, 
     getUser, 
     getDentalClinic, 
-    checkCanDisconnect 
+    checkCanDisconnect,
+    setProfilePicture
   } = useContext(UserContext);
   const { signout } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [selectedProfilePicture, setSelectedProfilePicture] = useState(null);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -93,7 +93,7 @@ const UserAccountScreen = ({ navigation }) => {
   };
 
   const handleProfilePictureSelect = (pictureIndex) => {
-    setSelectedProfilePicture(pictureIndex);
+    setProfilePicture(pictureIndex);
     setShowProfileModal(false);
     console.log(`Profile picture ${pictureIndex + 1} selected`);
   };
