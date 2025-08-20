@@ -32,6 +32,17 @@ export default function ToothInformation({ toothNumber }) {
     e.stopPropagation();
   };
 
+  const handleViewEducation = () => {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'VIEW_EDUCATION',
+        toothName: toothInfo.name,
+        treatments: toothInfo.treatments
+      }));
+      
+    }
+  };
+
   if (!toothInfo) return null;
 
   return (
@@ -49,15 +60,34 @@ export default function ToothInformation({ toothNumber }) {
             <div>
               <strong>Historical Treatments</strong>
               {toothInfo.treatments.length > 0 ? (
-                <ul className="treatment-list">
-                  {toothInfo.treatments.map((treatment, index) => (
-                    <li key={index} className="treatment-item">
-                      <div>{treatment.date}</div>
-                      <div>{treatment.type}</div>
-                      <div>{treatment.notes}</div>
-                    </li>
-                  ))}
-                </ul>
+
+                <>
+                  <ul className="treatment-list">
+                    {toothInfo.treatments.map((treatment, index) => (
+                      <li key={index} className="treatment-item">
+                        <div>{treatment.date}</div>
+                        <div>{treatment.type}</div>
+                        <div>{treatment.notes}</div>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* ✅ Show button if treatments exist */}
+                  <button
+                    style={{
+                      padding: '10px 20px',
+                      background: '#4CAF50',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                      marginTop: '10px'
+                    }}
+                    onClick={handleViewEducation}
+                  >
+                    View Education
+                  </button>
+                </>
               ) : (
                 <p>No treatments recorded for this tooth.</p>
               )}
