@@ -1,119 +1,136 @@
+import { WEB_DENTAL_CHART_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Button, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import axiosApi from "../../api/axios";
 
-const TREATMENT_TO_EDU_ID = {
-    "Filling": "3",
-    "Root Canal": "4",
-    "Extraction": "2",
-    "Crown Placement": "5",
-    "Cleaning": "7",
-    "Checkup": "1",
-  };
-  
 const DentalChartScreen = () => {
-    const webViewRef = useRef(null);
-    const [parent, setParent] = useState(true);
-    const [res, setRes] = useState(null);
-    const [selectedTooth, setSelectedTooth] = useState(null); // tooth info from WebView
-    const navigation = useNavigation();
+  const webViewRef = useRef(null);
+  const navigation = useNavigation();
+  const [parent, setParent] = useState(true); // Determines whether the user is a parent (default is true)
+  const [res, setRes] = useState(null); // Stores the response from the isChild API
+  const [selection, setSelection] = useState(null); // { toothId, toothName, treatment }
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const userId = await AsyncStorage.getItem('id');
-                console.log('userId is:', userId);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('id');
+        console.log('userId is:', userId);
 
-                const res = await axiosApi.get(`/isChild/${userId}`);
-                setRes(res.data);
-
-                if (res.data.isChild != null) {
-                    setParent(false);
-                }
-            } catch (error) {
-                console.error('❌ Failed to fetch user:', error);
-            }
-        };
-
-        fetchUser();
-    }, []);
-
-    const handleMessage = (event) => {
-        try {
-          const data = JSON.parse(event.nativeEvent.data);
-          console.log('📩 from WebView:', data);
-    
-          // ✅ Handle the web button press
-          if (data.type === 'VIEW_EDUCATION' && Array.isArray(data.treatments)) {
-            const first = data.treatments[0]; // pick first treatment for now
-            const id = first ? TREATMENT_TO_EDU_ID[first.type] : undefined;
-    
-            if (id) {
-              // Navigate INTO the Education stack -> 'content'
-              navigation.navigate('Education', { screen: 'content', params: { id } });
-            } else {
-              navigation.navigate('Education'); // fallback: open library
-            }
-            return;
-          }
-        } catch (error) {
-            console.error('❌ Failed to parse WebView message:', error);
+        const res = await axiosApi.get(`/isChild/${userId}`);
+        
+        setRes(res.data); {
+          if (res.data.isChild != null) setParent(false) // If the user is a child, update state
         }
+
+      } 
+      catch (error) {
+        console.error('❌  Failed to fetch user:', error);
+      }
     };
+    fetchUser();
+  }, []);
 
-    if (!res) {
-        return (
-            <View style={styles.center}>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </View>
-        );
+  // pick most recent treatment from an array of { date, type, notes }
+  const getMostRecentTreatmentType = (arr = []) => {
+    if (!Array.isArray(arr) || arr.length === 0) return null;
+    const sorted = [...arr].sort((a, b) => new Date(b?.date || 0) - new Date(a?.date || 0));
+    return sorted[0]?.type ?? null;
+  };
+
+  const handleWebMessage = useCallback((event) => {
+    try {
+      const data = JSON.parse(event?.nativeEvent?.data ?? '{}');
+
+      // From ToothInformation.handleViewEducation (web button):
+      if (data?.type === 'VIEW_EDUCATION') {
+        const treatmentType = getMostRecentTreatmentType(data?.treatments);
+        navigation.navigate('Education', {
+          treatment: treatmentType,
+          toothName: data?.toothName,
+        });
+        return;
+      }
+
+      if (data?.type === 'TOOTH_SELECTED' && data?.payload) {
+        const { toothNumber, toothName, treatments, treatment } = data.payload;
+        const latest = treatment ?? getMostRecentTreatmentType(treatments);
+        setSelection({
+          toothId: toothNumber ?? null,
+          toothName: toothName ?? null,
+          treatment: latest ?? null,
+        });
+        return;
+      }
+    } catch {
+
     }
+  }, [navigation]);
 
-    const url = `https://tooth-mate-app-2025.vercel.app/?parent=${parent}`;
+  const openEducation = useCallback(() => {
+    if (!selection?.treatment) return;
+    navigation.navigate('Education', {
+      treatment: selection.treatment,
+      toothId: selection.toothId,
+      toothName: selection.toothName,
+    });
+  }, [navigation, selection]);
 
+  // Show loading indicator while waiting for user data
+  if (!res) {
     return (
-        <View style={{ flex: 1 }}>
-            <WebView
-                ref={webViewRef}
-                source={{ uri: url }}
-                style={{ flex: 1 }}
-                originWhitelist={['*']}
-                javaScriptEnabled
-                domStorageEnabled
-                onMessage={handleMessage}
-            />
-
-            {/* Show the button only if treatments exist */}
-            {selectedTooth?.treatments?.length > 0 && (
-                <View style={styles.buttonContainer}>
-                    <Button
-                        title="View Education"
-                        onPress={() =>
-                            navigation.navigate('EducationContent', {
-                                toothId: selectedTooth.toothId,
-                                treatments: selectedTooth.treatments
-                            })
-                        }
-                    />
-                </View>
-            )}
-        </View>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
     );
+  }
+
+  // Construct WebView URL with user type as a query parameter
+  //const url = `https://tooth-mate-app-2025.vercel.app/?parent=${parent}`;
+  const url = `${WEB_DENTAL_CHART_URL}/?parent=${parent}`;
+
+  return (
+    <View style={{ flex: 1 }}>
+      <WebView
+        ref={webViewRef}
+        source={{ uri: url }}
+        style={{ flex: 1 }}
+        originWhitelist={['*']}
+        javaScriptEnabled
+        domStorageEnabled
+        onMessage={handleWebMessage}
+      />
+
+      {/* Appears only when the selected tooth has a treatment (if you also support TOOTH_SELECTED) */}
+      {selection?.treatment && (
+        <View style={styles.fabWrap}>
+          <Pressable style={styles.fab} onPress={openEducation} accessibilityLabel="View Education Material">
+            <Text style={styles.fabText}>View Education Material</Text>
+          </Pressable>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{selection.treatment}</Text>
+          </View>
+        </View>
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    buttonContainer: {
-        padding: 10,
-        backgroundColor: '#fff'
-    }
+  header: { fontSize: 20, textAlign: 'center', margin: 10 },
+  fabWrap: { position: 'absolute', left: 16, right: 16, bottom: 20 },
+  fab: {
+    backgroundColor: '#875B51',
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: 'center',
+    shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 6, elevation: 4,
+  },
+  fabText: { color: '#fff', fontWeight: '700' },
+  badge: { alignSelf: 'center', marginTop: 8, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, backgroundColor: '#f1e9e7' },
+  badgeText: { color: '#875B51', fontWeight: '600' },
 });
 
 export default DentalChartScreen;

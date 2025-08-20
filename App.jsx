@@ -128,7 +128,7 @@ const MainFlow = () => (
         />
         <Tab.Screen
             name="Education"
-            component={EducationStack}
+            component={EducationScreen}
             options={{
                 title: 'Education',
                 tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
