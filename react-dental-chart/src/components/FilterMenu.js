@@ -4,16 +4,18 @@ import teethData from './Util/toothData.json';
 export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSelect, activeTimePeriod }) {
 
   const getFilterStyle = (filterType) => ({
-    backgroundColor: activeTimePeriod === filterType ? '#875B51' : 'transparent',
-    color: activeTimePeriod === filterType ? 'white' : '#656B69',
-    borderColor: activeTimePeriod === filterType ? '#875B51' : '#E0E0E0',
-    borderWidth: 1,
+    backgroundColor: activeTimePeriod === filterType ? '#EDDFD3' : 'transparent',
+    color: '#333333',
+    borderColor: activeTimePeriod === filterType ? '#875B51' : '#516287',
+    borderWidth: 2.5,
     padding: '8px 16px',
+    borderStyle: 'solid',
     borderRadius: '20px',
     cursor: 'pointer',
     marginRight: 10,
     fontWeight: 'bold',
     transition: 'all 0.3s ease-in-out',
+    outline: 'none',
   });
 
   // Function to get unique treatments from JSON data for a specific time period
@@ -159,12 +161,12 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
       })}
 
       <div className="filter-item" onClick={() => onSelect('all')}>
-        <span className="filter-label" style={{ color: selected.length === 0 ? '#333' : '#656B69' }}>
+        <span className="filter-label" style={{ color: selected.length !== 0 ? '#333' : '#656B69' }}>
           Show All Treatments
         </span>
       </div>
       <div className="filter-item" onClick={() => onSelect('none')}>
-        <span className="filter-label" style={{ color: '#656B69' }}>
+        <span className="filter-label" style={{ color: selected.length === 0 ? '#333' : '#656B69' }}>
           Clear All Treatments
         </span>
       </div>

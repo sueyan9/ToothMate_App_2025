@@ -22,6 +22,7 @@ export default function ToothInformation({ toothNumber }) {
       if (isOpen) setIsOpen(false);
     };
     document.addEventListener('click', handleClickOutside);
+
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
@@ -31,74 +32,40 @@ export default function ToothInformation({ toothNumber }) {
     e.stopPropagation();
   };
 
-  const handleViewEducation = () => {
-    if (window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMessage(JSON.stringify({
-        type: 'VIEW_EDUCATION',
-        toothName: toothInfo.name,
-        treatments: toothInfo.treatments
-      }));
-      
-    }
-  };
-
   if (!toothInfo) return null;
 
   return (
     <div className={`tooth-info ${isOpen ? 'active' : ''}`} onClick={onToggle}>
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-        }}
-        className="tooth-info-header"
-      >
-        {isOpen ? `↓ ${toothInfo.name} (#${toothNumber})` : '↑ More Information'}
+      <div onClick={(e) => {
+        e.stopPropagation();
+        setIsOpen(!isOpen);
+      }} className="tooth-info-header">
+        {isOpen ? `↓ ${toothInfo.name} (#${toothNumber})` : `↑ ${toothInfo.name}`}
       </div>
 
       {isOpen && (
         <div onClick={handlePanelClick}>
           <div className="tooth-info-content">
-
-            {/* Historical Treatments */}
             <div>
               <strong>Historical Treatments</strong>
               {toothInfo.treatments.length > 0 ? (
-                <>
-                  <ul className="treatment-list">
-                    {toothInfo.treatments.map((treatment, index) => (
-                      <li key={index} className="treatment-item">
-                        <div>{treatment.date}</div>
-                        <div>{treatment.type}</div>
-                        <div>{treatment.notes}</div>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* ✅ Show button if treatments exist */}
-                  <button
-                    style={{
-                      padding: '10px 20px',
-                      background: '#4CAF50',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: '5px',
-                      cursor: 'pointer',
-                      marginTop: '10px'
-                    }}
-                    onClick={handleViewEducation}
-                  >
-                    View Education
-                  </button>
-                </>
+                <ul className="treatment-list">
+                  {toothInfo.treatments.map((treatment, index) => (
+                    <li key={index} className="treatment-item">
+                      <div>{treatment.date}</div>
+                      <div>{treatment.type}</div>
+                      <div>{treatment.notes}</div>
+                    </li>
+                  ))}
+                </ul>
               ) : (
                 <p>No treatments recorded for this tooth.</p>
               )}
             </div>
 
-            <br />
+            <br>
+            </br>
 
-            {/* Future Treatments */}
             <div>
               <strong>Future Treatments</strong>
               {toothInfo.futuretreatments.length > 0 ? (
@@ -117,6 +84,7 @@ export default function ToothInformation({ toothNumber }) {
             </div>
 
           </div>
+
         </div>
       )}
     </div>

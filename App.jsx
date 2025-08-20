@@ -35,8 +35,8 @@ import { navigationRef } from './src/navigationRef';
 
 //splash screen
 import { useEffect, useState } from 'react';
-import Icon from './src/assets/icons';
 import ToothIcon from './src/assets/ToothIcon';
+import Icon from './src/assets/icons';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
 
 
@@ -146,7 +146,9 @@ const MainFlow = () => (
             name="ClinicFlow"
             component={ClinicStack}
             options={{
-                title: 'Clinic',
+
+                title: 'Calendar',
+
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
 

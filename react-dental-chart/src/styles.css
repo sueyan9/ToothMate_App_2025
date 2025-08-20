@@ -41,7 +41,7 @@ p {
   border-radius: 5px;
   max-width: 100%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transform: translateY(calc(100% - 60px));
+  transform: translateY(calc(100% - 128px));
   transition: transform 0.3s ease-in-out;
   height: auto;
   max-height: 300vh;
@@ -49,7 +49,7 @@ p {
 
 .tooth-info.active {
   transform: translateY(0);
-  max-height: 300vh;
+  max-height: 500vh;
 }
 
 .tooth-info-header {
@@ -67,7 +67,8 @@ p {
   overscroll-behavior: contain;
   display: flow-root;
   padding-top: 24px;
-  padding-bottom: 32px;
+  padding-bottom: 120px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tooth-info-content p {
@@ -95,9 +96,19 @@ p {
   color: #656B69;
 }
 
+.back-button {
+  position: absolute;
+  margin-top: 52px;
+  cursor: pointer;
+  z-Index: 100;
+  width: 32px;
+  height: auto;
+  color: #656B69;
+}
+
 .top-icon image {
   position: absolute;
-  top: 32px;
+  top: 52px;
   left: 32px;
   width: 24px;
   height: 24px;
