@@ -4,7 +4,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useContext } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Context } from '../../context/EducationContext/EducationContext';
-import LoadingScreen from '../LoadingScreen';
 import styles from './styles';
 
 const EducationScreen = ({ navigation }) => {
@@ -49,9 +48,11 @@ const EducationScreen = ({ navigation }) => {
         });
     };
 
-    if (!fontsLoaded) {
-        return <LoadingScreen />;
-    }
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <TextInput style={styles.searchInput} placeholder='Search Educational Readings...' round onChangeText={searchFunction}
+          value={searchText}/>
+      </View>
 
     return (
         <View style={styles.container}>
