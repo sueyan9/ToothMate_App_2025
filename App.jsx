@@ -25,6 +25,8 @@ import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
+import HomeScreen from './src/screens/HomeScreen';
+
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
@@ -58,8 +60,8 @@ const AccountStack = () => (
 
 // Education flow navigation
 const EducationStack = () => (
-    <Stack.Navigator initialRouteName="list">
-        <Stack.Screen name="list" component={EducationScreen}/>
+    <Stack.Navigator initialRouteName="Library">
+        <Stack.Screen name="Library" component={EducationScreen}/>
         <Stack.Screen name="content" component={EducationContentScreen}/>
     </Stack.Navigator>
 );
@@ -120,7 +122,7 @@ const MainFlow = () => (
     })}>
         <Tab.Screen
             name="AccountFlow"
-            component={AccountStack}
+            component={HomeScreen}
             options={{
                 title: 'Home',
                 tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
@@ -128,34 +130,33 @@ const MainFlow = () => (
         />
         <Tab.Screen
             name="Education"
-            component={EducationScreen}
+            component={EducationStack}
             options={{
-                title: 'Education',
+                title: 'Library',
+                title: 'Library',
                 tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
             }}
         />
         <Tab.Screen
-            name="DentalChartFlow"
+            name="DentalChart"
             component={DentalChartScreen}
             options={{
-                title: 'Dental Chart',
+                title: 'My Mouth',
                 tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
             }}
         />
         <Tab.Screen
-            name="ClinicFlow"
+            // NEED TO REFACTOR TO APPOINTMENTS :)
+            name="Bookings"
             component={ClinicStack}
             options={{
-
-                title: 'Calendar',
-
+                title: 'Appointments',
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
-
         />
         <Tab.Screen
             name="Profile"
-            component={EducationScreen}
+            component={UserAccountScreen}
             options={{
                 title: 'Profile',
                 tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
@@ -179,7 +180,7 @@ const ChildFlow = () => (
             name="Education"
             component={EducationStack}
             options={{
-                title: 'Education',
+                title: 'Library',
                 tabBarIcon: ({color, size}) => <Entypo name="open-book" size={size} color={color} />
             }}
         />

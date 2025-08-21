@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import dayjs from 'dayjs';
-import createDataContext from '../createDataContext';
 import axiosApi from '../../api/axios';
+import createDataContext from '../createDataContext';
 
 const UserReducer = (state, action) => {
   const { type, payload } = action;
@@ -19,6 +19,8 @@ const UserReducer = (state, action) => {
       return { ...state, canDisconnect: payload };
     case 'get_all_images':
       return { ...state, images: payload };
+    case 'set_profile_picture':
+      return {...state, selectedProfilePicture: payload};
     default:
       return state;
   }
@@ -112,6 +114,30 @@ const getAllImages = dispatch => {
   };
 };
 
+const setProfilePicture = dispatch => {
+  return async (pictureIndex) => {
+    try {
+      await AsyncStorage.setItem('selectedProfilePicture', pictureIndex.toString());
+      dispatch({type: 'set_profile_picture', payload: pictureIndex});
+    } catch (error) {
+      console.error("Error saving profile picture: ", error);
+    }
+  };
+};
+
+const getProfilePicture = dispatch => {
+  return async () => {
+    try {
+      const savedPicture = await AsyncStorage.getItem('selectedProfilePicture');
+      if (savedPicture !== null) {
+        dispatch({type: 'set_profile_picture', payload: parseInt(savedPicture)});
+      }
+    } catch (error) {
+      console.error('Error loading profile picture: ', error);
+    }
+  }
+}
+
 export const { Provider, Context } = createDataContext(
     UserReducer,
     {
@@ -122,6 +148,8 @@ export const { Provider, Context } = createDataContext(
       checkCanDisconnect,
       disconnectChild,
       getAllImages,
+      setProfilePicture,
+      getProfilePicture,
     },
     {
       appointments: [],
@@ -129,5 +157,6 @@ export const { Provider, Context } = createDataContext(
       details: {},
       canDisconnect: null,
       images: [],
+      selectedProfilePicture: null,
     },
 );
