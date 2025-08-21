@@ -49,9 +49,9 @@ const EducationScreen = ({ navigation }) => {
         });
     };
 
-    if (!fontsLoaded) {
-        return <LoadingScreen />;
-    }
+  if (!fontsLoaded) {
+    return <LoadingScreen />;
+  }
 
     return (
         <View style={styles.container}>
