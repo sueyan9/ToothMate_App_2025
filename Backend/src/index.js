@@ -5,13 +5,17 @@ require("./models/Clinic");
 require("./models/Appointment");
 require("./models/ImgModel");
 require("./models/PdfModel");
+require("./models/Tooth");
+require("./models/Treatment");
+
 const express = require("express");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const educationRoutes = require("./routes/educationRoutes");
 const clinicRoutes = require("./routes/clinicRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
-
+const toothRoutes = require("./routes/toothRoutes");
+const treatmentRoutes = require("./routes/treatmentRoutes");
 const requireAuth = require("./middlewares/requireAuth");
 
 const app = express();
@@ -37,7 +41,8 @@ app.use(authRoutes);
 app.use(educationRoutes);
 app.use(clinicRoutes);
 app.use(appointmentRoutes);
-
+app.use(toothRoutes);
+app.use(treatmentRoutes);
 // check link health
 app.get('/health', (req, res) => {
     res.json({

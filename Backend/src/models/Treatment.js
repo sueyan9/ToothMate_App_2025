@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const treatmentSchema = new mongoose.Schema({
+const treatmentSchema = mongoose.Schema({
     toothId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Tooth",
@@ -11,6 +11,7 @@ const treatmentSchema = new mongoose.Schema({
         required: true,
     },
     dentalPlan: { type: mongoose.Schema.Types.ObjectId, ref: "DentalPlan", required: true },
+    stepName: { type: String },
     appointmentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Appointment",
@@ -32,7 +33,7 @@ const treatmentSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["planned", "in-progress", "done"], // can add on
+        enum: ["planned", "in-progress", "completed"], // can add on
         default: "planned",
     },
 });
