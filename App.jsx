@@ -141,7 +141,7 @@ const MainFlow = () => (
             name="DentalChart"
             component={DentalChartScreen}
             options={{
-                title: 'Dental Chart',
+                title: 'My Mouth',
                 tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
             }}
         />
@@ -150,7 +150,7 @@ const MainFlow = () => (
             name="Bookings"
             component={ClinicStack}
             options={{
-                title: 'Bookings',
+                title: 'Appointments',
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
         />
