@@ -1,6 +1,6 @@
 import { WEB_DENTAL_CHART_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -9,6 +9,8 @@ import axiosApi from "../../api/axios";
 const DentalChartScreen = () => {
   const webViewRef = useRef(null);
   const navigation = useNavigation();
+  const route = useRoute();
+  const showWeb = route.params?.showWeb ?? true; // default: show webview
   const [parent, setParent] = useState(true); // Determines whether the user is a parent (default is true)
   const [res, setRes] = useState(null); // Stores the response from the isChild API
   const [selection, setSelection] = useState(null); // { toothId, toothName, treatment }
@@ -33,13 +35,25 @@ const DentalChartScreen = () => {
     fetchUser();
   }, []);
 
+ // the native button can show without WebView
+   useEffect(() => {
+     const p = route.params?.selectedTooth;
+     if (p?.treatment) {
+       setSelection({
+         toothId: p.toothId ?? null,
+         toothName: p.toothName ?? null,
+          treatment: p.treatment ?? null,
+       });
+     }
+ }, [route.params?.selectedTooth]);
+
   // pick most recent treatment from an array of { date, type, notes }
   const getMostRecentTreatmentType = (arr = []) => {
     if (!Array.isArray(arr) || arr.length === 0) return null;
-    const sorted = [...arr].sort((a, b) => new Date(b?.date || 0) - new Date(a?.date || 0));
-    return sorted[0]?.type ?? null;
+    if (typeof arr[0] === 'string') return arr[0]; // handle ['Filling', ...]
+    return [...arr].sort((a,b)=>new Date(b?.date||0)-new Date(a?.date||0))[0]?.type ?? null;
   };
-
+  
   const handleWebMessage = useCallback((event) => {
     try {
       const data = JSON.parse(event?.nativeEvent?.data ?? '{}');

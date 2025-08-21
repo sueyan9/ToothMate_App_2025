@@ -6,6 +6,12 @@ export default function ToothInformation({ toothNumber }) {
   const [isOpen, setIsOpen] = useState(false);
   const [toothInfo, setToothInfo] = useState(null);
 
+    const latestTreatmentType = (arr = []) => {
+        if (!Array.isArray(arr) || arr.length === 0) return null;
+        if (typeof arr[0] === 'string') return arr[0];
+        return [...arr]
+          .sort((a, b) => new Date(b?.date || 0) - new Date(a?.date || 0))[0]?.type ?? null;
+      };
   const onToggle = () => setIsOpen(!isOpen);
 
   useEffect(() => {
@@ -16,6 +22,20 @@ export default function ToothInformation({ toothNumber }) {
       futuretreatments: []
     });
   }, [toothNumber]);
+
+    // 👉 When the individual tooth panel opens, notify React Native
+      useEffect(() => {
+        if (!isOpen || !toothInfo || !window.ReactNativeWebView) return;
+        window.ReactNativeWebView.postMessage(JSON.stringify({
+          type: 'TOOTH_SELECTED',
+          payload: {
+            toothNumber,
+            toothName: toothInfo.name,
+            treatments: toothInfo.treatments ?? [],
+            treatment: latestTreatmentType(toothInfo.treatments),
+          }
+        }));
+     }, [isOpen, toothInfo, toothNumber]);
 
   useEffect(() => {
     const handleClickOutside = () => {
