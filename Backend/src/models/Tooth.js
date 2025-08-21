@@ -30,5 +30,6 @@ const toothSchema = new mongoose.Schema({
         default: false,
     },
 });
-
+//make  sure the code is unique for every user
+toothSchema.index({ userNhi: 1, code: 1 }, { unique: true });
 mongoose.model("Tooth", toothSchema);

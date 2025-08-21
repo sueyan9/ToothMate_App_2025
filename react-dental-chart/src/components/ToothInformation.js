@@ -1,92 +1,65 @@
-
 import { useEffect, useState } from "react";
-import teethData from './Util/toothData.json';
+import axios from "axios";
 
-export default function ToothInformation({ toothNumber }) {
+export default function ToothInformation({ toothId, toothName }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [toothInfo, setToothInfo] = useState(null);
+  const [treatments, setTreatments] = useState([]);
+  const [futureTreatments, setFutureTreatments] = useState([]);
 
   const onToggle = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    const tooth = teethData.teeth[toothNumber];
-    setToothInfo(tooth || {
-      name: `Tooth ${toothNumber}`,
-      treatments: [],
-      futuretreatments: []
-    });
-  }, [toothNumber]);
+    if (!toothId) return;
 
-  useEffect(() => {
-    const handleClickOutside = () => {
-      if (isOpen) setIsOpen(false);
+    const fetchTreatments = async () => {
+      try {
+        const res = await axios.get(`/treatments/tooth/${toothId}`);
+        const data = res.data;
+
+        const now = new Date();
+        setTreatments(data.filter(t => new Date(t.treatmentDate) <= now));
+        setFutureTreatments(data.filter(t => new Date(t.treatmentDate) > now));
+      } catch (err) {
+        console.error(err);
+        setTreatments([]);
+        setFutureTreatments([]);
+      }
     };
-    document.addEventListener('click', handleClickOutside);
 
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [isOpen]);
-
-  const handlePanelClick = (e) => {
-    e.stopPropagation();
-  };
-
-  if (!toothInfo) return null;
+    fetchTreatments();
+  }, [toothId]);
 
   return (
-    <div className={`tooth-info ${isOpen ? 'active' : ''}`} onClick={onToggle}>
-      <div onClick={(e) => {
-        e.stopPropagation();
-        setIsOpen(!isOpen);
-      }} className="tooth-info-header">
-        {isOpen ? `↓ ${toothInfo.name} (#${toothNumber})` : `↑ ${toothInfo.name}`}
-      </div>
-
-      {isOpen && (
-        <div onClick={handlePanelClick}>
-          <div className="tooth-info-content">
-            <div>
-              <strong>Historical Treatments</strong>
-              {toothInfo.treatments.length > 0 ? (
-                <ul className="treatment-list">
-                  {toothInfo.treatments.map((treatment, index) => (
-                    <li key={index} className="treatment-item">
-                      <div>{treatment.date}</div>
-                      <div>{treatment.type}</div>
-                      <div>{treatment.notes}</div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No treatments recorded for this tooth.</p>
-              )}
-            </div>
-
-            <br>
-            </br>
-
-            <div>
-              <strong>Future Treatments</strong>
-              {toothInfo.futuretreatments.length > 0 ? (
-                <ul className="treatment-list">
-                  {toothInfo.futuretreatments.map((treatment, index) => (
-                    <li key={index} className="treatment-item">
-                      <div>{treatment.date}</div>
-                      <div>{treatment.type}</div>
-                      <div>{treatment.notes}</div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No future treatments recorded for this tooth.</p>
-              )}
-            </div>
-
-          </div>
-
+      <div className={`tooth-info ${isOpen ? "active" : ""}`} onClick={onToggle}>
+        <div className="tooth-info-header" onClick={e => { e.stopPropagation(); setIsOpen(!isOpen); }}>
+          {isOpen ? `↓ ${toothName}` : `↑ ${toothName}`}
         </div>
-      )}
-    </div>
+
+        {isOpen && (
+            <div onClick={e => e.stopPropagation()}>
+              <strong>Historical Treatments</strong>
+              {treatments.length > 0 ? (
+                  <ul>
+                    {treatments.map(t => (
+                        <li key={t._id}>
+                          {new Date(t.treatmentDate).toLocaleDateString()} - {t.stepName || t.treatmentType}
+                        </li>
+                    ))}
+                  </ul>
+              ) : <p>No treatments recorded.</p>}
+
+              <strong>Future Treatments</strong>
+              {futureTreatments.length > 0 ? (
+                  <ul>
+                    {futureTreatments.map(t => (
+                        <li key={t._id}>
+                          {new Date(t.treatmentDate).toLocaleDateString()} - {t.stepName || t.treatmentType}
+                        </li>
+                    ))}
+                  </ul>
+              ) : <p>No future treatments scheduled.</p>}
+            </div>
+        )}
+      </div>
   );
 }
