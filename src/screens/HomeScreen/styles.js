@@ -54,7 +54,9 @@ export default StyleSheet.create({
         fontWeight: 'bold',
     },
     appointmentText: {
-        color: '#875B51'
+        color: '#875B51',
+        textDecorationLine: 'underline',
+        fontWeight: 'bold',
     },
     noteText: {
         marginTop: 16,
@@ -62,9 +64,16 @@ export default StyleSheet.create({
         lineHeight: 18,
     },
     checkupText: {
-        fontSize: 24,
+        fontSize: 18,
+        color: '#333333',
+        marginTop: 16,
+    },
+    bookNowText: {
+        fontSize: 20,
         color: '#875B51',
-        marginTop: 32,
+        textDecorationLine: 'underline',
+        marginTop: 16,
+        fontWeight: 'bold',
     },
     mouthButton: {
         backgroundColor: '#EDDFD3',
@@ -89,6 +98,10 @@ export default StyleSheet.create({
     },
     basicText: {
         color: '#333333'
+    },
+    boldText: {
+        color: '#333333',
+        fontWeight: 'bold',
     },
     profileInitials: {
     fontSize: 42,

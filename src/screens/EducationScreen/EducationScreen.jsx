@@ -48,12 +48,6 @@ const EducationScreen = ({ navigation }) => {
         });
     };
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <TextInput style={styles.searchInput} placeholder='Search Educational Readings...' round onChangeText={searchFunction}
-          value={searchText}/>
-      </View>
-
     return (
         <View style={styles.container}>
             <Text testID="education-title" style={styles.titleText}>ToothMate Library</Text>
