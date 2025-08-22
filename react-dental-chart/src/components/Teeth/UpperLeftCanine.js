@@ -183,7 +183,6 @@ export const UpperLeftCanine = () => {
         </Suspense>
       </Canvas>
       </div>
-      <div>Upper left canine</div>
       <ToothInformation toothNumber={23} />
     </>
   )

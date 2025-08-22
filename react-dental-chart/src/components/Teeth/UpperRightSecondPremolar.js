@@ -183,7 +183,6 @@ export const UpperRightSecondPremolar = () => {
         </Suspense>
       </Canvas>
       </div>
-      <div className='tooth-info-header'>Upper right second premolar</div>
       <ToothInformation toothNumber={15} />
     </>
   )

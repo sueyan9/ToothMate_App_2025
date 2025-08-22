@@ -183,7 +183,6 @@ export const UpperLeftLateralIncisor = () => {
         </Suspense>
       </Canvas>
       </div>
-      <div>Upper left lateral incisor</div>
       <ToothInformation toothNumber={22} />
     </>
   )

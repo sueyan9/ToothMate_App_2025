@@ -181,7 +181,6 @@ export const LowerRightSecondPremolar = () => {
         </Suspense>
       </Canvas>
       </div>
-      <div>Lower right second premolar</div>
       <ToothInformation toothNumber={45} />
     </>
   )

@@ -78,7 +78,6 @@ export const LowerLeftCanine = () => {
         </Canvas>
       </div>
 
-      <div>Lower left canine</div>
       <ToothInformation toothNumber={33} />
     </>
   );

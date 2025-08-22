@@ -183,7 +183,6 @@ export const UpperLeftSecondMolar = () => {
         </Suspense>
       </Canvas>
       </div>
-      <div>Upper left second molar</div>
       <ToothInformation toothNumber={27} />
     </>
   )
