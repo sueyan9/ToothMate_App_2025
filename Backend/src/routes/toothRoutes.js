@@ -8,10 +8,10 @@ const Appointment = mongoose.model("Appointment");
 const router = express.Router();
 
 /**
- * find all teeth of one user
- * GET /api/tooth/:userNhi
+ * Get all teeth of one user
+ * GET /api/tooth/getAllTeeth/:userNhi
  */
-router.get("/:userNhi", async (req, res) => {
+router.get("/getAllTeeth/:userNhi", async (req, res) => {
     try {
         const teeth = await Tooth.find({ userNhi: req.params.userNhi });
         res.json(teeth);
@@ -22,10 +22,10 @@ router.get("/:userNhi", async (req, res) => {
 });
 
 /**
- * reading treatments of one tooth
- * GET /api/tooth/:userNhi/:toothId
+ * Get tooth details with treatments by tooth ID
+ * GET /api/tooth/getToothDetails/:userNhi/:toothId
  */
-router.get("/:userNhi/:toothId", async (req, res) => {
+router.get("/getToothDetails/:userNhi/:toothId", async (req, res) => {
     try {
         const tooth = await Tooth.findOne({
             _id: req.params.toothId,
@@ -36,10 +36,8 @@ router.get("/:userNhi/:toothId", async (req, res) => {
             return res.status(404).json({ error: "Tooth not found" });
         }
 
-        // search treatments related this tooth
         const treatments = await Treatment.find({ toothId: tooth._id })
-            .populate("appointmentId")
-            .populate("dentalPlan");
+            .populate("appointmentId");
 
         res.json({ ...tooth.toObject(), treatments });
     } catch (err) {
@@ -49,11 +47,36 @@ router.get("/:userNhi/:toothId", async (req, res) => {
 });
 
 /**
- * create teeth
- * POST /api/tooth
- * body: { userNhi, name, code, location, type }
+ * Get tooth details with treatments by tooth number
+ * GET /api/tooth/getToothByNumber/:userNhi/:toothNumber
  */
-router.post("/", async (req, res) => {
+router.get("/getToothByNumber/:userNhi/:toothNumber", async (req, res) => {
+    try {
+        const tooth = await Tooth.findOne({
+            userNhi: req.params.userNhi,
+            tooth_number: parseInt(req.params.toothNumber)
+        });
+
+        if (!tooth) {
+            return res.status(404).json({ error: "Tooth not found" });
+        }
+
+        const treatments = await Treatment.find({ toothId: tooth._id })
+            .populate("appointmentId");
+
+        res.json({ ...tooth.toObject(), treatments });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch tooth info" });
+    }
+});
+
+/**
+ * Create new tooth
+ * POST /api/tooth/createTooth
+ * body: { userNhi, name, code, location, type, tooth_number }
+ */
+router.post("/createTooth", async (req, res) => {
     try {
         const tooth = new Tooth(req.body);
         await tooth.save();
@@ -65,10 +88,10 @@ router.post("/", async (req, res) => {
 });
 
 /**
- * update teeth
- * PUT /api/tooth/:id
+ * Update tooth by ID
+ * PUT /api/tooth/updateTooth/:id
  */
-router.put("/:id", async (req, res) => {
+router.put("/updateTooth/:id", async (req, res) => {
     try {
         const tooth = await Tooth.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
@@ -82,10 +105,10 @@ router.put("/:id", async (req, res) => {
 });
 
 /**
- * delete teeth
- * DELETE /api/tooth/:id
+ * Delete tooth by ID
+ * DELETE /api/tooth/deleteTooth/:id
  */
-router.delete("/:id", async (req, res) => {
+router.delete("/deleteTooth/:id", async (req, res) => {
     try {
         const tooth = await Tooth.findByIdAndDelete(req.params.id);
         if (!tooth) return res.status(404).json({ error: "Tooth not found" });

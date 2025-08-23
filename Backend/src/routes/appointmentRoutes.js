@@ -31,30 +31,44 @@ router.get("/image/:id", (req, res) => {
     res.send(Buffer.from(imgv.img.data.buffer).toString("base64"))
   );
 });
-//find all appointment
-router.get("/Appointment", async(req, res) => {
+// Get all appointments
+router.get("/getAllAppointments", async (req, res) => {
   try {
     const appointments = await Appointment.find()
-        .populate("dentalPlan")
-        .populate("treatments");
+        .populate("treatments", "treatmentType status treatmentDate doctor")
+        .sort({ date: -1 }); // decase showing according date
     res.json(appointments);
   } catch (err) {
-    res.status(404).json({ error: "No appointments found" });
+    res.status(500).json({ error: "Failed to fetch appointments" });
   }
 });
-
-//find appointmnet of one user
-router.get("/Appointment/:nhi", async (req, res) => {
+// Get appointments by user NHI
+router.get("/getAppointmentsByUser/:nhi", async (req, res) => {
   try {
-    const appointments = await Appointment.find({ nhi: req.params.nhi })
-        .populate("dentalPlan")
-        .populate("treatments");
+    const appointments = await Appointment.find({ nhi: req.params.nhi.toUpperCase() })
+        .populate("treatments", "treatmentType status treatmentDate doctor tooth_number")
+        .sort({ date: -1 });
     res.json(appointments);
   } catch (err) {
-    res.status(404).json({ error: "No appointments found" });
+    res.status(500).json({ error: "Failed to fetch appointments" });
   }
 });
-//add appointment
+// Get appointment by ID
+router.get("/getAppointmentById/:id", async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id)
+        .populate("treatments", "treatmentType status treatmentDate doctor tooth_number");
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    res.json(appointment);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch appointment" });
+  }
+});
+// add appointment
 router.post("/addAppointment", upload.single("file"), async (req, res) => {
   const { date, dentalData, notes,dentalPlan,treatments } = req.body;
   const caseInsensitiveNhi = req.body.nhi;
@@ -85,7 +99,6 @@ router.post("/addAppointment", upload.single("file"), async (req, res) => {
   try {
     const appointment = new Appointment({
       nhi,
-      dentalPlan,
       treatments,
       date,
       dentalData,
@@ -94,9 +107,9 @@ router.post("/addAppointment", upload.single("file"), async (req, res) => {
       notes,
     });
     await appointment.save();
-    res.send("Appointment Made");
+    res.status(201).json({ message: "Appointment created successfully", appointment });
   } catch (err) {
-    return res.status(422).send({ err });
+    res.status(422).json({ error: "Failed to create appointment", detail: err.message });
   }
 });
 
@@ -115,5 +128,78 @@ router.get("/getAllImages/:nhi", (req, res) => {
     .catch(() => res.status(404).json({ error: "No images found" }));
 });
 
+
+// Update appointment
+router.put("/updateAppointment/:id", async (req, res) => {
+  try {
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true, runValidators: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    res.json(updatedAppointment);
+  } catch (err) {
+    res.status(400).json({ error: "Failed to update appointment", detail: err.message });
+  }
+});
+// Delete appointment
+router.delete("/deleteAppointment/:id", async (req, res) => {
+  try {
+    const deletedAppointment = await Appointment.findByIdAndDelete(req.params.id);
+
+    if (!deletedAppointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    res.json({ message: "Appointment deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete appointment", detail: err.message });
+  }
+});
+// Get appointments by date range
+router.get("/getAppointmentsByDateRange", async (req, res) => {
+  try {
+    const { startDate, endDate, nhi } = req.query;
+
+    const query = {};
+    if (startDate && endDate) {
+      query.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    }
+    if (nhi) {
+      query.nhi = nhi.toUpperCase();
+    }
+
+    const appointments = await Appointment.find(query)
+        .populate("treatments", "treatmentType status treatmentDate doctor")
+        .sort({ date: -1 });
+
+    res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch appointments", detail: err.message });
+  }
+});
+// Get upcoming appointments
+router.get("/getUpcomingAppointments/:nhi", async (req, res) => {
+  try {
+    const nhi = req.params.nhi.toUpperCase();
+    const today = new Date();
+
+    const appointments = await Appointment.find({
+      nhi,
+      date: { $gte: today }
+    })
+        .populate("treatments", "treatmentType status treatmentDate doctor")
+        .sort({ date: 1 });
+
+    res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch upcoming appointments" });
+  }
+});
 
 module.exports = router;

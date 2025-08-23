@@ -5,6 +5,10 @@ const toothSchema = new mongoose.Schema({
         type: String,   // user NHI
         required: true,
     },
+    tooth_number: {
+        type: Number,   // e.g. 33、32
+        required: true,
+    },
     name: {
         type: String,   // e.g. "Upper Left First Molar"
         required: true,
@@ -30,6 +34,8 @@ const toothSchema = new mongoose.Schema({
         default: false,
     },
 });
+
 //make  sure the code is unique for every user
 toothSchema.index({ userNhi: 1, code: 1 }, { unique: true });
+toothSchema.index({ userNhi: 1, tooth_number: 1 }, { unique: true });
 mongoose.model("Tooth", toothSchema);
