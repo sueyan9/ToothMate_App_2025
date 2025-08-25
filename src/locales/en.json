@@ -64,13 +64,21 @@
   
   "education": {
     "library": "Education Library",
-    "searchPlaceholder": "Search Educational Readings...",
-    "filters": {
-      "all": "All",
-      "treatments": "Treatments",
-      "conditions": "Conditions",
-      "oralCare": "Oral Care",
-      "recommended": "Dentist Recommended Readings"
+    "topics": {
+      "dentalHygiene": "Dental Hygiene",
+      "toothDecay": "Tooth Decay",
+      "fluorideTreatment": "Fluoride Treatment",
+      "orthodontics": "Orthodontics",
+      "dentalImplants": "Dental Implants",
+      "gumDisease": "Gum Disease",
+      "flossingGuide": "Flossing Guide"
+    },
+    "details": {
+      "brushTeeth": "Brush teeth twice daily with fluoride toothpaste",
+      "flossDaily": "Floss at least once per day",
+      "replaceToothbrush": "Replace toothbrush every 3-4 months",
+      "regularCheckups": "Visit dentist for regular check-ups",
+      "limitSugaryFoods": "Limit sugary and acidic foods/drinks"
     }
   },
   
@@ -104,7 +112,12 @@
   "clinic": {
     "title": "Clinic",
     "appointments": "Appointments",
-    "records": "Records"
+    "records": "Records",
+    "location": "AUT Dentist",
+    "dentist": "Dr. Toothmate",
+    "appointmentsFor": "Appointments for {{date}}",
+    "selectDate": "Select a date to view appointments",
+    "noAppointments": "No appointments for this date"
   },
   
   "tabs": {
@@ -114,5 +127,13 @@
     "calendar": "Calendar",
     "profile": "Profile",
     "clinic": "Clinic"
+  },
+  
+  "appointmentTypes": {
+    "checkup": "Check-up",
+    "cleaning": "Cleaning",
+    "consultation": "Consultation",
+    "filling": "Filling",
+    "rootCanal": "Root Canal"
   }
 }

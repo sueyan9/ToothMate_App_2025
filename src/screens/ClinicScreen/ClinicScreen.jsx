@@ -1,4 +1,5 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import { Calendar } from 'react-native-calendars';
 import { useState } from 'react';
 import {
   SafeAreaView,
@@ -7,11 +8,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import { useTranslation } from 'react-i18next'; // Add this import
 import styles from './styles';
 
 const ClinicScreen = () => {
   const [selectedDate, setSelectedDate] = useState('');
+  const { t } = useTranslation(); // Add useTranslation hook
 
   // Function to format date from YYYY-MM-DD to readable format
   const formatDate = (dateString) => {
@@ -27,57 +29,57 @@ const ClinicScreen = () => {
       id: '1',
       date: '2025-08-14',
       time: '9:00 AM',
-      location: 'AUT Dentist',
-      dentist: 'Dr. Toothmate',
-      type: 'Check-up'
+      location: t('clinic.location'), // Use translation
+      dentist: t('clinic.dentist'), // Use translation
+      type: t('appointmentTypes.checkup') // Use translation
     },
     {
       id: '2',
       date: '2025-08-14',
       time: '11:30 AM',
-      location: 'AUT Dentist',
-      dentist: 'Dr. Toothmate',
-      type: 'Cleaning'
+      location: t('clinic.location'),
+      dentist: t('clinic.dentist'),
+      type: t('appointmentTypes.cleaning')
     },
     {
       id: '3',
       date: '2025-08-15',
       time: '10:00 AM',
-      location: 'AUT Dentist',
-      dentist: 'Dr. Toothmate',
-      type: 'Consultation'
+      location: t('clinic.location'),
+      dentist: t('clinic.dentist'),
+      type: t('appointmentTypes.consultation')
     },
     {
       id: '4',
       date: '2025-08-15',
       time: '2:00 PM',
-      location: 'AUT Dentist',
-      dentist: 'Dr. Toothmate',
-      type: 'Filling'
+      location: t('clinic.location'),
+      dentist: t('clinic.dentist'),
+      type: t('appointmentTypes.filling')
     },
     {
       id: '5',
       date: '2025-08-15',
       time: '4:30 PM',
-      location: 'AUT Dentist',
-      dentist: 'Dr. Toothmate',
-      type: 'Check-up'
+      location: t('clinic.location'),
+      dentist: t('clinic.dentist'),
+      type: t('appointmentTypes.checkup')
     },
     {
       id: '6',
       date: '2025-08-16',
       time: '8:30 AM',
-      location: 'AUT Dentist',
-      dentist: 'Dr. Toothmate',
-      type: 'Cleaning'
+      location: t('clinic.location'),
+      dentist: t('clinic.dentist'),
+      type: t('appointmentTypes.cleaning')
     },
     {
       id: '7',
       date: '2025-08-16',
       time: '1:00 PM',
-      location: 'AUT Dentist',
-      dentist: 'Dr. Toothmate',
-      type: 'Root Canal'
+      location: t('clinic.location'),
+      dentist: t('clinic.dentist'),
+      type: t('appointmentTypes.rootCanal')
     }
   ]);
 
@@ -146,7 +148,7 @@ const ClinicScreen = () => {
         {/* Content area below calendar */}
         <View style={styles.contentContainer}>
           <Text style={styles.selectedDateText}>
-            {selectedDate ? `Appointments for ${formatDate(selectedDate)}` : 'Select a date to view appointments'}
+            {selectedDate ? t('clinic.appointmentsFor', { date: formatDate(selectedDate) }) : t('clinic.selectDate')}
           </Text>
           
           {/* Appointment cards */}
@@ -173,7 +175,7 @@ const ClinicScreen = () => {
                 ))
               ) : (
                 <View style={styles.noAppointments}>
-                  <Text style={styles.noAppointmentsText}>No appointments for this date</Text>
+                  <Text style={styles.noAppointmentsText}>{t('clinic.noAppointments')}</Text>
                 </View>
               )}
             </ScrollView>

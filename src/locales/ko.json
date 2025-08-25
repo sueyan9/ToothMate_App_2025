@@ -64,14 +64,6 @@
   
   "education": {
     "library": "교육 자료실",
-    "searchPlaceholder": "교육 자료 검색...",
-    "filters": {
-      "all": "전체",
-      "treatments": "치료",
-      "conditions": "상태",
-      "oralCare": "구강 관리",
-      "recommended": "치과의사 추천 자료"
-    },
     "topics": {
       "dentalHygiene": "구강 위생",
       "toothDecay": "충치",
@@ -107,6 +99,27 @@
     "time": "시간",
     "description": "설명"
   },
+  
+  "account": {
+    "title": "계정",
+    "settings": "설정",
+    "logout": "로그아웃",
+    "signupChild": "자녀/노인 계정 등록",
+    "yourAccounts": "귀하의 계정",
+    "signOut": "로그아웃"
+  },
+  
+  "clinic": {
+    "title": "클리닉",
+    "appointments": "예약",
+    "records": "기록",
+    "location": "AUT 치과",
+    "dentist": "투스메이트 박사",
+    "appointmentsFor": "{{date}} 예약",
+    "selectDate": "예약을 보려면 날짜를 선택하세요",
+    "noAppointments": "이 날짜에는 예약이 없습니다"
+  },
+  
   "tabs": {
     "home": "홈",
     "education": "교육",
@@ -114,5 +127,13 @@
     "calendar": "캘린더",
     "profile": "프로필",
     "clinic": "클리닉"
+  },
+  
+  "appointmentTypes": {
+    "checkup": "검진",
+    "cleaning": "청소",
+    "consultation": "상담",
+    "filling": "충전",
+    "rootCanal": "신경 치료"
   }
 }

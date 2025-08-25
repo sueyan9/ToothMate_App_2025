@@ -62,6 +62,25 @@
     "signupChild": "Inscrire un Enfant"
   },
   
+  "education": {
+    "library": "Bibliothèque d'Éducation",
+    "topics": {
+      "dentalHygiene": "Hygiène Dentaire",
+      "toothDecay": "Carie Dentaire",
+      "fluorideTreatment": "Traitement au Fluorure",
+      "orthodontics": "Orthodontie",
+      "dentalImplants": "Implants Dentaires",
+      "gumDisease": "Maladie des Gencives",
+      "flossingGuide": "Guide du Fil Dentaire"
+    },
+    "details": {
+      "brushTeeth": "Brossez-vous les dents deux fois par jour avec un dentifrice fluoré",
+      "flossDaily": "Utilisez du fil dentaire au moins une fois par jour",
+      "replaceToothbrush": "Remplacez votre brosse à dents tous les 3-4 mois",
+      "regularCheckups": "Consultez le dentiste pour des contrôles réguliers",
+      "limitSugaryFoods": "Limitez les aliments et boissons sucrés et acides"
+    }
+  },
   
   "auth": {
     "signIn": "Se Connecter",
@@ -93,7 +112,12 @@
   "clinic": {
     "title": "Clinique",
     "appointments": "Rendez-vous",
-    "records": "Dossiers"
+    "records": "Dossiers",
+    "location": "Dentiste AUT",
+    "dentist": "Dr. Toothmate",
+    "appointmentsFor": "Rendez-vous pour {{date}}",
+    "selectDate": "Sélectionnez une date pour voir les rendez-vous",
+    "noAppointments": "Aucun rendez-vous pour cette date"
   },
   
   "tabs": {
@@ -104,32 +128,12 @@
     "profile": "Profil",
     "clinic": "Clinique"
   },
-
-  "education": {
-    "library": "Bibliothèque d'Éducation",
-    "searchPlaceholder": "Rechercher des lectures éducatives...",
-    "filters": {
-      "all": "Tous",
-      "treatments": "Traitements",
-      "conditions": "Conditions",
-      "oralCare": "Soins Bucco-Dentaires",
-      "recommended": "Lectures Recommandées par le Dentiste"
-    },
-    "topics": {
-      "dentalHygiene": "Hygiène Dentaire",
-      "toothDecay": "Carie Dentaire",
-      "fluorideTreatment": "Traitement au Fluorure",
-      "orthodontics": "Orthodontie",
-      "dentalImplants": "Implants Dentaires",
-      "gumDisease": "Maladie des Gencives",
-      "flossingGuide": "Guide du Fil Dentaire"
-    },
-    "details": {
-      "brushTeeth": "Brossez-vous les dents deux fois par jour avec un dentifrice fluoré",
-      "flossDaily": "Utilisez du fil dentaire au moins une fois par jour",
-      "replaceToothbrush": "Remplacez votre brosse à dents tous les 3-4 mois",
-      "regularCheckups": "Consultez le dentiste pour des contrôles réguliers",
-      "limitSugaryFoods": "Limitez les aliments et boissons sucrés et acides"
-    }
+  
+  "appointmentTypes": {
+    "checkup": "Contrôle",
+    "cleaning": "Nettoyage",
+    "consultation": "Consultation",
+    "filling": "Plombage",
+    "rootCanal": "Traitement de canal"
   }
 }
