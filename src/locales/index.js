@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Import translation files
 import en from './en.json';
 import es from './es.json';
-import fr from './fr.json';
+import fr from './af.json';
 import ko from './ko.json'; // Add Korean import
 
 // Language detector
@@ -39,7 +39,7 @@ i18n
       es: {
         translation: es,
       },
-      fr: {
+      af: {
         translation: fr,
       },
       ko: { // Add Korean resource

@@ -7,7 +7,7 @@ import styles from './styles';
 const languages = [
   { code: 'en', name: 'English' },
   { code: 'es', name: 'Español' },
-  { code: 'fr', name: 'Français' },
+  { code: 'af', name: 'Afrikaans' },
   { code: 'ko', name: '한국어' } // Add Korean
 ];
 
