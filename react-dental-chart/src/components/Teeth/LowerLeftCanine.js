@@ -64,15 +64,7 @@ export const LowerLeftCanine = () => {
             src="../assets/back_arrow.png"
             alt="Back"
             onClick={() => (window.location = '/')}
-            style={{
-              position: 'absolute',
-              top: '32px',
-              left: '32px',
-              width: '24px',
-              height: '24px',
-              cursor: 'pointer',
-              zIndex: 100,
-            }}
+            className='back-button'
           />
         </div>
 
@@ -86,7 +78,6 @@ export const LowerLeftCanine = () => {
         </Canvas>
       </div>
 
-      <div>Lower left canine</div>
       <ToothInformation toothNumber={33} />
     </>
   );

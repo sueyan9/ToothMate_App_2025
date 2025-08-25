@@ -32,6 +32,8 @@ import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
+import HomeScreen from './src/screens/HomeScreen';
+
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
@@ -92,9 +94,9 @@ const AccountStack = () => (
 
 // Education flow navigation
 const EducationStack = () => (
-  <Stack.Navigator initialRouteName="list">
+  <Stack.Navigator initialRouteName="Library">
     <Stack.Screen 
-      name="list" 
+      name="Library" 
       component={EducationScreen}
       options={{ title: getTranslation('navigation.educationList') }}
     />

@@ -5,12 +5,13 @@ import { useState } from 'react';
 import { Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next'; // Add this import
 import LoadingScreen from '../LoadingScreen';
+import { useContext } from 'react';
+import { Context } from '../../context/EducationContext/EducationContext';
 import styles from './styles';
 
-const EducationScreen = () => {
-    const [activeFilter, setActiveFilter] = useState('All');
-    const [selectedContent, setSelectedContent] = useState(null);
-    const [searchText, setSearchText] = useState('');
+const EducationScreen = ({ navigation }) => {
+    const { state } = useContext(Context);
+    
     const [fontsLoaded] = useFonts({
         Righteous_400Regular,
         VarelaRound_400Regular,
@@ -73,6 +74,7 @@ const EducationScreen = () => {
     ]);
 
     // Use translated filters
+    // Use translated filters
     const filters = [ 
         t('filters.all'), 
         t('filters.treatments'), 
@@ -80,6 +82,10 @@ const EducationScreen = () => {
         t('filters.oralCare'), 
         t('filters.recommended') 
     ];
+
+    const [activeFilter, setActiveFilter] = useState(filters[0]);
+    const [searchText, setSearchText] = useState('');
+    const [selectedContent, setSelectedContent] = useState(null);
 
     const filteredContent = activeFilter === t('filters.all') ? educationData : educationData.filter(item => item?.category === activeFilter || item?.recommended === activeFilter);
 
@@ -104,11 +110,11 @@ const EducationScreen = () => {
     }
 
     return (
-            <View style={styles.container}>
-                <Text testID="education-title" style={styles.titleText}>{t('education.library')}</Text>
+        <View style={styles.container}>
+            <Text testID="education-title" style={styles.titleText}>{t('education.library')}</Text>
 
-                {/* Search Bar */}
-                <View style={styles.searchContainer}>
+            {/* Search Bar */}
+            <View style={styles.searchContainer}>
                 <TextInput 
                     style={styles.searchInput} 
                     placeholder={t('searchPlaceholder')} 
@@ -116,36 +122,35 @@ const EducationScreen = () => {
                     onChangeText={searchFunction}
                     value={searchText}
                 />
-                </View>
+            </View>
 
-                {/* filtering area */}
-                <View style={{height: 45, marginBottom: 24}}>
-                    <ScrollView 
+            {/* filtering area */}
+            <View style={{height: 45, marginBottom: 24}}>
+                <ScrollView 
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.filterContainer}>
-                        {filters.map((filter) => (
-                            <TouchableOpacity 
+                    {filters.map((filter) => (
+                        <TouchableOpacity 
                             key={filter}
                             onPress={() => setActiveFilter(filter)} 
                             style={[styles.filterPill, activeFilter === filter && styles.activeFilter]}
                             testID={`filter-${filter}`}
-                            >
+                        >
+                            <Text style={[styles.filterText, activeFilter === filter && styles.activeFilterText]}>{filter}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            </View>
 
-                                <Text style={[styles.filterText, activeFilter === filter && styles.activeFilterText]}>{filter}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                </View>
-
-                {/* content */}
-                <ScrollView style={styles.contentList}>
+            {/* content */}
+            <ScrollView style={styles.contentList}>
                 {searchedAndFilteredContent.map((item) => (
                     <TouchableOpacity 
                         key={item.id} 
                         onPress={() => openContent(item)}
                         style={styles.contentCard}
-                        testID={`card-${item.id}`}
+                        testID={`filter-card-${item.topic}`}
                     >
                         <View style={styles.cardContent}>
                             <Text style={styles.topicText}>{item.topic}</Text>
@@ -163,48 +168,11 @@ const EducationScreen = () => {
 
                     </TouchableOpacity>
                 ))}
-            </ScrollView>
 
-            {/* Content Detail Modal */}
-            <Modal
-                visible={!!selectedContent}
-                animationType="fade"
-                transparent={false}
-                testID="content-modal"
-            >
-                {selectedContent && (
-                    <View style={styles.modalContainer}>
-                        <TouchableOpacity 
-                            style={styles.closeButton}
-                            onPress={closeContent}
-                            testID="close-modal-btn"
-                        >
-                            <MaterialIcons name="close" size={28} color="#333333"/>
-                        </TouchableOpacity>
-                        
-                        <ScrollView style={styles.modalContent}>
-                            {/* only adds image if image is available in the data */}
-                            {selectedContent.image && (
-                                <Image source={selectedContent.image} style={styles.contentImage} />
-                            )}
-                            
-                            <Text style={styles.contentTitle}>{selectedContent.topic}</Text>
-                            <Text style={styles.contentCategory}>{selectedContent.category}</Text>
-                            
-                            <View style={styles.contentDetails}>
-                                {selectedContent.details.map((detail, index) => (
-                                    <View key={index} style={styles.detailItem}>
-                                        <View style={styles.bulletPoint} />
-                                        <Text style={styles.detailText}>{detail}</Text>
-                                    </View>
-                                ))}
-                            </View>
-                        </ScrollView>
-                    </View>
-                )}
-            </Modal>
-            </View>
+                {/* Special Cards */}
+                
+            </ScrollView>
+        </View>
     );
 };
-
 export default EducationScreen;

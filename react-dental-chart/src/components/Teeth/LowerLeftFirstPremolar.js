@@ -159,23 +159,23 @@ const LeftLowerFirstPremolar = ({ ...props }) => {
 export const LowerLeftFirstPremolar = () => {
   return (
     <>
-    <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
-      <img 
-        src="../assets/back_arrow.png" 
-        alt="Back"
-        onClick={() => (window.location = '/')}
+    <div
         style={{
-          position: 'absolute',
-          top: '32px',
-          left: '32px',
-          width: '24px',
-          height: '24px',
-          cursor: 'pointer',
-          zIndex: 100
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
         }}
-      />
+      >
+    <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
+      <img
+            src="../assets/back_arrow.png"
+            alt="Back"
+            onClick={() => (window.location = '/')}
+            className='back-button'
+          />
     </div>
-      <Canvas style={{ width: '100%', height: '500%' }}>
+      <Canvas style={{ width: '100%', height: '80%' }}>
         <CameraController />
         <ambientLight intensity={0.7} />
         <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
@@ -183,7 +183,7 @@ export const LowerLeftFirstPremolar = () => {
           <LeftLowerFirstPremolar />
         </Suspense>
       </Canvas>
-      <div>Lower left first premolar</div>
+      </div>
       <ToothInformation toothNumber={34} />
     </>
   )
