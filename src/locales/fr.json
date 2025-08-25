@@ -1,0 +1,135 @@
+{
+  "language": "Langue",
+  "english": "Anglais",
+  "spanish": "Espagnol",
+  "french": "Français",
+  "korean": "Coréen",
+  "cancel": "Annuler",
+  
+  "educationLibrary": "Bibliothèque d'Éducation",
+  "searchPlaceholder": "Rechercher des lectures éducatives...",
+  
+  "filters": {
+    "all": "Tous",
+    "treatments": "Traitements",
+    "conditions": "Conditions",
+    "oralCare": "Soins Bucco-Dentaires",
+    "recommended": "Lectures Recommandées par le Dentiste"
+  },
+  
+  "appointment": {
+    "title": "Votre Rendez-vous",
+    "dateHeading": "Date du Rendez-vous",
+    "invoiceButton": "Facture",
+    "imagesButton": "Images",
+    "notesHeading": "Notes du Dentiste"
+  },
+  
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "loading": "Chargement..."
+  },
+  
+  "navigation": {
+    "home": "Accueil",
+    "education": "Éducation",
+    "dentalChart": "Graphique Dentaire",
+    "calendar": "Calendrier",
+    "profile": "Profil",
+    "account": "Compte",
+    "clinic": "Clinique",
+    "user": "Utilisateur",
+    "disconnectChild": "Déconnecter l'Enfant",
+    "updateClinic": "Mettre à Jour la Clinique",
+    "password": "Mot de Passe",
+    "userAccount": "Compte Utilisateur",
+    "educationList": "Éducation",
+    "educationContent": "Contenu",
+    "chart": "Graphique",
+    "appointment": "Rendez-vous",
+    "invoice": "Facture",
+    "images": "Images",
+    "allImages": "Toutes les Images",
+    "signup": "Inscription",
+    "selectClinic": "Sélectionner une Clinique",
+    "signin": "Connexion",
+    "signupChild": "Inscrire un Enfant"
+  },
+  
+  
+  "auth": {
+    "signIn": "Se Connecter",
+    "signUp": "S'Inscrire",
+    "email": "E-mail",
+    "password": "Mot de Passe",
+    "forgotPassword": "Mot de Passe Oublié?",
+    "noAccount": "Vous n'avez pas de compte?",
+    "hasAccount": "Vous avez déjà un compte?"
+  },
+  
+  "appointments": {
+    "title": "Rendez-vous",
+    "new": "Nouveau Rendez-vous",
+    "date": "Date",
+    "time": "Heure",
+    "description": "Description"
+  },
+  
+  "account": {
+    "title": "Compte",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "signupChild": "Inscrire un Enfant/Compte Senior",
+    "yourAccounts": "Vos Comptes",
+    "signOut": "Se Déconnecter"
+  },
+  
+  "clinic": {
+    "title": "Clinique",
+    "appointments": "Rendez-vous",
+    "records": "Dossiers"
+  },
+  
+  "tabs": {
+    "home": "Accueil",
+    "education": "Éducation",
+    "dentalChart": "Graphique Dentaire",
+    "calendar": "Calendrier",
+    "profile": "Profil",
+    "clinic": "Clinique"
+  },
+
+  "education": {
+    "library": "Bibliothèque d'Éducation",
+    "searchPlaceholder": "Rechercher des lectures éducatives...",
+    "filters": {
+      "all": "Tous",
+      "treatments": "Traitements",
+      "conditions": "Conditions",
+      "oralCare": "Soins Bucco-Dentaires",
+      "recommended": "Lectures Recommandées par le Dentiste"
+    },
+    "topics": {
+      "dentalHygiene": "Hygiène Dentaire",
+      "toothDecay": "Carie Dentaire",
+      "fluorideTreatment": "Traitement au Fluorure",
+      "orthodontics": "Orthodontie",
+      "dentalImplants": "Implants Dentaires",
+      "gumDisease": "Maladie des Gencives",
+      "flossingGuide": "Guide du Fil Dentaire"
+    },
+    "details": {
+      "brushTeeth": "Brossez-vous les dents deux fois par jour avec un dentifrice fluoré",
+      "flossDaily": "Utilisez du fil dentaire au moins une fois par jour",
+      "replaceToothbrush": "Remplacez votre brosse à dents tous les 3-4 mois",
+      "regularCheckups": "Consultez le dentiste pour des contrôles réguliers",
+      "limitSugaryFoods": "Limitez les aliments et boissons sucrés et acides"
+    }
+  }
+}

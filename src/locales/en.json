@@ -1,0 +1,118 @@
+{
+  "language": "Language",
+  "english": "English",
+  "spanish": "Spanish",
+  "french": "French",
+  "korean": "Korean",
+  "cancel": "Cancel",
+  
+  "educationLibrary": "Education Library",
+  "searchPlaceholder": "Search Educational Readings...",
+  
+  "filters": {
+    "all": "All",
+    "treatments": "Treatments",
+    "conditions": "Conditions",
+    "oralCare": "Oral Care",
+    "recommended": "Dentist Recommended Readings"
+  },
+  
+  "appointment": {
+    "title": "Your Appointment",
+    "dateHeading": "Appointment Date",
+    "invoiceButton": "Invoice",
+    "imagesButton": "Images",
+    "notesHeading": "Dentist's Notes"
+  },
+  
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading..."
+  },
+  
+  "navigation": {
+    "home": "Home",
+    "education": "Education",
+    "dentalChart": "Dental Chart",
+    "calendar": "Calendar",
+    "profile": "Profile",
+    "account": "Account",
+    "clinic": "Clinic",
+    "user": "User",
+    "disconnectChild": "Disconnect Child",
+    "updateClinic": "Update Clinic",
+    "password": "Password",
+    "userAccount": "User Account",
+    "educationList": "Education",
+    "educationContent": "Content",
+    "chart": "Chart",
+    "appointment": "Appointment",
+    "invoice": "Invoice",
+    "images": "Images",
+    "allImages": "All Images",
+    "signup": "Sign Up",
+    "selectClinic": "Select Clinic",
+    "signin": "Sign In",
+    "signupChild": "Sign Up Child"
+  },
+  
+  "education": {
+    "library": "Education Library",
+    "searchPlaceholder": "Search Educational Readings...",
+    "filters": {
+      "all": "All",
+      "treatments": "Treatments",
+      "conditions": "Conditions",
+      "oralCare": "Oral Care",
+      "recommended": "Dentist Recommended Readings"
+    }
+  },
+  
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  
+  "appointments": {
+    "title": "Appointments",
+    "new": "New Appointment",
+    "date": "Date",
+    "time": "Time",
+    "description": "Description"
+  },
+  
+  "account": {
+    "title": "Account",
+    "settings": "Settings",
+    "logout": "Logout",
+    "signupChild": "Sign Up A Child/Elderly Account",
+    "yourAccounts": "Your Accounts",
+    "signOut": "Sign Out"
+  },
+  
+  "clinic": {
+    "title": "Clinic",
+    "appointments": "Appointments",
+    "records": "Records"
+  },
+  
+  "tabs": {
+    "home": "Home",
+    "education": "Education",
+    "dentalChart": "Dental Chart",
+    "calendar": "Calendar",
+    "profile": "Profile",
+    "clinic": "Clinic"
+  }
+}

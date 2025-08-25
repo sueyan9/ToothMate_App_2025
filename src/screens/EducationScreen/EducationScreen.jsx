@@ -3,6 +3,7 @@ import { VarelaRound_400Regular } from '@expo-google-fonts/varela-round';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next'; // Add this import
 import LoadingScreen from '../LoadingScreen';
 import styles from './styles';
 
@@ -14,64 +15,73 @@ const EducationScreen = () => {
         Righteous_400Regular,
         VarelaRound_400Regular,
     });
+    
+    // Add useTranslation hook
+    const { t } = useTranslation();
 
-        //mock data until backend has been fixed
+    //mock data until backend has been fixed
     const [educationData] = useState([
-        { id: '1', topic: 'Dental Hygiene', category: 'Oral Care', recommended: null, details: [
-                "Brush teeth twice daily with fluoride toothpaste",
-                "Floss at least once per day",
-                "Replace toothbrush every 3-4 months",
-                "Visit dentist for regular check-ups",
-                "Limit sugary and acidic foods/drinks"
+        { id: '1', topic: t('education.topics.dentalHygiene'), category: t('filters.oralCare'), recommended: null, details: [
+                t('education.details.brushTeeth'),
+                t('education.details.flossDaily'),
+                t('education.details.replaceToothbrush'),
+                t('education.details.regularCheckups'),
+                t('education.details.limitSugaryFoods')
             ], image: require('../../../assets/tooth_icon.png') },
-        { id: '2', topic: 'Tooth Decay', category: 'Conditions', recommended: 'Dentist Recommended Readings', details: [
-                "Brush teeth twice daily with fluoride toothpaste",
-                "Floss at least once per day",
-                "Replace toothbrush every 3-4 months",
-                "Visit dentist for regular check-ups",
-                "Limit sugary and acidic foods/drinks"
+        { id: '2', topic: t('education.topics.toothDecay'), category: t('filters.conditions'), recommended: t('filters.recommended'), details: [
+                t('education.details.brushTeeth'),
+                t('education.details.flossDaily'),
+                t('education.details.replaceToothbrush'),
+                t('education.details.regularCheckups'),
+                t('education.details.limitSugaryFoods')
             ], image: null },
-        { id: '3', topic: 'Fluoride Treatment', category: 'Treatments', recommended: null, details: [
-                "Brush teeth twice daily with fluoride toothpaste",
-                "Floss at least once per day",
-                "Replace toothbrush every 3-4 months",
-                "Visit dentist for regular check-ups",
-                "Limit sugary and acidic foods/drinks"
+        { id: '3', topic: t('education.topics.fluorideTreatment'), category: t('filters.treatments'), recommended: null, details: [
+                t('education.details.brushTeeth'),
+                t('education.details.flossDaily'),
+                t('education.details.replaceToothbrush'),
+                t('education.details.regularCheckups'),
+                t('education.details.limitSugaryFoods')
             ], image: null },
-        { id: '4', topic: 'Orthodontics', category: 'Treatments', recommended: null, details: [
-                "Brush teeth twice daily with fluoride toothpaste",
-                "Floss at least once per day",
-                "Replace toothbrush every 3-4 months",
-                "Visit dentist for regular check-ups",
-                "Limit sugary and acidic foods/drinks"
+        { id: '4', topic: t('education.topics.orthodontics'), category: t('filters.treatments'), recommended: null, details: [
+                t('education.details.brushTeeth'),
+                t('education.details.flossDaily'),
+                t('education.details.replaceToothbrush'),
+                t('education.details.regularCheckups'),
+                t('education.details.limitSugaryFoods')
             ], image: null },
-        { id: '5', topic: 'Dental Implants', category: 'Treatments', recommended: 'Dentist Recommended Readings', details: [
-                "Brush teeth twice daily with fluoride toothpaste",
-                "Floss at least once per day",
-                "Replace toothbrush every 3-4 months",
-                "Visit dentist for regular check-ups",
-                "Limit sugary and acidic foods/drinks"
+        { id: '5', topic: t('education.topics.dentalImplants'), category: t('filters.treatments'), recommended: t('filters.recommended'), details: [
+                t('education.details.brushTeeth'),
+                t('education.details.flossDaily'),
+                t('education.details.replaceToothbrush'),
+                t('education.details.regularCheckups'),
+                t('education.details.limitSugaryFoods')
             ], image: null },
-        { id: '6', topic: 'Gum Disease', category: 'Conditions', recommended: 'Dentist Recommended Readings', details: [
-                "Brush teeth twice daily with fluoride toothpaste",
-                "Floss at least once per day",
-                "Replace toothbrush every 3-4 months",
-                "Visit dentist for regular check-ups",
-                "Limit sugary and acidic foods/drinks"
+        { id: '6', topic: t('education.topics.gumDisease'), category: t('filters.conditions'), recommended: t('filters.recommended'), details: [
+                t('education.details.brushTeeth'),
+                t('education.details.flossDaily'),
+                t('education.details.replaceToothbrush'),
+                t('education.details.regularCheckups'),
+                t('education.details.limitSugaryFoods')
             ], image: null },
-        { id: '7', topic: 'Flossing Guide', category: 'Oral Care', recommended: 'Dentist Recommended Readings', details: [
-                "Brush teeth twice daily with fluoride toothpaste",
-                "Floss at least once per day",
-                "Replace toothbrush every 3-4 months",
-                "Visit dentist for regular check-ups",
-                "Limit sugary and acidic foods/drinks"
+        { id: '7', topic: t('education.topics.flossingGuide'), category: t('filters.oralCare'), recommended: t('filters.recommended'), details: [
+                t('education.details.brushTeeth'),
+                t('education.details.flossDaily'),
+                t('education.details.replaceToothbrush'),
+                t('education.details.regularCheckups'),
+                t('education.details.limitSugaryFoods')
             ], image: null },
     ]);
 
+    // Use translated filters
+    const filters = [ 
+        t('filters.all'), 
+        t('filters.treatments'), 
+        t('filters.conditions'), 
+        t('filters.oralCare'), 
+        t('filters.recommended') 
+    ];
 
-    const filters = [ 'All', 'Treatments', 'Conditions', 'Oral Care', 'Dentist Recommended Readings' ];
-
-    const filteredContent = activeFilter === 'All' ? educationData : educationData.filter(item => item?.category === activeFilter || item?.recommended === activeFilter);
+    const filteredContent = activeFilter === t('filters.all') ? educationData : educationData.filter(item => item?.category === activeFilter || item?.recommended === activeFilter);
 
     const searchFunction = (text) => {
         setSearchText(text);
@@ -95,12 +105,17 @@ const EducationScreen = () => {
 
     return (
             <View style={styles.container}>
-                <Text testID="education-title" style={styles.titleText}>Education Library</Text>
+                <Text testID="education-title" style={styles.titleText}>{t('education.library')}</Text>
 
                 {/* Search Bar */}
                 <View style={styles.searchContainer}>
-                <TextInput style={styles.searchInput} placeholder='Search Educational Readings...' round onChangeText={searchFunction}
-                value={searchText}/>
+                <TextInput 
+                    style={styles.searchInput} 
+                    placeholder={t('searchPlaceholder')} 
+                    round 
+                    onChangeText={searchFunction}
+                    value={searchText}
+                />
                 </View>
 
                 {/* filtering area */}

@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 // =====teeth components======
-
-import { useEffect, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-// =====teeth components======
 import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine';
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor';
 import { LowerLeftFirstMolar } from './components/Teeth/LowerLeftFirstMolar';
@@ -274,3 +270,6 @@ export default function App() {
     </div>
   )
 }
+
+// Wrap the app with all providers
+// (Removed invalid top-level useEffect. If you need loading logic, move it inside the App component.)

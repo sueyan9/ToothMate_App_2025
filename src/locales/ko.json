@@ -1,0 +1,118 @@
+{
+  "language": "언어",
+  "english": "영어",
+  "spanish": "스페인어",
+  "french": "프랑스어",
+  "korean": "한국어",
+  "cancel": "취소",
+  
+  "educationLibrary": "교육 자료실",
+  "searchPlaceholder": "교육 자료 검색...",
+  
+  "filters": {
+    "all": "전체",
+    "treatments": "치료",
+    "conditions": "상태",
+    "oralCare": "구강 관리",
+    "recommended": "치과의사 추천 자료"
+  },
+  
+  "appointment": {
+    "title": "예약",
+    "dateHeading": "예약 날짜",
+    "invoiceButton": "청구서",
+    "imagesButton": "이미지",
+    "notesHeading": "치과의사 노트"
+  },
+  
+  "common": {
+    "save": "저장",
+    "cancel": "취소",
+    "edit": "편집",
+    "delete": "삭제",
+    "confirm": "확인",
+    "back": "뒤로",
+    "next": "다음",
+    "loading": "로딩 중..."
+  },
+  
+  "navigation": {
+    "home": "홈",
+    "education": "교육",
+    "dentalChart": "치과 차트",
+    "calendar": "캘린더",
+    "profile": "프로필",
+    "account": "계정",
+    "clinic": "클리닉",
+    "user": "사용자",
+    "disconnectChild": "자녀 연결 해제",
+    "updateClinic": "클리닉 업데이트",
+    "password": "비밀번호",
+    "userAccount": "사용자 계정",
+    "educationList": "교육",
+    "educationContent": "내용",
+    "chart": "차트",
+    "appointment": "예약",
+    "invoice": "청구서",
+    "images": "이미지",
+    "allImages": "모든 이미지",
+    "signup": "회원가입",
+    "selectClinic": "클리닉 선택",
+    "signin": "로그인",
+    "signupChild": "자녀 등록"
+  },
+  
+  "education": {
+    "library": "교육 자료실",
+    "searchPlaceholder": "교육 자료 검색...",
+    "filters": {
+      "all": "전체",
+      "treatments": "치료",
+      "conditions": "상태",
+      "oralCare": "구강 관리",
+      "recommended": "치과의사 추천 자료"
+    },
+    "topics": {
+      "dentalHygiene": "구강 위생",
+      "toothDecay": "충치",
+      "fluorideTreatment": "불소 치료",
+      "orthodontics": "치과 교정",
+      "dentalImplants": "임플란트",
+      "gumDisease": "잇몸 질환",
+      "flossingGuide": "치실 사용 가이드"
+    },
+    "details": {
+      "brushTeeth": "불소 치약으로 하루 두 번 양치하기",
+      "flossDaily": "하루에至少 한 번 치실 사용하기",
+      "replaceToothbrush": "3-4개월마다 칫솔 교체하기",
+      "regularCheckups": "정기적으로 치과 검진 받기",
+      "limitSugaryFoods": "당분과 산성 음식/음료 제한하기"
+    }
+  },
+  
+  "auth": {
+    "signIn": "로그인",
+    "signUp": "회원가입",
+    "email": "이메일",
+    "password": "비밀번호",
+    "forgotPassword": "비밀번호 찾기",
+    "noAccount": "계정이 없으신가요?",
+    "hasAccount": "이미 계정이 있으신가요?"
+  },
+  
+  "appointments": {
+    "title": "예약",
+    "new": "새 예약",
+    "date": "날짜",
+    "time": "시간",
+    "description": "설명"
+  },
+  "tabs": {
+    "home": "홈",
+    "education": "교육",
+    "dentalChart": "치과 차트",
+    "calendar": "캘린더",
+    "profile": "프로필",
+    "clinic": "클리닉"
+  }
+}

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Text, ScrollView, Platform } from 'react-native';
+import { Text, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Context } from '../../context/EducationContext/EducationContext';
 import styles from './styles';
@@ -26,20 +26,5 @@ const EducationContentScreen = ({ route, navigation }) => {
   );
 };
 
-// Header Options
-EducationContentScreen.navigationOptions = () => {
-  return {
-    title: 'Education',
-    headerTintColor: 'black',
-    headerBackTitleVisible: false,
-    safeAreaInsets: Platform.OS === 'ios' ? { top: 45 } : { top: 30 },
-    headerStyle: {
-      backgroundColor: '#78d0f5',
-    },
-    cardStyle: {
-      backgroundColor: 'white',
-    },
-  };
-};
-
+// Remove the static navigationOptions as we're handling titles in App.jsx
 export default EducationContentScreen;
