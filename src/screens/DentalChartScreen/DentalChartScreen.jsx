@@ -14,15 +14,15 @@ const DentalChartScreen = () => {
   const [parent, setParent] = useState(true); // Determines whether the user is a parent (default is true)
   const [res, setRes] = useState(null); // Stores the response from the isChild API
   const [selection, setSelection] = useState(null); // { toothId, toothName, treatment }
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const userId = await AsyncStorage.getItem('id');
         console.log('userId is:', userId);
-
+        setUserId(userId);
         const res = await axiosApi.get(`/isChild/${userId}`);
-        
         setRes(res.data); {
           if (res.data.isChild != null) setParent(false) // If the user is a child, update state
         }
@@ -93,7 +93,7 @@ const DentalChartScreen = () => {
   }, [navigation, selection]);
 
   // Show loading indicator while waiting for user data
-  if (!res) {
+  if (!res || !userId){
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -103,7 +103,7 @@ const DentalChartScreen = () => {
 
   // Construct WebView URL with user type as a query parameter
   //const url = `https://tooth-mate-app-2025.vercel.app/?parent=${parent}`;
-  const url = `${WEB_DENTAL_CHART_URL}/?parent=${parent}`;
+  const url = `${WEB_DENTAL_CHART_URL}/?parent=${parent}&userId=${userId}`;
 
   return (
     <View style={{ flex: 1 }}>

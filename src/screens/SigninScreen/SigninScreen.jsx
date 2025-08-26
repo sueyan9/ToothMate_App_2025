@@ -12,7 +12,6 @@ import LoadingScreen from '../LoadingScreen';
 
 const SigninScreen = props => {
   const navigation = useNavigation();
-
   const { state, signin, clearErrorMessage } = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
@@ -22,9 +21,20 @@ const SigninScreen = props => {
     Righteous_400Regular,
   });
 
-  const handleSignin = () => signin({ email, password });
+  // 简化处理，直接调用 signin
+  const handleSignin = () => {
+//test
+    console.log('�� SigninScreen: 开始登录流程');
+    console.log('🔄 邮箱:', email);
+    console.log('🔄 密码:', password);
+    console.log('🔄 signin 函数:', signin);
 
-  // 使用 useFocusEffect 来清除错误消息
+    signin({ email, password });
+    // 不需要在这里处理 WebView 消息，AuthContext 已经处理了
+    console.log(' SigninScreen: 登录函数已调用');
+  };
+
+  // use useFocusEffect to clean the error messages
   useFocusEffect(
       React.useCallback(() => {
         clearErrorMessage();

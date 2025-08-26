@@ -133,7 +133,6 @@ const MainFlow = () => (
             component={EducationStack}
             options={{
                 title: 'Library',
-                title: 'Library',
                 tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
             }}
         />

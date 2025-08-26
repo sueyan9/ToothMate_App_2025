@@ -124,6 +124,21 @@ router.delete("/deleteTreatment/:id", async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+// Get all available treatment types for a user
+router.get("/getAllTreatmentTypes/:userNhi", async (req, res) => {
+    try {
+        const { userNhi } = req.params;
+        const treatmentTypes = await Treatment.distinct("treatmentType", { userNhi });
+
+        if (!treatmentTypes.length) {
+            return res.status(404).json({ message: "No treatment types found for this user" });
+        }
+
+        res.json(treatmentTypes);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 // Get treatments by status
 router.get("/getTreatmentsByStatus/:status", async (req, res) => {

@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef ,useState} from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -156,6 +156,36 @@ const LeftUpperSecondMolar = ({ ...props }) => {
 }
 
 export const UpperLeftSecondMolar = () => {
+  const [teethData, setTeethData] = useState([]);
+  const [treatmentsData, setTreatmentsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const teethParam = urlParams.get('teeth');
+    const treatmentsParam = urlParams.get('treatments');
+
+    if (teethParam && treatmentsParam) {
+      try {
+        const teeth = JSON.parse(decodeURIComponent(teethParam));
+        const treatments = JSON.parse(decodeURIComponent(treatmentsParam));
+
+        setTeethData(teeth);
+        setTreatmentsData(treatments);
+        setIsLoading(false);
+
+      } catch (err) {
+        setIsLoading(false);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading tooth data...</div>;
+  }
   return (
     <>
     <div
@@ -183,7 +213,11 @@ export const UpperLeftSecondMolar = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation toothNumber={27} />
+      <ToothInformation
+          toothNumber={27}
+      allTeeth={teethData}
+      allTreatments={treatmentsData}
+      />
     </>
   )
 }

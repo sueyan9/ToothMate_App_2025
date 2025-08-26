@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -30,7 +30,6 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_1.geometry}
           material={materials['1']}
-          material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_2.geometry}
@@ -154,6 +153,37 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
 }
 
 export const LowerLeftCentralIncisor = () => {
+  const [teethData, setTeethData] = useState([]);
+  const [treatmentsData, setTreatmentsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+
+    // get the data from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const teethParam = urlParams.get('teeth');
+    const treatmentsParam = urlParams.get('treatments');
+
+    if (teethParam && treatmentsParam) {
+      try {
+        const teeth = JSON.parse(decodeURIComponent(teethParam));
+        const treatments = JSON.parse(decodeURIComponent(treatmentsParam));
+
+        setTeethData(teeth);
+        setTreatmentsData(treatments);
+        setIsLoading(false);
+
+      } catch (err) {
+        setIsLoading(false);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading tooth data...</div>;
+  }
+
   return (
     <>
     <div
@@ -181,7 +211,11 @@ export const LowerLeftCentralIncisor = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation toothNumber={31} />
+      <ToothInformation
+          toothNumber={31}
+          allTeeth={teethData}
+          allTreatments={treatmentsData}
+      />
     </>
   )
 }

@@ -3,6 +3,10 @@ import createDataContext from '../createDataContext';
 import axiosApi from '../../api/axios';
 import { navigate } from '../../navigationRef';
 
+let pendingMessage = null;
+let messageRetryCount = 0;
+const MAX_RETRIES = 10;
+
 const authReducer = (state, action) => {
   switch (action.type) {
     case 'add_error':
@@ -36,7 +40,12 @@ const user = dispatch => async () => {
     const token = await AsyncStorage.getItem('token');
     const response = await axiosApi.post('/user', { token });
     dispatch({ type: 'user', payload: response.data.user });
-  } catch (err) {}
+  } catch (err) {console.error('获取用户信息失败:', err);
+    dispatch({
+      type: 'add_error',
+      payload: 'Failed to get user information',
+    });
+  }
 };
 
 const tryLocalSignin = dispatch => async () => {
@@ -157,26 +166,30 @@ const signupchild =
   };
 
 const signin =
-  dispatch =>
-  async ({ email, password }) => {
-    try {
-      const response = await axiosApi.post('/signin', { email, password });
+    dispatch =>
+        async ({ email, password }) => {
+          try {
+            console.log('🚀 AuthContext: signin 函数开始执行');
 
-      await AsyncStorage.setItem('token', response.data.token);
-      await AsyncStorage.setItem('id', response.data.id);
-      dispatch({
-        type: 'signin',
-        payload: { token: response.data.token, id: response.data.id },
-      });
-      // navigate('AccountFlow');
-      navigate('mainFlow', { screen: 'AccountFlow' });
-    } catch (err) {
-      dispatch({
-        type: 'add_error',
-        payload: 'Invalid Login Details',
-      });
-    }
-  };
+            const response = await axiosApi.post('/signin', { email, password });
+            const { token, id, user } = response.data;
+
+            await AsyncStorage.setItem('token', response.data.token);
+            await AsyncStorage.setItem('id', response.data.id);
+
+            dispatch({
+              type: 'signin',
+              payload: { token: response.data.token, id: response.data.id },
+            });
+            navigate('mainFlow', { screen: 'AccountFlow' });
+          } catch (err) {
+            console.error('🚀 登录失败:', err);
+            dispatch({
+              type: 'add_error',
+              payload: 'Invalid Login Details',
+            });
+          }
+        };
 
 const updateUser = dispatch => {
   return async ({ firstname, lastname, email, mobile, dob }) => {
