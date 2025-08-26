@@ -17,10 +17,16 @@ const clinicSchema = mongoose.Schema({
         type: String
     },
     code:
-        { type: String,
+        {
+            type: String,
             required: true,
             unique: true
-        }
+        },
+    Address:
+        {
+            type: String
+
+     },
 });
 
 mongoose.model('Clinic', clinicSchema);

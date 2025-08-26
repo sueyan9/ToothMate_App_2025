@@ -6,12 +6,15 @@ import {
   Text,
   TouchableOpacity,
   View,
+    Modal,
+  Pressable,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import styles from './styles';
 
 const ClinicScreen = () => {
   const [selectedDate, setSelectedDate] = useState('');
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   // Function to format date from YYYY-MM-DD to readable format
   const formatDate = (dateString) => {
@@ -157,6 +160,7 @@ const ClinicScreen = () => {
                   <TouchableOpacity 
                     key={appointment.id} 
                     style={styles.appointmentCard}
+                    onPress={() => setSelectedAppointment(appointment)}
                   >
                     <View style={styles.cardContent}>
                       <View style={styles.appointmentInfo}>
@@ -180,7 +184,58 @@ const ClinicScreen = () => {
           )}
         </View>
       </ScrollView>
-      
+        {/* POP-up window for appointment info */}
+        <Modal
+            visible={!!selectedAppointment}
+            transparent
+            animationType="slide"
+            onRequestClose={() => setSelectedAppointment(null)}
+        >
+            {/* half transparent cover,and close on left top corner */}
+            <Pressable
+                style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.35)' }}
+                style={styles.modalBackdrop}
+                onPress={() => setSelectedAppointment(null)}
+            />
+            {/* bottom POP-up window for appointment detail   */}
+            <View
+                style={styles.modalContainer}
+            >
+                <View style={styles.modalHeader}>
+                         <Text style={styles.modalTitle}>Appointment Details</Text>
+                         <TouchableOpacity style={styles.modalCloseButton} onPress={() => setSelectedAppointment(null)}>
+                           <Text style={styles.modalCloseText}>Close</Text>
+                         </TouchableOpacity>
+                       </View>
+                <ScrollView contentContainerStyle={styles.modalContent}>
+                {selectedAppointment && (
+
+                    <View style={styles.modalContent}>
+                       <View style={styles.modalDetailRow}>
+                         <Text style={styles.modalDetailLabel}>Date:</Text>
+                         <Text style={styles.modalDetailValue}>{selectedAppointment.date}</Text>
+                       </View>
+                       <View style={styles.modalDetailRow}>
+                         <Text style={styles.modalDetailLabel}>Time:</Text>
+                         <Text style={styles.modalDetailValue}>{selectedAppointment.time}</Text>
+                       </View>
+                       <View style={styles.modalDetailRow}>
+                         <Text style={styles.modalDetailLabel}>Dentist:</Text>
+                         <Text style={styles.modalDetailValue}>{selectedAppointment.dentist}</Text>
+                       </View>
+                       <View style={styles.modalDetailRow}>
+                         <Text style={styles.modalDetailLabel}>Clinic:</Text>
+                         <Text style={styles.modalDetailValue}>{selectedAppointment.location}</Text>
+                       </View>
+                       <View style={styles.modalDetailRow}>
+                         <Text style={styles.modalDetailLabel}>Type:</Text>
+                         <Text style={styles.modalDetailValue}>{selectedAppointment.type}</Text>
+                       </View>
+                     </View>
+                )}
+                </ScrollView>
+            </View>
+        </Modal>
       {/* Floating Action Button */}
       <TouchableOpacity 
         style={styles.fab}
