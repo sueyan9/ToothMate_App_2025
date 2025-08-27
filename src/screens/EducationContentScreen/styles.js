@@ -96,13 +96,11 @@ export default StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     marginTop: 5,
-    position: 'relative',
   },
   cardContent: {
-    flexDirection: 'column', // Changed to column layout
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    paddingRight: 40, // Space for the absolute arrow
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   topicText: {
     fontSize: 16,
@@ -146,6 +144,7 @@ export default StyleSheet.create({
     marginTop: 5,
     padding: 10,
     marginBottom: 10,
+    marginTop: 40,
     color: '#333333',
   },
   modalContent: {
@@ -154,8 +153,9 @@ export default StyleSheet.create({
   contentTitle: {
     fontSize: 28,
     color: '#333333',
-    marginBottom: 24,
-    alignSelf: 'center',
+    marginBottom: 20,
+    marginTop: 20,
+    alignSelf: 'right',
   },
   contentCategory: {
     fontSize: 18,
@@ -167,9 +167,11 @@ export default StyleSheet.create({
     height: 200,
     borderRadius: 10,
     marginBottom: 20,
+    marginLeft: 5,
   },
   contentDetails: {
     marginBottom: 30,
+    paddingHorizontal: 5,
   },
   detailItem: {
     flexDirection: 'row',
@@ -236,7 +238,7 @@ export default StyleSheet.create({
   },
   topCornerBackButton: {
     position: 'absolute',
-    top: 30,
+    top: 60,
     left: 20,
     padding: 8,
     zIndex: 1,

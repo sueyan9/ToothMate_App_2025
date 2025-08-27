@@ -10,9 +10,10 @@ export default StyleSheet.create({
   titleText: {
     fontSize: 24,
     color: '#333333',
-    marginTop: 10,
+    marginTop: 50,
     marginBottom: 16,
     alignSelf: 'center',
+    fontWeight: 'semi-bold',
   },
   filterContainer: {
     paddingBottom: 24,
