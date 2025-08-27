@@ -4,8 +4,15 @@ const mongoose = require("mongoose"),
   Img = require("./ImgModel.js"),
   ImgSchema = mongoose.model("Img").schema;
 const NZ_TZ = 'Pacific/Auckland';
-
-const appointmentSchema = mongoose.Schema({
+// setting default treatment time
+const DEFAULT_DURATION_BY_PURPOSE = {
+  'Check-up': 30,
+  'Cleaning': 60,
+  'Root canal': 90,
+  'Crown': 60,
+  'Other': 30,
+};
+const appointmentSchema = new mongoose.Schema({
   nhi: {
     type: String,
     required: true,
@@ -16,7 +23,7 @@ const appointmentSchema = mongoose.Schema({
   },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
-  // 内嵌，无独立 collection
+  // independent no the other collection
   dentist: {
     name: {
       type: String,
@@ -24,12 +31,7 @@ const appointmentSchema = mongoose.Schema({
       required: true,
     },
   },
-  clinic: {
-    name: String,
-    location: String,
-    phone: String,
-  },
-
+  clinic: { type: mongoose.Schema.Types.ObjectId, ref: 'Clinic', required: true },
   purpose: {
     type: String,
     enum: ['Check-up', 'Cleaning', 'Root canal', 'Crown', 'Other'],
@@ -44,20 +46,32 @@ const appointmentSchema = mongoose.Schema({
         default: 'scheduled',
         index: true,
       },
-      treatments: [{ name: String }],
+      treatments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Treatment' }],
 
       startAt: { type: Date, required: true, index: true },
-      endAt: { type: Date, required: true },
+      endAt: { type: Date },
       timezone: { type: String, default: NZ_TZ },
     },
     { timestamps: true }
 );
 
+// auto fill endAt；
+appointmentSchema.pre('validate', function (next) {
+  if (this.startAt && !this.endAt) {
+    const minutes = DEFAULT_DURATION_BY_PURPOSE[this.purpose] ?? 30;
+    this.endAt = new Date(new Date(this.startAt).getTime() + minutes * 60 * 1000);
+  }
+  next();
+});
+
+// check
 appointmentSchema.path('endAt').validate(function (v) {
-  return this.startAt && v && this.startAt < v;
+  if (!this.startAt || !v) return true;
+  return this.startAt < v;
 }, 'endAt must be after startAt');
 
+// general check
 appointmentSchema.index({ nhi: 1, startAt: -1 });
-
+appointmentSchema.index({ status: 1, startAt: -1 });
 
 mongoose.model("Appointment", appointmentSchema);

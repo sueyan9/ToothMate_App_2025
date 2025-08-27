@@ -156,26 +156,34 @@ router.get("/getAllImages/:nhi", (req, res) => {
 router.get('/appointments/:nhi', async (req, res) => {
   try {
     const { nhi } = req.params;
-    const { when = 'upcoming', limit = 20, skip = 0 } = req.query;
+    const when = (req.query.when || 'upcoming').toString();
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
+    const skip = parseInt(req.query.skip, 10) || 0; // 关键：定义 skip
 
     const now = new Date();
-    const filter = { nhi: nhi.toUpperCase() };
-    if (when === 'past') {
-      filter.startAt = { $lt: now };
-    } else if (when === 'upcoming') {
-      filter.startAt = { $gte: now };
-    }
+    const timeCond = when === 'past' ? { $lt: now } : { $gte: now };
 
-    const sort = when === 'past' ? { startAt: -1 } : { startAt: 1 };
+    const filter = {
+      nhi: (nhi || '').toUpperCase(),
+      $or: [
+        { startAt: timeCond },
+        { date: timeCond },
+      ],
+    };
+
+    const sort = when === 'past'
+        ? { startAt: -1, date: -1 }
+        : { startAt: 1, date: 1 };
 
     const [items, total] = await Promise.all([
-      Appointment.find(filter).sort(sort).skip(Number(skip)).limit(Number(limit)),
+      Appointment.find(filter).sort(sort).skip(skip).limit(limit).lean(),
       Appointment.countDocuments(filter),
     ]);
 
-    res.json({ items, total });
+    res.json({ items, total, skip, limit });
   } catch (e) {
     res.status(500).json({ error: e.message });
+
   }
 });
 module.exports = router;
