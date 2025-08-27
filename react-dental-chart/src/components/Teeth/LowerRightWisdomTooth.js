@@ -186,7 +186,6 @@ export const LowerRightWisdomTooth = () => {
       </Canvas>
       </div>
 
-      <div>Lower right wisdom tooth</div>
       <ToothInformation toothNumber={48} />
     </>
   )

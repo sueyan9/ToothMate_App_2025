@@ -92,7 +92,7 @@ export default function ToothInformation({ toothNumber }) {
                     ))}
                   </ul>
 
-                  {/* ✅ Show button if treatments exist */}
+                  {/*  Show edu button if treatments exist */}
                   <button
                     style={{
                       padding: '10px 20px',

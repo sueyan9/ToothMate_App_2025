@@ -4,7 +4,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useContext } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Context } from '../../context/EducationContext/EducationContext';
-import LoadingScreen from '../LoadingScreen';
 import styles from './styles';
 
 const EducationScreen = ({ navigation }) => {
@@ -70,7 +69,7 @@ const EducationScreen = ({ navigation }) => {
                             <Text style={styles.topicText}>{filter}</Text>
                             <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51"/>
                         </View>
-                      
+                        
                     </TouchableOpacity>
                 ))}
                 

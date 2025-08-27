@@ -183,7 +183,6 @@ export const UpperLeftWisdomTooth = () => {
         </Suspense>
       </Canvas>
       </div>
-      <div>Upper left widsom tooth</div>
       <ToothInformation toothNumber={28} />
     </>
   )

@@ -181,7 +181,6 @@ export const LowerLeftWisdomTooth = () => {
         </Suspense>
       </Canvas>
       </div>
-      <div>Lower left wisdom tooth</div>
       <ToothInformation toothNumber={38} />
     </>
   )

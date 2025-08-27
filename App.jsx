@@ -61,8 +61,8 @@ const AccountStack = () => (
 // Education flow navigation
 const EducationStack = () => (
     <Stack.Navigator initialRouteName="Library">
-        <Stack.Screen name="Library" component={EducationScreen}/>
-        <Stack.Screen name="content" component={EducationContentScreen}/>
+        <Stack.Screen name="Library" component={EducationScreen} options={{ title: '', headerShown: false }}/>
+        <Stack.Screen name="content" component={EducationContentScreen} options={{ title: '', headerShown: false }}/>
     </Stack.Navigator>
 );
 
@@ -132,7 +132,6 @@ const MainFlow = () => (
             name="Education"
             component={EducationStack}
             options={{
-                title: 'Library',
                 title: 'Library',
                 tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
             }}
