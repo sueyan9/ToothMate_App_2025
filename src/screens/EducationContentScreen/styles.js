@@ -140,7 +140,7 @@ export default StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    marginTop: 5,
+    marginTop: 52,
     padding: 10,
     marginBottom: 10,
     color: '#333333',
