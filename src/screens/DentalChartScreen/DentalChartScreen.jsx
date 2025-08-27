@@ -2,7 +2,7 @@ import { WEB_DENTAL_CHART_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import axiosApi from "../../api/axios";
 
@@ -114,20 +114,7 @@ const DentalChartScreen = () => {
         originWhitelist={['*']}
         javaScriptEnabled
         domStorageEnabled
-        onMessage={handleWebMessage}
-      />
-
-      {/* Appears only when the selected tooth has a treatment (if you also support TOOTH_SELECTED) */}
-      {selection?.treatment && (
-        <View style={styles.fabWrap}>
-          <Pressable style={styles.fab} onPress={openEducation} accessibilityLabel="View Education Material">
-            <Text style={styles.fabText}>View Education Material</Text>
-          </Pressable>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{selection.treatment}</Text>
-          </View>
-        </View>
-      )}
+        onMessage={handleWebMessage}/>
     </View>
   );
 };
