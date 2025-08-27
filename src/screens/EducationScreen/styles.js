@@ -157,31 +157,63 @@ export default StyleSheet.create({
     paddingVertical: 10,
     fontSize: 16,
   },
-  // Header styles for content screen
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    paddingTop: 60, // Account for status bar
-  },
-  backButton: {
+
+  // Language Button
+  // Add these to your existing styles
+languageButton: {
+    position: 'absolute',
+    top: 60,
+    left: 16,
+    zIndex: 1,
     padding: 8,
-    marginRight: 12,
-  },
-  headerTextContainer: {
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+},
+languageModalOverlay: {
     flex: 1,
-  },
-  itemCountText: {
-    fontSize: 14,
-    color: '#666666',
-    marginTop: 2,
-  },
-  // Error text style for EducationContentScreen
-  errorText: {
-    fontSize: 18,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+languageOptionsContainer: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 0,
+    width: '80%',
+    maxWidth: 300,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+},
+languageOption: {
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E9F1F8',
+    alignItems: 'center',
+},
+languageOptionText: {
+    fontSize: 16,
     color: '#333333',
-    textAlign: 'center',
-    marginTop: 100,
-  },
+},
+languageOptionClose: {
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    backgroundColor: '#E9F1F8',
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+},
+languageOptionCloseText: {
+    fontSize: 16,
+    color: '#516287',
+    fontWeight: 'bold',
+},
 });

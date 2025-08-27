@@ -1,0 +1,139 @@
+{
+  "language": "Idioma",
+  "english": "Inglés",
+  "spanish": "Español",
+  "french": "Francés",
+  "korean": "Coreano",
+  "cancel": "Cancelar",
+  
+  "educationLibrary": "Biblioteca Educativa",
+  "searchPlaceholder": "Buscar lecturas educativas...",
+  
+  "filters": {
+    "all": "Todos",
+    "treatments": "Tratamientos",
+    "conditions": "Condiciones",
+    "oralCare": "Cuidado Oral",
+    "recommended": "Lecturas Recomendadas por el Dentista"
+  },
+  
+  "appointment": {
+    "title": "Su Cita",
+    "dateHeading": "Fecha de la Cita",
+    "invoiceButton": "Factura",
+    "imagesButton": "Imágenes",
+    "notesHeading": "Notas del Dentista"
+  },
+  
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "loading": "Cargando..."
+  },
+  
+  "navigation": {
+    "home": "Inicio",
+    "education": "Educación",
+    "dentalChart": "Diagrama Dental",
+    "calendar": "Calendario",
+    "profile": "Perfil",
+    "account": "Cuenta",
+    "clinic": "Clínica",
+    "user": "Usuario",
+    "disconnectChild": "Desconectar Niño",
+    "updateClinic": "Actualizar Clínica",
+    "password": "Contraseña",
+    "userAccount": "Cuenta de Usuario",
+    "educationList": "Educación",
+    "educationContent": "Contenido",
+    "chart": "Diagrama",
+    "appointment": "Cita",
+    "invoice": "Factura",
+    "images": "Imágenes",
+    "allImages": "Todas las Imágenes",
+    "signup": "Registrarse",
+    "selectClinic": "Seleccionar Clínica",
+    "signin": "Iniciar Sesión",
+    "signupChild": "Registrar Niño"
+  },
+  
+  "education": {
+    "library": "Biblioteca Educativa",
+    "topics": {
+      "dentalHygiene": "Higiene Dental",
+      "toothDecay": "Caries Dental",
+      "fluorideTreatment": "Tratamiento con Flúor",
+      "orthodontics": "Ortodoncia",
+      "dentalImplants": "Implantes Dentales",
+      "gumDisease": "Enfermedad de las Encías",
+      "flossingGuide": "Guía de Uso del Hilo Dental"
+    },
+    "details": {
+      "brushTeeth": "Cepille los dientes dos veces al día con pasta dental con flúor",
+      "flossDaily": "Use hilo dental al menos una vez al día",
+      "replaceToothbrush": "Reemplace el cepillo de dientes cada 3-4 meses",
+      "regularCheckups": "Visite al dentista para chequeos regulares",
+      "limitSugaryFoods": "Limite alimentos/bebidas azucarados y ácidos"
+    }
+  },
+  
+  "auth": {
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes una cuenta?",
+    "hasAccount": "¿Ya tienes una cuenta?"
+  },
+  
+  "appointments": {
+    "title": "Citas",
+    "new": "Nueva Cita",
+    "date": "Fecha",
+    "time": "Hora",
+    "description": "Descripción"
+  },
+  
+  "account": {
+    "title": "Cuenta",
+    "settings": "Configuración",
+    "logout": "Cerrar Sesión",
+    "signupChild": "Registrar una Cuenta de Niño/Anciano",
+    "yourAccounts": "Tus Cuentas",
+    "signOut": "Cerrar Sesión"
+  },
+  
+  "clinic": {
+    "title": "Clínica",
+    "appointments": "Citas",
+    "records": "Registros",
+    "location": "Dentista AUT",
+    "dentist": "Dr. Toothmate",
+    "appointmentsFor": "Citas para {{date}}",
+    "selectDate": "Seleccione una fecha para ver las citas",
+    "noAppointments": "No hay citas para esta fecha"
+  },
+  
+  "tabs": {
+    "home": "Inicio",
+    "education": "Educación",
+    "dentalChart": "Diagrama Dental",
+    "calendar": "Calendario",
+    "profile": "Perfil",
+    "clinic": "Clínica"
+  },
+  
+  "appointmentTypes": {
+    "checkup": "Revisión",
+    "cleaning": "Limpieza",
+    "consultation": "Consulta",
+    "filling": "Empaste",
+    "rootCanal": "Endodoncia"
+  }
+}

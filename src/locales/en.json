@@ -1,0 +1,139 @@
+{
+  "language": "Language",
+  "english": "English",
+  "spanish": "Spanish",
+  "french": "French",
+  "korean": "Korean",
+  "cancel": "Cancel",
+  
+  "educationLibrary": "Education Library",
+  "searchPlaceholder": "Search Educational Readings...",
+  
+  "filters": {
+    "all": "All",
+    "treatments": "Treatments",
+    "conditions": "Conditions",
+    "oralCare": "Oral Care",
+    "recommended": "Dentist Recommended Readings"
+  },
+  
+  "appointment": {
+    "title": "Your Appointment",
+    "dateHeading": "Appointment Date",
+    "invoiceButton": "Invoice",
+    "imagesButton": "Images",
+    "notesHeading": "Dentist's Notes"
+  },
+  
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading..."
+  },
+  
+  "navigation": {
+    "home": "Home",
+    "education": "Education",
+    "dentalChart": "Dental Chart",
+    "calendar": "Calendar",
+    "profile": "Profile",
+    "account": "Account",
+    "clinic": "Clinic",
+    "user": "User",
+    "disconnectChild": "Disconnect Child",
+    "updateClinic": "Update Clinic",
+    "password": "Password",
+    "userAccount": "User Account",
+    "educationList": "Education",
+    "educationContent": "Content",
+    "chart": "Chart",
+    "appointment": "Appointment",
+    "invoice": "Invoice",
+    "images": "Images",
+    "allImages": "All Images",
+    "signup": "Sign Up",
+    "selectClinic": "Select Clinic",
+    "signin": "Sign In",
+    "signupChild": "Sign Up Child"
+  },
+  
+  "education": {
+    "library": "Education Library",
+    "topics": {
+      "dentalHygiene": "Dental Hygiene",
+      "toothDecay": "Tooth Decay",
+      "fluorideTreatment": "Fluoride Treatment",
+      "orthodontics": "Orthodontics",
+      "dentalImplants": "Dental Implants",
+      "gumDisease": "Gum Disease",
+      "flossingGuide": "Flossing Guide"
+    },
+    "details": {
+      "brushTeeth": "Brush teeth twice daily with fluoride toothpaste",
+      "flossDaily": "Floss at least once per day",
+      "replaceToothbrush": "Replace toothbrush every 3-4 months",
+      "regularCheckups": "Visit dentist for regular check-ups",
+      "limitSugaryFoods": "Limit sugary and acidic foods/drinks"
+    }
+  },
+  
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  
+  "appointments": {
+    "title": "Appointments",
+    "new": "New Appointment",
+    "date": "Date",
+    "time": "Time",
+    "description": "Description"
+  },
+  
+  "account": {
+    "title": "Account",
+    "settings": "Settings",
+    "logout": "Logout",
+    "signupChild": "Sign Up A Child/Elderly Account",
+    "yourAccounts": "Your Accounts",
+    "signOut": "Sign Out"
+  },
+  
+  "clinic": {
+    "title": "Clinic",
+    "appointments": "Appointments",
+    "records": "Records",
+    "location": "AUT Dentist",
+    "dentist": "Dr. Toothmate",
+    "appointmentsFor": "Appointments for {{date}}",
+    "selectDate": "Select a date to view appointments",
+    "noAppointments": "No appointments for this date"
+  },
+  
+  "tabs": {
+    "home": "Home",
+    "education": "Education",
+    "dentalChart": "Dental Chart",
+    "calendar": "Calendar",
+    "profile": "Profile",
+    "clinic": "Clinic"
+  },
+  
+  "appointmentTypes": {
+    "checkup": "Check-up",
+    "cleaning": "Cleaning",
+    "consultation": "Consultation",
+    "filling": "Filling",
+    "rootCanal": "Root Canal"
+  }
+}

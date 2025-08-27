@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, ScrollView, Platform, TextInput, TouchableOpacity, View, Image } from 'react-native';
+import { Text, ScrollView, TextInput, TouchableOpacity, View, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
 import styles from './styles';
