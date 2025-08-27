@@ -149,7 +149,7 @@ const MainFlow = () => (
             name="Bookings"
             component={ClinicStack}
             options={{
-                title: 'Appointments',
+                title: 'Bookings',
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
         />
