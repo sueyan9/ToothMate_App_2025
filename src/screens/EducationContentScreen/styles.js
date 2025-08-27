@@ -46,7 +46,8 @@ export default StyleSheet.create({
     fontSize: 24,
     color: '#333333',
     marginBottom: 8,
-    alignSelf: 'center',
+    textAlign: 'center', // Changed from alignSelf: 'center'
+    fontWeight: 'semi-bold',
   },
 
   // Filters (from old EducationScreen)
@@ -95,11 +96,13 @@ export default StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     marginTop: 5,
+    position: 'relative',
   },
   cardContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'column', // Changed to column layout
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingRight: 40, // Space for the absolute arrow
   },
   topicText: {
     fontSize: 16,
@@ -211,6 +214,7 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     paddingTop: 60, // status bar space
+    justifyContent: 'center', // Add this to center the content
   },
   backButton: {
     padding: 8,
@@ -223,5 +227,18 @@ export default StyleSheet.create({
     fontSize: 14,
     color: '#666666',
     marginTop: 2,
+    textAlign: 'center', // Add this line
+  },
+  absoluteArrow: {
+    position: 'absolute',
+    right: 10,
+    top: 16, // Position at the top instead of center
+  },
+  topCornerBackButton: {
+    position: 'absolute',
+    top: 30,
+    left: 20,
+    padding: 8,
+    zIndex: 1,
   },
 });

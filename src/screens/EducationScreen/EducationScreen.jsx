@@ -73,8 +73,6 @@ const EducationScreen = ({ navigation }) => {
                       
                     </TouchableOpacity>
                 ))}
-
-                {/* Special Cards */}
                 
             </ScrollView>
         </View>

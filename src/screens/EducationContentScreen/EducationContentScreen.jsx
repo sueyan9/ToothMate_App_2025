@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Text, ScrollView, Platform, TextInput, TouchableOpacity, View, Image } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
-import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useState } from 'react';
+import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import styles from './styles';
 
 const EducationContentScreen = ({ route }) => {
     // Mock data until backend/context is ready
@@ -66,6 +66,7 @@ const EducationContentScreen = ({ route }) => {
     const isFilterView = route.params?.selectedFilter;
     const contentId = route.params?.id;
     const selectedFilter = route.params?.selectedFilter;
+    const fromFilter = route.params?.fromFilter; // Track which filter the user came from
 
     const [searchText, setSearchText] = useState('');
 
@@ -73,9 +74,20 @@ const EducationContentScreen = ({ route }) => {
     const individualContent = contentId ? educationData.find(content => content._id === contentId) : null;
     if (!isFilterView && individualContent) {
         const { topic, content, category } = individualContent;
+        
+        const handleBackFromContent = () => {
+            if (fromFilter) {
+                // Navigate back to the specific filter view
+                navigation.navigate('content', { selectedFilter: fromFilter });
+            } else {
+                // Fallback to going back in navigation stack
+                navigation.goBack();
+            }
+        };
+
         return (
             <View style={styles.modalContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeButton}>
+                <TouchableOpacity onPress={handleBackFromContent} style={styles.closeButton}>
                     <MaterialIcons name="close" size={24} color="#875B51" />
                 </TouchableOpacity>
                 <ScrollView showsVerticalScrollIndicator={false}>
@@ -101,6 +113,13 @@ const EducationContentScreen = ({ route }) => {
     if (!isFilterView && !individualContent) {
         return (
             <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container}>
+                <TouchableOpacity 
+                    onPress={() => navigation.goBack()} 
+                    style={styles.closeButton}
+                    testID="close-button-error"
+                >
+                    <MaterialIcons name="close" size={24} color="#875B51" />
+                </TouchableOpacity>
                 <Text style={styles.errorText}>Content not found</Text>
             </LinearGradient>
         );
@@ -120,19 +139,25 @@ const EducationContentScreen = ({ route }) => {
     const searchFunction = (text) => setSearchText(text);
 
     const openContent = (content) => {
-        navigation.navigate('content', { id: content._id });
+        // Pass the current filter so we can navigate back to it
+        navigation.navigate('content', { 
+            id: content._id,
+            fromFilter: selectedFilter 
+        });
     };
 
     return (
         <View style={styles.container}>
+            {/* Back Arrow - Top Corner */}
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.topCornerBackButton}>
+                <MaterialIcons name="arrow-back" size={24} color="#875B51" />
+            </TouchableOpacity>
+
             {/* Header */}
             <View style={styles.headerContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <MaterialIcons name="arrow-back" size={24} color="#875B51" />
-                </TouchableOpacity>
                 <View style={styles.headerTextContainer}>
-                    <Text style={styles.titleText}>{selectedFilter}</Text>
-                    <Text style={styles.itemCountText}>
+                    <Text style={[styles.titleText, styles.centeredHeaderTitle]}>{selectedFilter}</Text>
+                    <Text style={[styles.itemCountText, styles.centeredHeaderTitle]}>
                         {searchedAndFilteredContent.length} item{searchedAndFilteredContent.length !== 1 ? 's' : ''}
                     </Text>
                 </View>
@@ -163,9 +188,11 @@ const EducationContentScreen = ({ route }) => {
                             onPress={() => openContent(item)}
                             style={styles.contentCard}
                         >
+                            <View style={styles.absoluteArrow}>
+                                <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51" />
+                            </View>
                             <View style={styles.cardContent}>
                                 <Text style={styles.topicText}>{item.topic}</Text>
-                                <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51" />
                             </View>
                             <View style={styles.categoryTag}>
                                 <Text style={styles.categoryText}>{item.category}</Text>
