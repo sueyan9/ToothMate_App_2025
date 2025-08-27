@@ -116,35 +116,9 @@ const DentalChartScreen = () => {
         domStorageEnabled
         onMessage={handleWebMessage}
       />
-
-      {/* Appears only when the selected tooth has a treatment (if you also support TOOTH_SELECTED) */}
-      {selection?.treatment && (
-        <View style={styles.fabWrap}>
-          <Pressable style={styles.fab} onPress={openEducation} accessibilityLabel="View Education Material">
-            <Text style={styles.fabText}>View Education Material</Text>
-          </Pressable>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{selection.treatment}</Text>
-          </View>
-        </View>
-      )}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  header: { fontSize: 20, textAlign: 'center', margin: 10 },
-  fabWrap: { position: 'absolute', left: 16, right: 16, bottom: 20 },
-  fab: {
-    backgroundColor: '#875B51',
-    paddingVertical: 14,
-    borderRadius: 14,
-    alignItems: 'center',
-    shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 6, elevation: 4,
-  },
-  fabText: { color: '#fff', fontWeight: '700' },
-  badge: { alignSelf: 'center', marginTop: 8, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, backgroundColor: '#f1e9e7' },
-  badgeText: { color: '#875B51', fontWeight: '600' },
-});
 
 export default DentalChartScreen;
