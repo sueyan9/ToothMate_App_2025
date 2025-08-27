@@ -341,7 +341,7 @@ const ClinicScreen = ({navigation, route}) => {
                                 <View style={styles.modalDetailRow}>
                                     <Text style={styles.modalDetailLabel}>Address:</Text>
                                     <Text style={styles.modalDetailValue}>
-                                        {selectedAppointment.clinic?.Address}
+                                        {selectedAppointment.clinic?.address}
                                     </Text>
                                 </View>
                                 <View style={styles.modalDetailRow}>

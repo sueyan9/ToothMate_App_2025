@@ -124,8 +124,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        bottom: 50,  // space between bottom 50px
-        maxHeight: '60%',
+        top: '30%',
+        transform: [{ translateX:0 }],
         backgroundColor: '#fff',
         borderTopLeftRadius: 16,
         borderTopRightRadius: 16,
