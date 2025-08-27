@@ -48,6 +48,10 @@ const EducationScreen = ({ navigation }) => {
         });
     };
 
+  if (!fontsLoaded) {
+    return <LoadingScreen />;
+  }
+
     return (
         <View style={styles.container}>
             <Text testID="education-title" style={styles.titleText}>ToothMate Library</Text>
@@ -68,8 +72,6 @@ const EducationScreen = ({ navigation }) => {
                         
                     </TouchableOpacity>
                 ))}
-
-                {/* Special Cards */}
                 
             </ScrollView>
         </View>

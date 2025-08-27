@@ -46,7 +46,8 @@ export default StyleSheet.create({
     fontSize: 24,
     color: '#333333',
     marginBottom: 8,
-    alignSelf: 'center',
+    textAlign: 'center', // Changed from alignSelf: 'center'
+    fontWeight: 'semi-bold',
   },
 
   // Filters (from old EducationScreen)
@@ -143,6 +144,7 @@ export default StyleSheet.create({
     marginTop: 52,
     padding: 10,
     marginBottom: 10,
+    marginTop: 40,
     color: '#333333',
   },
   modalContent: {
@@ -151,8 +153,9 @@ export default StyleSheet.create({
   contentTitle: {
     fontSize: 28,
     color: '#333333',
-    marginBottom: 24,
-    alignSelf: 'center',
+    marginBottom: 20,
+    marginTop: 20,
+    alignSelf: 'right',
   },
   contentCategory: {
     fontSize: 18,
@@ -164,9 +167,11 @@ export default StyleSheet.create({
     height: 200,
     borderRadius: 10,
     marginBottom: 20,
+    marginLeft: 5,
   },
   contentDetails: {
     marginBottom: 30,
+    paddingHorizontal: 5,
   },
   detailItem: {
     flexDirection: 'row',
@@ -211,6 +216,7 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     paddingTop: 60, // status bar space
+    justifyContent: 'center', // Add this to center the content
   },
   backButton: {
     padding: 8,
@@ -223,5 +229,18 @@ export default StyleSheet.create({
     fontSize: 14,
     color: '#666666',
     marginTop: 2,
+    textAlign: 'center', // Add this line
+  },
+  absoluteArrow: {
+    position: 'absolute',
+    right: 10,
+    top: 16, // Position at the top instead of center
+  },
+  topCornerBackButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    padding: 8,
+    zIndex: 1,
   },
 });
