@@ -201,7 +201,31 @@ const UserAccountScreen = ({ navigation }) => {
                 {details.email || 'Not specified'}
               </Text>
             </View>
+            
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Address</Text>
+              <Text style={styles.infoValue}>
+                {details.address || 'None'}
+              </Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Emergency Contact Name</Text>
+              <Text style={styles.infoValue}>
+                {details.emergencyContactName || 'None'}
+              </Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Emergency Contact Phone</Text>
+              <Text style={styles.infoValue}>
+                {details.emergencyContactPhone || 'None'}
+              </Text>
+            </View>
+            
           </View>
+
+          
 
           {/* Medical Information Card */}
           <View style={styles.infoCard}>
