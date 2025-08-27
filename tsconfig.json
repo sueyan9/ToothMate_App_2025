@@ -1,9 +1,5 @@
 {
-  "compilerOptions": {
-    "module": "ESNext",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true
-  },
+  "compilerOptions": {},
   "include": [
     "**/*.ts",
     "**/*.tsx"

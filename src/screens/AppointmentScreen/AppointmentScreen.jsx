@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Platform } from 'react-native';
 import { Button } from 'react-native-elements';
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
-import { useTranslation } from 'react-i18next'; // Add this import
 import Spacer from '../../components/Spacer';
 import styles from './styles';
 
@@ -11,7 +10,6 @@ global.Buffer = global.Buffer || Buffer.Buffer;
 
 const AppointmentScreen = ({ route, navigation }) => {
   const { images = [], pdfs = [], date, notes } = route.params.appointment || {};
-  const { t } = useTranslation(); // Add useTranslation hook
 
   const base64images = React.useMemo(
       () => images.map(image => Buffer.from(image.img.data.data).toString('base64')),
@@ -28,7 +26,7 @@ const AppointmentScreen = ({ route, navigation }) => {
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.heading}>
-            <Text style={styles.headingFont}>{t('appointment.dateHeading')}</Text>
+            <Text style={styles.headingFont}>Appointment Date</Text>
           </View>
           <Text style={styles.title}>{displayDate}</Text>
           <Spacer />
@@ -37,7 +35,7 @@ const AppointmentScreen = ({ route, navigation }) => {
                   buttonStyle={styles.button}
                   containerStyle={styles.buttonContainer}
                   titleStyle={styles.buttonText}
-                  title={t('appointment.invoiceButton')}
+                  title="Invoice"
                   onPress={() => navigation.navigate('invoice', { pdf: base64pdf })}
               />
           )}
@@ -47,13 +45,13 @@ const AppointmentScreen = ({ route, navigation }) => {
                   buttonStyle={styles.button}
                   containerStyle={styles.buttonContainer}
                   titleStyle={styles.buttonText}
-                  title={t('appointment.imagesButton')}
+                  title="Images"
                   onPress={() => navigation.navigate('images', { images: base64images })}
               />
           )}
           <Spacer />
           <View style={styles.heading}>
-            <Text style={styles.headingFont}>{t('appointment.notesHeading')}</Text>
+            <Text style={styles.headingFont}>Dentist's Notes</Text>
           </View>
           <Text style={styles.title}>{notes}</Text>
         </View>
@@ -61,5 +59,20 @@ const AppointmentScreen = ({ route, navigation }) => {
   );
 };
 
-// Remove the static navigationOptions as we're handling titles in App.jsx
+// Header Options
+AppointmentScreen.navigationOptions = () => {
+  return {
+    title: 'Your Appointment',
+    headerTintColor: 'black',
+    headerBackTitleVisible: false,
+    safeAreaInsets: Platform.OS === 'ios' ? { top: 45 } : { top: 30 },
+    headerStyle: {
+      backgroundColor: '#78d0f5',
+      borderBottomWidth: 0,
+      shadowOpacity: 0,
+      elevation: 0,
+    },
+  };
+};
+
 export default AppointmentScreen;

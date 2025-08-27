@@ -20,7 +20,6 @@ export const toothData = {
   26: { treatment: 'bridge' },
   27: { treatment: 'bridge' },
   28: { treatment: 'bridge' },
-  
 
   //lower left
   31: { treatment: 'normal' },
