@@ -44,6 +44,7 @@
     "mongodb": "^6.16.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "react-i18next": "^15.7.2",
     "react-native": "0.79.2",
     "react-native-calendars": "^1.1313.0",
     "react-native-dotenv": "^3.4.11",
