@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { Text, ScrollView, Platform, TextInput, TouchableOpacity, View, Image } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useState } from 'react';
+import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import styles from './styles';
-import { useNavigation } from '@react-navigation/native';
 
-const EducationContentScreen = ({ route }) => {
+const EducationContentScreen = ({ navigation, route }) => {
     // Mock data until backend/context is ready
     const [educationData] = useState([
         { _id: '1', topic: 'Dental Hygiene', category: 'Oral Care', recommended: null, content: 
@@ -60,7 +59,17 @@ const EducationContentScreen = ({ route }) => {
             ]
         },
     ]);
-    const navigation = useNavigation();
+
+    const TREATMENT_TO_TOPIC = {
+        Filling: 'Tooth Decay',              
+        Cleaning: 'Dental Hygiene',          
+        Checkup: 'Dental Hygiene',           
+        'Root Canal': 'Tooth Decay',         
+        'Crown Placement': 'Tooth Decay',    
+        Extraction: 'Dental Implants',       
+        'Fluoride Treatment': 'Fluoride Treatment',
+        Orthodontics: 'Orthodontics',
+    };
 
     // params
     const isFilterView = route.params?.selectedFilter;

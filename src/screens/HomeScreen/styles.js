@@ -12,6 +12,7 @@ export default StyleSheet.create({
         backgroundColor: '#E9F1F8',
         paddingHorizontal: 24,
         paddingTop: 20,
+        paddingBottom: 64,
     },
     profile: {
         width: 80,

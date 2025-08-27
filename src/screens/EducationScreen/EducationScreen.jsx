@@ -65,7 +65,7 @@ const EducationScreen = ({ navigation }) => {
                             <Text style={styles.topicText}>{filter}</Text>
                             <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51"/>
                         </View>
-                      
+                        
                     </TouchableOpacity>
                 ))}
 
