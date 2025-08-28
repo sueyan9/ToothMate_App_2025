@@ -1,14 +1,17 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { useEffect, useMemo, useState } from 'react';
 import {
+  ActivityIndicator,
   Modal,
   Pressable,
   SafeAreaView,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -27,12 +30,32 @@ const ClinicScreen = ({navigation, route}) => {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    //appointment form
+    const [newAppt, setNewAppt] = useState({
+      startDate: new Date(),
+      startTime: new Date(),
+      endTime: new Date(new Date().getTime() + 30 * 60000), // Default to 30 minutes later
+      purpose: '',
+      notes: ''
+    });
+
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+    const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+
     useEffect(() => {
         setSelectedDate(dayjs().tz(NZ_TZ).format('YYYY-MM-DD'));
     }, []);
+
     useEffect(() => {
+      loadAppointments();
+    }, [nhi]);
+
+    const loadAppointments = async () => {
         let mounted = true;
-        (async () => {
             setLoading(true);
             try {
                 const res = await axiosApi.get(`/appointments/${nhi}?limit=400`);
@@ -77,11 +100,56 @@ const ClinicScreen = ({navigation, route}) => {
             } finally {
                 if (mounted) setLoading(false);
             }
-        })();
-        return () => {
-            mounted = false;
         };
-    }, [nhi]);
+
+    const handleNewAppt = async () => {
+      if (!newAppt.purpose) {
+        Alert.alert('Validation Error', 'Purpose is required.');
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      try {
+        const appointmentData = {
+                startAt: dayjs(newAppt.startDate)
+                    .set('hour', newAppt.startTime.getHours())
+                    .set('minute', newAppt.startTime.getMinutes())
+                    .toISOString(),
+                endAt: dayjs(newAppt.startDate)
+                    .set('hour', newAppt.endTime.getHours())
+                    .set('minute', newAppt.endTime.getMinutes())
+                    .toISOString(),
+                purpose: newAppt.purpose,
+                patientNhi: nhi
+        };
+
+        const response = await axiosApi.post('appointments/create', appointmentData);
+
+        if (response.status === 201 || response.status === 200) {
+          Alert.alert('Success', 'Appointment added successfully.');
+          setShowAddModal(false);
+          resetForm();
+          loadAppointments(); // Refresh the appointment list
+        }
+      } catch (error) {
+        console.error('Error adding appointment:', error);
+        Alert.alert('Error', 'Failed to add appointment. Please try again.');
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+
+    const resetForm = () => {
+      setNewAppt({
+        startDate: new Date(),
+        startTime: new Date(),
+        endTime: new Date(new Date().getTime() + 30 * 60000),
+        purpose: '',
+        notes: ''
+      });
+    }
+
     const apptDateKey = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('YYYY-MM-DD') : '');
     const timeLabel = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('h:mm A') : '--');
 
@@ -345,12 +413,113 @@ const ClinicScreen = ({navigation, route}) => {
                     </ScrollView>
                 </View>
             </Modal>
+
+              {/* POP-up window for adding new appointment */}  
+
+            <Modal
+            visible={showAddModal}
+            transparent
+            animationType="slide"
+            onRequestClose={() => setShowAddModal(false)}>
+              <Pressable style={styles.modalBackdrop} onPress={() => setShowAddModal(false)}/>
+                <View style={styles.modalContainer}>
+                  <View style={styles.modalHeader}>
+                    <Text style={styles.modalTitle}>Add New Appointment</Text>
+                    <TouchableOpacity style={styles.modalCloseButton} onPress={() => setShowAddModal(false)}>
+                      <Text style={styles.modalCloseText}>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <ScrollView contentContainerStyle={styles.modalContent}>
+                    <View style={styles.formGroup}>
+                      <Text style={styles.label}>Date:</Text>
+                      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
+                        <Text>{dayjs(newAppt.startDate).format('YYYY-MM-DD')}</Text>
+                      </TouchableOpacity>
+                      {showDatePicker && (
+                        <DateTimePicker
+                          value={newAppt.startDate}
+                          mode="date"
+                          display="default"
+                          onChange={(event, selectedDate) => {
+                            setShowDatePicker(false);
+                            if (selectedDate) {
+                              setNewAppt({...newAppt, startDate: selectedDate});
+                            }
+                          }}
+                        />
+                      )}
+                      </View>
+
+                      <View style={styles.formGroup}>
+                        <Text style={styles.label}>Start Time:</Text>
+                        <TouchableOpacity onPress={() => setShowStartTimePicker(true)} style={styles.input}>
+                          <Text>{dayjs(newAppt.startTime).format('h:mm A')}</Text>
+                        </TouchableOpacity>
+                        {showStartTimePicker && (
+                          <DateTimePicker
+                            value={newAppt.startTime}
+                            mode="time"
+                            display="default"
+                            onChange={(event, selectedTime) => {
+                              setShowStartTimePicker(false);
+                              if (selectedTime) {
+                                setNewAppt({...newAppt, startTime: selectedTime});
+                              }
+                            }}
+                          />
+                        )}
+                        </View>
+                        
+                        <View style={styles.formGroup}>
+                          <Text style={styles.label}>End Time:</Text>
+                          <TouchableOpacity onPress={() => setShowEndTimePicker(true)} style={styles.input}>
+                            <Text>{dayjs(newAppt.endTime).format('h:mm A')}</Text>
+                          </TouchableOpacity>
+                          {showEndTimePicker && (
+                            <DateTimePicker
+                              value={newAppt.endTime}
+                              mode="time"
+                              display="default"
+                              onChange={(event, selectedTime) => {
+                                setShowEndTimePicker(false);
+                                if (selectedTime) {
+                                  setNewAppt({...newAppt, endTime: selectedTime});
+                                }
+                              }}
+                            />
+                          )}
+                          </View>
+
+                          <View style={styles.formGroup}>
+                            <Text style={styles.label}>Purpose:</Text>
+                            <TextInput
+                              style={styles.input}
+                              value={newAppt.purpose}
+                              onChangeText={(text) => setNewAppt({...newAppt, purpose: text})}
+                              placeholder="Enter appointment purpose"
+                            />
+                            </View>
+
+                            <TouchableOpacity
+                              style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
+                              onPress={handleNewAppt}
+                              disabled={isSubmitting}>
+                                {isSubmitting ? (
+                                  <ActivityIndicator color="#fff"/>
+                                ) : (
+                                  <Text style={styles.submitButtonText}>Submit</Text>
+                                )}
+                              </TouchableOpacity>
+                              </ScrollView>
+                              </View>
+            </Modal>
             {/* Floating Action Button */}
             <TouchableOpacity
                 style={styles.fab}
                 onPress={() => {
                     // Handle add appointment action
-                    console.log('Add appointment pressed');
+                    handleNewAppt();
+                    setShowAddModal(true);
                 }}
             >
                 <MaterialIcons name="add" size={24} color="#ffffff"/>
