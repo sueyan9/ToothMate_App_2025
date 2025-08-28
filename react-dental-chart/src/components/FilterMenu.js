@@ -13,6 +13,7 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
     borderRadius: '20px',
     cursor: 'pointer',
     marginRight: 10,
+    marginBottom: 0,
     fontWeight: 'bold',
     transition: 'all 0.3s ease-in-out',
     outline: 'none',
@@ -94,16 +95,18 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
 
   return (
     <div className={`filter-menu ${isOpen ? 'active' : ''}`}>
-      <div className="filter-title">☰ Select Treatments</div>
+      {/*<div className="filter-title">☰ Select Treatments</div>*/}
 
       <div style={{
         display: 'flex',
         flexDirection: 'row',
-        marginBottom: 16,
+        marginBottom: -10,
         overflowX: 'auto', // Allows horizontal scrolling
         whiteSpace: 'nowrap', // Prevents buttons from wrapping
-        paddingBottom: 10 // Adds space for the scrollbar
+        paddingBottom: 10 ,// Adds space for the scrollbar
+        justifyContent: 'center'
       }}>
+        <div className="time-period-filters">
         <button
           style={getFilterStyle('all')}
           onClick={() => handleTimePeriodSelect('all')}
@@ -126,8 +129,10 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
           Future
         </button>
       </div>
+      </div>
 
-
+      <div className="treatment-filters">
+        <div className="filter-grid">
       {TREATMENTS.map(item => {
         const isSelected = selected.includes(item.key);
         const itemStyle = getTreatmentItemStyle(item.key);
@@ -159,7 +164,11 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
           </div>
         );
       })}
+        </div>
+      </div>
 
+
+      <div className="action-buttons">
       <div className="filter-item" onClick={() => onSelect('all')}>
         <span className="filter-label" style={{ color: selected.length !== 0 ? '#333' : '#656B69' }}>
           Show All Treatments
@@ -171,5 +180,7 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
         </span>
       </div>
     </div>
+    </div>
+
   );
 }

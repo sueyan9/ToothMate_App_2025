@@ -123,6 +123,12 @@ p {
   height: 100vh;
   overflow: hidden;
 }
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
 
 .main-3d {
   position: relative;
@@ -163,22 +169,35 @@ canvas {
   height: 100% !important;
   display: block;
 }
-
-.filter-menu {
-  position: absolute;
-  left: 0;
-  top: 0;
+.filter-menu-container {
+  flex: 0 0 auto;
   background: #FFFDF6;
-  color: #656B69;
-  z-index: 10;
-  width: 180px;
-  height: 100vh !important;
-
-  padding: 32px;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
 }
 
+.filter-menu {
+  position: relative;
+  background: #FFFDF6;
+  color: #656B69;
+  width: 100%;
+  height: auto;
+  padding: 16px 10px;
+  margin: 0;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+
+}
+.filter-row {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-bottom: 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px;
+}
 .filter-menu.active {
   transform: translateX(0);
 
@@ -192,22 +211,75 @@ canvas {
 }
 .filter-item {
   display: flex;
+  flex-direction: row; /*  */
   align-items: center;
-  margin-bottom: 16px;
   cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  width: 100%; /* 占满网格单元格 */
+  justify-content: flex-start; /* 左对齐内容 */
+
 }
 .filter-label {
-  font-size: 16px;
+  font-size: 14px;
+  white-space: nowrap;
+  text-align: left;
 }
-
+.treatment-filters {
+  margin-top:0;
+  margin-bottom: 0;
+  padding: 15px 0; /* add space on right  */
+  width: 100%;
+}
 .treatment-list {
   list-style-type: none;
   padding: 0;
-  margin: 0;
+  margin-bottom: 2px;
 }
 
 .treatment-item {
-  padding: 10px;
-  margin: 5px 0;
+  padding: 0;
   border-radius: 4px;
+}
+
+/*  flexbox grid */
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px 2px; /* 行间距16px，列间距20px */
+  justify-items: start;
+  align-items: center;
+  max-width: 100%;
+  padding: 0;
+}
+
+/* button display grid  */
+.action-buttons {
+  display: flex;
+  gap: 16px; /* 减少按钮间距 */
+  justify-content: center;
+  align-items: center;
+  margin-top: 0px; /* 减少顶部边距 */
+  padding: 0 20px;
+}
+.filter-menu-container {
+  flex: 0 0 auto;
+  background: #FFFDF6;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+  width: 100%;
+  height: auto; /* auto height */
+  margin-bottom: 60px;
+  padding-bottom: 20px;
+}
+.time-period-filters {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-bottom: 2px;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
 }
