@@ -126,7 +126,7 @@ const ClinicScreen = () => {
               textDisabledColor: '#d9e1e8',
               dotColor: '#00adf5',
               selectedDotColor: '#ffffff',
-              arrowColor: 'orange',
+              arrowColor: '#875B51',
               disabledArrowColor: '#d9e1e8',
               monthTextColor: 'blue',
               indicatorColor: 'blue',
