@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     marginHorizontal: 10,
     marginTop: 10,
-    borderRadius: 10,
+    borderRadius: 16,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: {
@@ -21,6 +21,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    padding: 10,
+    overflow: 'hidden',
   },
   contentContainer: {
     flex: 1,

@@ -138,7 +138,7 @@ const ClinicScreen = () => {
               textDayHeaderFontWeight: '300',
               textDayFontSize: 16,
               textMonthFontSize: 16,
-              textDayHeaderFontSize: 13
+              textDayHeaderFontSize: 13,
             }}
           />
         </View>
