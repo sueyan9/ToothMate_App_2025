@@ -1,7 +1,5 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import styles from './styles';
 
@@ -73,6 +71,16 @@ const EducationContentScreen = ({ route }) => {
 
     const [searchText, setSearchText] = useState('');
 
+    useEffect(() => {
+        const treatment = route?.params?.treatment;
+        if (!treatment) return;
+
+        const topic = TREATMENT_TO_TOPIC[treatment] || 'Dental Hygiene';
+        const matchedContent = educationData.find(item => item.topic === topic);
+
+        openContent(matchedContent);
+    }, [route?.params?.treatment, educationData]);
+
     // Individual content view
     const individualContent = contentId ? educationData.find(content => content._id === contentId) : null;
     if (!isFilterView && individualContent) {
@@ -122,21 +130,6 @@ const EducationContentScreen = ({ route }) => {
                     </View>
                 </ScrollView>
             </View>
-        );
-    }
-
-    if (!isFilterView && !individualContent) {
-        return (
-            <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container}>
-                <TouchableOpacity 
-                    onPress={() => navigation.goBack()} 
-                    style={styles.closeButton}
-                    testID="close-button-error"
-                >
-                    <MaterialIcons name="close" size={24} color="#875B51" />
-                </TouchableOpacity>
-                <Text style={styles.errorText}>Content not found</Text>
-            </LinearGradient>
         );
     }
 

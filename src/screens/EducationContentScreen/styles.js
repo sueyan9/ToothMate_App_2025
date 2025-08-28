@@ -141,7 +141,7 @@ export default StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    marginTop: 10,
+    marginTop: 52,
     padding: 10,
     marginBottom: 10,
     marginTop: 40,
