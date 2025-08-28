@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import styles from './styles';
 
-const EducationContentScreen = ({ navigation, route }) => {
+const EducationContentScreen = ({ route }) => {
     // Mock data until backend/context is ready
     const [educationData] = useState([
         { _id: '1', topic: 'Dental Hygiene', category: 'Oral Care', recommended: null, content: 
@@ -60,23 +60,16 @@ const EducationContentScreen = ({ navigation, route }) => {
             ]
         },
     ]);
-
-    const TREATMENT_TO_TOPIC = {
-        Filling: 'Tooth Decay',              
-        Cleaning: 'Dental Hygiene',          
-        Checkup: 'Dental Hygiene',           
-        'Root Canal': 'Tooth Decay',         
-        'Crown Placement': 'Tooth Decay',    
-        Extraction: 'Dental Implants',       
-        'Fluoride Treatment': 'Fluoride Treatment',
-        Orthodontics: 'Orthodontics',
-    };
+    const navigation = useNavigation();
 
     // params
     const isFilterView = route.params?.selectedFilter;
     const contentId = route.params?.id;
     const selectedFilter = route.params?.selectedFilter;
     const fromFilter = route.params?.fromFilter; // Track which filter the user came from
+    const quizCompleted = route.params?.quizCompleted || false;
+    const quizScore = route.params?.quizScore || 0;
+    const totalQuestions = route.params?.totalQuestions || 6;
 
     const [searchText, setSearchText] = useState('');
 
@@ -114,6 +107,18 @@ const EducationContentScreen = ({ navigation, route }) => {
                                 </View>
                             ))}
                         </View>
+
+                        {/* Show Take Quiz button only for Dental Hygiene topic */}
+                        {topic === 'Dental Hygiene' && (
+                            <TouchableOpacity 
+                                style={[styles.button, quizCompleted && styles.completedButton]}
+                                onPress={() => navigation.navigate('game')}
+                            >
+                                <Text style={styles.buttonText}>
+                                    {quizCompleted ? `Try Again (${quizScore}/${totalQuestions})` : 'Take Quiz'}
+                                </Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
                 </ScrollView>
             </View>

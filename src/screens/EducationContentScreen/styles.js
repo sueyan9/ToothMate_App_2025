@@ -141,7 +141,7 @@ export default StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    marginTop: 5,
+    marginTop: 10,
     padding: 10,
     marginBottom: 10,
     marginTop: 40,
@@ -215,7 +215,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    paddingTop: 60, // status bar space
+    paddingTop: 80, // status bar space
     justifyContent: 'center', // Add this to center the content
   },
   backButton: {
@@ -224,6 +224,24 @@ export default StyleSheet.create({
   },
   headerTextContainer: {
     flex: 1,
+  },
+  button: {
+    backgroundColor: '#875B51',
+    padding: 16,
+    marginTop: 20,
+    borderRadius: 16,
+    marginHorizontal: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  buttonText: {
+    fontSize: 17,
+    textAlign: 'center',
+    color: '#FFFDF6',
+    fontWeight: '600',
   },
   itemCountText: {
     fontSize: 14,
@@ -238,9 +256,12 @@ export default StyleSheet.create({
   },
   topCornerBackButton: {
     position: 'absolute',
-    top: 60,
+    top: 80,
     left: 20,
     padding: 8,
     zIndex: 1,
+  },
+  completedButton: {
+    backgroundColor: '#4CAF50', // Green color to indicate completion
   },
 });
