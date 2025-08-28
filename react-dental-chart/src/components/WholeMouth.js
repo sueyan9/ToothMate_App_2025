@@ -13,8 +13,20 @@ const CameraController = () => {
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement)
 
-    controls.minDistance = 3
-    controls.maxDistance = 6
+    controls.minDistance = 5;
+    controls.maxDistance = 6;
+
+    controls.minPolarAngle = Math.PI / 3; // 45 degrees
+    controls.maxPolarAngle = Math.PI / 1.6; // 100 degrees
+    
+    controls.minAzimuthAngle = -Math.PI / 4; // -45 degrees
+    controls.maxAzimuthAngle = Math.PI / 4;  // 45 degrees
+    
+    controls.rotateSpeed = 0.8;
+    
+    // Reduce panning speed
+    controls.panSpeed = 1.0;
+    
     return () => {
       controls.dispose()
     }
