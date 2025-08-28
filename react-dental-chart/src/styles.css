@@ -134,12 +134,19 @@ p {
   justify-content: center;
 }
 
-.mouth-instructions {
+ .mouth-instructions {
   margin-top: -40px;
   text-align: center;
   border-radius: 5px;
   max-width: 80%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+.mouth-instructions.offscreen {
+  transform: translate(-50%, calc(100% + 48px));
+  opacity: 0;
+  pointer-events: none;
 }
 
 .mouth-container canvas {
@@ -155,7 +162,7 @@ p {
   justify-content: center;
   width: 80%;
   height: 80%;
-  padding-bottom: 8%;
+  padding-bottom: 1%;
 }
 
 canvas {
