@@ -60,7 +60,17 @@ const EducationContentScreen = ({ route }) => {
         },
     ]);
     const navigation = useNavigation();
-
+    
+    const TREATMENT_TO_TOPIC = {
+        Filling: 'Tooth Decay',              
+        Cleaning: 'Dental Hygiene',          
+        Checkup: 'Dental Hygiene',           
+        'Root Canal': 'Tooth Decay',         
+        'Crown Placement': 'Tooth Decay',    
+        Extraction: 'Dental Implants',       
+        'Fluoride Treatment': 'Fluoride Treatment',
+        Orthodontics: 'Orthodontics',
+    };
     // params
     const isFilterView = route.params?.selectedFilter;
     const contentId = route.params?.id;
