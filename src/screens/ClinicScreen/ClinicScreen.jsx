@@ -124,7 +124,7 @@ const ClinicScreen = ({navigation, route}) => {
                 patientNhi: nhi
         };
 
-        const response = await axiosApi.post('appointments/create', appointmentData);
+        const response = await axiosApi.post('/appointments', appointmentData);
 
         if (response.status === 201 || response.status === 200) {
           Alert.alert('Success', 'Appointment added successfully.');
