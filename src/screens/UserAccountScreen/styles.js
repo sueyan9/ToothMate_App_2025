@@ -256,4 +256,137 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: 40,
   },
+  
+  // Update Details Modal
+  updateModalContent: {
+    backgroundColor: '#FFFDF6',
+    borderRadius: 16,
+    padding: 20,
+    width: '90%',
+    maxHeight: '85%',
+  },
+  formContainer: {
+    maxHeight: 400,
+  },
+  inputGroup: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333333',
+    marginBottom: 8,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#EDDFD3',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: '#FFFFFF',
+    color: '#333333',
+  },
+  multilineInput: {
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#EDDFD3',
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginHorizontal: 8,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666666',
+  },
+  submitButton: {
+    backgroundColor: '#516287',
+  },
+  submitButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  
+  // Confirmation Modal
+  confirmModalContent: {
+    backgroundColor: '#FFFDF6',
+    borderRadius: 16,
+    padding: 24,
+    width: '85%',
+    alignItems: 'center',
+  },
+  confirmHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  confirmTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  confirmMessage: {
+    fontSize: 16,
+    color: '#666666',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  discardButton: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+  },
+  discardButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666666',
+  },
+  saveButton: {
+    backgroundColor: '#28A745',
+  },
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  
+  // Input validation styles
+  validInput: {
+    borderColor: '#28A745',
+    borderWidth: 2,
+  },
+  invalidInput: {
+    borderColor: '#DC3545',
+    borderWidth: 2,
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#DC3545',
+    marginTop: 4,
+    marginLeft: 4,
+  },
+  successText: {
+    fontSize: 14,
+    color: '#28A745',
+    marginTop: 4,
+    marginLeft: 4,
+  },
 });
