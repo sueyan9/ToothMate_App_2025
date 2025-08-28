@@ -16,12 +16,12 @@ const EducationScreen = ({ navigation }) => {
 
     const filters = [
         'All', 
+        'Dentist Recommended Readings',
         'Whats Good for My Teeth', 
         'Whats Bad for My Teeth',
         'Treatments', 
         'Conditions', 
-        'Oral Care', 
-        'Dentist Recommended Readings'
+        'Oral Care'
     ];
 
     // Calculate item count for each filter using context data

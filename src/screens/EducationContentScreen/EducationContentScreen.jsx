@@ -1,8 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import styles from './styles';
-import { useNavigation } from '@react-navigation/native';
 
 const EducationContentScreen = ({ route }) => {
     // Mock data until backend/context is ready
@@ -121,7 +121,13 @@ const EducationContentScreen = ({ route }) => {
                         {topic === 'Dental Hygiene' && (
                             <TouchableOpacity 
                                 style={[styles.button, quizCompleted && styles.completedButton]}
-                                onPress={() => navigation.navigate('game')}
+onPress={() =>
+  navigation.replace('game', {
+    contentId: contentId, // optional: pass current content ID
+    fromFilter: selectedFilter,
+  })
+}
+
                             >
                                 <Text style={styles.buttonText}>
                                     {quizCompleted ? `Try Again (${quizScore}/${totalQuestions})` : 'Take Quiz'}

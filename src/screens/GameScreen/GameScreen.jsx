@@ -75,18 +75,21 @@ const GameScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={resetGame}>
           <Text style={styles.buttonText}>Play Again</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => {
-          // Navigate back and pass completion status
-          navigation.navigate('content', { 
-            id: '1', // Dental Hygiene ID
-            fromFilter: 'Oral Care',
-            quizCompleted: true,
-            quizScore: score,
-            totalQuestions: questions.length
-          });
-        }}>
-          <Text style={styles.buttonText}>Back to Learning</Text>
-        </TouchableOpacity>
+       <TouchableOpacity
+  style={styles.button}
+  onPress={() => {
+    navigation.replace('content', {
+      id: '1', // Dental Hygiene ID
+      fromFilter: 'Oral Care',
+      quizCompleted: true,
+      quizScore: score,
+      totalQuestions: questions.length,
+    });
+  }}
+>
+  <Text style={styles.buttonText}>Back to Learning</Text>
+</TouchableOpacity>
+
       </View>
     );
   }
