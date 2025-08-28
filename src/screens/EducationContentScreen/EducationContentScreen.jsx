@@ -2,6 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import styles from './styles';
+import { useNavigation } from '@react-navigation/native';
 
 const EducationContentScreen = ({ route }) => {
     // Mock data until backend/context is ready
