@@ -17,6 +17,26 @@ router.get("/getDentalClinic/:id", (req, res) => {
     .catch((err) => res.status(404).json({ error: "No clinic found" }));
 });
 
+router.get("/getDentalClinics", async (req, res) => {
+  try {
+    // 从 query 里接收 ids 参数，例如 ?ids=1,2,3
+    const ids = (req.query.ids || "")
+        .split(",")
+        .map(id => id.trim())
+        .filter(id => id.length > 0);
+
+    if (ids.length === 0) {
+      return res.status(400).json({ error: "No clinic ids provided" });
+    }
+
+    const clinics = await Clinic.find({ _id: { $in: ids } });
+    res.json(clinics);
+  } catch (err) {
+    console.error("Error fetching clinics:", err.message);
+    res.status(500).json({ error: "Failed to fetch clinics" });
+  }
+});
+
 router.get("/Clinics/:term", (req, res) => {
   const search = req.params.term;
   Clinic.find({ $text: { $search: `${search}` } })
