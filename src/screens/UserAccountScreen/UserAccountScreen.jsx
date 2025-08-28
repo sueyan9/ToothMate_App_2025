@@ -37,19 +37,27 @@ const UserAccountScreen = ({ navigation }) => {
     getDentalClinic, 
     checkCanDisconnect,
     setProfilePicture,
-    updateUser
+    updateUser,
+    changePassword
   } = useContext(UserContext);
   const { signout } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showPasswordConfirmModal, setShowPasswordConfirmModal] = useState(false);
   const [emailStatus, setEmailStatus] = useState(null); // null | 'valid' | 'invalid' | 'exists' | 'invalid_format'
   const [formData, setFormData] = useState({
     email: '',
     address: '',
     emergencyContactName: '',
     emergencyContactPhone: ''
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
   });
 
   useFocusEffect(
@@ -145,6 +153,36 @@ const UserAccountScreen = ({ navigation }) => {
       default:
         return null;
     }
+  };
+
+  // Helper functions for password validation
+  const getPasswordValidationErrors = (password) => {
+    const errors = [];
+    
+    if (password.length > 0 && password.length < 8) {
+      errors.push('Password must be at least 8 characters');
+    }
+    
+    if (password.length > 0 && password === password.toLowerCase()) {
+      errors.push('Must contain at least one capital letter');
+    }
+    
+    if (password.length > 0 && !/\d/.test(password)) {
+      errors.push('Must contain at least one number');
+    }
+    
+    if (password.length > 0 && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)) {
+      errors.push('Must contain at least one special character');
+    }
+    
+    return errors;
+  };
+
+  const isPasswordValid = (password) => {
+    return password.length >= 8 &&
+           password !== password.toLowerCase() &&
+           /\d/.test(password) &&
+           /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
   };
 
   const handleUpdateDetails = () => {
@@ -249,7 +287,106 @@ const UserAccountScreen = ({ navigation }) => {
   };
 
   const handleChangePassword = () => {
-    console.log('Change Password button pressed');
+    setPasswordData({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+    setShowPasswordModal(true);
+  };
+
+  const handlePasswordSubmit = () => {
+    // Validate password fields
+    if (passwordData.currentPassword.trim() === '') {
+      Alert.alert('Error', 'Please enter your current password.');
+      return;
+    }
+    
+    if (passwordData.newPassword.trim() === '') {
+      Alert.alert('Error', 'Please enter a new password.');
+      return;
+    }
+    
+    if (passwordData.newPassword.length < 8) {
+      Alert.alert('Error', 'Password must be at least 8 characters long.');
+      return;
+    }
+    
+    if (passwordData.newPassword === passwordData.newPassword.toLowerCase()) {
+      Alert.alert('Error', 'Password must contain at least one capital letter.');
+      return;
+    }
+    
+    if (!/\d/.test(passwordData.newPassword)) {
+      Alert.alert('Error', 'Password must contain at least one number.');
+      return;
+    }
+    
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(passwordData.newPassword)) {
+      Alert.alert('Error', 'Password must contain at least one special character.');
+      return;
+    }
+    
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      Alert.alert('Error', 'New passwords do not match.');
+      return;
+    }
+    
+    setShowPasswordModal(false);
+    setShowPasswordConfirmModal(true);
+  };
+
+  const handlePasswordCancel = () => {
+    setShowPasswordModal(false);
+    setPasswordData({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+  };
+
+  const handlePasswordConfirmSave = async () => {
+    setShowPasswordConfirmModal(false);
+    
+    try {
+      const result = await changePassword(passwordData.currentPassword, passwordData.newPassword);
+      
+      if (result.success) {
+        Alert.alert(
+          'Success',
+          'Your password has been changed successfully.',
+          [{ text: 'OK' }]
+        );
+        // Reset password data
+        setPasswordData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+      } else {
+        Alert.alert(
+          'Error',
+          result.error || 'Failed to change password. Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        'Error',
+        'An unexpected error occurred. Please try again.',
+        [{ text: 'OK' }]
+      );
+    }
+  };
+
+  const handlePasswordConfirmDiscard = () => {
+    setShowPasswordConfirmModal(false);
+    // Reset password data
+    setPasswordData({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
   };
 
   const handleChangeProfilePicture = () => {
@@ -655,6 +792,127 @@ const UserAccountScreen = ({ navigation }) => {
                 onPress={handleConfirmSave}
               >
                 <Text style={styles.saveButtonText}>Save Changes</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Change Password Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showPasswordModal}
+        onRequestClose={handlePasswordCancel}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.updateModalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Change Password</Text>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={handlePasswordCancel}
+              >
+                <Ionicons name="close" size={24} color="#333333" />
+              </TouchableOpacity>
+            </View>
+            
+            <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Current Password</Text>
+                <TextInput
+                  style={styles.textInput}
+                  value={passwordData.currentPassword}
+                  onChangeText={(text) => setPasswordData({...passwordData, currentPassword: text})}
+                  placeholder="Enter your current password"
+                  secureTextEntry={true}
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>New Password</Text>
+                <TextInput
+                  style={styles.textInput}
+                  value={passwordData.newPassword}
+                  onChangeText={(text) => setPasswordData({...passwordData, newPassword: text})}
+                  placeholder="Enter your new password"
+                  secureTextEntry={true}
+                />
+                {getPasswordValidationErrors(passwordData.newPassword).map((error, index) => (
+                  <Text key={index} style={styles.errorText}>{error}</Text>
+                ))}
+                {passwordData.newPassword.length > 0 && isPasswordValid(passwordData.newPassword) && (
+                  <Text style={styles.successText}>✓ Password meets all requirements</Text>
+                )}
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Confirm New Password</Text>
+                <TextInput
+                  style={styles.textInput}
+                  value={passwordData.confirmPassword}
+                  onChangeText={(text) => setPasswordData({...passwordData, confirmPassword: text})}
+                  placeholder="Confirm your new password"
+                  secureTextEntry={true}
+                />
+                {passwordData.confirmPassword.length > 0 && passwordData.newPassword !== passwordData.confirmPassword && (
+                  <Text style={styles.errorText}>Passwords do not match</Text>
+                )}
+                {passwordData.confirmPassword.length > 0 && passwordData.newPassword === passwordData.confirmPassword && isPasswordValid(passwordData.newPassword) && (
+                  <Text style={styles.successText}>✓ Passwords match</Text>
+                )}
+              </View>
+            </ScrollView>
+
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={handlePasswordCancel}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.submitButton]}
+                onPress={handlePasswordSubmit}
+              >
+                <Text style={styles.submitButtonText}>Change Password</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Password Change Confirmation Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showPasswordConfirmModal}
+        onRequestClose={() => setShowPasswordConfirmModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.confirmModalContent}>
+            <View style={styles.confirmHeader}>
+              <Ionicons name="lock-closed-outline" size={48} color="#516287" />
+              <Text style={styles.confirmTitle}>Confirm Password Change</Text>
+              <Text style={styles.confirmMessage}>
+                Are you sure you want to change your password? You will need to use the new password for future logins.
+              </Text>
+            </View>
+
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.discardButton]}
+                onPress={handlePasswordConfirmDiscard}
+              >
+                <Text style={styles.discardButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.saveButton]}
+                onPress={handlePasswordConfirmSave}
+              >
+                <Text style={styles.saveButtonText}>Change Password</Text>
               </TouchableOpacity>
             </View>
           </View>

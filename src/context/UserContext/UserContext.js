@@ -239,6 +239,31 @@ const updateUser = dispatch => {
   };
 };
 
+const changePassword = dispatch => {
+  return async (currentPassword, newPassword) => {
+    try {
+      const id = await AsyncStorage.getItem('id');
+      
+      const response = await axiosApi.put(`/changePassword/${id}`, {
+        oldPassword: currentPassword,
+        newPassword: newPassword
+      });
+      
+      // If no error is thrown, the password was changed successfully
+      return { success: true };
+    } catch (error) {
+      console.error('Error changing password:', error);
+      
+      // Check if it's a 422 error (invalid current password)
+      if (error.response && error.response.status === 422) {
+        return { success: false, error: error.response.data.error || 'Invalid current password' };
+      }
+      
+      return { success: false, error: 'Failed to change password. Please try again.' };
+    }
+  };
+};
+
 export const { Provider, Context } = createDataContext(
     UserReducer,
     {
@@ -252,6 +277,7 @@ export const { Provider, Context } = createDataContext(
       setProfilePicture,
       getProfilePicture,
       updateUser,
+      changePassword,
     },
     {
       appointments: [],
