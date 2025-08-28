@@ -1,23 +1,23 @@
-import {MaterialIcons} from '@expo/vector-icons';
-import {useEffect, useMemo, useState} from 'react';
-import {
-    SafeAreaView,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
-    Modal,
-    Pressable,
-} from 'react-native';
-import {Calendar} from 'react-native-calendars';
-import axiosApi from '../../api/axios';
+import { MaterialIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import tz from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  Modal,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Calendar } from 'react-native-calendars';
+import axiosApi from '../../api/axios';
+import styles from './styles';
 
 dayjs.extend(utc);
 dayjs.extend(tz);
-import styles from './styles';
 
 const NZ_TZ = 'Pacific/Auckland';
 
@@ -286,14 +286,6 @@ const ClinicScreen = ({navigation, route}) => {
             >
                 {/* half transparent cover,and close on left top corner */}
                 <Pressable
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        backgroundColor: 'rgba(0,0,0,0.35)'
-                    }}
                     style={styles.modalBackdrop}
                     onPress={() => setSelectedAppointment(null)}
                 />
