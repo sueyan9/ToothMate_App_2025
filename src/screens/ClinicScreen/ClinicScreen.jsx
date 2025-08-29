@@ -6,6 +6,7 @@ import utc from 'dayjs/plugin/utc';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Modal,
   Pressable,
   SafeAreaView,
@@ -58,7 +59,7 @@ const ClinicScreen = ({navigation, route}) => {
         let mounted = true;
             setLoading(true);
             try {
-                const res = await axiosApi.get(`/appointments/${nhi}?limit=400`);
+                const res = await axiosApi.get(`/Appointment/${nhi}?limit=400`);
 
                 const appointments = Array.isArray(res.data)
                     ? res.data
@@ -124,7 +125,7 @@ const ClinicScreen = ({navigation, route}) => {
                 patientNhi: nhi
         };
 
-        const response = await axiosApi.post('/appointments', appointmentData);
+        const response = await axiosApi.post('/Appointment', appointmentData);
 
         if (response.status === 201 || response.status === 200) {
           Alert.alert('Success', 'Appointment added successfully.');
