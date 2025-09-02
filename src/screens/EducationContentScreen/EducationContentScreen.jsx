@@ -1,66 +1,124 @@
-import React, { useState } from 'react';
-import { Text, ScrollView, Platform, TextInput, TouchableOpacity, View, Image } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
-import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useState } from 'react';
+import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from '../../context/TranslationContext/useTranslation';
+import styles from './styles';
 
 const EducationContentScreen = ({ route }) => {
+    const { t, translateAndCache, currentLanguage } = useTranslation();
+    const navigation = useNavigation();
+
+    // State to force re-render on language change
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    // Define texts to translate
+    const textsToTranslate = [
+        'Search Educational Readings...',
+        'Content not found',
+        'No results found for your search.',
+        'No items in this category.',
+        'Dental Hygiene',
+        'Oral Care',
+        'Tooth Decay',
+        'Conditions',
+        'Dentist Recommended Readings',
+        'Fluoride Treatment',
+        'Treatments',
+        'Orthodontics',
+        'Dental Implants',
+        'Gum Disease',
+        'Flossing Guide',
+        'Brush teeth twice daily with fluoride toothpaste',
+        'Floss at least once per day',
+        'Replace toothbrush every 3-4 months',
+        'Visit dentist for regular check-ups',
+        'Limit sugary and acidic foods/drinks',
+        "Tooth decay is the destruction of tooth enamel. It's caused by bacteria in your mouth that make acids when they break down sugar.",
+        "Preventing tooth decay involves good oral hygiene and a healthy diet.",
+        "Regular dental check-ups are essential for early detection and treatment.",
+        "Fluoride treatments can help strengthen tooth enamel and make it more resistant to decay.",
+        "Fluoride is a natural mineral that helps strengthen teeth and prevent cavities.",
+        "Professional fluoride treatments are applied by a dentist or dental hygienist.",
+        "They are quick, painless, and highly effective, especially for children and those at high risk of tooth decay.",
+        "Orthodontics is a dental specialty focused on correcting misaligned teeth and jaws.",
+        "Common treatments include braces, clear aligners, and retainers.",
+        "Orthodontic treatment can improve not only the appearance of your smile but also your bite and overall oral health.",
+        "Dental implants are a permanent solution for missing teeth. They are surgically placed in the jawbone.",
+        "They act as a strong foundation for a replacement tooth that looks, feels, and functions like a natural tooth.",
+        "Gum disease, also known as periodontal disease, is an infection of the tissues that hold your teeth in place.",
+        "It is a major cause of tooth loss in adults.",
+        "Symptoms include swollen, red, or bleeding gums. Good oral hygiene is key to prevention.",
+        "Flossing removes plaque and food particles from between your teeth and under your gumline, where a toothbrush can't reach.",
+        "It's recommended to floss at least once a day.",
+        "There are different types of floss and flossing tools available; choose the one that works best for you."
+    ];
+
+    useEffect(() => {
+        // Force re-render when language changes
+        setRefreshKey(prev => prev + 1);
+        
+        // Translate texts when language changes
+        if (currentLanguage !== 'en') {
+            translateAndCache(textsToTranslate);
+        }
+    }, [currentLanguage]);
+
     // Mock data until backend/context is ready
     const [educationData] = useState([
-        { _id: '1', topic: 'Dental Hygiene', category: 'Oral Care', recommended: null, content: 
+        { _id: '1', topic: t('Dental Hygiene'), category: t('Oral Care'), recommended: null, content: 
             [
-                "Brush teeth twice daily with fluoride toothpaste",
-                "Floss at least once per day",
-                "Replace toothbrush every 3-4 months",
-                "Visit dentist for regular check-ups",
-                "Limit sugary and acidic foods/drinks"
+                t("Brush teeth twice daily with fluoride toothpaste"),
+                t("Floss at least once per day"),
+                t("Replace toothbrush every 3-4 months"),
+                t("Visit dentist for regular check-ups"),
+                t("Limit sugary and acidic foods/drinks")
             ]
         },
-        { _id: '2', topic: 'Tooth Decay', category: 'Conditions', recommended: 'Dentist Recommended Readings', content: 
+        { _id: '2', topic: t('Tooth Decay'), category: t('Conditions'), recommended: t('Dentist Recommended Readings'), content: 
             [
-                "Tooth decay is the destruction of tooth enamel. It's caused by bacteria in your mouth that make acids when they break down sugar.",
-                "Preventing tooth decay involves good oral hygiene and a healthy diet.",
-                "Regular dental check-ups are essential for early detection and treatment.",
-                "Fluoride treatments can help strengthen tooth enamel and make it more resistant to decay.",
+                t("Tooth decay is the destruction of tooth enamel. It's caused by bacteria in your mouth that make acids when they break down sugar."),
+                t("Preventing tooth decay involves good oral hygiene and a healthy diet."),
+                t("Regular dental check-ups are essential for early detection and treatment."),
+                t("Fluoride treatments can help strengthen tooth enamel and make it more resistant to decay."),
             ]
         },
-        { _id: '3', topic: 'Fluoride Treatment', category: 'Treatments', recommended: null, content: 
+        { _id: '3', topic: t('Fluoride Treatment'), category: t('Treatments'), recommended: null, content: 
             [
-                "Fluoride is a natural mineral that helps strengthen teeth and prevent cavities.",
-                "Professional fluoride treatments are applied by a dentist or dental hygienist.",
-                "They are quick, painless, and highly effective, especially for children and those at high risk of tooth decay."
+                t("Fluoride is a natural mineral that helps strengthen teeth and prevent cavities."),
+                t("Professional fluoride treatments are applied by a dentist or dental hygienist."),
+                t("They are quick, painless, and highly effective, especially for children and those at high risk of tooth decay.")
             ]
         },
-        { _id: '4', topic: 'Orthodontics', category: 'Treatments', recommended: null, content: 
+        { _id: '4', topic: t('Orthodontics'), category: t('Treatments'), recommended: null, content: 
             [
-                "Orthodontics is a dental specialty focused on correcting misaligned teeth and jaws.",
-                "Common treatments include braces, clear aligners, and retainers.",
-                "Orthodontic treatment can improve not only the appearance of your smile but also your bite and overall oral health."
+                t("Orthodontics is a dental specialty focused on correcting misaligned teeth and jaws."),
+                t("Common treatments include braces, clear aligners, and retainers."),
+                t("Orthodontic treatment can improve not only the appearance of your smile but also your bite and overall oral health.")
             ]
         },
-        { _id: '5', topic: 'Dental Implants', category: 'Treatments', recommended: 'Dentist Recommended Readings', content: 
+        { _id: '5', topic: t('Dental Implants'), category: t('Treatments'), recommended: t('Dentist Recommended Readings'), content: 
             [
-                "Dental implants are a permanent solution for missing teeth. They are surgically placed in the jawbone.",
-                "They act as a strong foundation for a replacement tooth that looks, feels, and functions like a natural tooth."
+                t("Dental implants are a permanent solution for missing teeth. They are surgically placed in the jawbone."),
+                t("They act as a strong foundation for a replacement tooth that looks, feels, and functions like a natural tooth.")
             ]
         },
-        { _id: '6', topic: 'Gum Disease', category: 'Conditions', recommended: 'Dentist Recommended Readings', content: 
+        { _id: '6', topic: t('Gum Disease'), category: t('Conditions'), recommended: t('Dentist Recommended Readings'), content: 
             [
-                "Gum disease, also known as periodontal disease, is an infection of the tissues that hold your teeth in place.",
-                "It is a major cause of tooth loss in adults.",
-                "Symptoms include swollen, red, or bleeding gums. Good oral hygiene is key to prevention."
+                t("Gum disease, also known as periodontal disease, is an infection of the tissues that hold your teeth in place."),
+                t("It is a major cause of tooth loss in adults."),
+                t("Symptoms include swollen, red, or bleeding gums. Good oral hygiene is key to prevention.")
             ]
         },
-        { _id: '7', topic: 'Flossing Guide', category: 'Oral Care', recommended: 'Dentist Recommended Readings', content: 
+        { _id: '7', topic: t('Flossing Guide'), category: t('Oral Care'), recommended: t('Dentist Recommended Readings'), content: 
             [
-                "Flossing removes plaque and food particles from between your teeth and under your gumline, where a toothbrush can't reach.",
-                "It's recommended to floss at least once a day.",
-                "There are different types of floss and flossing tools available; choose the one that works best for you."
+                t("Flossing removes plaque and food particles from between your teeth and under your gumline, where a toothbrush can't reach."),
+                t("It's recommended to floss at least once a day."),
+                t("There are different types of floss and flossing tools available; choose the one that works best for you.")
             ]
         },
     ]);
-    const navigation = useNavigation();
 
     // params
     const isFilterView = route.params?.selectedFilter;
@@ -74,7 +132,7 @@ const EducationContentScreen = ({ route }) => {
     if (!isFilterView && individualContent) {
         const { topic, content, category } = individualContent;
         return (
-            <View style={styles.modalContainer}>
+            <View style={styles.modalContainer} key={refreshKey}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeButton}>
                     <MaterialIcons name="close" size={24} color="#875B51" />
                 </TouchableOpacity>
@@ -100,8 +158,8 @@ const EducationContentScreen = ({ route }) => {
 
     if (!isFilterView && !individualContent) {
         return (
-            <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container}>
-                <Text style={styles.errorText}>Content not found</Text>
+            <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container} key={refreshKey}>
+                <Text style={styles.errorText}>{t('Content not found')}</Text>
             </LinearGradient>
         );
     }
@@ -124,7 +182,7 @@ const EducationContentScreen = ({ route }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container} key={refreshKey}>
             {/* Header */}
             <View style={styles.headerContainer}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -142,7 +200,7 @@ const EducationContentScreen = ({ route }) => {
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
-                    placeholder='Search Educational Readings...'
+                    placeholder={t('Search Educational Readings...')}
                     onChangeText={searchFunction}
                     value={searchText}
                 />
@@ -153,7 +211,7 @@ const EducationContentScreen = ({ route }) => {
                 {searchedAndFilteredContent.length === 0 ? (
                     <View style={styles.emptyContainer}>
                         <Text style={styles.emptyText}>
-                            {searchText ? 'No results found for your search.' : 'No items in this category.'}
+                            {searchText ? t('No results found for your search.') : t('No items in this category.')}
                         </Text>
                     </View>
                 ) : (
