@@ -31,27 +31,19 @@ const EducationContentScreen = ({ route }) => {
     const totalQuestions = route.params?.totalQuestions || 6;
 
     useEffect(() => {
-        getEducationContent();
+        const loadData = async () => {
+            await getEducationContent();
+            await syncFavouritesFromStorage();
+        };
+        loadData();
     }, []);
 
     const favouritePress = async (itemID) => {
         try {
-            console.log('=== FRONTEND DEBUG ===');
-        console.log('Toggling favourite for item:', itemID);
-        console.log('Item ID type:', typeof itemID);
-        console.log('Item ID length:', itemID?.length);
         
-        // Find the actual item in your data to debug
         const item = educationData.find(item => item._id === itemID || item.id === itemID);
-        console.log('Found item in data:', !!item);
-        if (item) {
-            console.log('Item _id:', item._id);
-            console.log('Item id:', item.id);
-            console.log('Item topic:', item.topic);
-        }
         
         await toggleFavourite(itemID);
-        console.log('Successfully toggled favourite');
         }
         catch (err) {
             console.error('Error toggling favourite:', err);
@@ -150,6 +142,7 @@ const EducationContentScreen = ({ route }) => {
     );
 
     const searchFunction = (text) => setSearchText(text);
+    const clearSearch = () => setSearchText('');
 
     const openContent = (content) => {
         // Pass the current filter so we can navigate back to it
@@ -181,6 +174,8 @@ const EducationContentScreen = ({ route }) => {
                 <TextInput
                     style={styles.searchInput}
                     placeholder='Search Educational Readings...'
+                    placeholderTextColor={'#C0CCD6'}
+                    onPress={clearSearch}
                     onChangeText={searchFunction}
                     value={searchText}
                 />
@@ -216,7 +211,7 @@ const EducationContentScreen = ({ route }) => {
                                 </View>
                             )}
                             <TouchableOpacity onPress={() => favouritePress(item._id || item.id)}>
-                                <Entypo name="heart" size={24} style={{color: item.favourite === true ? "#000" : "#A91271"}}/>
+                                <Entypo name="heart" size={24} color={item.favourite === true ? "#000" : "#FF6B6B"} style={styles.favourite}/>
                             </TouchableOpacity>
                         </TouchableOpacity>
                     ))

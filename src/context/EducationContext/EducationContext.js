@@ -1,5 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosApi from '../../api/axios';
 import createDataContext from '../createDataContext';
+
+const FAVOURITES_KEY = 'user_favourites';
 
 const EducationReducer = (state, action) => {
   const { type, payload } = action;
@@ -18,6 +21,14 @@ const EducationReducer = (state, action) => {
             : item
         )
       };
+    case 'update_favourites_from_storage':
+      return {
+        ...state,
+        educationData: state.educationData.map(item => ({
+          ...item,
+          favourite: payload.favouriteIds.includes(item._id)
+        }))
+      };
     case 'update_education_item':
       return {
         ...state,
@@ -35,12 +46,23 @@ const EducationReducer = (state, action) => {
   }
 };
 
-// Get all education content from 'education' collection
 const getEducationContent = dispatch => {
   return async () => {
     try {
       const response = await axiosApi.get('/education');
-      dispatch({ type: 'get_education_content', payload: response.data });
+      const educationData = response.data;
+      
+      const favouriteIds = await getStoredFavourites();
+      
+      const educationDataWithFavourites = educationData.map(item => ({
+        ...item,
+        favourite: favouriteIds.includes(item._id)
+      }));
+      
+      dispatch({ 
+        type: 'get_education_content', 
+        payload: educationDataWithFavourites 
+      });
     } catch (error) {
       console.error('Error fetching education content:', error);
     }
@@ -51,8 +73,6 @@ const getEducationContent = dispatch => {
 const addEducationContent = dispatch => {
   return async (educationItem) => {
     try {
-      // Structure matches your data format:
-      // { _id, topic, category, recommended, favourite, content: [] }
       const response = await axiosApi.post('/education', educationItem);
       dispatch({ type: 'add_education_content', payload: response.data });
       return response.data;
@@ -66,46 +86,76 @@ const addEducationContent = dispatch => {
 // Toggle favourite status for an education item
 const toggleFavourite = dispatch => {
   return async (id) => {
-
     try {
-      const testResponse = await axiosApi.put('/education/test');
-      console.log('Test route response:', testResponse.data);
-    } catch (testError) {
-      console.error('Test route failed:', testError.response?.status);
-    }
-    try {
-      console.log('=== CONTEXT TOGGLE FAVOURITE ===');
-      console.log('Making request to:', `/updateFavourite/${id}`);
-      console.log('Axios baseURL:', axiosApi.baseURL);
-      console.log('Full URL would be:', `${axiosApi.defaults.baseURL}/updateFavourite/${id}`);
-      
-      // Let's also try to make a simple GET request first to test connectivity
-      console.log('Testing basic connectivity...');
-      try {
-        const testResponse = await axiosApi.get('/education');
-        console.log('Basic GET /education works, got', testResponse.data.length, 'items');
-      } catch (testError) {
-        console.error('Basic GET /education failed:', testError.response?.status);
-      }
-      
-      const response = await axiosApi.put(`/updateFavourite/${id}`);
-      console.log('Response status:', response.status);
-      console.log('Response data:', response.data);
+      const newFavourites = await toggleFavouriteInStorage(id);
       
       dispatch({ type: 'toggle_favourite', payload: { id } });
-      return response.data;
+      
+      return { success: true, favouriteIds: newFavourites };
     } catch (error) {
-      console.error('Error toggling favourite:', error.message);
-      console.error('Error response data:', error.response?.data);
-      console.error('Error response status:', error.response?.status);
-      console.error('Request URL that failed:', error.config?.url);
-      console.error('Request method:', error.config?.method);
+      console.error('Error toggling favourite locally:', error);
       throw error;
     }
   };
-};  
+};
 
-// Update education content (topic, category, recommended, content array, etc.)
+const syncFavouritesFromStorage = dispatch => {
+  return async () => {
+    try {
+      const favouriteIds = await getStoredFavourites();
+      
+      dispatch({ 
+        type: 'update_favourites_from_storage', 
+        payload: { favouriteIds } 
+      });
+    } catch (error) {
+      console.error('Error syncing favourites from storage:', error);
+    }
+  };
+};
+
+const getStoredFavourites = async () => {
+  try {
+    const favourites = await AsyncStorage.getItem(FAVOURITES_KEY);
+    if (favourites === null) {
+      await saveFavouritesToStorage([]);
+      return [];
+    }
+    return JSON.parse(favourites);
+  } catch (error) {
+    console.error('Error getting favourites from storage:', error);
+    return [];
+  }
+};
+
+const saveFavouritesToStorage = async (favouriteIds) => {
+  try {
+    await AsyncStorage.setItem(FAVOURITES_KEY, JSON.stringify(favouriteIds));
+  } catch (error) {
+    console.error('Error saving favourites to storage:', error);
+  }
+};
+
+const toggleFavouriteInStorage = async (itemId) => {
+  try {
+    const currentFavourites = await getStoredFavourites();
+    const isCurrentlyFavourite = currentFavourites.includes(itemId);
+    
+    let newFavourites;
+    if (isCurrentlyFavourite) {
+      newFavourites = currentFavourites.filter(id => id !== itemId);
+    } else {
+      newFavourites = [...currentFavourites, itemId];
+    }
+    
+    await saveFavouritesToStorage(newFavourites);
+    return newFavourites;
+  } catch (error) {
+    console.error('Error toggling favourite in storage:', error);
+    throw error;
+  }
+};
+
 const updateEducationContent = dispatch => {
   return async (id, updates) => {
     try {
@@ -119,7 +169,6 @@ const updateEducationContent = dispatch => {
   };
 };
 
-// Delete education content
 const deleteEducationContent = dispatch => {
   return async (id) => {
     try {
@@ -134,7 +183,6 @@ const deleteEducationContent = dispatch => {
   };
 };
 
-// Get education content by category (Oral Care, Conditions, Treatments)
 const getEducationByCategory = dispatch => {
   return async (category) => {
     try {
@@ -147,7 +195,6 @@ const getEducationByCategory = dispatch => {
   };
 };
 
-// Get recommended content (where recommended is not null)
 const getRecommendedContent = dispatch => {
   return async () => {
     try {
@@ -160,7 +207,6 @@ const getRecommendedContent = dispatch => {
   };
 };
 
-// Get favourite content (where favourite is true)
 const getFavouriteContent = dispatch => {
   return async () => {
     try {
@@ -173,7 +219,6 @@ const getFavouriteContent = dispatch => {
   };
 };
 
-// Search education content by topic
 const searchEducationContent = dispatch => {
   return async (searchTerm) => {
     try {
@@ -197,7 +242,8 @@ export const { Provider, Context } = createDataContext(
     getEducationByCategory,
     getRecommendedContent,
     getFavouriteContent,
-    searchEducationContent
+    searchEducationContent,
+    syncFavouritesFromStorage
   },
   { educationData: [], ageSpecificContent: [] }
 );
