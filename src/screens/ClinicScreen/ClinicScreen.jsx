@@ -75,7 +75,7 @@ const ClinicScreen = ({navigation, route}) => {
 
                 let clinicsMap = {};
                 if (clinicIds.length > 0) {
-                    const clinicsRes = await axiosApi.get(`/getDentalClinics?ids=${clinicIds.join(',')}`);
+                    const clinicsRes = await axiosApi.get(`/getMultiClinics?ids=${clinicIds.join(',')}`);
                     clinicsMap = (clinicsRes.data || []).reduce((map, c) => {
                         map[c._id] = c;
                         return map;
