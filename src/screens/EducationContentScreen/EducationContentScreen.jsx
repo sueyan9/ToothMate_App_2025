@@ -11,7 +11,7 @@ import styles from './styles';
 
 const EducationContentScreen = ({ route }) => {
     const { t, translateAndCache, currentLanguage, isLoading } = useTranslation();
-    const navigation = useNavigation();
+    // const navigation = useNavigation(); // Removed duplicate declaration
 
     // State to force re-render on language change
     const [refreshKey, setRefreshKey] = useState(0);
@@ -128,7 +128,7 @@ const EducationContentScreen = ({ route }) => {
                 t("There are different types of floss and flossing tools available; choose the one that works best for you.")
             ]
         },
-    ]);
+    ];
     const navigation = useNavigation();
     
     const TREATMENT_TO_TOPIC = {
