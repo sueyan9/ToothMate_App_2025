@@ -22,6 +22,7 @@ const EducationScreen = ({ navigation }) => {
     // Define texts to translate
     const textsToTranslate = [
         'All',
+        'Dentist Recommended Readings',
         'Whats Good for My Teeth',
         'Whats Bad for My Teeth',
         'Treatments',
@@ -91,11 +92,9 @@ const EducationScreen = ({ navigation }) => {
                             <Text style={styles.topicText}>{filter}</Text>
                             <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51"/>
                         </View>
-                      
+                        
                     </TouchableOpacity>
                 ))}
-
-                {/* Special Cards */}
                 
             </ScrollView>
         </View>

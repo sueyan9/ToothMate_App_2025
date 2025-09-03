@@ -16,7 +16,7 @@ const AppointmentReducer = (state, action) => {
 
 const getAppointmentContent = dispatch => {
   return async () => {
-    const response = await axiosApi.get('/Appointment');
+    const response = await axiosApi.get('/appointment');
 
     dispatch({ type: 'get_appointment_content', payload: response.data });
   };
@@ -24,7 +24,7 @@ const getAppointmentContent = dispatch => {
 
 const getUserAppointments = dispatch => {
   return async nhi => {
-    const response = await axiosApi.get(`/Appointment/${nhi}`);
+    const response = await axiosApi.get(`/appointment/${nhi}`);
 
     dispatch({ type: 'get_user_appointment', payload: response.data });
   };
