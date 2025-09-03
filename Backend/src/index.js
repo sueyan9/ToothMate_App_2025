@@ -15,9 +15,35 @@ const appointmentRoutes = require("./routes/appointmentRoutes");
 const requireAuth = require("./middlewares/requireAuth");
 
 const app = express();
-
+// no case_sensitive
+app.set('case sensitive routing', false);
 // mid-parts
 app.use(express.json());
+// logging
+app.use((req, res, next) => {
+    console.log('[IN]', req.method, req.originalUrl);
+    next();
+});
+function listRoutes(app){
+    const routes = [];
+    app._router.stack.forEach(m=>{
+        if (m.route) {
+            const path = m.route?.path;
+            const methods = Object.keys(m.route?.methods || {}).join(',');
+            routes.push(`${methods.toUpperCase()} ${path}`);
+        } else if (m.name === 'router' && m.handle?.stack) {
+            m.handle.stack.forEach(s=>{
+                const route = s.route;
+                if (route) {
+                    const methods = Object.keys(route.methods || {}).join(',');
+                    routes.push(`${methods.toUpperCase()} ${route.path}`);
+                }
+            });
+        }
+    });
+    console.log('[ROUTES]', routes);
+}
+
 
 // CORS deploy
 app.use((req, res, next) => {
@@ -37,7 +63,7 @@ app.use(authRoutes);
 app.use(educationRoutes);
 app.use(clinicRoutes);
 app.use(appointmentRoutes);
-
+listRoutes(app);
 // check link health
 app.get('/health', (req, res) => {
     res.json({
@@ -59,7 +85,7 @@ mongoose.connect(mongoUri, {
     // use the new writeConcern form
     writeConcern: {
         w: 'majority',
-        wtimeout: 5000
+        wtimeoutMS: 5000
     },
     // setting pool connect
     maxPoolSize: 10,
