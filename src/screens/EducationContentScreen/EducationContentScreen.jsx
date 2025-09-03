@@ -7,8 +7,9 @@ import styles from './styles';
 
 const EducationContentScreen = ({ route }) => {
     
-    const {state, getEducationContent, toggleFavourite} = useContext(EducationContext);
+    const {state, getEducationContent, toggleFavourite, syncFavouritesFromStorage} = useContext(EducationContext);
     const {educationData} = state;
+    const [dataLoaded, setDataLoaded] = useState(false);
     const navigation = useNavigation();
     
     const TREATMENT_TO_TOPIC = {
@@ -33,7 +34,7 @@ const EducationContentScreen = ({ route }) => {
     useEffect(() => {
         const loadData = async () => {
             await getEducationContent();
-            await syncFavouritesFromStorage();
+            setDataLoaded(true);
         };
         loadData();
     }, []);
@@ -64,7 +65,7 @@ const EducationContentScreen = ({ route }) => {
         }
     }, [route?.params?.treatment, educationData]);
 
-    if (!educationData.length) {
+    if (!dataLoaded) {
         return (
             <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
                 <Text>Loading education content...</Text>
@@ -76,6 +77,11 @@ const EducationContentScreen = ({ route }) => {
     const individualContent = contentId ? educationData.find(content => content._id === contentId) : null;
     if (!isFilterView && individualContent) {
         const { topic, content, category } = individualContent;
+
+        console.log('Individual content:', individualContent);
+        console.log('Content type:', typeof content);
+        console.log('Content value:', content);
+        console.log('Is array?', Array.isArray(content));
         
         const handleBackFromContent = () => {
             if (fromFilter) {
@@ -99,6 +105,9 @@ const EducationContentScreen = ({ route }) => {
                         <Text style={styles.contentCategory}>{category}</Text>
                         
                         <View style={styles.contentDetails}>
+                            {console.log('Content loaded:', !!content)}
+                            {console.log('Content length:', content?.length)}
+                            {console.log('First item:', content?.[0])}
                             {content && content.map((point, index) => (
                                 <View key={index} style={styles.detailItem}>
                                     <View style={styles.bulletPoint} />
