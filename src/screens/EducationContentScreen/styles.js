@@ -224,4 +224,9 @@ export default StyleSheet.create({
     color: '#666666',
     marginTop: 2,
   },
+  loadingText: {
+    fontSize: 18,
+    color: '#333333',
+    textAlign: 'center',
+  },
 });

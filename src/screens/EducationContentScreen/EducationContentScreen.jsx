@@ -7,11 +7,12 @@ import { useTranslation } from '../../context/TranslationContext/useTranslation'
 import styles from './styles';
 
 const EducationContentScreen = ({ route }) => {
-    const { t, translateAndCache, currentLanguage } = useTranslation();
+    const { t, translateAndCache, currentLanguage, isLoading } = useTranslation();
     const navigation = useNavigation();
 
     // State to force re-render on language change
     const [refreshKey, setRefreshKey] = useState(0);
+    const [isTranslating, setIsTranslating] = useState(false);
 
     // Define texts to translate
     const textsToTranslate = [
@@ -56,17 +57,23 @@ const EducationContentScreen = ({ route }) => {
     ];
 
     useEffect(() => {
-        // Force re-render when language changes
-        setRefreshKey(prev => prev + 1);
+        const loadTranslations = async () => {
+            // Force re-render when language changes
+            setRefreshKey(prev => prev + 1);
+            
+            // Translate texts when language changes
+            if (currentLanguage !== 'en') {
+                setIsTranslating(true);
+                await translateAndCache(textsToTranslate);
+                setIsTranslating(false);
+            }
+        };
         
-        // Translate texts when language changes
-        if (currentLanguage !== 'en') {
-            translateAndCache(textsToTranslate);
-        }
+        loadTranslations();
     }, [currentLanguage]);
 
-    // Mock data until backend/context is ready
-    const [educationData] = useState([
+    // Mock data until backend/context is ready - recalculated when language changes
+    const educationData = [
         { _id: '1', topic: t('Dental Hygiene'), category: t('Oral Care'), recommended: null, content: 
             [
                 t("Brush teeth twice daily with fluoride toothpaste"),
@@ -118,7 +125,7 @@ const EducationContentScreen = ({ route }) => {
                 t("There are different types of floss and flossing tools available; choose the one that works best for you.")
             ]
         },
-    ]);
+    ];
 
     // params
     const isFilterView = route.params?.selectedFilter;
@@ -171,15 +178,26 @@ const EducationContentScreen = ({ route }) => {
             item.category === selectedFilter || item.recommended === selectedFilter
         );
 
-    const searchedAndFilteredContent = filteredContent.filter(item =>
-        item.topic.toLowerCase().includes(searchText.toLowerCase())
-    );
+    const searchedAndFilteredContent = filteredContent.filter(item => {
+        // Use the translated topic for search
+        const translatedTopic = t(item.topic);
+        return translatedTopic.toLowerCase().includes(searchText.toLowerCase());
+    });
 
     const searchFunction = (text) => setSearchText(text);
 
     const openContent = (content) => {
         navigation.navigate('content', { id: content._id });
     };
+
+    // Show loading state while translations are being loaded
+    if (isTranslating && currentLanguage !== 'en') {
+        return (
+            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]} key={refreshKey}>
+                <Text style={styles.loadingText}>Loading translations...</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container} key={refreshKey}>

@@ -28,11 +28,17 @@ export const useTranslation = () => {
     loadLanguagePreference();
   }, []);
 
+  // Clear local translations when language changes
+  useEffect(() => {
+    setTranslatedTexts({});
+  }, [currentLanguage]);
+
   const t = (text) => {
     if (currentLanguage === 'en') {
       return text;
     }
     
+    // Check context translations first, then local cache
     return translations[currentLanguage]?.[text] || translatedTexts[text] || text;
   };
 
@@ -47,6 +53,8 @@ export const useTranslation = () => {
       texts.forEach((text, index) => {
         newTranslations[text] = translatedResults[index];
       });
+      
+      // Update local state immediately for faster UI updates
       setTranslatedTexts(prev => ({ ...prev, ...newTranslations }));
     } catch (error) {
       console.error('Translation failed:', error);
