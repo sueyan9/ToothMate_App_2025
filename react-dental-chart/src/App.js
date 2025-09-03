@@ -177,32 +177,21 @@ export default function App() {
               exact path="/"
               element={
                 <div className='top-icon'>
-                  {!showMenu && (
-                    <div className='top-icon-text'
-                      onClick={e => {
-                        e.stopPropagation();
-                        setShowMenu(true);
-                      }}
-                    >
-                      ☰
-                    </div>
-                  )}
+                  {/*{!showMenu && (*/}
+                  {/*  <div className='top-icon-text'*/}
+                  {/*    onClick={e => {*/}
+                  {/*      e.stopPropagation();*/}
+                  {/*      setShowMenu(true);*/}
+                  {/*    }}*/}
+                  {/*  >*/}
+                  {/*    ☰*/}
+                  {/*  </div>*/}
+                  {/*)}*/}
                   <div className="container">
-                    <div
-                      className={`filter-menu-container ${showMenu ? 'active' : ''}`}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <FilterMenu
-                        selected={selectedTreatment}
-                        onSelect={handleSelect}
-                        isOpen={showMenu}
-                        activeTimePeriod={activeTimePeriod}
-                        onTimePeriodSelect={handleTimePeriodSelect}
-                      />
-                    </div>
+                   <div className="main-layout">
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
-                      style={{ cursor: showMenu ? 'pointer' : 'default' }}
+                      style={{ cursor:  'default' }}
                     >
                       {currentUser ? (
                         mode === 'child' ? (
@@ -218,8 +207,19 @@ export default function App() {
                         <p>Loading...</p>
                       )}
                     </div>
-
-
+                   <div
+                       className={`filter-menu-container ${showMenu ? 'active' : ''}`}
+                       onClick={(e) => e.stopPropagation()}
+                   >
+                     <FilterMenu
+                         selected={selectedTreatment}
+                         onSelect={handleSelect}
+                         isOpen={showMenu}
+                         activeTimePeriod={activeTimePeriod}
+                         onTimePeriodSelect={handleTimePeriodSelect}
+                     />
+                   </div>
+                   </div>
                   </div>
                 </div>
               }
