@@ -298,6 +298,38 @@ const styles = StyleSheet.create({
         color: '#333',
         flex: 1,
     },
+    formGroup: {
+        marginBottom: 16,
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 8,
+        color: '#333',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 8,
+        padding: 12,
+        fontSize: 16,
+        backgroundColor: '#fff',
+    },
+    submitButton: {
+        backgroundColor: '#00adf5',
+        padding: 16,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    submitButtonDisabled: {
+        backgroundColor: '#ccc',
+    },
+    submitButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
 });
 
 export default styles;

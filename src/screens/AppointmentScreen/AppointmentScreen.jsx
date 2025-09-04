@@ -4,13 +4,12 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { useEffect, useMemo, useState } from 'react';
 import { Platform, ScrollView, Text, View } from 'react-native';
+import { Button } from 'react-native-elements';
 import Spacer from '../../components/Spacer';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import styles from './styles';
 
 global.Buffer = global.Buffer || Buffer.Buffer;
-dayjs.extend(utc);
-dayjs.extend(tz);
 
 const NZ_TZ = 'Pacific/Auckland';
 
@@ -70,7 +69,6 @@ const AppointmentScreen = ({ route }) => {
             <Text style={styles.headingFont}>{t('Appointment Date')}</Text>
           </View>
           <Text style={styles.title}>{displayDate}</Text>
-          <Text style={styles.subtitle}>{displayTime}</Text>
           <Spacer />
 
           <View style={styles.heading}>
@@ -86,17 +84,10 @@ const AppointmentScreen = ({ route }) => {
           <Text style={styles.subtitle}>{clinic?.location || '-'}</Text>
           {!!clinic?.phone && <Text style={styles.subtitle}>{clinic.phone}</Text>}
           <Spacer />
-
           <View style={styles.heading}>
-            <Text style={styles.headingFont}>{t('Purpose')}</Text>
+            <Text style={styles.headingFont}>{t('Dentist's Notes')}</Text>
           </View>
-          <Text style={styles.title}>{purpose || '-'}</Text>
-          <Spacer />
-
-          <View style={styles.heading}>
-            <Text style={styles.headingFont}>{t('Notes')}</Text>
-          </View>
-          <Text style={styles.title}>{notes || '-'}</Text>
+          <Text style={styles.title}>{notes}</Text>
         </View>
       </ScrollView>
   );

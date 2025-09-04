@@ -9,7 +9,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "dev": "HOST=0.0.0.0 nodemon src/index.js"
   },
   "dependencies": {
     "@expo-google-fonts/righteous": "^0.3.0",

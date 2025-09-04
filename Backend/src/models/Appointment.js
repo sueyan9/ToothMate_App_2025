@@ -28,7 +28,7 @@ const appointmentSchema = new mongoose.Schema({
     name: {
       type: String,
       enum: ['Dr. Toothmate', 'Dr. Williams', 'Dr. Chen', 'Dr. Patel', 'Dr. Singh'],
-      required: true,
+      required: false,
     },
   },
   clinic: { type: mongoose.Schema.Types.ObjectId, ref: 'Clinic', required: true },
