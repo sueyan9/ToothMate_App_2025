@@ -264,6 +264,33 @@ const changePassword = dispatch => {
   };
 };
 
+const updateClinic = dispatch => {
+  return async (clinicId) => {
+    try {
+      const id = await AsyncStorage.getItem('id');
+      
+      const response = await axiosApi.put(`/updateUserClinic/${id}`, {
+        clinic: clinicId
+      });
+      
+      if (response.data.error === "") {
+        // Refresh clinic data after successful update
+        const userClinic = await axiosApi.get(`/getUserClinic/${id}`);
+        const clinicID = userClinic.data.clinic;
+        const clinicResponse = await axiosApi.get(`/getDentalClinic/${clinicID}`);
+        dispatch({ type: 'get_clinic', payload: clinicResponse.data.clinic });
+        
+        return { success: true };
+      } else {
+        return { success: false, error: response.data.error };
+      }
+    } catch (error) {
+      console.error('Error updating clinic:', error);
+      return { success: false, error: 'Failed to update clinic. Please try again.' };
+    }
+  };
+};
+
 export const { Provider, Context } = createDataContext(
     UserReducer,
     {
@@ -278,6 +305,7 @@ export const { Provider, Context } = createDataContext(
       getProfilePicture,
       updateUser,
       changePassword,
+      updateClinic,
     },
     {
       appointments: [],

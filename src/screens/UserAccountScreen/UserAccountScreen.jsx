@@ -38,7 +38,8 @@ const UserAccountScreen = ({ navigation }) => {
     checkCanDisconnect,
     setProfilePicture,
     updateUser,
-    changePassword
+    changePassword,
+    updateClinic
   } = useContext(UserContext);
   const { signout } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,7 +48,13 @@ const UserAccountScreen = ({ navigation }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showPasswordConfirmModal, setShowPasswordConfirmModal] = useState(false);
+  const [showClinicModal, setShowClinicModal] = useState(false);
+  const [showClinicConfirmModal, setShowClinicConfirmModal] = useState(false);
+  const [showClinicSuccessModal, setShowClinicSuccessModal] = useState(false);
   const [emailStatus, setEmailStatus] = useState(null); // null | 'valid' | 'invalid' | 'exists' | 'invalid_format'
+  const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
+  const [clinicInfo, setClinicInfo] = useState(null);
+  const [clinicCode, setClinicCode] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     address: '',
@@ -114,6 +121,33 @@ const UserAccountScreen = ({ navigation }) => {
     checkEmail();
   }, [formData.email, details.email]);
 
+  // Live clinic code validation effect
+  useEffect(() => {
+    const checkClinicCode = async () => {
+      if (clinicCode.trim() === '') {
+        setClinicInfo(null);
+        setClinicCodeStatus(null);
+        return;
+      }
+
+      try {
+        const response = await axiosApi.get(`/checkClinicCode/${clinicCode.trim()}`);
+        if (response.data.valid) {
+          setClinicInfo(response.data);
+          setClinicCodeStatus('valid');
+        } else {
+          setClinicInfo(null);
+          setClinicCodeStatus('invalid');
+        }
+      } catch (err) {
+        setClinicInfo(null);
+        setClinicCodeStatus('invalid');
+      }
+    };
+
+    checkClinicCode();
+  }, [clinicCode]);
+
   const formatDate = (dateString) => {
     if (!dateString) return 'Not specified';
     const date = new Date(dateString);
@@ -153,6 +187,24 @@ const UserAccountScreen = ({ navigation }) => {
       default:
         return null;
     }
+  };
+
+  // Helper function to get clinic code input style based on validation status
+  const getClinicCodeInputStyle = () => {
+    if (clinicCodeStatus === 'valid') {
+      return [styles.textInput, styles.validInput];
+    } else if (clinicCodeStatus === 'invalid') {
+      return [styles.textInput, styles.invalidInput];
+    }
+    return styles.textInput;
+  };
+
+  // Helper function to get clinic code error message
+  const getClinicCodeErrorMessage = () => {
+    if (clinicCodeStatus === 'invalid') {
+      return 'Invalid clinic code';
+    }
+    return null;
   };
 
   // Helper functions for password validation
@@ -283,7 +335,10 @@ const UserAccountScreen = ({ navigation }) => {
   };
 
   const handleChangeClinic = () => {
-    console.log('Change Clinic button pressed');
+    setClinicCode('');
+    setClinicInfo(null);
+    setClinicCodeStatus(null);
+    setShowClinicModal(true);
   };
 
   const handleChangePassword = () => {
@@ -387,6 +442,69 @@ const UserAccountScreen = ({ navigation }) => {
       newPassword: '',
       confirmPassword: ''
     });
+  };
+
+  const handleClinicSubmit = () => {
+    // Validate clinic code before proceeding
+    if (clinicCode.trim() === '') {
+      Alert.alert('Error', 'Please enter a clinic code.');
+      return;
+    }
+    
+    if (clinicCodeStatus !== 'valid') {
+      Alert.alert('Error', 'Please enter a valid clinic code.');
+      return;
+    }
+    
+    setShowClinicModal(false);
+    setShowClinicConfirmModal(true);
+  };
+
+  const handleClinicCancel = () => {
+    setShowClinicModal(false);
+    setClinicCode('');
+    setClinicInfo(null);
+    setClinicCodeStatus(null);
+  };
+
+  const handleClinicConfirmSave = async () => {
+    setShowClinicConfirmModal(false);
+    
+    try {
+      const result = await updateClinic(clinicInfo.id);
+      
+      if (result.success) {
+        setShowClinicSuccessModal(true);
+        // Reset clinic data
+        setClinicCode('');
+        setClinicInfo(null);
+        setClinicCodeStatus(null);
+      } else {
+        Alert.alert(
+          'Error',
+          result.error || 'Failed to update clinic. Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        'Error',
+        'An unexpected error occurred. Please try again.',
+        [{ text: 'OK' }]
+      );
+    }
+  };
+
+  const handleClinicConfirmDiscard = () => {
+    setShowClinicConfirmModal(false);
+    // Reset clinic data
+    setClinicCode('');
+    setClinicInfo(null);
+    setClinicCodeStatus(null);
+  };
+
+  const handleClinicSuccessClose = () => {
+    setShowClinicSuccessModal(false);
   };
 
   const handleChangeProfilePicture = () => {
@@ -915,6 +1033,144 @@ const UserAccountScreen = ({ navigation }) => {
                 <Text style={styles.saveButtonText}>Change Password</Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Change Clinic Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showClinicModal}
+        onRequestClose={handleClinicCancel}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.updateModalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Change Clinic</Text>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={handleClinicCancel}
+              >
+                <Ionicons name="close" size={24} color="#333333" />
+              </TouchableOpacity>
+            </View>
+            
+            <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Clinic Code</Text>
+                <TextInput
+                  style={getClinicCodeInputStyle()}
+                  value={clinicCode}
+                  onChangeText={setClinicCode}
+                  placeholder="Enter clinic code"
+                  autoCapitalize="characters"
+                />
+                {getClinicCodeErrorMessage() && (
+                  <Text style={styles.errorText}>{getClinicCodeErrorMessage()}</Text>
+                )}
+                {clinicCodeStatus === 'valid' && clinicInfo && (
+                  <View style={styles.clinicInfoContainer}>
+                    <Text style={styles.successText}>✓ Valid clinic code</Text>
+                    <Text style={styles.clinicInfoTitle}>{clinicInfo.name}</Text>
+                    {clinicInfo.address && (
+                      <Text style={styles.clinicInfoText}>{clinicInfo.address}</Text>
+                    )}
+                    {clinicInfo.phone && (
+                      <Text style={styles.clinicInfoText}>{clinicInfo.phone}</Text>
+                    )}
+                  </View>
+                )}
+              </View>
+            </ScrollView>
+
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={handleClinicCancel}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.submitButton]}
+                onPress={handleClinicSubmit}
+              >
+                <Text style={styles.submitButtonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Clinic Change Confirmation Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showClinicConfirmModal}
+        onRequestClose={() => setShowClinicConfirmModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.confirmModalContent}>
+            <View style={styles.confirmHeader}>
+              <Ionicons name="business-outline" size={48} color="#516287" />
+              <Text style={styles.confirmTitle}>Confirm Clinic Change</Text>
+              <Text style={styles.confirmMessage}>
+                Are you sure you want to change your clinic to:
+              </Text>
+              {clinicInfo && (
+                <View style={styles.clinicConfirmInfo}>
+                  <Text style={styles.clinicConfirmName}>{clinicInfo.name}</Text>
+                  {clinicInfo.address && (
+                    <Text style={styles.clinicConfirmText}>{clinicInfo.address}</Text>
+                  )}
+                </View>
+              )}
+            </View>
+
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.discardButton]}
+                onPress={handleClinicConfirmDiscard}
+              >
+                <Text style={styles.discardButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.saveButton]}
+                onPress={handleClinicConfirmSave}
+              >
+                <Text style={styles.saveButtonText}>Confirm Change</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Clinic Change Success Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showClinicSuccessModal}
+        onRequestClose={() => setShowClinicSuccessModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.successModalContent}>
+            <View style={styles.successHeader}>
+              <Image 
+                source={require('../../../assets/confirm_toothmates.png')} 
+                style={styles.successImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.successTitle}>Your Clinic Request has been Accepted!</Text>
+            </View>
+
+            <TouchableOpacity 
+              style={styles.successCloseButton}
+              onPress={handleClinicSuccessClose}
+            >
+              <Text style={styles.successCloseText}>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

@@ -389,4 +389,81 @@ export default StyleSheet.create({
     marginTop: 4,
     marginLeft: 4,
   },
+  
+  // Clinic update specific styles
+  clinicInfoContainer: {
+    marginTop: 8,
+    padding: 12,
+    backgroundColor: '#F0F8F0',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#28A745',
+  },
+  clinicInfoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginTop: 4,
+  },
+  clinicInfoText: {
+    fontSize: 14,
+    color: '#666666',
+    marginTop: 2,
+  },
+  clinicConfirmInfo: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+    alignItems: 'center',
+    width: '100%',
+  },
+  clinicConfirmName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'center',
+  },
+  clinicConfirmText: {
+    fontSize: 14,
+    color: '#666666',
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  
+  // Success modal styles
+  successModalContent: {
+    backgroundColor: '#FFFDF6',
+    borderRadius: 16,
+    padding: 24,
+    width: '85%',
+    alignItems: 'center',
+  },
+  successHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  successImage: {
+    width: 120,
+    height: 120,
+    marginBottom: 16,
+  },
+  successTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#28A745',
+    textAlign: 'center',
+    lineHeight: 26,
+  },
+  successCloseButton: {
+    backgroundColor: '#516287',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+  },
+  successCloseText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
 });

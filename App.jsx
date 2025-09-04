@@ -13,6 +13,7 @@ import DentalChartScreen from './src/screens/DentalChartScreen';
 import DisconnectChildScreen from './src/screens/DisconnectChildScreen';
 import EducationContentScreen from './src/screens/EducationContentScreen';
 import EducationScreen from './src/screens/EducationScreen';
+import GameScreen from './src/screens/GameScreen/GameScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
@@ -61,8 +62,9 @@ const AccountStack = () => (
 // Education flow navigation
 const EducationStack = () => (
     <Stack.Navigator initialRouteName="Library">
-        <Stack.Screen name="Library" component={EducationScreen}/>
-        <Stack.Screen name="content" component={EducationContentScreen}/>
+        <Stack.Screen name="Library" component={EducationScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="content" component={EducationContentScreen} options={{ headerShown: false }}/>
+       <Stack.Screen name="game" component={GameScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
 
@@ -140,7 +142,7 @@ const MainFlow = () => (
             name="DentalChart"
             component={DentalChartScreen}
             options={{
-                title: 'My Mouth',
+                title: 'Dental Chart',
                 tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
             }}
         />
@@ -149,7 +151,7 @@ const MainFlow = () => (
             name="Bookings"
             component={ClinicStack}
             options={{
-                title: 'Appointments',
+                title: 'Bookings',
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
         />
