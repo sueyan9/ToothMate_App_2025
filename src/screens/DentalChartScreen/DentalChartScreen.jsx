@@ -70,7 +70,7 @@ const DentalChartScreen = () => {
 
       // From ToothInformation.handleViewAppointments (web button):
       if (data?.type === 'VIEW_APPOINTMENTS') {
-        navigation.navigate('Bookings', { screen: 'appointment' });
+        navigation.navigate('Appointment');
         return;
       }
 
