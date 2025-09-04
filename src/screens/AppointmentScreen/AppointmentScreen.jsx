@@ -1,15 +1,16 @@
-import React from 'react';
-import { View, Text, ScrollView, Platform } from 'react-native';
-import { Button } from 'react-native-elements';
-import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
+import dayjs from 'dayjs';
+import React from 'react';
+import { Platform, ScrollView, Text, View } from 'react-native';
+import { Button } from 'react-native-elements';
 import Spacer from '../../components/Spacer';
 import styles from './styles';
 
 global.Buffer = global.Buffer || Buffer.Buffer;
 
 const AppointmentScreen = ({ route, navigation }) => {
-  const { images = [], pdfs = [], date, notes } = route.params.appointment || {};
+  const appointment = route?.params?.appointment || {};
+  const { images = [], pdfs = [], date, notes } = appointment;
 
   const base64images = React.useMemo(
       () => images.map(image => Buffer.from(image.img.data.data).toString('base64')),
