@@ -1,11 +1,11 @@
-import React from 'react';
-import { View, Text, ScrollView, Platform } from 'react-native';
-import { Button } from 'react-native-elements';
-import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
+import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import { useEffect, useMemo, useState } from 'react';
+import { Platform, ScrollView, Text, View } from 'react-native';
 import Spacer from '../../components/Spacer';
+import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import styles from './styles';
 
 global.Buffer = global.Buffer || Buffer.Buffer;
@@ -15,6 +15,32 @@ dayjs.extend(tz);
 const NZ_TZ = 'Pacific/Auckland';
 
 const AppointmentScreen = ({ route }) => {
+  // Translation hook
+  const { t, translateAndCache, currentLanguage } = useTranslation();
+  
+  // State to force re-render on language change
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Define texts to translate
+  const textsToTranslate = [
+    'Appointment Date',
+    'Dentist',
+    'Clinic',
+    'Purpose',
+    'Notes',
+    'Your Appointment'
+  ];
+
+  useEffect(() => {
+    // Force re-render when language changes
+    setRefreshKey(prev => prev + 1);
+    
+    // Translate texts when language changes
+    if (currentLanguage !== 'en') {
+      translateAndCache(textsToTranslate);
+    }
+  }, [currentLanguage]);
+
   const appt = route.params?.appointment || {};
   const {
     startAt,
@@ -37,26 +63,24 @@ const AppointmentScreen = ({ route }) => {
     return `${s} - ${e}`;
   }, [startAt, endAt]);
 
-  const base64pdf = React.useMemo(() => Buffer.from(pdfs[0]?.pdf?.data?.data || '').toString('base64'), [pdfs]);
-
   return (
-      <ScrollView>
+      <ScrollView key={refreshKey}>
         <View style={styles.container}>
           <View style={styles.heading}>
-            <Text style={styles.headingFont}>Appointment Date</Text>
+            <Text style={styles.headingFont}>{t('Appointment Date')}</Text>
           </View>
           <Text style={styles.title}>{displayDate}</Text>
           <Text style={styles.subtitle}>{displayTime}</Text>
           <Spacer />
 
           <View style={styles.heading}>
-            <Text style={styles.headingFont}>Dentist</Text>
+            <Text style={styles.headingFont}>{t('Dentist')}</Text>
           </View>
           <Text style={styles.title}>{dentist?.name || '-'}</Text>
           <Spacer />
 
           <View style={styles.heading}>
-            <Text style={styles.headingFont}>Clinic</Text>
+            <Text style={styles.headingFont}>{t('Clinic')}</Text>
           </View>
           <Text style={styles.title}>{clinic?.name || '-'}</Text>
           <Text style={styles.subtitle}>{clinic?.location || '-'}</Text>
@@ -64,13 +88,13 @@ const AppointmentScreen = ({ route }) => {
           <Spacer />
 
           <View style={styles.heading}>
-            <Text style={styles.headingFont}>Purpose</Text>
+            <Text style={styles.headingFont}>{t('Purpose')}</Text>
           </View>
           <Text style={styles.title}>{purpose || '-'}</Text>
           <Spacer />
 
           <View style={styles.heading}>
-            <Text style={styles.headingFont}>Notes</Text>
+            <Text style={styles.headingFont}>{t('Notes')}</Text>
           </View>
           <Text style={styles.title}>{notes || '-'}</Text>
         </View>
@@ -79,9 +103,9 @@ const AppointmentScreen = ({ route }) => {
 };
 
 // Header Options
-AppointmentScreen.navigationOptions = () => {
+AppointmentScreen.navigationOptions = ({ t }) => {
   return {
-    title: 'Your Appointment',
+    title: t ? t('Your Appointment') : 'Your Appointment',
     headerTintColor: 'black',
     headerBackTitleVisible: false,
     safeAreaInsets: Platform.OS === 'ios' ? { top: 45 } : { top: 30 },

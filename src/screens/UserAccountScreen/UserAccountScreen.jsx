@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import axiosApi from '../../api/axios';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
+import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
 
@@ -31,6 +32,95 @@ const profilePictures = [
 ];
 
 const UserAccountScreen = ({ navigation }) => {
+  // Translation hook
+  const { t, translateAndCache, currentLanguage } = useTranslation();
+  
+  // State to force re-render on language change
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Define texts to translate
+  const textsToTranslate = [
+    'Account Settings',
+    'User Name',
+    'Change Profile Picture',
+    'Personal Information',
+    'First Name',
+    'Last Name',
+    'Date of Birth',
+    'Email',
+    'Address',
+    'Emergency Contact Name',
+    'Emergency Contact Phone',
+    'Medical Information',
+    'NHI Number',
+    'Dental Clinic',
+    'Clinic Address',
+    'Clinic Phone',
+    'Update Your Details',
+    'Change Clinic',
+    'Change Your Password',
+    'Disconnect From Parent',
+    'Sign Out',
+    'Not specified',
+    'None',
+    'Choose Profile Picture',
+    'Enter your email',
+    'Enter your address',
+    'Enter emergency contact name',
+    'Enter emergency contact phone',
+    'Email is available',
+    'Cancel',
+    'Submit',
+    'Confirm Changes',
+    'Are you sure you want to save these changes to your profile?',
+    'Discard Changes',
+    'Save Changes',
+    'Change Password',
+    'Current Password',
+    'New Password',
+    'Confirm New Password',
+    'Enter your current password',
+    'Enter your new password',
+    'Confirm your new password',
+    'Password meets all requirements',
+    'Passwords do not match',
+    'Passwords match',
+    'Confirm Password Change',
+    'Are you sure you want to change your password? You will need to use the new password for future logins.',
+    'Clinic Code',
+    'Enter clinic code',
+    'Valid clinic code',
+    'Confirm Clinic Change',
+    'Are you sure you want to change your clinic to:',
+    'Confirm Change',
+    'Your Clinic Request has been Accepted!',
+    'Close',
+    'Error',
+    'Please enter your email address.',
+    'Please enter a valid email address.',
+    'Email already exists. Please choose a different email.',
+    'Error validating email. Please try again.',
+    'Please wait for email validation to complete.',
+    'Are you sure you want to sign out?',
+    'Password must be at least 8 characters',
+    'Must contain at least one capital letter',
+    'Must contain at least one number',
+    'Must contain at least one special character',
+    'Please enter your current password.',
+    'Please enter a new password.',
+    'Password must be at least 8 characters long.',
+    'Password must contain at least one capital letter.',
+    'Password must contain at least one number.',
+    'Password must contain at least one special character.',
+    'New passwords do not match.',
+    'Please enter a clinic code.',
+    'Please enter a valid clinic code.',
+    'Invalid clinic code',
+    'Please enter a valid email address',
+    'Email already exists',
+    'Error validating email'
+  ];
+
   const { 
     state: { details, clinic, canDisconnect, selectedProfilePicture }, 
     getUser, 
@@ -66,6 +156,16 @@ const UserAccountScreen = ({ navigation }) => {
     newPassword: '',
     confirmPassword: ''
   });
+
+  useEffect(() => {
+    // Force re-render when language changes
+    setRefreshKey(prev => prev + 1);
+    
+    // Translate texts when language changes
+    if (currentLanguage !== 'en') {
+      translateAndCache(textsToTranslate);
+    }
+  }, [currentLanguage]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -179,11 +279,11 @@ const UserAccountScreen = ({ navigation }) => {
   const getEmailErrorMessage = () => {
     switch (emailStatus) {
       case 'invalid_format':
-        return 'Please enter a valid email address';
+        return t('Please enter a valid email address');
       case 'exists':
-        return 'Email already exists';
+        return t('Email already exists');
       case 'invalid':
-        return 'Error validating email';
+        return t('Error validating email');
       default:
         return null;
     }
@@ -202,7 +302,7 @@ const UserAccountScreen = ({ navigation }) => {
   // Helper function to get clinic code error message
   const getClinicCodeErrorMessage = () => {
     if (clinicCodeStatus === 'invalid') {
-      return 'Invalid clinic code';
+      return t('Invalid clinic code');
     }
     return null;
   };
@@ -212,19 +312,19 @@ const UserAccountScreen = ({ navigation }) => {
     const errors = [];
     
     if (password.length > 0 && password.length < 8) {
-      errors.push('Password must be at least 8 characters');
+      errors.push(t('Password must be at least 8 characters'));
     }
     
     if (password.length > 0 && password === password.toLowerCase()) {
-      errors.push('Must contain at least one capital letter');
+      errors.push(t('Must contain at least one capital letter'));
     }
     
     if (password.length > 0 && !/\d/.test(password)) {
-      errors.push('Must contain at least one number');
+      errors.push(t('Must contain at least one number'));
     }
     
     if (password.length > 0 && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)) {
-      errors.push('Must contain at least one special character');
+      errors.push(t('Must contain at least one special character'));
     }
     
     return errors;
@@ -252,27 +352,27 @@ const UserAccountScreen = ({ navigation }) => {
   const handleUpdateSubmit = () => {
     // Validate email before proceeding
     if (formData.email.trim() === '') {
-      Alert.alert('Error', 'Please enter your email address.');
+      Alert.alert(t('Error'), t('Please enter your email address.'));
       return;
     }
     
     if (emailStatus === 'invalid_format') {
-      Alert.alert('Error', 'Please enter a valid email address.');
+      Alert.alert(t('Error'), t('Please enter a valid email address.'));
       return;
     }
     
     if (emailStatus === 'exists') {
-      Alert.alert('Error', 'Email already exists. Please choose a different email.');
+      Alert.alert(t('Error'), t('Email already exists. Please choose a different email.'));
       return;
     }
     
     if (emailStatus === 'invalid') {
-      Alert.alert('Error', 'Error validating email. Please try again.');
+      Alert.alert(t('Error'), t('Error validating email. Please try again.'));
       return;
     }
     
     if (emailStatus !== 'valid' && emailStatus !== null) {
-      Alert.alert('Error', 'Please wait for email validation to complete.');
+      Alert.alert(t('Error'), t('Please wait for email validation to complete.'));
       return;
     }
     
@@ -353,37 +453,37 @@ const UserAccountScreen = ({ navigation }) => {
   const handlePasswordSubmit = () => {
     // Validate password fields
     if (passwordData.currentPassword.trim() === '') {
-      Alert.alert('Error', 'Please enter your current password.');
+      Alert.alert(t('Error'), t('Please enter your current password.'));
       return;
     }
     
     if (passwordData.newPassword.trim() === '') {
-      Alert.alert('Error', 'Please enter a new password.');
+      Alert.alert(t('Error'), t('Please enter a new password.'));
       return;
     }
     
     if (passwordData.newPassword.length < 8) {
-      Alert.alert('Error', 'Password must be at least 8 characters long.');
+      Alert.alert(t('Error'), t('Password must be at least 8 characters long.'));
       return;
     }
     
     if (passwordData.newPassword === passwordData.newPassword.toLowerCase()) {
-      Alert.alert('Error', 'Password must contain at least one capital letter.');
+      Alert.alert(t('Error'), t('Password must contain at least one capital letter.'));
       return;
     }
     
     if (!/\d/.test(passwordData.newPassword)) {
-      Alert.alert('Error', 'Password must contain at least one number.');
+      Alert.alert(t('Error'), t('Password must contain at least one number.'));
       return;
     }
     
     if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(passwordData.newPassword)) {
-      Alert.alert('Error', 'Password must contain at least one special character.');
+      Alert.alert(t('Error'), t('Password must contain at least one special character.'));
       return;
     }
     
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      Alert.alert('Error', 'New passwords do not match.');
+      Alert.alert(t('Error'), t('New passwords do not match.'));
       return;
     }
     
@@ -447,12 +547,12 @@ const UserAccountScreen = ({ navigation }) => {
   const handleClinicSubmit = () => {
     // Validate clinic code before proceeding
     if (clinicCode.trim() === '') {
-      Alert.alert('Error', 'Please enter a clinic code.');
+      Alert.alert(t('Error'), t('Please enter a clinic code.'));
       return;
     }
     
     if (clinicCodeStatus !== 'valid') {
-      Alert.alert('Error', 'Please enter a valid clinic code.');
+      Alert.alert(t('Error'), t('Please enter a valid clinic code.'));
       return;
     }
     
@@ -523,15 +623,15 @@ const UserAccountScreen = ({ navigation }) => {
 
   const handleSignOut = () => {
     Alert.alert(
-      'Sign Out',
-      'Are you sure you want to sign out?',
+      t('Sign Out'),
+      t('Are you sure you want to sign out?'),
       [
         {
-          text: 'Cancel',
+          text: t('Cancel'),
           style: 'cancel',
         },
         {
-          text: 'Sign Out',
+          text: t('Sign Out'),
           style: 'destructive',
           onPress: () => signout(),
         },
@@ -554,7 +654,7 @@ const UserAccountScreen = ({ navigation }) => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Account Settings</Text>
+          <Text style={styles.headerTitle}>{t('Account Settings')}</Text>
         </View>
 
         {/* Profile Picture Section */}
@@ -574,13 +674,13 @@ const UserAccountScreen = ({ navigation }) => {
           <Text style={styles.profileName}>
             {details.firstname && details.lastname
               ? `${details.firstname} ${details.lastname}`
-              : 'User Name'}
+              : t('User Name')}
           </Text>
           <TouchableOpacity 
             style={styles.changeProfileButton}
             onPress={handleChangeProfilePicture}
           >
-            <Text style={styles.changeProfileText}>Change Profile Picture</Text>
+            <Text style={styles.changeProfileText}>{t('Change Profile Picture')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -590,55 +690,55 @@ const UserAccountScreen = ({ navigation }) => {
           <View style={styles.infoCard}>
             <View style={styles.cardHeader}>
               <Ionicons name="person-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>Personal Information</Text>
+              <Text style={styles.cardTitle}>{t('Personal Information')}</Text>
             </View>
             
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>First Name</Text>
+              <Text style={styles.infoLabel}>{t('First Name')}</Text>
               <Text style={styles.infoValue}>
-                {details.firstname || 'Not specified'}
+                {details.firstname || t('Not specified')}
               </Text>
             </View>
             
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Last Name</Text>
+              <Text style={styles.infoLabel}>{t('Last Name')}</Text>
               <Text style={styles.infoValue}>
-                {details.lastname || 'Not specified'}
+                {details.lastname || t('Not specified')}
               </Text>
             </View>
             
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Date of Birth</Text>
+              <Text style={styles.infoLabel}>{t('Date of Birth')}</Text>
               <Text style={styles.infoValue}>
                 {formatDate(details.dob)}
               </Text>
             </View>
             
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Email</Text>
+              <Text style={styles.infoLabel}>{t('Email')}</Text>
               <Text style={styles.infoValue}>
-                {details.email || 'Not specified'}
+                {details.email || t('Not specified')}
               </Text>
             </View>
             
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Address</Text>
+              <Text style={styles.infoLabel}>{t('Address')}</Text>
               <Text style={styles.infoValue}>
-                {details.address || 'None'}
+                {details.address || t('None')}
               </Text>
             </View>
 
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Emergency Contact Name</Text>
+              <Text style={styles.infoLabel}>{t('Emergency Contact Name')}</Text>
               <Text style={styles.infoValue}>
-                {details.emergencyContactName || 'None'}
+                {details.emergencyContactName || t('None')}
               </Text>
             </View>
 
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Emergency Contact Phone</Text>
+              <Text style={styles.infoLabel}>{t('Emergency Contact Phone')}</Text>
               <Text style={styles.infoValue}>
-                {details.emergencyContactPhone || 'None'}
+                {details.emergencyContactPhone || t('None')}
               </Text>
             </View>
             
@@ -650,26 +750,26 @@ const UserAccountScreen = ({ navigation }) => {
           <View style={styles.infoCard}>
             <View style={styles.cardHeader}>
               <Ionicons name="medical-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>Medical Information</Text>
+              <Text style={styles.cardTitle}>{t('Medical Information')}</Text>
             </View>
             
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>NHI Number</Text>
+              <Text style={styles.infoLabel}>{t('NHI Number')}</Text>
               <Text style={styles.infoValue}>
-                {details.nhi || 'Not specified'}
+                {details.nhi || t('Not specified')}
               </Text>
             </View>
             
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Dental Clinic</Text>
+              <Text style={styles.infoLabel}>{t('Dental Clinic')}</Text>
               <Text style={styles.infoValue}>
-                {clinic?.name || 'Not specified'}
+                {clinic?.name || t('Not specified')}
               </Text>
             </View>
             
             {clinic?.address && (
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Clinic Address</Text>
+                <Text style={styles.infoLabel}>{t('Clinic Address')}</Text>
                 <Text style={styles.infoValue}>
                   {clinic.address}
                 </Text>
@@ -678,7 +778,7 @@ const UserAccountScreen = ({ navigation }) => {
             
             {clinic?.phone && (
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Clinic Phone</Text>
+                <Text style={styles.infoLabel}>{t('Clinic Phone')}</Text>
                 <Text style={styles.infoValue}>
                   {clinic.phone}
                 </Text>
@@ -690,7 +790,7 @@ const UserAccountScreen = ({ navigation }) => {
           <View style={styles.infoCard}>
             <View style={styles.cardHeader}>
               <Ionicons name="settings-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>Account Settings</Text>
+              <Text style={styles.cardTitle}>{t('Account Settings')}</Text>
             </View>
             
             <TouchableOpacity 
@@ -698,7 +798,7 @@ const UserAccountScreen = ({ navigation }) => {
               onPress={handleUpdateDetails}
             >
               <Ionicons name="pencil-outline" size={20} color="#516287" />
-              <Text style={styles.actionButtonText}>Update Your Details</Text>
+              <Text style={styles.actionButtonText}>{t('Update Your Details')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
             
@@ -707,7 +807,7 @@ const UserAccountScreen = ({ navigation }) => {
               onPress={handleChangeClinic}
             >
               <Ionicons name="business-outline" size={20} color="#516287" />
-              <Text style={styles.actionButtonText}>Change Clinic</Text>
+              <Text style={styles.actionButtonText}>{t('Change Clinic')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
             
@@ -716,7 +816,7 @@ const UserAccountScreen = ({ navigation }) => {
               onPress={handleChangePassword}
             >
               <Ionicons name="lock-closed-outline" size={20} color="#516287" />
-              <Text style={styles.actionButtonText}>Change Your Password</Text>
+              <Text style={styles.actionButtonText}>{t('Change Your Password')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
 
@@ -727,7 +827,7 @@ const UserAccountScreen = ({ navigation }) => {
               >
                 <Ionicons name="unlink-outline" size={20} color="#DC3545" />
                 <Text style={[styles.actionButtonText, styles.disconnectText]}>
-                  Disconnect From Parent
+                  {t('Disconnect From Parent')}
                 </Text>
                 <Ionicons name="chevron-forward" size={20} color="#DC3545" />
               </TouchableOpacity>
@@ -742,7 +842,7 @@ const UserAccountScreen = ({ navigation }) => {
             onPress={handleSignOut}
           >
             <Ionicons name="log-out-outline" size={24} color="#DC3545" />
-            <Text style={styles.signOutText}>Sign Out</Text>
+            <Text style={styles.signOutText}>{t('Sign Out')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -757,7 +857,7 @@ const UserAccountScreen = ({ navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Choose Profile Picture</Text>
+              <Text style={styles.modalTitle}>{t('Choose Profile Picture')}</Text>
               <TouchableOpacity 
                 style={styles.closeButton}
                 onPress={() => setShowProfileModal(false)}
@@ -799,7 +899,7 @@ const UserAccountScreen = ({ navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.updateModalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Update Your Details</Text>
+              <Text style={styles.modalTitle}>{t('Update Your Details')}</Text>
               <TouchableOpacity 
                 style={styles.closeButton}
                 onPress={handleUpdateCancel}
@@ -810,12 +910,12 @@ const UserAccountScreen = ({ navigation }) => {
             
             <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Email</Text>
+                <Text style={styles.inputLabel}>{t('Email')}</Text>
                 <TextInput
                   style={getEmailInputStyle()}
                   value={formData.email}
                   onChangeText={(text) => setFormData({...formData, email: text})}
-                  placeholder="Enter your email"
+                  placeholder={t('Enter your email')}
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
@@ -823,39 +923,39 @@ const UserAccountScreen = ({ navigation }) => {
                   <Text style={styles.errorText}>{getEmailErrorMessage()}</Text>
                 )}
                 {emailStatus === 'valid' && formData.email.trim() !== '' && (
-                  <Text style={styles.successText}>✓ Email is available</Text>
+                  <Text style={styles.successText}>✓ {t('Email is available')}</Text>
                 )}
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Address</Text>
+                <Text style={styles.inputLabel}>{t('Address')}</Text>
                 <TextInput
                   style={[styles.textInput, styles.multilineInput]}
                   value={formData.address}
                   onChangeText={(text) => setFormData({...formData, address: text})}
-                  placeholder="Enter your address"
+                  placeholder={t('Enter your address')}
                   multiline={true}
                   numberOfLines={3}
                 />
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Emergency Contact Name</Text>
+                <Text style={styles.inputLabel}>{t('Emergency Contact Name')}</Text>
                 <TextInput
                   style={styles.textInput}
                   value={formData.emergencyContactName}
                   onChangeText={(text) => setFormData({...formData, emergencyContactName: text})}
-                  placeholder="Enter emergency contact name"
+                  placeholder={t('Enter emergency contact name')}
                 />
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Emergency Contact Phone</Text>
+                <Text style={styles.inputLabel}>{t('Emergency Contact Phone')}</Text>
                 <TextInput
                   style={styles.textInput}
                   value={formData.emergencyContactPhone}
                   onChangeText={(text) => setFormData({...formData, emergencyContactPhone: text})}
-                  placeholder="Enter emergency contact phone"
+                  placeholder={t('Enter emergency contact phone')}
                   keyboardType="phone-pad"
                 />
               </View>
@@ -866,14 +966,14 @@ const UserAccountScreen = ({ navigation }) => {
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={handleUpdateCancel}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.cancelButtonText}>{t('Cancel')}</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 style={[styles.modalButton, styles.submitButton]}
                 onPress={handleUpdateSubmit}
               >
-                <Text style={styles.submitButtonText}>Submit</Text>
+                <Text style={styles.submitButtonText}>{t('Submit')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -891,9 +991,9 @@ const UserAccountScreen = ({ navigation }) => {
           <View style={styles.confirmModalContent}>
             <View style={styles.confirmHeader}>
               <Ionicons name="checkmark-circle-outline" size={48} color="#516287" />
-              <Text style={styles.confirmTitle}>Confirm Changes</Text>
+              <Text style={styles.confirmTitle}>{t('Confirm Changes')}</Text>
               <Text style={styles.confirmMessage}>
-                Are you sure you want to save these changes to your profile?
+                {t('Are you sure you want to save these changes to your profile?')}
               </Text>
             </View>
 
@@ -902,14 +1002,14 @@ const UserAccountScreen = ({ navigation }) => {
                 style={[styles.modalButton, styles.discardButton]}
                 onPress={handleConfirmDiscard}
               >
-                <Text style={styles.discardButtonText}>Discard Changes</Text>
+                <Text style={styles.discardButtonText}>{t('Discard Changes')}</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 style={[styles.modalButton, styles.saveButton]}
                 onPress={handleConfirmSave}
               >
-                <Text style={styles.saveButtonText}>Save Changes</Text>
+                <Text style={styles.saveButtonText}>{t('Save Changes')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -926,7 +1026,7 @@ const UserAccountScreen = ({ navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.updateModalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Change Password</Text>
+              <Text style={styles.modalTitle}>{t('Change Password')}</Text>
               <TouchableOpacity 
                 style={styles.closeButton}
                 onPress={handlePasswordCancel}
@@ -937,47 +1037,47 @@ const UserAccountScreen = ({ navigation }) => {
             
             <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Current Password</Text>
+                <Text style={styles.inputLabel}>{t('Current Password')}</Text>
                 <TextInput
                   style={styles.textInput}
                   value={passwordData.currentPassword}
                   onChangeText={(text) => setPasswordData({...passwordData, currentPassword: text})}
-                  placeholder="Enter your current password"
+                  placeholder={t('Enter your current password')}
                   secureTextEntry={true}
                 />
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>New Password</Text>
+                <Text style={styles.inputLabel}>{t('New Password')}</Text>
                 <TextInput
                   style={styles.textInput}
                   value={passwordData.newPassword}
                   onChangeText={(text) => setPasswordData({...passwordData, newPassword: text})}
-                  placeholder="Enter your new password"
+                  placeholder={t('Enter your new password')}
                   secureTextEntry={true}
                 />
                 {getPasswordValidationErrors(passwordData.newPassword).map((error, index) => (
                   <Text key={index} style={styles.errorText}>{error}</Text>
                 ))}
                 {passwordData.newPassword.length > 0 && isPasswordValid(passwordData.newPassword) && (
-                  <Text style={styles.successText}>✓ Password meets all requirements</Text>
+                  <Text style={styles.successText}>✓ {t('Password meets all requirements')}</Text>
                 )}
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Confirm New Password</Text>
+                <Text style={styles.inputLabel}>{t('Confirm New Password')}</Text>
                 <TextInput
                   style={styles.textInput}
                   value={passwordData.confirmPassword}
                   onChangeText={(text) => setPasswordData({...passwordData, confirmPassword: text})}
-                  placeholder="Confirm your new password"
+                  placeholder={t('Confirm your new password')}
                   secureTextEntry={true}
                 />
                 {passwordData.confirmPassword.length > 0 && passwordData.newPassword !== passwordData.confirmPassword && (
-                  <Text style={styles.errorText}>Passwords do not match</Text>
+                  <Text style={styles.errorText}>{t('Passwords do not match')}</Text>
                 )}
                 {passwordData.confirmPassword.length > 0 && passwordData.newPassword === passwordData.confirmPassword && isPasswordValid(passwordData.newPassword) && (
-                  <Text style={styles.successText}>✓ Passwords match</Text>
+                  <Text style={styles.successText}>✓ {t('Passwords match')}</Text>
                 )}
               </View>
             </ScrollView>
@@ -987,14 +1087,14 @@ const UserAccountScreen = ({ navigation }) => {
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={handlePasswordCancel}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.cancelButtonText}>{t('Cancel')}</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 style={[styles.modalButton, styles.submitButton]}
                 onPress={handlePasswordSubmit}
               >
-                <Text style={styles.submitButtonText}>Change Password</Text>
+                <Text style={styles.submitButtonText}>{t('Change Password')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -1012,9 +1112,9 @@ const UserAccountScreen = ({ navigation }) => {
           <View style={styles.confirmModalContent}>
             <View style={styles.confirmHeader}>
               <Ionicons name="lock-closed-outline" size={48} color="#516287" />
-              <Text style={styles.confirmTitle}>Confirm Password Change</Text>
+              <Text style={styles.confirmTitle}>{t('Confirm Password Change')}</Text>
               <Text style={styles.confirmMessage}>
-                Are you sure you want to change your password? You will need to use the new password for future logins.
+                {t('Are you sure you want to change your password? You will need to use the new password for future logins.')}
               </Text>
             </View>
 
@@ -1047,7 +1147,7 @@ const UserAccountScreen = ({ navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.updateModalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Change Clinic</Text>
+              <Text style={styles.modalTitle}>{t('Change Clinic')}</Text>
               <TouchableOpacity 
                 style={styles.closeButton}
                 onPress={handleClinicCancel}
@@ -1058,12 +1158,12 @@ const UserAccountScreen = ({ navigation }) => {
             
             <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Clinic Code</Text>
+                <Text style={styles.inputLabel}>{t('Clinic Code')}</Text>
                 <TextInput
                   style={getClinicCodeInputStyle()}
                   value={clinicCode}
                   onChangeText={setClinicCode}
-                  placeholder="Enter clinic code"
+                  placeholder={t('Enter clinic code')}
                   autoCapitalize="characters"
                 />
                 {getClinicCodeErrorMessage() && (
@@ -1071,7 +1171,7 @@ const UserAccountScreen = ({ navigation }) => {
                 )}
                 {clinicCodeStatus === 'valid' && clinicInfo && (
                   <View style={styles.clinicInfoContainer}>
-                    <Text style={styles.successText}>✓ Valid clinic code</Text>
+                    <Text style={styles.successText}>✓ {t('Valid clinic code')}</Text>
                     <Text style={styles.clinicInfoTitle}>{clinicInfo.name}</Text>
                     {clinicInfo.address && (
                       <Text style={styles.clinicInfoText}>{clinicInfo.address}</Text>
@@ -1114,9 +1214,9 @@ const UserAccountScreen = ({ navigation }) => {
           <View style={styles.confirmModalContent}>
             <View style={styles.confirmHeader}>
               <Ionicons name="business-outline" size={48} color="#516287" />
-              <Text style={styles.confirmTitle}>Confirm Clinic Change</Text>
+              <Text style={styles.confirmTitle}>{t('Confirm Clinic Change')}</Text>
               <Text style={styles.confirmMessage}>
-                Are you sure you want to change your clinic to:
+                {t('Are you sure you want to change your clinic to:')}
               </Text>
               {clinicInfo && (
                 <View style={styles.clinicConfirmInfo}>
@@ -1133,14 +1233,14 @@ const UserAccountScreen = ({ navigation }) => {
                 style={[styles.modalButton, styles.discardButton]}
                 onPress={handleClinicConfirmDiscard}
               >
-                <Text style={styles.discardButtonText}>Cancel</Text>
+                <Text style={styles.discardButtonText}>{t('Cancel')}</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 style={[styles.modalButton, styles.saveButton]}
                 onPress={handleClinicConfirmSave}
               >
-                <Text style={styles.saveButtonText}>Confirm Change</Text>
+                <Text style={styles.saveButtonText}>{t('Confirm Change')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -1162,14 +1262,14 @@ const UserAccountScreen = ({ navigation }) => {
                 style={styles.successImage}
                 resizeMode="contain"
               />
-              <Text style={styles.successTitle}>Your Clinic Request has been Accepted!</Text>
+              <Text style={styles.successTitle}>{t('Your Clinic Request has been Accepted!')}</Text>
             </View>
 
             <TouchableOpacity 
               style={styles.successCloseButton}
               onPress={handleClinicSuccessClose}
             >
-              <Text style={styles.successCloseText}>Close</Text>
+              <Text style={styles.successCloseText}>{t('Close')}</Text>
             </TouchableOpacity>
           </View>
         </View>

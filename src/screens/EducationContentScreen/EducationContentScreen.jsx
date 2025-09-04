@@ -1,10 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useState } from 'react';
-import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
-import styles from './styles';
 import { useEffect, useState } from 'react';
 import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import styles from './styles';
