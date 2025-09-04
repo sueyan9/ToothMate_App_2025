@@ -63,6 +63,17 @@ export default function ToothInformation({ toothNumber }) {
     }
   };
 
+  const handleViewAppointments = () => {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'VIEW_APPOINTMENTS',
+        toothName: toothInfo.name,
+        treatments: toothInfo.treatments
+      }));
+      
+    }
+  };
+
   if (!toothInfo) return null;
 
   return (
@@ -106,6 +117,23 @@ export default function ToothInformation({ toothNumber }) {
                     onClick={handleViewEducation}
                   >
                     View Education
+                  </button>
+
+                  {/*  Show appointments button if treatments exist */}
+                  <button
+                    style={{
+                      padding: '10px 20px',
+                      background: '#2196F3',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                      marginTop: '10px',
+                      marginLeft: '10px'
+                    }}
+                    onClick={handleViewAppointments}
+                  >
+                    View Appointments
                   </button>
                 </>
               ) : (

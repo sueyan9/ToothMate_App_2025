@@ -1,43 +1,27 @@
-import React from 'react';
-import { View, Text, ScrollView, Platform } from 'react-native';
-import { Button } from 'react-native-elements';
-import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
-import tz from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+import dayjs from 'dayjs';
+import React from 'react';
+import { Platform, ScrollView, Text, View } from 'react-native';
+import { Button } from 'react-native-elements';
 import Spacer from '../../components/Spacer';
 import styles from './styles';
 
 global.Buffer = global.Buffer || Buffer.Buffer;
-dayjs.extend(utc);
-dayjs.extend(tz);
 
-const NZ_TZ = 'Pacific/Auckland';
+const AppointmentScreen = ({ route, navigation }) => {
+  const appointment = route?.params?.appointment || {};
+  const { images = [], pdfs = [], date, notes } = appointment;
 
-const AppointmentScreen = ({ route }) => {
-  const appt = route.params?.appointment || {};
-  const {
-    startAt,
-    endAt,
-    purpose,
-    notes,
-    dentist = {},
-    clinic = {},
-  } = appt;
-
-  const displayDate = useMemo(
-      () => (startAt ? dayjs(startAt).tz(NZ_TZ).format('DD/MM/YYYY') : '-'),
-      [startAt]
+  const base64images = React.useMemo(
+      () => images.map(image => Buffer.from(image.img.data.data).toString('base64')),
+      [images],
   );
 
-  const displayTime = useMemo(() => {
-    if (!startAt || !endAt) return '-';
-    const s = dayjs(startAt).tz(NZ_TZ).format('h:mm A');
-    const e = dayjs(endAt).tz(NZ_TZ).format('h:mm A');
-    return `${s} - ${e}`;
-  }, [startAt, endAt]);
-
   const base64pdf = React.useMemo(() => Buffer.from(pdfs[0]?.pdf?.data?.data || '').toString('base64'), [pdfs]);
+
+  const displayDate = React.useMemo(() => {
+    return dayjs(date).format('DD/MM/YYYY');
+  }, [date]);
 
   return (
       <ScrollView>
@@ -46,33 +30,31 @@ const AppointmentScreen = ({ route }) => {
             <Text style={styles.headingFont}>Appointment Date</Text>
           </View>
           <Text style={styles.title}>{displayDate}</Text>
-          <Text style={styles.subtitle}>{displayTime}</Text>
           <Spacer />
-
-          <View style={styles.heading}>
-            <Text style={styles.headingFont}>Dentist</Text>
-          </View>
-          <Text style={styles.title}>{dentist?.name || '-'}</Text>
+          {pdfs.length > 0 && (
+              <Button
+                  buttonStyle={styles.button}
+                  containerStyle={styles.buttonContainer}
+                  titleStyle={styles.buttonText}
+                  title="Invoice"
+                  onPress={() => navigation.navigate('invoice', { pdf: base64pdf })}
+              />
+          )}
           <Spacer />
-
-          <View style={styles.heading}>
-            <Text style={styles.headingFont}>Clinic</Text>
-          </View>
-          <Text style={styles.title}>{clinic?.name || '-'}</Text>
-          <Text style={styles.subtitle}>{clinic?.location || '-'}</Text>
-          {!!clinic?.phone && <Text style={styles.subtitle}>{clinic.phone}</Text>}
+          {images.length > 0 && (
+              <Button
+                  buttonStyle={styles.button}
+                  containerStyle={styles.buttonContainer}
+                  titleStyle={styles.buttonText}
+                  title="Images"
+                  onPress={() => navigation.navigate('images', { images: base64images })}
+              />
+          )}
           <Spacer />
-
           <View style={styles.heading}>
-            <Text style={styles.headingFont}>Purpose</Text>
+            <Text style={styles.headingFont}>Dentist's Notes</Text>
           </View>
-          <Text style={styles.title}>{purpose || '-'}</Text>
-          <Spacer />
-
-          <View style={styles.heading}>
-            <Text style={styles.headingFont}>Notes</Text>
-          </View>
-          <Text style={styles.title}>{notes || '-'}</Text>
+          <Text style={styles.title}>{notes}</Text>
         </View>
       </ScrollView>
   );
