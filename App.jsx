@@ -65,7 +65,7 @@ const EducationStack = () => (
     <Stack.Navigator initialRouteName="Library">
         <Stack.Screen name="Library" component={EducationScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="content" component={EducationContentScreen} options={{ headerShown: false }}/>
-       <Stack.Screen name="game" component={GameScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="game" component={GameScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
 
@@ -115,7 +115,6 @@ const MainFlow = () => (
             borderTopRightRadius: 20,
             height: 68,
             position: 'absolute',
-            overflow: 'hidden',
             elevation: 5,
             shadowColor: '#333333',
             shadowOffset: {width: 0, height: -3},

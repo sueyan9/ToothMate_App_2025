@@ -106,6 +106,7 @@ export default StyleSheet.create({
     fontSize: 16,
     color: '#333333',
     flex: 1,
+    marginBottom: 16,
   },
   categoryTag: {
     alignSelf: 'flex-start',
@@ -200,13 +201,13 @@ export default StyleSheet.create({
     marginTop: 24,
   },
   searchInput: {
-    backgroundColor: 'none',
     borderWidth: 2.5,
     borderColor: '#516287',
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
     fontSize: 16,
+    color: '#333333',
   },
 
   // Header (unique to content screen)
@@ -253,4 +254,9 @@ export default StyleSheet.create({
     color: '#333333',
     textAlign: 'center',
   },
+  favourite: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+  }
 });

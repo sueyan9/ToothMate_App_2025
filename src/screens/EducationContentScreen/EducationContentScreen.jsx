@@ -1,131 +1,15 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useTranslation } from '../../context/TranslationContext/useTranslation';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Context as EducationContext } from '../../context/EducationContext/EducationContext';
 import styles from './styles';
 
 const EducationContentScreen = ({ route }) => {
-    const { t, translateAndCache, currentLanguage, isLoading } = useTranslation();
-    // const navigation = useNavigation(); // Removed duplicate declaration
-
-    // State to force re-render on language change
-    const [refreshKey, setRefreshKey] = useState(0);
-    const [isTranslating, setIsTranslating] = useState(false);
-
-    // Define texts to translate
-    const textsToTranslate = [
-        'Search Educational Readings...',
-        'Content not found',
-        'No results found for your search.',
-        'No items in this category.',
-        'Dental Hygiene',
-        'Oral Care',
-        'Tooth Decay',
-        'Conditions',
-        'Dentist Recommended Readings',
-        'Fluoride Treatment',
-        'Treatments',
-        'Orthodontics',
-        'Dental Implants',
-        'Gum Disease',
-        'Flossing Guide',
-        'Brush teeth twice daily with fluoride toothpaste',
-        'Floss at least once per day',
-        'Replace toothbrush every 3-4 months',
-        'Visit dentist for regular check-ups',
-        'Limit sugary and acidic foods/drinks',
-        "Tooth decay is the destruction of tooth enamel. It's caused by bacteria in your mouth that make acids when they break down sugar.",
-        "Preventing tooth decay involves good oral hygiene and a healthy diet.",
-        "Regular dental check-ups are essential for early detection and treatment.",
-        "Fluoride treatments can help strengthen tooth enamel and make it more resistant to decay.",
-        "Fluoride is a natural mineral that helps strengthen teeth and prevent cavities.",
-        "Professional fluoride treatments are applied by a dentist or dental hygienist.",
-        "They are quick, painless, and highly effective, especially for children and those at high risk of tooth decay.",
-        "Orthodontics is a dental specialty focused on correcting misaligned teeth and jaws.",
-        "Common treatments include braces, clear aligners, and retainers.",
-        "Orthodontic treatment can improve not only the appearance of your smile but also your bite and overall oral health.",
-        "Dental implants are a permanent solution for missing teeth. They are surgically placed in the jawbone.",
-        "They act as a strong foundation for a replacement tooth that looks, feels, and functions like a natural tooth.",
-        "Gum disease, also known as periodontal disease, is an infection of the tissues that hold your teeth in place.",
-        "It is a major cause of tooth loss in adults.",
-        "Symptoms include swollen, red, or bleeding gums. Good oral hygiene is key to prevention.",
-        "Flossing removes plaque and food particles from between your teeth and under your gumline, where a toothbrush can't reach.",
-        "It's recommended to floss at least once a day.",
-        "There are different types of floss and flossing tools available; choose the one that works best for you."
-    ];
-
-    useEffect(() => {
-        const loadTranslations = async () => {
-            // Force re-render when language changes
-            setRefreshKey(prev => prev + 1);
-            
-            // Translate texts when language changes
-            if (currentLanguage !== 'en') {
-                setIsTranslating(true);
-                await translateAndCache(textsToTranslate);
-                setIsTranslating(false);
-            }
-        };
-        
-        loadTranslations();
-    }, [currentLanguage]);
-
-    // Mock data until backend/context is ready - recalculated when language changes
-    const educationData = [
-        { _id: '1', topic: t('Dental Hygiene'), category: t('Oral Care'), recommended: null, content: 
-            [
-                t("Brush teeth twice daily with fluoride toothpaste"),
-                t("Floss at least once per day"),
-                t("Replace toothbrush every 3-4 months"),
-                t("Visit dentist for regular check-ups"),
-                t("Limit sugary and acidic foods/drinks")
-            ]
-        },
-        { _id: '2', topic: t('Tooth Decay'), category: t('Conditions'), recommended: t('Dentist Recommended Readings'), content: 
-            [
-                t("Tooth decay is the destruction of tooth enamel. It's caused by bacteria in your mouth that make acids when they break down sugar."),
-                t("Preventing tooth decay involves good oral hygiene and a healthy diet."),
-                t("Regular dental check-ups are essential for early detection and treatment."),
-                t("Fluoride treatments can help strengthen tooth enamel and make it more resistant to decay."),
-            ]
-        },
-        { _id: '3', topic: t('Fluoride Treatment'), category: t('Treatments'), recommended: null, content: 
-            [
-                t("Fluoride is a natural mineral that helps strengthen teeth and prevent cavities."),
-                t("Professional fluoride treatments are applied by a dentist or dental hygienist."),
-                t("They are quick, painless, and highly effective, especially for children and those at high risk of tooth decay.")
-            ]
-        },
-        { _id: '4', topic: t('Orthodontics'), category: t('Treatments'), recommended: null, content: 
-            [
-                t("Orthodontics is a dental specialty focused on correcting misaligned teeth and jaws."),
-                t("Common treatments include braces, clear aligners, and retainers."),
-                t("Orthodontic treatment can improve not only the appearance of your smile but also your bite and overall oral health.")
-            ]
-        },
-        { _id: '5', topic: t('Dental Implants'), category: t('Treatments'), recommended: t('Dentist Recommended Readings'), content: 
-            [
-                t("Dental implants are a permanent solution for missing teeth. They are surgically placed in the jawbone."),
-                t("They act as a strong foundation for a replacement tooth that looks, feels, and functions like a natural tooth.")
-            ]
-        },
-        { _id: '6', topic: t('Gum Disease'), category: t('Conditions'), recommended: t('Dentist Recommended Readings'), content: 
-            [
-                t("Gum disease, also known as periodontal disease, is an infection of the tissues that hold your teeth in place."),
-                t("It is a major cause of tooth loss in adults."),
-                t("Symptoms include swollen, red, or bleeding gums. Good oral hygiene is key to prevention.")
-            ]
-        },
-        { _id: '7', topic: t('Flossing Guide'), category: t('Oral Care'), recommended: t('Dentist Recommended Readings'), content: 
-            [
-                t("Flossing removes plaque and food particles from between your teeth and under your gumline, where a toothbrush can't reach."),
-                t("It's recommended to floss at least once a day."),
-                t("There are different types of floss and flossing tools available; choose the one that works best for you.")
-            ]
-        },
-    ];
+    
+    const {state, getEducationContent, toggleFavourite, syncFavouritesFromStorage} = useContext(EducationContext);
+    const {educationData} = state;
+    const [dataLoaded, setDataLoaded] = useState(false);
     const navigation = useNavigation();
     
     const TREATMENT_TO_TOPIC = {
@@ -147,22 +31,57 @@ const EducationContentScreen = ({ route }) => {
     const quizScore = route.params?.quizScore || 0;
     const totalQuestions = route.params?.totalQuestions || 6;
 
+    useEffect(() => {
+        const loadData = async () => {
+            await getEducationContent();
+            setDataLoaded(true);
+        };
+        loadData();
+    }, []);
+
+    const favouritePress = async (itemID) => {
+        try {
+        
+        const item = educationData.find(item => item._id === itemID || item.id === itemID);
+        
+        await toggleFavourite(itemID);
+        }
+        catch (err) {
+            console.error('Error toggling favourite:', err);
+        }
+    };
+
     const [searchText, setSearchText] = useState('');
 
     useEffect(() => {
         const treatment = route?.params?.treatment;
-        if (!treatment) return;
+        if (!treatment || !educationData.length) return;
 
         const topic = TREATMENT_TO_TOPIC[treatment] || 'Dental Hygiene';
         const matchedContent = educationData.find(item => item.topic === topic);
 
-        openContent(matchedContent);
+        if (matchedContent) {
+            openContent(matchedContent);
+        }
     }, [route?.params?.treatment, educationData]);
+
+    if (!dataLoaded) {
+        return (
+            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text>Loading education content...</Text>
+            </View>
+        );
+    }
 
     // Individual content view
     const individualContent = contentId ? educationData.find(content => content._id === contentId) : null;
     if (!isFilterView && individualContent) {
         const { topic, content, category } = individualContent;
+
+        console.log('Individual content:', individualContent);
+        console.log('Content type:', typeof content);
+        console.log('Content value:', content);
+        console.log('Is array?', Array.isArray(content));
         
         const handleBackFromContent = () => {
             if (fromFilter) {
@@ -186,7 +105,10 @@ const EducationContentScreen = ({ route }) => {
                         <Text style={styles.contentCategory}>{category}</Text>
                         
                         <View style={styles.contentDetails}>
-                            {content.map((point, index) => (
+                            {console.log('Content loaded:', !!content)}
+                            {console.log('Content length:', content?.length)}
+                            {console.log('First item:', content?.[0])}
+                            {content && content.map((point, index) => (
                                 <View key={index} style={styles.detailItem}>
                                     <View style={styles.bulletPoint} />
                                     <Text style={styles.detailText}>{point}</Text>
@@ -198,12 +120,12 @@ const EducationContentScreen = ({ route }) => {
                         {topic === 'Dental Hygiene' && (
                             <TouchableOpacity 
                                 style={[styles.button, quizCompleted && styles.completedButton]}
-onPress={() =>
-  navigation.replace('game', {
-    contentId: contentId, // optional: pass current content ID
-    fromFilter: selectedFilter,
-  })
-}
+                                    onPress={() =>
+                                        navigation.replace('game', {
+                                            contentId: contentId, // optional: pass current content ID
+                                            fromFilter: selectedFilter,
+                                        })
+                                    }
 
                             >
                                 <Text style={styles.buttonText}>
@@ -239,6 +161,7 @@ onPress={() =>
     });
 
     const searchFunction = (text) => setSearchText(text);
+    const clearSearch = () => setSearchText('');
 
     const openContent = (content) => {
         // Pass the current filter so we can navigate back to it
@@ -278,7 +201,9 @@ onPress={() =>
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
-                    placeholder={t('Search Educational Readings...')}
+                    placeholder='Search Educational Readings...'
+                    placeholderTextColor={'#C0CCD6'}
+                    onPress={clearSearch}
                     onChangeText={searchFunction}
                     value={searchText}
                 />
@@ -313,6 +238,9 @@ onPress={() =>
                                     <Text style={styles.categoryText}>{item.recommended}</Text>
                                 </View>
                             )}
+                            <TouchableOpacity onPress={() => favouritePress(item._id || item.id)}>
+                                <Entypo name="heart" size={24} color={item.favourite === true ? "#C0C6CB" : "#FF6B6B"} style={styles.favourite}/>
+                            </TouchableOpacity>
                         </TouchableOpacity>
                     ))
                 )}
