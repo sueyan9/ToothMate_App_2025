@@ -85,7 +85,7 @@ const AppointmentScreen = ({ route }) => {
           {!!clinic?.phone && <Text style={styles.subtitle}>{clinic.phone}</Text>}
           <Spacer />
           <View style={styles.heading}>
-            <Text style={styles.headingFont}>{t('Dentist's Notes')}</Text>
+            <Text style={styles.headingFont}>{t("Dentist's Notes")}</Text>
           </View>
           <Text style={styles.title}>{notes}</Text>
         </View>
