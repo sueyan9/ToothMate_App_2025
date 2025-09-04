@@ -94,7 +94,7 @@ const EducationContentScreen = ({ route }) => {
         };
 
         return (
-            <View style={styles.modalContainer} key={refreshKey}>
+            <View style={styles.modalContainer} >
                 <TouchableOpacity onPress={handleBackFromContent} style={styles.closeButton}>
                     <MaterialIcons name="close" size={24} color="#875B51" />
                 </TouchableOpacity>
@@ -141,8 +141,8 @@ const EducationContentScreen = ({ route }) => {
 
     if (!isFilterView && !individualContent) {
         return (
-            <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container} key={refreshKey}>
-                <Text style={styles.errorText}>{t('Content not found')}</Text>
+            <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container} >
+                <Text style={styles.errorText}>{('Content not found')}</Text>
             </LinearGradient>
         );
     }
@@ -156,7 +156,7 @@ const EducationContentScreen = ({ route }) => {
 
     const searchedAndFilteredContent = filteredContent.filter(item => {
         // Use the translated topic for search
-        const translatedTopic = t(item.topic);
+        const translatedTopic = (item.topic);
         return translatedTopic.toLowerCase().includes(searchText.toLowerCase());
     });
 
@@ -172,16 +172,16 @@ const EducationContentScreen = ({ route }) => {
     };
 
     // Show loading state while translations are being loaded
-    if (isTranslating && currentLanguage !== 'en') {
-        return (
-            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]} key={refreshKey}>
-                <Text style={styles.loadingText}>Loading translations...</Text>
-            </View>
-        );
-    }
+    // if (isTranslating && currentLanguage !== 'en') {
+    //     return (
+    //         <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]} key={refreshKey}>
+    //             <Text style={styles.loadingText}>Loading translations...</Text>
+    //         </View>
+    //     );
+    // }
 
     return (
-        <View style={styles.container} key={refreshKey}>
+        <View style={styles.container} >
             {/* Back Arrow - Top Corner */}
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.topCornerBackButton}>
                 <MaterialIcons name="arrow-back" size={24} color="#875B51" />
@@ -214,7 +214,7 @@ const EducationContentScreen = ({ route }) => {
                 {searchedAndFilteredContent.length === 0 ? (
                     <View style={styles.emptyContainer}>
                         <Text style={styles.emptyText}>
-                            {searchText ? t('No results found for your search.') : t('No items in this category.')}
+                            {searchText ? ('No results found for your search.') : ('No items in this category.')}
                         </Text>
                     </View>
                 ) : (
