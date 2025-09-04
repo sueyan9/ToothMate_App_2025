@@ -1,8 +1,8 @@
 import { WEB_DENTAL_CHART_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import axiosApi from "../../api/axios";
 
@@ -65,6 +65,12 @@ const DentalChartScreen = () => {
           treatment: treatmentType,
           toothName: data?.toothName,
         });
+        return;
+      }
+
+      // From ToothInformation.handleViewAppointments (web button):
+      if (data?.type === 'VIEW_APPOINTMENTS') {
+        navigation.navigate('Appointment');
         return;
       }
 
