@@ -5,13 +5,15 @@ import { Context as TranslationContext } from './TranslationContext';
 const LANGUAGE_CODES = {
   'English': 'en',
   'Spanish': 'es',
-  'Chinese': 'zh'
+  'Chinese': 'zh',
+  'Dutch': 'nl'
 };
 
 const LANGUAGE_DISPLAY_NAMES = {
   'en': 'English',
   'es': 'Spanish', 
-  'zh': 'Chinese'
+  'zh': 'Chinese',
+  'nl': 'Dutch'
 };
 
 export const useTranslation = () => {

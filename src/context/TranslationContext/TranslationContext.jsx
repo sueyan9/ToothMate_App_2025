@@ -49,6 +49,8 @@ const translateText = (dispatch) => async (texts, targetLanguage) => {
       deeplLangCode = 'ES'; // Spanish
     } else if (targetLanguage === 'zh') {
       deeplLangCode = 'ZH'; // Chinese (simplified)
+    } else if (targetLanguage === 'nl') {
+      deeplLangCode = 'NL'; // Dutch
     }
 
     console.log('Translating to:', deeplLangCode);
