@@ -72,6 +72,12 @@ const DentalChartScreen = () => {
         return;
       }
 
+      // From ToothInformation.handleViewAppointments (web button):
+      if (data?.type === 'VIEW_APPOINTMENTS') {
+        navigation.navigate('Bookings', { screen: 'clinic' });
+        return;
+      }
+
       if (data?.type === 'TOOTH_SELECTED' && data?.payload) {
         const { toothNumber, toothName, treatments, treatment } = data.payload;
         const latest = treatment ?? getMostRecentTreatmentType(treatments);
