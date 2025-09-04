@@ -10,8 +10,7 @@ router.get("/Clinics", (req, res) => {
     .catch((err) => res.status(404).json({ error: "No clinics found" }));
 });
 
-router.get("/getMultiClinics", async (req, res) => {
-  console.log("✅ /getDentalClinics route hit!");
+router.get("/getDentalClinics", async (req, res) => {
   console.log("Query params:", req.query);
   try {
     // 从 query 里接收 ids 参数，例如 ?ids=1,2,3

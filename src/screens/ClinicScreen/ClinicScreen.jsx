@@ -1,9 +1,10 @@
-import {MaterialIcons} from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useFocusEffect } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import {useEffect, useMemo, useState} from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
@@ -16,8 +17,9 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import {Calendar} from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import axiosApi from '../../api/axios';
+import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
 
 dayjs.extend(utc);
@@ -25,8 +27,36 @@ dayjs.extend(tz);
 
 const NZ_TZ = 'Pacific/Auckland';
 
+
+
 const ClinicScreen = ({navigation, route}) => {
-    const nhi = route?.params?.nhi || 'CBD1234';
+    const { 
+        state: { details, clinic}, 
+        getUser, 
+        getDentalClinic
+    } = useContext(UserContext);
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    useFocusEffect(
+            React.useCallback(() => {
+            const fetchUserData = async () => {
+                setIsLoading(true);
+                try {
+                await getUser();
+                await getDentalClinic();
+                } catch (error) {
+                console.error('Error fetching user data:', error);
+                } finally {
+                setIsLoading(false);
+                }
+            };
+        
+            fetchUserData();
+            }, [])
+        );
+
+    const nhi = details.nhi;
     const [selectedDate, setSelectedDate] = useState('');
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -35,6 +65,8 @@ const ClinicScreen = ({navigation, route}) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [clinicId, setClinicId] = useState(null);
     const [clinicInfo, setClinicInfo] = useState(null);
+
+    
 
     //appointment form state
     const [newAppt, setNewAppt] = useState({
@@ -59,28 +91,21 @@ const ClinicScreen = ({navigation, route}) => {
 
     // Fetch the user's clinic (one clinic per user)
     useEffect(() => {
-        const userId = route?.params?.userId;
-        if (!userId) {
-            console.warn('No userId in route.params; cannot fetch clinic.');
-            return;
-        }
-        const fetchUserClinic = async () => {
-            try {
-                const resp = await axiosApi.get(`/getUserClinic/${userId}`);
-                // Expected response:{ _id, name, phone, email, address, ... }
-                if (resp?.data?._id) {
-                    setClinicId(resp.data._id);
-                    setClinicInfo(resp.data);
-                    console.log('[Clinic] current user clinic =', resp.data._id, resp.data?.name);
-                } else {
-                    console.warn('getUserClinic returned no _id');
-                }
-            } catch (err) {
-                console.warn('Fetch user clinic failed:', err?.message);
-            }
-        };
-        fetchUserClinic();
-    }, [route?.params?.userId]);
+        const userId = details?._id;
+        console.log('nhi: ', nhi);
+        console.log('userId: ', userId);
+        console.log('Clinic data from context:', clinic);
+    
+    if (clinic && clinic._id) {
+        setClinicId(clinic._id);
+        setClinicInfo(clinic);
+        console.log('[Clinic] Using clinic from context:', clinic._id, clinic?.name);
+    } else {
+        console.log('No clinic data in context yet');
+        setClinicId(null);
+        setClinicInfo(null);
+    }
+    }, [clinic]);
 
     const logReq = (label, url, cfgOrBody) => {
         const base = axiosApi?.defaults?.baseURL;
@@ -95,6 +120,7 @@ const ClinicScreen = ({navigation, route}) => {
             const res = await axiosApi.get(`Appointments/${nhi}`, {
                 params: {limit: 400}
             });
+            console.log('Appointments response:', res?.data);
 
             const appointments = Array.isArray(res.data)
                 ? res.data
@@ -176,7 +202,7 @@ const ClinicScreen = ({navigation, route}) => {
             };
             const appointmentData = {
                 nhi,
-                purpose: newAppt.purpose,// or normalizePurpose(newAppt.purpose)
+                purpose: normalizePurpose(newAppt.purpose),
                 notes: newAppt.notes || '',
                 startLocal,
                 endLocal,
@@ -195,9 +221,26 @@ const ClinicScreen = ({navigation, route}) => {
                 loadAppointments(); // Refresh the appointment list
             }
         } catch (error) {
-            console.error('Error adding appointment:', error);
-            const msg = error?.response?.data?.error || error?.message || 'Failed to add appointment.';
-            Alert.alert('Error', msg);
+            console.error('Full error object:', error);
+        console.error('Error response:', error?.response);
+        console.error('Error response data:', error?.response?.data);
+        console.error('Error response status:', error?.response?.status);
+        
+        // More detailed error message
+        let errorMessage = 'Failed to add appointment.';
+        if (error?.response?.data) {
+            if (typeof error.response.data === 'string') {
+                errorMessage = error.response.data;
+            } else if (error.response.data.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.response.data.error) {
+                errorMessage = error.response.data.error;
+            } else {
+                errorMessage = JSON.stringify(error.response.data);
+            }
+        }
+        
+        Alert.alert('Error', errorMessage);
         } finally {
             setIsSubmitting(false);
         }
