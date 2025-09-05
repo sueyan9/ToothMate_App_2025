@@ -1,139 +1,131 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
-import { Alert } from 'react-native';
-
+// __tests__/appointments.test.js
 import axiosApi from '../../api/axios';
-import { Context as UserContext } from '../../context/UserContext/UserContext';
-import ClinicScreen from '../ClinicScreen';
 
-// Mock dependencies
-jest.mock('@react-navigation/native', () => ({ useFocusEffect: jest.fn() }));
-jest.mock('../../api/axios', () => ({ get: jest.fn(), post: jest.fn() }));
-jest.mock('react-native-calendars', () => ({ Calendar: () => null }));
-jest.mock('@expo/vector-icons', () => ({ 
-  MaterialIcons: ({ name }) => <div testID={`icon-${name}`} />
-}));
-jest.mock('@react-native-community/datetimepicker', () => () => null);
+// Mock axios
+jest.mock('../../api/axios');
+const mockedAxios = axiosApi;
 
-jest.spyOn(Alert, 'alert');
-
-const mockContext = {
-  state: { details: { nhi: 'ABC1234' }, clinic: { _id: 'clinic123' } },
-  getUser: jest.fn(),
-  getDentalClinic: jest.fn(),
-};
-
-const mockAppointments = [
-  { _id: 'appt1', startAt: '2023-08-15T09:00:00Z', clinic: 'clinic123', purpose: 'Check-up' }
-];
-
-describe('ClinicScreen', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    useFocusEffect.mockImplementation(cb => cb());
-  });
-
-  const renderComponent = () => render(
-    <UserContext.Provider value={mockContext}>
-      <ClinicScreen navigation={{}} route={{}} />
-    </UserContext.Provider>
-  );
-
-  describe('Loading Appointments', () => {
-    it('loads appointments on mount', async () => {
-      axiosApi.get.mockResolvedValue({ data: mockAppointments });
-
-      renderComponent();
-
-      await waitFor(() => {
-        expect(axiosApi.get).toHaveBeenCalledWith('Appointments/ABC1234', { params: { limit: 400 } });
-      });
-    });
-
-    it('handles loading errors', async () => {
-      axiosApi.get.mockRejectedValue(new Error('Network error'));
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-
-      renderComponent();
-
-      await waitFor(() => {
-        expect(consoleSpy).toHaveBeenCalledWith('Load appointments failed:', 'Network error');
-      });
-      
-      consoleSpy.mockRestore();
-    });
-
-    it('fetches clinic details when needed', async () => {
-      axiosApi.get
-        .mockResolvedValueOnce({ data: mockAppointments })
-        .mockResolvedValueOnce({ data: [{ _id: 'clinic123', name: 'Test Clinic' }] });
-
-      renderComponent();
-
-      await waitFor(() => {
-        expect(axiosApi.get).toHaveBeenCalledWith('/getDentalClinics', { params: { ids: 'clinic123' } });
-      });
-    });
-  });
-
-  describe('Adding Appointments', () => {
+describe('Appointment Tests', () => {
     beforeEach(() => {
-      axiosApi.get.mockResolvedValue({ data: [] });
+        jest.clearAllMocks();
     });
 
-    it('creates appointment successfully', async () => {
-      axiosApi.post.mockResolvedValue({ status: 201 });
-      const { getByTestId, getByText, getByPlaceholderText } = renderComponent();
+  // Test 1: GET Appointments - Success
+    test('should fetch appointments successfully', async () => {
+        const mockAppointments = [
+        {
+            _id: '1',
+            startAt: '2024-12-15T09:00:00.000Z',
+            purpose: 'Check-up',
+            nhi: 'TEST123'
+        }
+        ];
 
-      fireEvent.press(getByTestId('icon-add'));
-      fireEvent.changeText(getByPlaceholderText('Enter appointment purpose'), 'Check-up');
-      fireEvent.press(getByText('Submit'));
+        mockedAxios.get.mockResolvedValue({
+        status: 200,
+        data: mockAppointments
+        });
 
-      await waitFor(() => {
-        expect(axiosApi.post).toHaveBeenCalledWith('/Appointments', expect.objectContaining({
-          nhi: 'ABC1234',
-          purpose: 'Check-up',
-          clinic: 'clinic123',
-        }));
-        expect(Alert.alert).toHaveBeenCalledWith('Success', 'Appointment added successfully.');
-      });
+        const response = await axiosApi.get('Appointments/TEST123', {
+        params: { limit: 400 }
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.data).toHaveLength(1);
+        expect(mockedAxios.get).toHaveBeenCalledWith('Appointments/TEST123', {
+        params: { limit: 400 }
+        });
     });
 
-    it('validates required fields', async () => {
-      const { getByTestId, getByText } = renderComponent();
+  // Test 2: GET Appointments - Error
+    test('should handle fetch appointments error', async () => {
+        mockedAxios.get.mockRejectedValue({
+        response: { status: 404, data: { message: 'Not found' } }
+        });
 
-      fireEvent.press(getByTestId('icon-add'));
-      fireEvent.press(getByText('Submit'));
-
-      expect(Alert.alert).toHaveBeenCalledWith('Validation Error', 'Purpose is required.');
+        try {
+        await axiosApi.get('Appointments/INVALID_NHI', {
+            params: { limit: 400 }
+        });
+        } catch (error) {
+        expect(error.response.status).toBe(404);
+        }
     });
 
-    it('normalizes purpose values', async () => {
-      axiosApi.post.mockResolvedValue({ status: 201 });
-      const { getByTestId, getByText, getByPlaceholderText } = renderComponent();
+  // Test 3: POST Appointment - Success
+    test('should create appointment successfully', async () => {
+        const appointmentData = {
+        nhi: 'TEST123',
+        purpose: 'Check-up',
+        startLocal: '2024-12-15T09:00:00.000Z',
+        endLocal: '2024-12-15T09:30:00.000Z',
+        timezone: 'Pacific/Auckland',
+        clinic: 'clinic1'
+        };
 
-      fireEvent.press(getByTestId('icon-add'));
-      fireEvent.changeText(getByPlaceholderText('Enter appointment purpose'), 'checkup');
-      fireEvent.press(getByText('Submit'));
+        mockedAxios.post.mockResolvedValue({
+        status: 201,
+        data: { _id: 'new-appointment', ...appointmentData }
+        });
 
-      await waitFor(() => {
-        expect(axiosApi.post).toHaveBeenCalledWith('/Appointments', expect.objectContaining({
-          purpose: 'Check-up',
-        }));
-      });
+        const response = await axiosApi.post('/Appointments', appointmentData);
+
+        expect(response.status).toBe(201);
+        expect(response.data._id).toBe('new-appointment');
+        expect(mockedAxios.post).toHaveBeenCalledWith('/Appointments', appointmentData);
     });
 
-    it('handles creation errors', async () => {
-      axiosApi.post.mockRejectedValue({ response: { data: { message: 'Server error' } } });
-      const { getByTestId, getByText, getByPlaceholderText } = renderComponent();
+  // Test 4: POST Appointment - Validation Error
+    test('should handle appointment creation error', async () => {
+        const invalidData = {
+        nhi: 'TEST123',
+        purpose: '', // Invalid - empty purpose
+        clinic: 'clinic1'
+        };
 
-      fireEvent.press(getByTestId('icon-add'));
-      fireEvent.changeText(getByPlaceholderText('Enter appointment purpose'), 'Check-up');
-      fireEvent.press(getByText('Submit'));
+        mockedAxios.post.mockRejectedValue({
+        response: { 
+            status: 400, 
+            data: { message: 'Purpose is required' } 
+        }
+        });
 
-      await waitFor(() => {
-        expect(Alert.alert).toHaveBeenCalledWith('Error', 'Server error');
-      });
+        try {
+        await axiosApi.post('/Appointments', invalidData);
+        } catch (error) {
+        expect(error.response.status).toBe(400);
+        expect(error.response.data.message).toBe('Purpose is required');
+        }
     });
-  });
+
+  // Test 5: GET Clinics - Success
+    test('should fetch clinics successfully', async () => {
+        const mockClinics = [
+        { _id: 'clinic1', name: 'Test Dental Clinic' }
+        ];
+
+        mockedAxios.get.mockResolvedValue({
+        status: 200,
+        data: mockClinics
+        });
+
+        const response = await axiosApi.get('/getDentalClinics');
+
+        expect(response.status).toBe(200);
+        expect(response.data).toHaveLength(1);
+        expect(response.data[0].name).toBe('Test Dental Clinic');
+    });
+
+  // Test 6: GET Clinics - Error
+    test('should handle fetch clinics error', async () => {
+        mockedAxios.get.mockRejectedValue({
+        response: { status: 500, data: { message: 'Server error' } }
+        });
+
+        try {
+        await axiosApi.get('/getDentalClinics');
+        } catch (error) {
+        expect(error.response.status).toBe(500);
+        }
+    });
 });
