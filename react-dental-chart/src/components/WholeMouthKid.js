@@ -5,7 +5,7 @@ import { Suspense, useRef } from 'react';
 
 const WholeMouthKidModel = (props) => {
     const group = useRef();
-    const { nodes, materials  } = useGLTF('/assets/version3.glb');
+    const { nodes } = useGLTF('/assets/version3.glb');
 
     // just shows mesh
     return (

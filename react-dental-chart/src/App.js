@@ -100,12 +100,12 @@ function getUniqueTreatmentsByPeriod(period) {
 
 export default function App() {
   const [showMenu, setShowMenu] = useState(false);
-  const [selectedTreatment, setSelectedTreatment] = useState([]);
+  const [selectedTreatment, setSelectedTreatment] = useState('historical');
   const [currentUser, setCurrentUser] = useState(null);
   const [mode, setMode] = useState(null);
 
   // Updated initial state - now defaults to 'all' instead of null
-  const [activeTimePeriod, setActiveTimePeriod] = useState('all');
+  const [activeTimePeriod, setActiveTimePeriod] = useState('historical');
 
   // Updated handler function with auto-selection logic
   const handleTimePeriodSelect = (timePeriod) => {
@@ -168,6 +168,11 @@ export default function App() {
 
   }, []);
 
+  useEffect(() => {
+    const treatments = getUniqueTreatmentsByPeriod(activeTimePeriod);
+    setSelectedTreatment(treatments);
+  }, [activeTimePeriod]);
+
   return (
     <div>
       <Router>
@@ -176,18 +181,6 @@ export default function App() {
             <Route
               exact path="/"
               element={
-                <div className='top-icon'>
-                  {/*{!showMenu && (*/}
-                  {/*  <div className='top-icon-text'*/}
-                  {/*    onClick={e => {*/}
-                  {/*      e.stopPropagation();*/}
-                  {/*      setShowMenu(true);*/}
-                  {/*    }}*/}
-                  {/*  >*/}
-                  {/*    ☰*/}
-                  {/*  </div>*/}
-                  {/*)}*/}
-                  <div className="container">
                    <div className="main-layout">
                     <div className="main-3d"
                       onClick={() => setShowMenu(false)}
@@ -219,9 +212,7 @@ export default function App() {
                          onTimePeriodSelect={handleTimePeriodSelect}
                      />
                    </div>
-                   </div>
                   </div>
-                </div>
               }
             />
 
