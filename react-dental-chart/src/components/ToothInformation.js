@@ -89,7 +89,7 @@ export default function ToothInformation({ toothNumber }) {
         <div onClick={handlePanelClick}>
           <div className="tooth-info-content">
             <div>
-              <strong>Historical Treatments</strong>
+              <strong>Previous Work Done</strong>
               {toothInfo.treatments.length > 0 ? (
 
                 <>
@@ -116,7 +116,7 @@ export default function ToothInformation({ toothNumber }) {
                     }}
                     onClick={handleViewEducation}
                   >
-                    View Education
+                    Learn More
                   </button>
 
                   {/*  Show appointments button if treatments exist */}
@@ -137,7 +137,7 @@ export default function ToothInformation({ toothNumber }) {
                   </button>
                 </>
               ) : (
-                <p>No treatments recorded for this tooth.</p>
+                <p>No previous treatments recorded for this tooth.</p>
               )}
             </div>
 
@@ -145,7 +145,7 @@ export default function ToothInformation({ toothNumber }) {
             </br>
 
             <div>
-              <strong>Future Treatments</strong>
+              <strong>Planned Work To Do</strong>
               {toothInfo.futuretreatments.length > 0 ? (
                 <ul className="treatment-list">
                   {toothInfo.futuretreatments.map((treatment, index) => (
@@ -157,7 +157,7 @@ export default function ToothInformation({ toothNumber }) {
                   ))}
                 </ul>
               ) : (
-                <p>No future treatments recorded for this tooth.</p>
+                <p>No planned treatments recorded for this tooth.</p>
               )}
             </div>
 

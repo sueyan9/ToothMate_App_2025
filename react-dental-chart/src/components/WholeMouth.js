@@ -13,7 +13,7 @@ const CameraController = () => {
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement)
 
-    controls.minDistance = 5;
+    controls.minDistance = 5.5;
     controls.maxDistance = 6;
 
     controls.minPolarAngle = Math.PI / 3; // 45 degrees
