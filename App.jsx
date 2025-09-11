@@ -73,7 +73,7 @@ const AccountStack = () => (
 const EducationStack = () => (
     <Stack.Navigator initialRouteName="Library">
         <Stack.Screen name="Library" component={EducationScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="content" component={EducationContentScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="content" component={EducationContentScreen} options={{ headerShown: false}}/>
         <Stack.Screen name="game" component={GameScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
@@ -113,13 +113,24 @@ const ChildAccountStack = () => (
 
 //  Main flow with bottom tab navigation
 const MainFlow = () => (
-    <Tab.Navigator screenOptions={({ route }) => ({
+    <Tab.Navigator screenOptions={({ route, navigation }) => {
+        const state = navigation.getState();
+        const currentTab = state.routes[state.index];
+        const nestedState = currentTab.state;
+        const currentNestedRoute = nestedState?.routes?.[nestedState.index];
+
+        const isViewingIndividualContent = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' &&
+        currentNestedRoute?.params?.isModal === true;
+
+        const isContentPage = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' && currentNestedRoute?.params?.id && !currentNestedRoute?.params?.selectedFilter;
+
+        return {
         headerShown: true,
         headerLeft: () => <HeaderLogo/>,
         headerTitle: '',
-        headerStyle: {backgroundColor: '#E9F1F8',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
+        headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
         headerTitleAlign: 'left',
-        headerTransparent: true,
+        headerTransparent: !isViewingIndividualContent,
         tabBarActiveTintColor: '#875B51',
         tabBarInactiveTintColor: '#333333',
         tabBarStyle: {
@@ -135,7 +146,8 @@ const MainFlow = () => (
             shadowOpacity: 0.1,
             shadowRadius: 5,
         }
-    })}>
+    }
+    }}>
         <Tab.Screen
             name="AccountFlow"
             component={HomeScreen}

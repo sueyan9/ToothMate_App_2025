@@ -29,7 +29,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#E9F1F8',
     paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingTop: 52,
   },
   scrollContent: {
     flex: 1,
@@ -108,6 +108,13 @@ export default StyleSheet.create({
     flex: 1,
     marginBottom: 16,
   },
+  topCornerBackButton: {
+    position: 'absolute',
+    top: 130,
+    left: 20,
+    padding: 8,
+    zIndex: 1,
+  },
   categoryTag: {
     alignSelf: 'flex-start',
     backgroundColor: '#EDDFD3',
@@ -142,10 +149,9 @@ export default StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    marginTop: 52,
+    marginTop: 0,
     padding: 10,
     marginBottom: 10,
-    marginTop: 40,
     color: '#333333',
   },
   modalContent: {
@@ -248,6 +254,7 @@ export default StyleSheet.create({
     fontSize: 14,
     color: '#666666',
     marginTop: 2,
+    alignSelf: 'center',
   },
   loadingText: {
     fontSize: 18,
@@ -258,5 +265,10 @@ export default StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-  }
+  },
+  absoluteArrow: {
+    position: 'absolute',
+    right: 10,
+    top: 16, // Position at the top instead of center
+  },
 });

@@ -167,7 +167,8 @@ const EducationContentScreen = ({ route }) => {
         // Pass the current filter so we can navigate back to it
         navigation.navigate('content', { 
             id: content._id,
-            fromFilter: selectedFilter 
+            fromFilter: selectedFilter,
+            isModal: true
         });
     };
 
@@ -190,8 +191,8 @@ const EducationContentScreen = ({ route }) => {
             {/* Header */}
             <View style={styles.headerContainer}>
                 <View style={styles.headerTextContainer}>
-                    <Text style={[styles.titleText, styles.centeredHeaderTitle]}>{selectedFilter}</Text>
-                    <Text style={[styles.itemCountText, styles.centeredHeaderTitle]}>
+                    <Text style={[styles.titleText]}>{selectedFilter}</Text>
+                    <Text style={[styles.itemCountText]}>
                         {searchedAndFilteredContent.length} item{searchedAndFilteredContent.length !== 1 ? 's' : ''}
                     </Text>
                 </View>
