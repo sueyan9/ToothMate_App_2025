@@ -15,7 +15,7 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import axiosApi from '../../api/axios';
@@ -65,7 +65,6 @@ const ClinicScreen = ({navigation, route}) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [clinicId, setClinicId] = useState(null);
     const [clinicInfo, setClinicInfo] = useState(null);
-
     
 
     //appointment form state
@@ -523,7 +522,7 @@ const ClinicScreen = ({navigation, route}) => {
             </Modal>
 
             {/* POP-up window for adding new appointment */}
-
+            
             <Modal
                 visible={showAddModal}
                 transparent
