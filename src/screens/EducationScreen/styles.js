@@ -5,14 +5,15 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#E9F1F8',
     paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingTop: 96,
   },
   titleText: {
     fontSize: 24,
     color: '#333333',
-    marginTop: 10,
-    marginBottom: 16,
+    marginTop: 50,
+    marginBottom: 32,
     alignSelf: 'center',
+    fontWeight: 'semi-bold',
   },
   filterContainer: {
     paddingBottom: 24,

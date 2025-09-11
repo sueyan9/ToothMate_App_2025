@@ -2,7 +2,7 @@ import { WEB_DENTAL_CHART_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import axiosApi from "../../api/axios";
 
@@ -62,8 +62,12 @@ const DentalChartScreen = () => {
       if (data?.type === 'VIEW_EDUCATION') {
         const treatmentType = getMostRecentTreatmentType(data?.treatments);
         navigation.navigate('Education', {
+          screen: 'content',
+          params: {
           treatment: treatmentType,
           toothName: data?.toothName,
+          selectedFilter: 'All'
+          }
         });
         return;
       }

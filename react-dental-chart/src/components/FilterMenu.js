@@ -117,21 +117,21 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
         {/* <button
           style={getFilterStyle('all')}
           onClick={() => handleTimePeriodSelect('all')}
-          testID="filter-all"
+          testid="filter-all"
         >
           All
         </button> */}
         <button
           style={getFilterStyle('historical')}
           onClick={() => handleTimePeriodSelect('historical')}
-          testID="filter-historical"
+          testid="filter-historical"
         >
           My Mouth
         </button>
         <button
           style={getFilterStyle('future')}
           onClick={() => handleTimePeriodSelect('future')}
-          testID="filter-future"
+          testid="filter-future"
         >
           Planned Work
         </button>

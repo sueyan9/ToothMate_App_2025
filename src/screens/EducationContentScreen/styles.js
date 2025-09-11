@@ -29,7 +29,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#E9F1F8',
     paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingTop: 52,
   },
   scrollContent: {
     flex: 1,
@@ -46,7 +46,8 @@ export default StyleSheet.create({
     fontSize: 24,
     color: '#333333',
     marginBottom: 8,
-    alignSelf: 'center',
+    textAlign: 'center', // Changed from alignSelf: 'center'
+    fontWeight: 'semi-bold',
   },
 
   // Filters (from old EducationScreen)
@@ -105,6 +106,14 @@ export default StyleSheet.create({
     fontSize: 16,
     color: '#333333',
     flex: 1,
+    marginBottom: 16,
+  },
+  topCornerBackButton: {
+    position: 'absolute',
+    top: 130,
+    left: 20,
+    padding: 8,
+    zIndex: 1,
   },
   categoryTag: {
     alignSelf: 'flex-start',
@@ -140,7 +149,7 @@ export default StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    marginTop: 5,
+    marginTop: 0,
     padding: 10,
     marginBottom: 10,
     color: '#333333',
@@ -151,8 +160,9 @@ export default StyleSheet.create({
   contentTitle: {
     fontSize: 28,
     color: '#333333',
-    marginBottom: 24,
-    alignSelf: 'center',
+    marginBottom: 20,
+    marginTop: 20,
+    alignSelf: 'right',
   },
   contentCategory: {
     fontSize: 18,
@@ -164,9 +174,11 @@ export default StyleSheet.create({
     height: 200,
     borderRadius: 10,
     marginBottom: 20,
+    marginLeft: 5,
   },
   contentDetails: {
     marginBottom: 30,
+    paddingHorizontal: 5,
   },
   detailItem: {
     flexDirection: 'row',
@@ -195,13 +207,13 @@ export default StyleSheet.create({
     marginTop: 24,
   },
   searchInput: {
-    backgroundColor: 'none',
     borderWidth: 2.5,
     borderColor: '#516287',
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
     fontSize: 16,
+    color: '#333333',
   },
 
   // Header (unique to content screen)
@@ -210,7 +222,8 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    paddingTop: 60, // status bar space
+    paddingTop: 80, // status bar space
+    justifyContent: 'center', // Add this to center the content
   },
   backButton: {
     padding: 8,
@@ -219,9 +232,43 @@ export default StyleSheet.create({
   headerTextContainer: {
     flex: 1,
   },
+  button: {
+    backgroundColor: '#875B51',
+    padding: 16,
+    marginTop: 20,
+    borderRadius: 16,
+    marginHorizontal: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  buttonText: {
+    fontSize: 17,
+    textAlign: 'center',
+    color: '#FFFDF6',
+    fontWeight: '600',
+  },
   itemCountText: {
     fontSize: 14,
     color: '#666666',
     marginTop: 2,
+    alignSelf: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#333333',
+    textAlign: 'center',
+  },
+  favourite: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+  },
+  absoluteArrow: {
+    position: 'absolute',
+    right: 10,
+    top: 16, // Position at the top instead of center
   },
 });

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { Button } from 'react-native-elements';
-import { LinearGradient } from 'expo-linear-gradient';  // 保持使用线性渐变
-import * as WebBrowser from 'expo-web-browser';  // 导入 WebBrowser
-import styles from './styles';  // 样式文件保持不变
+import { LinearGradient } from 'expo-linear-gradient';
+import * as WebBrowser from 'expo-web-browser';
+import styles from './styles';
 
 const AppointmentPDF = props => {
     const { base64 } = props;
     const [showError, setShowError] = useState(false);
 
-    // 打开 PDF 文件
-    const openPDF = async () => {
+    // open PDF file
+    const openPDF = async () => {1
         if (base64) {
             const uri = `data:application/pdf;base64,${base64}`;
             try {

@@ -1,81 +1,101 @@
-import React, { useState } from 'react';
-import { Text, ScrollView, Platform, TextInput, TouchableOpacity, View, Image } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialIcons } from '@expo/vector-icons';
-import styles from './styles';
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useContext, useEffect, useState } from 'react';
+import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Context as EducationContext } from '../../context/EducationContext/EducationContext';
+import styles from './styles';
 
 const EducationContentScreen = ({ route }) => {
-    // Mock data until backend/context is ready
-    const [educationData] = useState([
-        { _id: '1', topic: 'Dental Hygiene', category: 'Oral Care', recommended: null, content: 
-            [
-                "Brush teeth twice daily with fluoride toothpaste",
-                "Floss at least once per day",
-                "Replace toothbrush every 3-4 months",
-                "Visit dentist for regular check-ups",
-                "Limit sugary and acidic foods/drinks"
-            ]
-        },
-        { _id: '2', topic: 'Tooth Decay', category: 'Conditions', recommended: 'Dentist Recommended Readings', content: 
-            [
-                "Tooth decay is the destruction of tooth enamel. It's caused by bacteria in your mouth that make acids when they break down sugar.",
-                "Preventing tooth decay involves good oral hygiene and a healthy diet.",
-                "Regular dental check-ups are essential for early detection and treatment.",
-                "Fluoride treatments can help strengthen tooth enamel and make it more resistant to decay.",
-            ]
-        },
-        { _id: '3', topic: 'Fluoride Treatment', category: 'Treatments', recommended: null, content: 
-            [
-                "Fluoride is a natural mineral that helps strengthen teeth and prevent cavities.",
-                "Professional fluoride treatments are applied by a dentist or dental hygienist.",
-                "They are quick, painless, and highly effective, especially for children and those at high risk of tooth decay."
-            ]
-        },
-        { _id: '4', topic: 'Orthodontics', category: 'Treatments', recommended: null, content: 
-            [
-                "Orthodontics is a dental specialty focused on correcting misaligned teeth and jaws.",
-                "Common treatments include braces, clear aligners, and retainers.",
-                "Orthodontic treatment can improve not only the appearance of your smile but also your bite and overall oral health."
-            ]
-        },
-        { _id: '5', topic: 'Dental Implants', category: 'Treatments', recommended: 'Dentist Recommended Readings', content: 
-            [
-                "Dental implants are a permanent solution for missing teeth. They are surgically placed in the jawbone.",
-                "They act as a strong foundation for a replacement tooth that looks, feels, and functions like a natural tooth."
-            ]
-        },
-        { _id: '6', topic: 'Gum Disease', category: 'Conditions', recommended: 'Dentist Recommended Readings', content: 
-            [
-                "Gum disease, also known as periodontal disease, is an infection of the tissues that hold your teeth in place.",
-                "It is a major cause of tooth loss in adults.",
-                "Symptoms include swollen, red, or bleeding gums. Good oral hygiene is key to prevention."
-            ]
-        },
-        { _id: '7', topic: 'Flossing Guide', category: 'Oral Care', recommended: 'Dentist Recommended Readings', content: 
-            [
-                "Flossing removes plaque and food particles from between your teeth and under your gumline, where a toothbrush can't reach.",
-                "It's recommended to floss at least once a day.",
-                "There are different types of floss and flossing tools available; choose the one that works best for you."
-            ]
-        },
-    ]);
+    
+    const {state, getEducationContent, toggleFavourite, syncFavouritesFromStorage} = useContext(EducationContext);
+    const {educationData} = state;
+    const [dataLoaded, setDataLoaded] = useState(false);
     const navigation = useNavigation();
-
+    
+    const TREATMENT_TO_TOPIC = {
+        Filling: 'Tooth Decay',              
+        Cleaning: 'Dental Hygiene',          
+        Checkup: 'Dental Hygiene',           
+        'Root Canal': 'Tooth Decay',         
+        'Crown Placement': 'Tooth Decay',    
+        Extraction: 'Dental Implants',       
+        'Fluoride Treatment': 'Fluoride Treatment',
+        Orthodontics: 'Orthodontics',
+    };
     // params
     const isFilterView = route.params?.selectedFilter;
     const contentId = route.params?.id;
     const selectedFilter = route.params?.selectedFilter;
+    const fromFilter = route.params?.fromFilter; // Track which filter the user came from
+    const quizCompleted = route.params?.quizCompleted || false;
+    const quizScore = route.params?.quizScore || 0;
+    const totalQuestions = route.params?.totalQuestions || 6;
+
+    useEffect(() => {
+        const loadData = async () => {
+            await getEducationContent();
+            setDataLoaded(true);
+        };
+        loadData();
+    }, []);
+
+    const favouritePress = async (itemID) => {
+        try {
+        
+        const item = educationData.find(item => item._id === itemID || item.id === itemID);
+        
+        await toggleFavourite(itemID);
+        }
+        catch (err) {
+            console.error('Error toggling favourite:', err);
+        }
+    };
 
     const [searchText, setSearchText] = useState('');
+
+    useEffect(() => {
+        const treatment = route?.params?.treatment;
+        if (!treatment || !educationData.length) return;
+
+        const topic = TREATMENT_TO_TOPIC[treatment] || 'Dental Hygiene';
+        const matchedContent = educationData.find(item => item.topic === topic);
+
+        if (matchedContent) {
+            openContent(matchedContent);
+        }
+    }, [route?.params?.treatment, educationData]);
+
+    if (!dataLoaded) {
+        return (
+            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text>Loading education content...</Text>
+            </View>
+        );
+    }
 
     // Individual content view
     const individualContent = contentId ? educationData.find(content => content._id === contentId) : null;
     if (!isFilterView && individualContent) {
         const { topic, content, category } = individualContent;
+
+        console.log('Individual content:', individualContent);
+        console.log('Content type:', typeof content);
+        console.log('Content value:', content);
+        console.log('Is array?', Array.isArray(content));
+        
+        const handleBackFromContent = () => {
+            if (fromFilter) {
+                // Navigate back to the specific filter view
+                navigation.navigate('content', { selectedFilter: fromFilter });
+            } else {
+                // Fallback to going back in navigation stack
+                navigation.goBack();
+            }
+        };
+
         return (
-            <View style={styles.modalContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeButton}>
+            <View style={styles.modalContainer} >
+                <TouchableOpacity onPress={handleBackFromContent} style={styles.closeButton}>
                     <MaterialIcons name="close" size={24} color="#875B51" />
                 </TouchableOpacity>
                 <ScrollView showsVerticalScrollIndicator={false}>
@@ -85,13 +105,34 @@ const EducationContentScreen = ({ route }) => {
                         <Text style={styles.contentCategory}>{category}</Text>
                         
                         <View style={styles.contentDetails}>
-                            {content.map((point, index) => (
+                            {console.log('Content loaded:', !!content)}
+                            {console.log('Content length:', content?.length)}
+                            {console.log('First item:', content?.[0])}
+                            {content && content.map((point, index) => (
                                 <View key={index} style={styles.detailItem}>
                                     <View style={styles.bulletPoint} />
                                     <Text style={styles.detailText}>{point}</Text>
                                 </View>
                             ))}
                         </View>
+
+                        {/* Show Take Quiz button only for Dental Hygiene topic */}
+                        {topic === 'Dental Hygiene' && (
+                            <TouchableOpacity 
+                                style={[styles.button, quizCompleted && styles.completedButton]}
+                                    onPress={() =>
+                                        navigation.replace('game', {
+                                            contentId: contentId, // optional: pass current content ID
+                                            fromFilter: selectedFilter,
+                                        })
+                                    }
+
+                            >
+                                <Text style={styles.buttonText}>
+                                    {quizCompleted ? `Try Again (${quizScore}/${totalQuestions})` : 'Take Quiz'}
+                                </Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
                 </ScrollView>
             </View>
@@ -100,8 +141,8 @@ const EducationContentScreen = ({ route }) => {
 
     if (!isFilterView && !individualContent) {
         return (
-            <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container}>
-                <Text style={styles.errorText}>Content not found</Text>
+            <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container} >
+                <Text style={styles.errorText}>{('Content not found')}</Text>
             </LinearGradient>
         );
     }
@@ -113,26 +154,45 @@ const EducationContentScreen = ({ route }) => {
             item.category === selectedFilter || item.recommended === selectedFilter
         );
 
-    const searchedAndFilteredContent = filteredContent.filter(item =>
-        item.topic.toLowerCase().includes(searchText.toLowerCase())
-    );
+    const searchedAndFilteredContent = filteredContent.filter(item => {
+        // Use the translated topic for search
+        const translatedTopic = (item.topic);
+        return translatedTopic.toLowerCase().includes(searchText.toLowerCase());
+    });
 
     const searchFunction = (text) => setSearchText(text);
+    const clearSearch = () => setSearchText('');
 
     const openContent = (content) => {
-        navigation.navigate('content', { id: content._id });
+        // Pass the current filter so we can navigate back to it
+        navigation.navigate('content', { 
+            id: content._id,
+            fromFilter: selectedFilter,
+            isModal: true
+        });
     };
 
+    // Show loading state while translations are being loaded
+    // if (isTranslating && currentLanguage !== 'en') {
+    //     return (
+    //         <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]} key={refreshKey}>
+    //             <Text style={styles.loadingText}>Loading translations...</Text>
+    //         </View>
+    //     );
+    // }
+
     return (
-        <View style={styles.container}>
+        <View style={styles.container} >
+            {/* Back Arrow - Top Corner */}
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.topCornerBackButton}>
+                <MaterialIcons name="arrow-back" size={24} color="#875B51" />
+            </TouchableOpacity>
+
             {/* Header */}
             <View style={styles.headerContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <MaterialIcons name="arrow-back" size={24} color="#875B51" />
-                </TouchableOpacity>
                 <View style={styles.headerTextContainer}>
-                    <Text style={styles.titleText}>{selectedFilter}</Text>
-                    <Text style={styles.itemCountText}>
+                    <Text style={[styles.titleText]}>{selectedFilter}</Text>
+                    <Text style={[styles.itemCountText]}>
                         {searchedAndFilteredContent.length} item{searchedAndFilteredContent.length !== 1 ? 's' : ''}
                     </Text>
                 </View>
@@ -143,6 +203,8 @@ const EducationContentScreen = ({ route }) => {
                 <TextInput
                     style={styles.searchInput}
                     placeholder='Search Educational Readings...'
+                    placeholderTextColor={'#C0CCD6'}
+                    onPress={clearSearch}
                     onChangeText={searchFunction}
                     value={searchText}
                 />
@@ -153,7 +215,7 @@ const EducationContentScreen = ({ route }) => {
                 {searchedAndFilteredContent.length === 0 ? (
                     <View style={styles.emptyContainer}>
                         <Text style={styles.emptyText}>
-                            {searchText ? 'No results found for your search.' : 'No items in this category.'}
+                            {searchText ? ('No results found for your search.') : ('No items in this category.')}
                         </Text>
                     </View>
                 ) : (
@@ -163,9 +225,11 @@ const EducationContentScreen = ({ route }) => {
                             onPress={() => openContent(item)}
                             style={styles.contentCard}
                         >
+                            <View style={styles.absoluteArrow}>
+                                <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51" />
+                            </View>
                             <View style={styles.cardContent}>
                                 <Text style={styles.topicText}>{item.topic}</Text>
-                                <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51" />
                             </View>
                             <View style={styles.categoryTag}>
                                 <Text style={styles.categoryText}>{item.category}</Text>
@@ -175,6 +239,9 @@ const EducationContentScreen = ({ route }) => {
                                     <Text style={styles.categoryText}>{item.recommended}</Text>
                                 </View>
                             )}
+                            <TouchableOpacity onPress={() => favouritePress(item._id || item.id)}>
+                                <Entypo name="heart" size={24} color={item.favourite === true ? "#C0C6CB" : "#FF6B6B"} style={styles.favourite}/>
+                            </TouchableOpacity>
                         </TouchableOpacity>
                     ))
                 )}
