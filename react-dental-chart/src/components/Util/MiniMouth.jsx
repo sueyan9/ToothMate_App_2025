@@ -1,16 +1,11 @@
-// MiniMouth.jsx
 import { Canvas } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo } from 'react'
 import { Bounds } from '@react-three/drei'
 import { useGLTF } from '@react-three/drei'
 
-/** CRA: */
 const WHOLE_MOUTH_GLB = `${process.env.PUBLIC_URL}/assets/adult_whole_mouth.glb`
-/** Vite:
- * const WHOLE_MOUTH_GLB = `${import.meta.env.BASE_URL}assets/adult_whole_mouth.glb`
- */
 
-// === 关键：FDI 编码 -> glTF 节点名（按你的模型补全/修正）===
+// FDI tooth number to GLTF node name mapping
 const FDI_TO_NODE = {
     // LOWER LEFT (30s)
     31: 'lower_left_central_incisor',
@@ -67,12 +62,12 @@ export default function MiniMouth({ targetToothNumber }) {
 function WholeMouthMiniModel({ targetToothNumber }) {
     const { scene } = useGLTF(WHOLE_MOUTH_GLB)
 
-    // 颜色配置（可改）
+    // Highlight and dim material presets
     const highlight = useMemo(() => ({ color: '#ff9900', emissive: '#ff9900', emissiveIntensity: 0.6 }), [])
     const dim = useMemo(() => ({ emissive: '#000000', emissiveIntensity: 0 }), [])
 
     useEffect(() => {
-        // 每次高亮前，先“复位”所有 mesh 的 emissive，避免重复渲染叠加
+        // Reset all meshes’ emissive properties before applying new highlight
         scene.traverse((o) => {
             if (o.isMesh && o.material) {
                 const m = o.material.clone?.() || o.material
@@ -84,17 +79,17 @@ function WholeMouthMiniModel({ targetToothNumber }) {
             }
         })
 
-        // 找到目标牙齿的节点名
+        // Find the target tooth node from the mapping
         const nodeName = FDI_TO_NODE[targetToothNumber]
         if (!nodeName) {
             console.warn('FDI mapping missing for', targetToothNumber)
             return
         }
 
-        // 1) 优先用精确名字命中
+        // 1) Try exact node name first
         let target = scene.getObjectByName(nodeName)
 
-        // 2) 若名字不一致，尝试用“包含数字”的正则匹配（兜底策略）
+        // 2) Fallback: try regex matching tooth number from mesh name
         if (!target) {
             const fdiNum = String(targetToothNumber)
             scene.traverse((o) => {
@@ -110,7 +105,7 @@ function WholeMouthMiniModel({ targetToothNumber }) {
             return
         }
 
-        // 高亮：克隆材质，设置发光
+        // Apply highlight: clone material and update color/emissive
         const mat = target.material?.clone?.() || target.material
         if (mat) {
             mat.color?.set?.(highlight.color)

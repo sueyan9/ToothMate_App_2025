@@ -1,17 +1,18 @@
-// surfaceUtils.js
 export function isAnteriorFDI(n) {
     n = Number(n);
     return [11,12,13,21,22,23,31,32,33,41,42,43].includes(n);
 }
+
 export function classifyToothClass(n) {
     return isAnteriorFDI(n) ? 'ANTERIOR' : 'POSTERIOR';
 }
 
-// 解析面字符串（支持 ROOT 特判；前牙 O -> I；B->F；P->L）
+// Parse surface string (special handling for ROOT;
+// For anterior teeth: O -> I, B -> F, P -> L)
 export function parseSurfaces(surfaceStr, anterior) {
     if (!surfaceStr) return [];
     const s = surfaceStr.toUpperCase().replace(/\s+/g, '');
-    if (s === 'ROOT') return ['ROOT']; // ✅ 不要拆成字母
+    if (s === 'ROOT') return ['ROOT']; // ✅ Do not split into letters
     return Array.from(new Set(
         s.split('').map(ch => {
             if (ch === 'B') return 'F';
@@ -22,13 +23,15 @@ export function parseSurfaces(surfaceStr, anterior) {
     ));
 }
 
-// treatment 映射：'Root Canal' -> 'rootcanal'
+// Treatment mapping: e.g. 'Root Canal' -> 'rootcanal'
 export function normalizeTreatmentType(raw) {
     if (!raw) return 'normal';
     return raw.toLowerCase().replace(/\s+/g, '').replace('placement','');
 }
 
-// 没传 surfaces 时：rootcanal 走 ROOT；其他返回 null 表示整牙不分面
+// When no surfaces are provided:
+// - For root canal → return ROOT
+// - For others → return null (means whole tooth, not surface-specific)
 export function normalizeSurfaces(surfaces, toothNumber, treatmentType) {
     if (!surfaces) {
         if (normalizeTreatmentType(treatmentType) === 'rootcanal') return ['ROOT'];
@@ -47,7 +50,7 @@ export function getIndexMapForTooth(toothNumber, DEFAULT_INDEX_MAP, OVERRIDE_IND
     });
 }
 
-// 返回 **材质编号数组（字符串）**
+// Return **array of material indices (as strings)**
 export function resolveHighlightIndices({
                                             toothNumber,
                                             surfaceStr,
@@ -70,5 +73,5 @@ export function resolveHighlightIndices({
     }
     if (includeRoot) (map['ROOT'] || []).forEach(id => ids.add(String(id)));
 
-    return Array.from(ids.values()); // 字符串数组：如 ['28','29','30']
+    return Array.from(ids.values()); // Example: ['28','29','30']
 }
