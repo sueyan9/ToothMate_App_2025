@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // import all screens
+import LanguageSelector from './src/components/LanguageSelector';
 import AccountScreen from './src/screens/AccountScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 import AppointmentScreen from './src/screens/AppointmentScreen';
@@ -14,6 +15,7 @@ import DisconnectChildScreen from './src/screens/DisconnectChildScreen';
 import EducationContentScreen from './src/screens/EducationContentScreen';
 import EducationScreen from './src/screens/EducationScreen';
 import GameScreen from './src/screens/GameScreen/GameScreen';
+import HomeScreen from './src/screens/HomeScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
@@ -26,8 +28,6 @@ import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
-import HomeScreen from './src/screens/HomeScreen';
-
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
@@ -39,6 +39,7 @@ import { navigationRef } from './src/navigationRef';
 
 //splash screen
 import { useEffect, useState } from 'react';
+import { Image, View } from 'react-native';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
@@ -47,6 +48,14 @@ import SplashScreen from './src/screens/SplashScreen/SplashScreen';
 //  Create stack and tab navigators
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const HeaderLogo = () => (
+    <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <Image
+        source={require('./assets/tooth_icon.png')}
+        style={{width: 100, height: 35, resizeMode: 'contain'}}/>
+    </View>
+);
 
 // Account flow navigation
 const AccountStack = () => (
@@ -71,8 +80,8 @@ const EducationStack = () => (
 
 // Clinic flow navigation
 const ClinicStack = () => (
-    <Stack.Navigator initialRouteName="clinic" >
-        <Stack.Screen name="clinic" component={ClinicScreen} options={{ title: '' }}/>
+    <Stack.Navigator initialRouteName="clinic">
+        <Stack.Screen name="clinic" component={ClinicScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="chart"  component={DentalChartScreen}options={{ title: '' }} />
         <Stack.Screen name="appointment" component={AppointmentScreen} options={{ title: '' }}/>
         <Stack.Screen name="invoice" component={InvoiceScreen} options={{ title: '' }}/>
@@ -105,7 +114,12 @@ const ChildAccountStack = () => (
 //  Main flow with bottom tab navigation
 const MainFlow = () => (
     <Tab.Navigator screenOptions={({ route }) => ({
-        headerShown: false,
+        headerShown: true,
+        headerLeft: () => <HeaderLogo/>,
+        headerTitle: '',
+        headerStyle: {backgroundColor: '#E9F1F8',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
+        headerTitleAlign: 'left',
+        headerTransparent: true,
         tabBarActiveTintColor: '#875B51',
         tabBarInactiveTintColor: '#333333',
         tabBarStyle: {
@@ -152,6 +166,7 @@ const MainFlow = () => (
             component={ClinicStack}
             options={{
                 title: 'Bookings',
+                headerTransparent: false,
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
         />
@@ -160,6 +175,7 @@ const MainFlow = () => (
             component={UserAccountScreen}
             options={{
                 title: 'Profile',
+                headerRight: () => <LanguageSelector/>,
                 tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
             }}
         />
@@ -211,9 +227,9 @@ const AppNavigator = () => {
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
-                             <Stack.Screen name="Signup" component={SignupScreen} />
-                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
-                             <Stack.Screen name="Signin" component={SigninScreen} />
+                            <Stack.Screen name="Signup" component={SignupScreen} />
+                            <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
+                            <Stack.Screen name="Signin" component={SigninScreen} />
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}

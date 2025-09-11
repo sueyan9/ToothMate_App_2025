@@ -2,7 +2,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import LanguageSelector from '../../components/LanguageSelector';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
@@ -123,7 +122,7 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            <LanguageSelector />
+            
             <MaterialCommunityIcons name="logout" size={32} color={'#333333'} style={styles.logout} onPress={handleSignOut}/>
 
             <View style={styles.helloContainer}>
