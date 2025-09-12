@@ -3,6 +3,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
+import { Context as NotificationContext } from '../../context/NotificationContext/NotificationContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
@@ -46,6 +47,8 @@ const HomeScreen = () => {
     const {
         signout,
     } = useContext(AuthContext);
+    
+    const { initializeNotifications } = useContext(NotificationContext);
 
     // Translate texts when language changes
     useEffect(() => {
@@ -53,6 +56,11 @@ const HomeScreen = () => {
             translateAndCache(textsToTranslate);
         }
     }, [currentLanguage]);
+    
+    // Initialize notifications when component mounts
+    useEffect(() => {
+        initializeNotifications();
+    }, []);
 
     const handleSignOut = () => {
     Alert.alert(

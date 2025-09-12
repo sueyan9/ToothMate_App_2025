@@ -17,19 +17,44 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSUserNotificationsUsageDescription": "This app uses notifications to remind you of dental appointments and provide helpful oral health tips."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "com.android.vending.BILLING"
+      ]
     },
     "androidNavigationBar": {
       "visible": "immersive"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "notification": {
+      "icon": "./assets/tooth_icon.png",
+      "color": "#78d0f5",
+      "sounds": ["./assets/notification.wav"],
+      "androidMode": "default",
+      "androidCollapsedTitle": "ToothMate"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/tooth_icon.png",
+          "color": "#78d0f5",
+          "defaultChannel": "default"
+        }
+      ]
+    ]
   }
 }

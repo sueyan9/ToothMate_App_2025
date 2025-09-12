@@ -2,15 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import {
-  Alert,
-  Image,
-  Modal,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    Image,
+    Modal,
+    SafeAreaView,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import axiosApi from '../../api/axios';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
@@ -59,6 +59,7 @@ const UserAccountScreen = ({ navigation }) => {
     'Update Your Details',
     'Change Clinic',
     'Change Your Password',
+    'Notification Settings',
     'Disconnect From Parent',
     'Sign Out',
     'Not specified',
@@ -817,6 +818,15 @@ const UserAccountScreen = ({ navigation }) => {
             >
               <Ionicons name="lock-closed-outline" size={20} color="#516287" />
               <Text style={styles.actionButtonText}>{t('Change Your Password')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#516287" />
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.actionButton}
+              onPress={() => navigation.navigate('NotificationSettings')}
+            >
+              <Ionicons name="notifications-outline" size={20} color="#516287" />
+              <Text style={styles.actionButtonText}>{t('Notification Settings')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
 

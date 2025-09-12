@@ -18,6 +18,7 @@ import GameScreen from './src/screens/GameScreen/GameScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
+import NotificationSettingsScreen from './src/screens/NotificationSettingsScreen';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import SelectClinicScreen from './src/screens/SelectClinicScreen';
@@ -33,6 +34,7 @@ import { Provider as AppointmentProvider } from './src/context/AppointmentContex
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
 import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
+import { Provider as NotificationProvider } from './src/context/NotificationContext/NotificationContext';
 import { Provider as TranslationProvider } from './src/context/TranslationContext/TranslationContext';
 import { Provider as UserProvider } from './src/context/UserContext/UserContext';
 import { navigationRef } from './src/navigationRef';
@@ -66,6 +68,7 @@ const AccountStack = () => (
         <Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />
         <Stack.Screen name="Password" component={PasswordChangeScreen} />
         <Stack.Screen name="UserAccount" component={UserAccountScreen} />
+        <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
 
@@ -108,6 +111,23 @@ const ChildAccountStack = () => (
         <Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />
         <Stack.Screen name="Password" component={PasswordChangeScreen} />
         <Stack.Screen name="UserAccount" component={UserAccountScreen} />
+        <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
+);
+
+// Profile flow navigation
+const ProfileStack = () => (
+    <Stack.Navigator initialRouteName="UserAccount">
+        <Stack.Screen 
+            name="UserAccount" 
+            component={UserAccountScreen} 
+            options={{ 
+                title: 'Profile',
+                headerRight: () => <LanguageSelector/>
+            }} 
+        />
+        <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Password" component={PasswordChangeScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
 
@@ -184,10 +204,9 @@ const MainFlow = () => (
         />
         <Tab.Screen
             name="Profile"
-            component={UserAccountScreen}
+            component={ProfileStack}
             options={{
-                title: 'Profile',
-                headerRight: () => <LanguageSelector/>,
+                headerShown: false,
                 tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
             }}
         />
@@ -288,9 +307,11 @@ export default function App() {
                 <EducationProvider>
                     <AppointmentProvider>
                         <UserProvider>
-                            <TranslationProvider>
-                                <AppNavigator />
-                            </TranslationProvider>
+                            <NotificationProvider>
+                                <TranslationProvider>
+                                    <AppNavigator />
+                                </TranslationProvider>
+                            </NotificationProvider>
                         </UserProvider>
                     </AppointmentProvider>
                 </EducationProvider>

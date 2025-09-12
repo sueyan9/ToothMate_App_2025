@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import axiosApi from '../../api/axios';
+import { Context as NotificationContext } from '../../context/NotificationContext/NotificationContext';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
 
@@ -35,6 +36,8 @@ const ClinicScreen = ({navigation, route}) => {
         getUser, 
         getDentalClinic
     } = useContext(UserContext);
+    
+    const { scheduleAppointmentReminder } = useContext(NotificationContext);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -215,6 +218,20 @@ const ClinicScreen = ({navigation, route}) => {
 
             if (response.status === 201 || response.status === 200) {
                 Alert.alert('Success', 'Appointment added successfully.');
+                
+                // Schedule notification reminder for the appointment
+                try {
+                    const appointmentDate = dayjs(newAppt.startDate).format('YYYY-MM-DD');
+                    const appointmentTime = dayjs(newAppt.startTime).format('HH:mm');
+                    const clinicName = clinic?.name || 'your dental clinic';
+                    
+                    await scheduleAppointmentReminder(appointmentDate, appointmentTime, clinicName);
+                    console.log('Appointment reminder scheduled successfully');
+                } catch (notificationError) {
+                    console.warn('Failed to schedule appointment reminder:', notificationError);
+                    // Don't show error to user as appointment was created successfully
+                }
+                
                 setShowAddModal(false);
                 resetForm();
                 loadAppointments(); // Refresh the appointment list
