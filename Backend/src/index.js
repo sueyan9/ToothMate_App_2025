@@ -7,18 +7,24 @@ require("./models/ImgModel");
 require("./models/PdfModel");
 const express = require("express");
 const mongoose = require("mongoose");
+const multer = require('multer');
+
 const authRoutes = require("./routes/authRoutes");
 const educationRoutes = require("./routes/educationRoutes");
 const clinicRoutes = require("./routes/clinicRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
 
 const requireAuth = require("./middlewares/requireAuth");
-
+// --- App & middlewares ---
 const app = express();
+
+
 // no case_sensitive
 app.set('case sensitive routing', false);
 // mid-parts
-app.use(express.json());
+// body analyse（JSON & urlencoded）
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // logging
 app.use((req, res, next) => {
     console.log('[IN]', req.method, req.originalUrl);
@@ -63,6 +69,134 @@ app.use(authRoutes);
 app.use(educationRoutes);
 app.use(clinicRoutes);
 app.use(appointmentRoutes);
+// --- upload files ---
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+});
+
+const Appointment = mongoose.model('Appointment');
+// ===== 上传到某次预约：图片 =====
+// form-data: file=<binary>
+app.post('/api/appointments/:id/images',
+    // 如需权限控制可加：requireAuth,
+    upload.single('file'),
+    async (req, res) => {
+        try {
+            if (!req.file) return res.status(400).json({ error: 'No file' });
+
+            const appt = await Appointment.findById(req.params.id);
+            if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+
+            appt.images.push({
+                img: { data: req.file.buffer, contentType: req.file.mimetype || 'image/jpeg' }
+            });
+
+            await appt.save();
+            res.json({ ok: true, count: appt.images.length });
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ error: 'upload image failed' });
+        }
+    }
+);
+
+// ===== 上传到某次预约：PDF =====
+// form-data: file=<binary>
+app.post('/api/appointments/:id/pdfs',
+    // requireAuth,
+    upload.single('file'),
+    async (req, res) => {
+        try {
+            if (!req.file) return res.status(400).json({ error: 'No file' });
+            if (!/pdf$/i.test(req.file.mimetype)) {
+                return res.status(415).json({ error: 'Not a PDF' });
+            }
+
+            const appt = await Appointment.findById(req.params.id);
+            if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+
+            appt.pdfs.push({
+                pdf: { data: req.file.buffer, contentType: req.file.mimetype }
+            });
+
+            await appt.save();
+            res.json({ ok: true, count: appt.pdfs.length });
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ error: 'upload pdf failed' });
+        }
+    }
+);
+
+// ===== 列出图片（返回 base64，方便 RN 当前实现） =====
+app.get('/api/appointments/:id/images', /* requireAuth, */ async (req, res) => {
+    try {
+        const appt = await Appointment.findById(req.params.id).lean();
+        if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+
+        const images = (appt.images || [])
+            .map(x => ({
+                contentType: x.img?.contentType || 'image/jpeg',
+                base64: x.img?.data ? Buffer.from(x.img.data).toString('base64') : null
+            }))
+            .filter(i => i.base64);
+
+        res.json({ images });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'fetch images failed' });
+    }
+});
+
+// ===== 直接按 index 输出原图（二进制流） =====
+app.get('/api/appointments/:id/images/:idx/raw', /* requireAuth, */ async (req, res) => {
+    try {
+        const appt = await Appointment.findById(req.params.id);
+        if (!appt) return res.status(404).end();
+
+        const idx = Number(req.params.idx);
+        const rec = appt.images?.[idx];
+        if (!rec) return res.status(404).end();
+
+        res.set('Content-Type', rec.img.contentType || 'image/jpeg');
+        res.send(rec.img.data);
+    } catch (e) {
+        console.error(e);
+        res.status(500).end();
+    }
+});
+
+// =====（可选）列出 PDF 数量 =====
+app.get('/api/appointments/:id/pdfs', /* requireAuth, */ async (req, res) => {
+    try {
+        const appt = await Appointment.findById(req.params.id).lean();
+        if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+
+        res.json({ count: (appt.pdfs || []).length });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'fetch pdfs failed' });
+    }
+});
+
+// ===== 按 index 输出 PDF（二进制流） =====
+app.get('/api/appointments/:id/pdfs/:idx/raw', /* requireAuth, */ async (req, res) => {
+    try {
+        const appt = await Appointment.findById(req.params.id);
+        if (!appt) return res.status(404).end();
+
+        const idx = Number(req.params.idx);
+        const rec = appt.pdfs?.[idx];
+        if (!rec) return res.status(404).end();
+
+        res.set('Content-Type', rec.pdf.contentType || 'application/pdf');
+        res.send(rec.pdf.data);
+    } catch (e) {
+        console.error(e);
+        res.status(500).end();
+    }
+});
 listRoutes(app);
 // check link health
 app.get('/health', (req, res) => {
