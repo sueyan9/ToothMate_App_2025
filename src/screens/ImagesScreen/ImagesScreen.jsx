@@ -1,17 +1,36 @@
-import React, { useState } from 'react';
-import { View, ScrollView, Text, Dimensions, Platform } from 'react-native';
+import React, { useState , useLayoutEffect } from 'react';
+import { View, ScrollView, Text, Dimensions, Platform , TouchableOpacity} from 'react-native';
 import { Button } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import ImageZoom from 'react-native-image-pan-zoom';
 import AppointmentImage from '../../components/AppointmentImage';
 import styles from './styles';
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from '@expo/vector-icons';
 
 const ImagesScreen = ({ route }) => {
-  const navigation = useNavigation();
 
-  // 从 route.params 中获取参数
-  const { imageIndex = 0, images = [] } = route.params || {}; // 提供默认值
+  const navigation = useNavigation();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: 'Images',
+      headerShown: true,
+      headerTransparent: true,          // 要不透明就改成 false
+      headerBackTitleVisible: false,
+      headerTintColor: '#333',          // 箭头颜色
+      headerLeft: () => (
+          <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{ paddingHorizontal: 12, paddingVertical: 6 }}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="arrow-back" size={24} color="#333" />
+          </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+  // read parameter from route.params
+  const { imageIndex = 0, images = [] } = route.params || {};
 
   const [currentImageIndex, setCurrentImageIndex] = useState(imageIndex);
 
@@ -77,20 +96,20 @@ const ImagesScreen = ({ route }) => {
   );
 };
 
-// Header Options
-ImagesScreen.navigationOptions = () => {
-  return {
-    title: 'Images',
-    headerTintColor: 'black',
-    headerBackTitleVisible: false,
-    safeAreaInsets: Platform.OS === 'ios' ? { top: 45 } : { top: 30 },
-    headerStyle: {
-      backgroundColor: '#78d0f5',
-    },
-    cardStyle: {
-      backgroundColor: 'white',
-    },
-  };
-};
+// // Header Options
+// ImagesScreen.navigationOptions = () => {
+//   return {
+//     title: 'Images',
+//     headerTintColor: 'black',
+//     headerBackTitleVisible: false,
+//     safeAreaInsets: Platform.OS === 'ios' ? { top: 45 } : { top: 30 },
+//     headerStyle: {
+//       backgroundColor: '#78d0f5',
+//     },
+//     cardStyle: {
+//       backgroundColor: 'white',
+//     },
+//   };
+// };
 
 export default ImagesScreen;

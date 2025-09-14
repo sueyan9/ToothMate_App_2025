@@ -116,7 +116,7 @@ const ClinicScreen = ({navigation, route}) => {
         try {
             const urlGet = `/Appointments/${nhi}`;
             logReq('GET appointments', urlGet, {params: {limit: 400}});
-            const res = await axiosApi.get(`Appointments/${nhi}`, {
+            const res = await axiosApi.get(`/Appointments/${nhi}`, {
                 params: {limit: 400}
             });
             console.log('Appointments response:', res?.data);
