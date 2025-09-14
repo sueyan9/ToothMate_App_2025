@@ -116,7 +116,7 @@ const ClinicScreen = ({navigation, route}) => {
         try {
             const urlGet = `/Appointments/${nhi}`;
             logReq('GET appointments', urlGet, {params: {limit: 400}});
-            const res = await axiosApi.get(`/Appointments/${nhi}`, {
+            const res = await axiosApi.get(`Appointments/${nhi}`, {
                 params: {limit: 400}
             });
             console.log('Appointments response:', res?.data);
@@ -211,8 +211,9 @@ const ClinicScreen = ({navigation, route}) => {
             const urlPost = '/Appointments';
 
             logReq('POST appointments', urlPost, appointmentData);
-            const response = await axiosApi.post('/Appointments', appointmentData);
-
+            const response = await axiosApi.get(`/Appointments/${encodeURIComponent(nhi)}`, {
+                params: { limit: 400 }
+            });
             if (response.status === 201 || response.status === 200) {
                 Alert.alert('Success', 'Appointment added successfully.');
                 setShowAddModal(false);

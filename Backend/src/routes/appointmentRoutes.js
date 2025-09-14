@@ -28,7 +28,7 @@ function toNodeBuffer(bufLike) {
 
 /* ===================== Core ===================== */
 // GET /Appointment 列表
-router.get('/Appointment', async (_req, res) => {
+router.get('/Appointments', async (_req, res) => {
   try {
     const items = await Appointment.find().sort({ startAt: -1 }).limit(200);
     res.json(items);
@@ -36,12 +36,13 @@ router.get('/Appointment', async (_req, res) => {
 });
 
 // GET /Appointment/:nhi  按 NHI 查询
-router.get('/Appointment/:nhi', async (req, res) => {
+router.get('/Appointments/:nhi', async (req, res) => {
   try {
     const { nhi } = req.params;
     const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
     const skip = parseInt(req.query.skip, 10) || 0;
     const filter = { nhi: String(nhi || '').toUpperCase() };
+    console.log('[GET by NHI] filter =', filter, 'skip=', skip, 'limit=', limit);
 
     const [items, total] = await Promise.all([
       Appointment.find(filter).sort({ startAt: 1, date: 1 }).skip(skip).limit(limit).lean(),
@@ -49,6 +50,7 @@ router.get('/Appointment/:nhi', async (req, res) => {
     ]);
     res.json({ items, total, skip, limit });
   } catch (e) {
+    console.error('GET /Appointments/nhi/:nhi failed:', e);
     res.status(500).json({ error: e.message });
   }
 });
