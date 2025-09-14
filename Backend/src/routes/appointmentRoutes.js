@@ -1,126 +1,68 @@
-const express = require("express");
-
-const mongoose = require("mongoose");
-const multer = require("multer");
-const fs = require("fs");
-const { POINT_CONVERSION_HYBRID } = require("constants");
+const express = require('express');
+const multer = require('multer');
+const mongoose = require('mongoose');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const tz = require('dayjs/plugin/timezone');
 dayjs.extend(utc); dayjs.extend(tz);
 
-
-const Appointment = mongoose.model("Appointment");
-const Img = mongoose.model("Img");
-const Pdf = mongoose.model("Pdf");
-const User = mongoose.model("User");
-const Clinic = mongoose.model('Clinic');
-const router = express.Router();
 const NZ_TZ = 'Pacific/Auckland';
-const storage = multer.diskStorage({
-  destination: function (req, res, cb) {
-    cb(null, "uploads/");
-  },
+const Appointment = mongoose.model('Appointment');
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }
 });
 
-const upload = multer({ storage: storage });
+const router = express.Router();
 
-router.get("/image/:id", (req, res) => {
-  const id = req.params.id;
-  const imgv = Img.findOne({ _id: id }).then((imgv) =>
-    res.send(Buffer.from(imgv.img.data.buffer).toString("base64"))
-  );
-});
+/* ---------- Buffer 兼容工具 ---------- */
+function toNodeBuffer(bufLike) {
+  if (!bufLike) return null;
+  if (Buffer.isBuffer(bufLike)) return bufLike;
+  if (bufLike?.type === 'Buffer' && Array.isArray(bufLike?.data)) return Buffer.from(bufLike.data);
+  if (ArrayBuffer.isView(bufLike)) return Buffer.from(bufLike);
+  if (bufLike?.buffer instanceof ArrayBuffer) return Buffer.from(bufLike.buffer);
+  try { return Buffer.from(bufLike); } catch { return null; }
+}
 
-// GET /appointments (admin/debug)
-router.get('/Appointments', async (_req, res) => {
+/* ===================== Core ===================== */
+// GET /Appointment 列表
+router.get('/Appointment', async (_req, res) => {
   try {
     const items = await Appointment.find().sort({ startAt: -1 }).limit(200);
     res.json(items);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// GET /Appointment/:nhi  按 NHI 查询
+router.get('/Appointment/:nhi', async (req, res) => {
+  try {
+    const { nhi } = req.params;
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
+    const skip = parseInt(req.query.skip, 10) || 0;
+    const filter = { nhi: String(nhi || '').toUpperCase() };
+
+    const [items, total] = await Promise.all([
+      Appointment.find(filter).sort({ startAt: 1, date: 1 }).skip(skip).limit(limit).lean(),
+      Appointment.countDocuments(filter),
+    ]);
+    res.json({ items, total, skip, limit });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
 
-// router.post("/addAppointment", upload.single("file"), async (req, res) => {
-//   const { date, dentalData, notes } = req.body;
-//   const caseInsensitiveNhi = req.body.nhi;
-//   const nhi = caseInsensitiveNhi.toUpperCase();
-//
-//   var pdfs = new Pdf();
-//   pdfs.pdf.data = fs.readFileSync(req.body.invoice.path);
-//   pdfs.pdf.contentType = "application/pdf";
-//
-//   var images = [];
-//   const user = await User.findOne({ nhi: nhi });
-//   if (user === null) {
-//     return res.status(404).send("NHI does not exist in ToothMate System");
-//   }
-//
-//   let imageArray = req.body.images;
-//   try {
-//     imageArray.forEach((image) => {
-//       var img = new Img();
-//       img.img.data = fs.readFileSync(image.path);
-//       img.img.contentType = "image/png";
-//       images.push(img);
-//     });
-//   } catch (err) {
-//     console.log("Image error: " + err);
-//   }
-//
-//   try {
-//     const appointment = new Appointment({
-//       nhi,
-//       date,
-//       dentalData,
-//       pdfs,
-//       images,
-//       notes,
-//     });
-//     await appointment.save();
-//     res.send("Appointment Made");
-//   } catch (err) {
-//     return res.status(422).send({ err });
-//   }
-// });
-// POST /appointments  create an appointment（do not handleimg/invoice））
-/*
-body: {
-  nhi, userId,
-  dentist: { name },
-  clinic: { name, location, phone },
-  purpose, notes, status,
-  startLocal: 'YYYY-MM-DD HH:mm', endLocal: 'YYYY-MM-DD HH:mm' //
-}
-*/
+// POST /Appointment 创建预约
 router.post('/Appointments', async (req, res) => {
   try {
-    console.log('[POST /Appointments] body =', req.body);
     const {
-      nhi,
-      userId,
-      dentist = {},
-      clinic:clinicId,
-      purpose,
-      notes,
-      status = 'scheduled',
-      startLocal,
-      endLocal,
-      timezone = NZ_TZ,
-      treatments = [],
+      nhi, userId, dentist = {}, clinic, purpose, notes,
+      status = 'scheduled', startLocal, endLocal, timezone = NZ_TZ, treatments = [],
     } = req.body;
-    if (!nhi) return res.status(400).json({ error: 'nhi required' });
-    if (!purpose) return res.status(400).json({ error: 'purpose required' });
-    if (!startLocal || !endLocal) return res.status(400).json({ error: 'startLocal/endLocal required' });
-    if (!clinicId) return res.status(400).json({ error: 'clinic id required' });
-    //testing clinic id & change to ObjectId
-    if (!mongoose.Types.ObjectId.isValid(clinicId)) {
-      return res.status(400).json({ error: 'invalid clinic id' });
-    }
-    const clinicDoc = await Clinic.findById(clinicId).lean();
-    if (!clinicDoc) {
-      return res.status(400).json({ error: 'clinic not found' });
+
+    if (!nhi || !purpose || !startLocal || !endLocal) {
+      return res.status(400).json({ error: 'nhi, purpose, startLocal, endLocal are required' });
     }
 
     const startAt = dayjs(startLocal).tz(timezone).toDate();
@@ -128,63 +70,120 @@ router.post('/Appointments', async (req, res) => {
     if (!(startAt < endAt)) return res.status(400).json({ error: 'endAt must be after startAt' });
 
     const doc = await Appointment.create({
-      nhi: nhi.toUpperCase(),
+      nhi: String(nhi).toUpperCase(),
       userId,
-      // dentist: { name: dentist.name },
-      // clinic: { name: clinic.name, location: clinic.location, phone: clinic.phone },
       dentist: dentist?.name ? { name: dentist.name } : undefined,
-      clinic: clinicId,
-      purpose,
-      notes,
-      status,
-      treatments,
-      startAt,
-      endAt,
-      timezone,
+      clinic,
+      purpose, notes, status, treatments, startAt, endAt, timezone,
     });
-    console.log('[POST /Appointments] created _id =', doc._id.toString());
     res.status(201).json(doc);
+  } catch (e) { res.status(422).json({ error: e.message }); }
+});
+
+/* ===================== Assets ===================== */
+// 上传图片
+router.post('/Appointments/:id/images', upload.single('file'), async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file' });
+    const appt = await Appointment.findById(req.params.id);
+    if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+    appt.images.push({ img: { data: req.file.buffer, contentType: req.file.mimetype || 'image/jpeg' } });
+    await appt.save();
+    res.json({ ok: true, count: appt.images.length });
+  } catch (e) { next(e); }
+});
+
+// 上传 PDF
+router.post('/Appointments/:id/pdfs', upload.single('file'), async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file' });
+    if (!/pdf$/i.test(req.file.mimetype || '')) return res.status(415).json({ error: 'Not a PDF' });
+    const appt = await Appointment.findById(req.params.id);
+    if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+    appt.pdfs.push({ pdf: { data: req.file.buffer, contentType: req.file.mimetype } });
+    await appt.save();
+    res.json({ ok: true, count: appt.pdfs.length });
+  } catch (e) { next(e); }
+});
+
+// 列出图片（Base64）
+router.get('/Appointments/:id/images', async (req, res) => {
+  try {
+    const appt = await Appointment.findById(req.params.id);
+    if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+
+    const images = (appt.images || []).map(x => {
+      const buf = toNodeBuffer(x?.img?.data ?? x?.data);
+      const ct = x?.img?.contentType ?? x?.contentType ?? 'image/jpeg';
+      return buf ? { contentType: ct, base64: buf.toString('base64') } : null;
+    }).filter(Boolean);
+
+    res.json({ images });
   } catch (e) {
-    res.status(422).json({ error: e.message });
+    res.status(500).json({ error: 'fetch images failed' });
   }
 });
-//get xray/images
-router.get("/getAllImages/:nhi", (req, res) => {
-  const nhi = req.params.nhi;
-  const images = [];
-  Appointment.find({ nhi: nhi })
-    .then((appointments) => {
-      appointments.forEach((appointment) => {
-        appointment.images.forEach((image) => {
-          images.push(image);
-        });
-      });
-      res.json(images);
-    })
-    .catch(() => res.status(404).json({ error: "No images found" }));
+
+// 获取单张图片原图
+router.get('/Appointments/:id/images/:idx/raw', async (req, res) => {
+  try {
+    const appt = await Appointment.findById(req.params.id);
+    if (!appt) return res.status(404).end();
+    const rec = appt.images?.[Number(req.params.idx)];
+    if (!rec) return res.status(404).end();
+    const buf = toNodeBuffer(rec?.img?.data ?? rec?.data);
+    const ct = rec?.img?.contentType || rec?.contentType || 'image/jpeg';
+    if (!buf) return res.status(404).end();
+    res.set('Content-Type', ct);
+    res.set('Content-Length', String(buf.length));
+    res.send(buf);
+  } catch (e) { res.status(500).end(); }
 });
 
-// GET /appointments/:nhi?when=past|upcoming&limit=20&skip=0
-router.get('/Appointments/:nhi', async (req, res) => {
+// 获取 PDF 数量
+router.get('/Appointments/:id/pdfs', async (req, res) => {
   try {
-    const { nhi } = req.params;
-    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
-    const skip = parseInt(req.query.skip, 10) || 0;
+    const appt = await Appointment.findById(req.params.id).lean();
+    if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+    res.json({ count: (appt.pdfs || []).length });
+  } catch (e) { res.status(500).json({ error: 'fetch pdfs failed' }); }
+});
 
-    const filter = { nhi: (nhi || '').toUpperCase() };
+// 获取 PDF 原文件
+router.get('/Appointments/:id/pdfs/:idx/raw', async (req, res) => {
+  try {
+    const appt = await Appointment.findById(req.params.id);
+    if (!appt) return res.status(404).end();
+    const rec = appt.pdfs?.[Number(req.params.idx)];
+    if (!rec) return res.status(404).end();
+    const buf = toNodeBuffer(rec?.pdf?.data ?? rec?.data);
+    const ct = rec?.pdf?.contentType ?? rec?.contentType ?? 'application/pdf';
+    if (!buf) return res.status(404).end();
+    res.set('Content-Type', ct);
+    res.set('Content-Length', String(buf.length));
+    res.set('Content-Disposition', `inline; filename="document-${Number(req.params.idx) + 1}.pdf"`);
+    res.send(buf);
+  } catch (e) { res.status(500).end(); }
+});
 
-    const [items, total] = await Promise.all([
-      Appointment.find(filter)
-          .sort({ startAt: 1, date: 1 }) // showing as asending
-          .skip(skip)
-          .limit(limit)
-          .lean(),
-      Appointment.countDocuments(filter),
-    ]);
+// 综合资产
+router.get('/Appointments/:id/assets', async (req, res) => {
+  try {
+    const appt = await Appointment.findById(req.params.id);
+    if (!appt) return res.status(404).json({ error: 'Appointment not found' });
 
-    res.json({ items, total, skip, limit });
+    const imagesBase64 = (appt.images || []).map(x => {
+      const buf = toNodeBuffer(x?.img?.data ?? x?.data);
+      const ct = x?.img?.contentType ?? x?.contentType ?? 'image/jpeg';
+      return buf ? `data:${ct};base64,${buf.toString('base64')}` : null;
+    }).filter(Boolean);
+
+    const host = `${req.protocol}://${req.get('host')}`;
+    const pdfUrls = (appt.pdfs || []).map((_, i) => `${host}/Appointment/${req.params.id}/pdfs/${i}/raw`);
+
+    res.json({ imagesBase64, pdfUrls });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: 'fetch assets failed' });
   }
 });
 

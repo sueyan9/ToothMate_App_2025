@@ -16,6 +16,12 @@ import axiosApi from '../../api/axios';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
+import {
+  fetchAssetsForAppointment,
+
+} from '../../api/appointments';
+import * as WebBrowser from 'expo-web-browser';
+import AppointmentImage from '../../components/AppointmentImage';
 import styles from './styles';
 
 // Import profile pictures
@@ -37,6 +43,9 @@ const UserAccountScreen = ({ navigation }) => {
   
   // State to force re-render on language change
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const [xrayImages, setXrayImages] = useState([]);    // base64[]
+  const [pdfUrls, setPdfUrls] = useState([]);          // string[]
 
   // Define texts to translate
   const textsToTranslate = [
@@ -156,6 +165,17 @@ const UserAccountScreen = ({ navigation }) => {
     newPassword: '',
     confirmPassword: ''
   });
+  useEffect(() => {
+    async function loadAssets() {
+      const appointmentId = '68aeed1ba7a2c9ee28f14115';
+      const assets = await fetchAssetsForAppointment(appointmentId);
+      setXrayImages(assets.imagesBase64);
+      setPdfUrls(assets.pdfUrls);
+      console.log('assets from API:', assets);
+
+    }
+    loadAssets();
+  }, []);
 
   useEffect(() => {
     // Force re-render when language changes
@@ -616,6 +636,14 @@ const UserAccountScreen = ({ navigation }) => {
     setShowProfileModal(false);
     console.log(`Profile picture ${pictureIndex + 1} selected`);
   };
+  const openPdf = async (url) => {
+    try {
+      await WebBrowser.openBrowserAsync(url);
+    } catch (e) {
+      Alert.alert('Error', 'Failed to open document.');
+    }
+  };
+
 
   const handleDisconnectFromParent = () => {
     navigation.navigate('DisconnectChild');
@@ -834,6 +862,71 @@ const UserAccountScreen = ({ navigation }) => {
             )}
           </View>
         </View>
+        {/* X-ray Images */}
+        <View style={styles.infoCard}>
+          <View style={styles.cardHeader}>
+            <Ionicons name="image-outline" size={24} color="#516287" />
+            <Text style={styles.cardTitle}>{t('My X-ray Images')}</Text>
+          </View>
+
+          {xrayImages?.length ? (
+              <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ paddingVertical: 8 }}
+              >
+                {xrayImages.map((b64, idx) => (
+                    <View key={idx} style={{ marginRight: 12 }}>
+                      <AppointmentImage base64={b64} />
+                    </View>
+                ))}
+              </ScrollView>
+          ) : (
+              <Text style={styles.infoValue}>{t('None')}</Text>
+          )}
+
+          <TouchableOpacity
+              style={[styles.actionButton, { marginTop: 8 }]}
+              onPress={() =>
+                  navigation.navigate('images', {
+                    images: xrayImages,     // 直接传 base64 数组给旧的 ImagesScreen
+                    imageIndex: 0,
+                  })
+              }
+              disabled={!xrayImages?.length}
+          >
+            <Ionicons name="expand-outline" size={20} color="#516287" />
+            <Text style={styles.actionButtonText}>{t('View All')}</Text>
+            <Ionicons name="chevron-forward" size={20} color="#516287" />
+          </TouchableOpacity>
+        </View>
+
+        {/* My Documents (Invoices / Referrals) */}
+        <View style={styles.infoCard}>
+          <View style={styles.cardHeader}>
+            <Ionicons name="document-text-outline" size={24} color="#516287" />
+            <Text style={styles.cardTitle}>{t('My Documents')}</Text>
+          </View>
+
+          {pdfUrls?.length ? (
+              pdfUrls.map((url, idx) => (
+                  <TouchableOpacity
+                      key={idx}
+                      style={styles.actionButton}
+                      onPress={() => openPdf(url)}
+                  >
+                    <Ionicons name="document-outline" size={20} color="#516287" />
+                    <Text style={styles.actionButtonText}>
+                      {t('Invoice/Referral')} #{idx + 1}
+                    </Text>
+                    <Ionicons name="open-outline" size={20} color="#516287" />
+                  </TouchableOpacity>
+              ))
+          ) : (
+              <Text style={styles.infoValue}>{t('None')}</Text>
+          )}
+        </View>
+
 
         {/* Sign Out Button */}
         <View style={styles.signOutSection}>

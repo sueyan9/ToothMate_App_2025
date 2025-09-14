@@ -66,6 +66,7 @@ const AccountStack = () => (
         <Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />
         <Stack.Screen name="Password" component={PasswordChangeScreen} />
         <Stack.Screen name="UserAccount" component={UserAccountScreen} />
+
     </Stack.Navigator>
 );
 
@@ -78,18 +79,42 @@ const EducationStack = () => (
     </Stack.Navigator>
 );
 
-// Clinic flow navigation
-const ClinicStack = () => (
+// Booking flow navigation
+const BookingStack = () => (
     <Stack.Navigator initialRouteName="clinic">
         <Stack.Screen name="clinic" component={ClinicScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="chart"  component={DentalChartScreen}options={{ title: '' }} />
         <Stack.Screen name="appointment" component={AppointmentScreen} options={{ title: '' }}/>
-        <Stack.Screen name="invoice" component={InvoiceScreen} options={{ title: '' }}/>
-        <Stack.Screen name="images" component={ImagesScreen} options={{ title: '' }}/>
-        <Stack.Screen name="allimages" component={AllImagesScreen} options={{ title: '' }}/>
+
     </Stack.Navigator>
 );
-
+// Profile flow navigation
+const ProfileStack = () => (
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="UserAccount">
+        <Stack.Screen name="UserAccount" component={UserAccountScreen} />
+        <Stack.Screen name="images" component={ImagesScreen}
+                      options={{
+                          headerShown: true,
+                          title: 'Image',                 // 你可以换成 Images
+                          headerTransparent: false,       // 不透明，这样箭头能看清
+                          headerBackTitleVisible: false,
+                          headerTintColor: '#333',        // 箭头颜色
+                          headerStyle: {
+                              backgroundColor: '#78d0f5',   // 保证跟页面背景区分开
+                          },
+                      }}
+        />
+        <Stack.Screen name="allimages" component={AllImagesScreen}
+                      options={{
+            headerShown: true,
+            title: 'All Images',
+            headerTransparent: true,
+            headerBackTitleVisible: false,
+            headerTintColor: '#333',
+        }}/>
+        <Stack.Screen name="invoice" component={InvoiceScreen} />
+    </Stack.Navigator>
+);
 // Child clinic flow
 const ChildClinicStack = () => (
     <Stack.Navigator initialRouteName="list">
@@ -123,14 +148,29 @@ const MainFlow = () => (
         currentNestedRoute?.params?.isModal === true;
 
         const isContentPage = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' && currentNestedRoute?.params?.id && !currentNestedRoute?.params?.selectedFilter;
-
+        const isProfileInner =
+            currentTab.name === 'Profile' &&
+            ['images', 'allimages', 'invoice'].includes(currentNestedRoute?.name);
         return {
-        headerShown: true,
-        headerLeft: () => <HeaderLogo/>,
-        headerTitle: '',
-        headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
-        headerTitleAlign: 'left',
-        headerTransparent: !isViewingIndividualContent,
+            headerShown: !isProfileInner,   // 在二级页时关掉 Tab header
+            ...( !isProfileInner ? {
+                headerLeft: () => <HeaderLogo />,
+                headerTitle: '',
+                headerStyle: {
+                    backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
+                    borderBottomWidth: 0,
+                    elevation: 0,
+                    shadowOpacity: 0,
+                },
+                headerTitleAlign: 'left',
+                headerTransparent: !isViewingIndividualContent,
+            } : {}),
+        // headerShown: true,
+        // headerLeft: () => <HeaderLogo/>,
+        // headerTitle: '',
+        // headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
+        // headerTitleAlign: 'left',
+        // headerTransparent: !isViewingIndividualContent,
         tabBarActiveTintColor: '#875B51',
         tabBarInactiveTintColor: '#333333',
         tabBarStyle: {
@@ -146,7 +186,7 @@ const MainFlow = () => (
             shadowOpacity: 0.1,
             shadowRadius: 5,
         }
-    }
+    };
     }}>
         <Tab.Screen
             name="AccountFlow"
@@ -175,7 +215,7 @@ const MainFlow = () => (
         <Tab.Screen
             // NEED TO REFACTOR TO APPOINTMENTS :)
             name="Bookings"
-            component={ClinicStack}
+            component={BookingStack}
             options={{
                 title: 'Bookings',
                 headerTransparent: false,
@@ -184,7 +224,7 @@ const MainFlow = () => (
         />
         <Tab.Screen
             name="Profile"
-            component={UserAccountScreen}
+            component={ProfileStack}
             options={{
                 title: 'Profile',
                 headerRight: () => <LanguageSelector/>,

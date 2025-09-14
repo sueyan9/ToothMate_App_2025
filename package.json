@@ -43,6 +43,7 @@
     "intl": "^1.2.5",
     "lodash": "^4.17.21",
     "mongodb": "^6.16.0",
+    "prop-types": "^15.8.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
