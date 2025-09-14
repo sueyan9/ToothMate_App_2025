@@ -36,7 +36,7 @@ export async function buildAppointmentImageRawUrls(appointmentId, count) {
         const list = await fetchAppointmentImages(appointmentId);
         count = list.length;
     }
-    return Array.from({ length: count }, (_, idx) => `${API_URL}/api/appointments/${appointmentId}/images/${idx}/raw`);
+    return Array.from({ length: count }, (_, idx) => `${API_URL}/Appointments/${appointmentId}/images/${idx}/raw`);
 }
 
 /** -------------------- PDF（invoice / referral） -------------------- **/
@@ -52,7 +52,7 @@ export async function buildAppointmentPdfRawUrls(appointmentId, count) {
     if (typeof count !== 'number') {
         count = await fetchAppointmentPDFCount(appointmentId);
     }
-    return Array.from({ length: count }, (_, idx) => `${API_URL}/api/appointments/${appointmentId}/pdfs/${idx}/raw`);
+    return Array.from({ length: count }, (_, idx) => `${API_URL}/Appointments/${appointmentId}/pdfs/${idx}/raw`);
 }
 
 // 如果必须 base64（例如你用 <AppointmentPDF base64="...">）：把直链转 base64
