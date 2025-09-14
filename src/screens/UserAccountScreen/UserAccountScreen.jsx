@@ -21,6 +21,7 @@ import {
 
 } from '../../api/appointments';
 import * as WebBrowser from 'expo-web-browser';
+import AppointmentImage from '../../components/AppointmentImage';
 import styles from './styles';
 
 // Import profile pictures
@@ -45,41 +46,6 @@ const UserAccountScreen = ({ navigation }) => {
 
   const [xrayImages, setXrayImages] = useState([]);    // base64[]
   const [pdfUrls, setPdfUrls] = useState([]);          // string[]
-
-  // after your xrayImages/pdfUrls states
-  useEffect(() => {
-    console.log('[XRay] count =', xrayImages?.length || 0);
-    if (xrayImages?.length) {
-      console.log('[XRay] first item (prefix):', String(xrayImages[0]).slice(0, 40));
-    }
-  }, [xrayImages]);
-
-  useEffect(() => {
-    console.log('[Docs] pdf count =', pdfUrls?.length || 0);
-  }, [pdfUrls]);
-  // ✅ compute list items here
-  const xrayItems = React.useMemo(() => {
-    return (xrayImages || [])
-        .map((it) => {
-          const data = typeof it === 'string' ? it : it?.data ?? '';
-          const url = data.startsWith('data:')
-              ? data
-              : `data:image/jpeg;base64,${(data || '').trim()}`;
-          const takenAt = typeof it === 'string' ? undefined : it?.takenAt;
-          return url ? { url, takenAt: takenAt ? new Date(takenAt) : undefined } : null;
-        })
-        .filter(Boolean);
-  }, [xrayImages]);
-
-  const xrayDataUrls = xrayItems.map((x) => x.url);
-  const previewItems = xrayItems.slice(0, 3);   // <-- add this
-  // plain JS version
-  const fmt = (d) => {
-    if (!d) return 'Unknown';
-    const date = d instanceof Date ? d : new Date(d);
-    return date.toLocaleDateString();
-  };
-
 
   // Define texts to translate
   const textsToTranslate = [
@@ -210,7 +176,6 @@ const UserAccountScreen = ({ navigation }) => {
     }
     loadAssets();
   }, []);
-
 
   useEffect(() => {
     // Force re-render when language changes
@@ -904,34 +869,16 @@ const UserAccountScreen = ({ navigation }) => {
             <Text style={styles.cardTitle}>{t('My X-ray Images')}</Text>
           </View>
 
-          {xrayItems.length > 0 ? (
+          {xrayImages?.length ? (
               <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={{ paddingVertical: 8 }}
-                  style={{ height: 96 }} // ensure row has height
               >
-                {previewItems.map((it, idx) => (
-                    <TouchableOpacity
-                        key={idx}
-                        onPress={() =>
-                            navigation.navigate('images', {
-                              images: xrayDataUrls,     // pass only the urls
-                              imageIndex: idx,
-                            })
-                        }
-                        style={{ marginRight: 12, alignItems: 'center' }}
-                    >
-                      {/* small thumbnail; AppointmentImage is likely big, so use <Image> here */}
-                      <Image
-                          source={{ uri: it.url }}
-                          style={{ width: 96, height: 64, borderRadius: 8 }}
-                          resizeMode="cover"
-                      />
-                      <Text style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
-                        {fmt(it.takenAt)}
-                      </Text>
-                    </TouchableOpacity>
+                {xrayImages.map((b64, idx) => (
+                    <View key={idx} style={{ marginRight: 12 }}>
+                      <AppointmentImage base64={b64} />
+                    </View>
                 ))}
               </ScrollView>
           ) : (
@@ -941,20 +888,18 @@ const UserAccountScreen = ({ navigation }) => {
           <TouchableOpacity
               style={[styles.actionButton, { marginTop: 8 }]}
               onPress={() =>
-                  navigation.navigate('allimages', {
-                    images: xrayDataUrls,   // go to the list page first
+                  navigation.navigate('images', {
+                    images: xrayImages,     // 直接传 base64 数组给旧的 ImagesScreen
                     imageIndex: 0,
                   })
               }
-              disabled={xrayItems.length === 0}
+              disabled={!xrayImages?.length}
           >
             <Ionicons name="expand-outline" size={20} color="#516287" />
             <Text style={styles.actionButtonText}>{t('View All')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#516287" />
           </TouchableOpacity>
         </View>
-
-
 
         {/* My Documents (Invoices / Referrals) */}
         <View style={styles.infoCard}>
