@@ -1,4 +1,3 @@
-// src/screens/InvoiceScreen/InvoiceScreen.jsx
 import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -19,12 +18,13 @@ export default function InvoiceScreen({ route }) {
     const isHttp = typeof pdf === 'string' && /^https?:\/\//i.test(pdf);
     const isDataUrl = typeof pdf === 'string' && pdf.startsWith('data:application/pdf;base64,');
 
-    // 如果是 dataUrl 就取逗号后的 base64；如果不是 http，就把它当作纯 base64
+// If it's a data URL, take the base64 part after the comma;
+    // if it's not http(s), treat it as a raw base64 string.
     const base64 = isHttp ? null : (isDataUrl ? (pdf.split(',')[1] || '') : pdf);
 
     return (
         <View style={{ flex: 1 }}>
-            {/* 你如果想要自定义 header，可以把这个 Screen 在 Stack 里 headerShown: true 并设置 title */}
+            {/*  If you want a custom header title, enable headerShown for this screen in the Stack and set `title` */}
             {isHttp ? (
                 <WebView source={{ uri: pdf }} style={{ flex: 1 }} />
             ) : (

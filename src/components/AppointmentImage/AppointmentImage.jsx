@@ -1,9 +1,11 @@
-// AppointmentImage.js
 import React from 'react';
 import { Image } from 'react-native';
 import styles from './styles';
 
-// 简单嗅探 base64 头，尽量推断图片类型
+/**
+ * Lightweight MIME sniffing from the first few base64 chars.
+ * Helps choose a stable content-type when the caller passes raw base64.
+ */
 const sniffMime = (b64) => {
     if (!b64) return null;
     const s = b64.slice(0, 16); // 取前缀判断即可
@@ -14,22 +16,28 @@ const sniffMime = (b64) => {
     return null;
 };
 
-// 统一把传入的 base64 / dataURL 规范化为可用的 dataURL
+/**
+ * Normalize any input into a valid data URI.
+ * Accepts:
+ *  - raw base64 (no header)
+ *  - data URLs (e.g., data:image/*;base64,...)
+ *  - optionally a preferred contentType from props
+ */
 const toDataUri = (input, contentTypeProp) => {
     let raw = typeof input === 'string' ? input.trim() : '';
     if (!raw) return '';
 
-    // 允许调用方给一个优先使用的 contentType
+    // Use caller-provided contentType if it looks like an image/*
     const preferCT = /^image\//.test(contentTypeProp || '') ? contentTypeProp : undefined;
 
-    // 已经是 dataURL 的情况
+    // If it's already a data URL
     if (raw.startsWith('data:')) {
-        // 把 data:image/*;base64, 改为具体类型
+        // Replace data:image/*;base64, with a concrete type to avoid "*"
         if (/^data:image\/\*;base64,/i.test(raw)) {
             const ct = preferCT || 'image/png';
             raw = raw.replace(/^data:image\/\*;/i, `data:${ct};`);
         }
-        // 去掉逗号后的 base64 里可能的空白换行
+        // Remove whitespace within the base64 payload
         const i = raw.indexOf(',');
         if (i > -1) {
             const head = raw.slice(0, i + 1);
@@ -39,7 +47,7 @@ const toDataUri = (input, contentTypeProp) => {
         return raw;
     }
 
-    // 纯 base64：去空白、嗅探 MIME、拼 dataURL
+    // Raw base64 string: strip whitespace, sniff MIME, and build a data URL
     const clean = raw.replace(/\s+/g, '');
     const sniffed = sniffMime(clean);
     const ct = preferCT || sniffed || 'image/png';
