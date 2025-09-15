@@ -1,4 +1,3 @@
-
 const tryInferName = (url) => {
     try {
         const u = new URL(url);
@@ -11,24 +10,13 @@ const tryInferName = (url) => {
 const normalizeDataUrl = (s) => {
     if (typeof s !== 'string') return '';
     const t = s.trim();
-    return t.startsWith('data:image/*;')
-        ? t.replace(/^data:image\/\*;/, 'data:image/png;')
-        : t;
+    return t.startsWith('data:image/*;') ? t.replace(/^data:image\/\*;/, 'data:image/png;') : t;
 };
 import {Ionicons} from '@expo/vector-icons';
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
 import {
-    Alert,
-    Image,
-    Modal,
-    SafeAreaView,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    FlatList
+    Alert, Image, Modal, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList
 } from 'react-native';
 import axiosApi from '../../api/axios';
 import {Context as AuthContext} from '../../context/AuthContext/AuthContext';
@@ -39,21 +27,11 @@ import {
 
 } from '../../api/appointments';
 import * as WebBrowser from 'expo-web-browser';
-import { openDocument } from '../../utils/openDocument'
+import {openDocument} from '../../utils/openDocument'
 import styles from './styles';
 
 // Import profile pictures
-const profilePictures = [
-    require('../../../assets/profile pictures/p0.png'),
-    require('../../../assets/profile pictures/p1.png'),
-    require('../../../assets/profile pictures/p2.png'),
-    require('../../../assets/profile pictures/p3.png'),
-    require('../../../assets/profile pictures/p4.png'),
-    require('../../../assets/profile pictures/p5.png'),
-    require('../../../assets/profile pictures/p6.png'),
-    require('../../../assets/profile pictures/p7.png'),
-    require('../../../assets/profile pictures/p8.png'),
-];
+const profilePictures = [require('../../../assets/profile pictures/p0.png'), require('../../../assets/profile pictures/p1.png'), require('../../../assets/profile pictures/p2.png'), require('../../../assets/profile pictures/p3.png'), require('../../../assets/profile pictures/p4.png'), require('../../../assets/profile pictures/p5.png'), require('../../../assets/profile pictures/p6.png'), require('../../../assets/profile pictures/p7.png'), require('../../../assets/profile pictures/p8.png'),];
 
 const UserAccountScreen = ({navigation}) => {
     // Translation hook
@@ -66,87 +44,7 @@ const UserAccountScreen = ({navigation}) => {
     const [pdfItems, setPdfItems] = useState([]);     // {source,value,name?,when?}[]
 
     // Define texts to translate
-    const textsToTranslate = [
-        'Account Settings',
-        'User Name',
-        'Change Profile Picture',
-        'Personal Information',
-        'First Name',
-        'Last Name',
-        'Date of Birth',
-        'Email',
-        'Address',
-        'Emergency Contact Name',
-        'Emergency Contact Phone',
-        'Medical Information',
-        'NHI Number',
-        'Dental Clinic',
-        'Clinic Address',
-        'Clinic Phone',
-        'Update Your Details',
-        'Change Clinic',
-        'Change Your Password',
-        'Disconnect From Parent',
-        'Sign Out',
-        'Not specified',
-        'None',
-        'Choose Profile Picture',
-        'Enter your email',
-        'Enter your address',
-        'Enter emergency contact name',
-        'Enter emergency contact phone',
-        'Email is available',
-        'Cancel',
-        'Submit',
-        'Confirm Changes',
-        'Are you sure you want to save these changes to your profile?',
-        'Discard Changes',
-        'Save Changes',
-        'Change Password',
-        'Current Password',
-        'New Password',
-        'Confirm New Password',
-        'Enter your current password',
-        'Enter your new password',
-        'Confirm your new password',
-        'Password meets all requirements',
-        'Passwords do not match',
-        'Passwords match',
-        'Confirm Password Change',
-        'Are you sure you want to change your password? You will need to use the new password for future logins.',
-        'Clinic Code',
-        'Enter clinic code',
-        'Valid clinic code',
-        'Confirm Clinic Change',
-        'Are you sure you want to change your clinic to:',
-        'Confirm Change',
-        'Your Clinic Request has been Accepted!',
-        'Close',
-        'Error',
-        'Please enter your email address.',
-        'Please enter a valid email address.',
-        'Email already exists. Please choose a different email.',
-        'Error validating email. Please try again.',
-        'Please wait for email validation to complete.',
-        'Are you sure you want to sign out?',
-        'Password must be at least 8 characters',
-        'Must contain at least one capital letter',
-        'Must contain at least one number',
-        'Must contain at least one special character',
-        'Please enter your current password.',
-        'Please enter a new password.',
-        'Password must be at least 8 characters long.',
-        'Password must contain at least one capital letter.',
-        'Password must contain at least one number.',
-        'Password must contain at least one special character.',
-        'New passwords do not match.',
-        'Please enter a clinic code.',
-        'Please enter a valid clinic code.',
-        'Invalid clinic code',
-        'Please enter a valid email address',
-        'Email already exists',
-        'Error validating email'
-    ];
+    const textsToTranslate = ['Account Settings', 'User Name', 'Change Profile Picture', 'Personal Information', 'First Name', 'Last Name', 'Date of Birth', 'Email', 'Address', 'Emergency Contact Name', 'Emergency Contact Phone', 'Medical Information', 'NHI Number', 'Dental Clinic', 'Clinic Address', 'Clinic Phone', 'Update Your Details', 'Change Clinic', 'Change Your Password', 'Disconnect From Parent', 'Sign Out', 'Not specified', 'None', 'Choose Profile Picture', 'Enter your email', 'Enter your address', 'Enter emergency contact name', 'Enter emergency contact phone', 'Email is available', 'Cancel', 'Submit', 'Confirm Changes', 'Are you sure you want to save these changes to your profile?', 'Discard Changes', 'Save Changes', 'Change Password', 'Current Password', 'New Password', 'Confirm New Password', 'Enter your current password', 'Enter your new password', 'Confirm your new password', 'Password meets all requirements', 'Passwords do not match', 'Passwords match', 'Confirm Password Change', 'Are you sure you want to change your password? You will need to use the new password for future logins.', 'Clinic Code', 'Enter clinic code', 'Valid clinic code', 'Confirm Clinic Change', 'Are you sure you want to change your clinic to:', 'Confirm Change', 'Your Clinic Request has been Accepted!', 'Close', 'Error', 'Please enter your email address.', 'Please enter a valid email address.', 'Email already exists. Please choose a different email.', 'Error validating email. Please try again.', 'Please wait for email validation to complete.', 'Are you sure you want to sign out?', 'Password must be at least 8 characters', 'Must contain at least one capital letter', 'Must contain at least one number', 'Must contain at least one special character', 'Please enter your current password.', 'Please enter a new password.', 'Password must be at least 8 characters long.', 'Password must contain at least one capital letter.', 'Password must contain at least one number.', 'Password must contain at least one special character.', 'New passwords do not match.', 'Please enter a clinic code.', 'Please enter a valid clinic code.', 'Invalid clinic code', 'Please enter a valid email address', 'Email already exists', 'Error validating email'];
 
     const {
         state: {details, clinic, canDisconnect, selectedProfilePicture},
@@ -173,22 +71,17 @@ const UserAccountScreen = ({navigation}) => {
     const [clinicInfo, setClinicInfo] = useState(null);
     const [clinicCode, setClinicCode] = useState('');
     const [formData, setFormData] = useState({
-        email: '',
-        address: '',
-        emergencyContactName: '',
-        emergencyContactPhone: ''
+        email: '', address: '', emergencyContactName: '', emergencyContactPhone: ''
     });
     const [passwordData, setPasswordData] = useState({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
+        currentPassword: '', newPassword: '', confirmPassword: ''
     });
 
-    // 新增：带时间/归属信息的对象列表，用于本页展示
+    // New: list of items with timestamp/appointment info for display here
     /** @type {Array<{dataUrl:string, when?:string, appointmentId?:string}>} */
     const [xrayItems, setXrayItems] = useState([]);
 
-// 简单日期格式（DD/MM）
+//Short date format (DD/MM)
     const formatShortDay = (iso) => {
         if (!iso) return '';
         try {
@@ -198,7 +91,7 @@ const UserAccountScreen = ({navigation}) => {
         }
     };
 
-// 根据用户 NHI 拉该用户所有预约（用你后端现成的 /Appointments/:nhi 接口）
+// Fetch all appointments for this user by NHI (using your existing /Appointments/:nhi API)
     async function fetchAppointmentsByNhi(nhi, {limit = 100, skip = 0} = {}) {
         const {data} = await axiosApi.get(`/Appointments/${String(nhi).toUpperCase()}`, {
             params: {limit, skip},
@@ -206,7 +99,7 @@ const UserAccountScreen = ({navigation}) => {
         return data?.items ?? [];
     }
 
-// 拉“当前用户所有预约”的所有图片与 PDF，并按时间从新到旧合并
+// Fetch images & PDFs for all appointments, then merge and sort by time (newest first)
     useEffect(() => {
         let cancelled = false;
         (async () => {
@@ -214,21 +107,17 @@ const UserAccountScreen = ({navigation}) => {
                 // 需要 NHI；getUser() 在 useFocusEffect 里已经触发，这里等 details.nhi 出来再拉
                 if (!details?.nhi) return;
 
-                // 1) 拉该 NHI 下的所有 appointments
+                // 1) Fetch all appointments for this NHI
                 const appts = await fetchAppointmentsByNhi(details.nhi, {limit: 200});
 
-                // 2) 并发拉每个 appointment 的 assets
-                const assetsList = await Promise.all(
-
-                    appts.map((a) =>
-                        fetchAssetsForAppointment(a._id)
-                            .then((assets) => ({appt: a, assets}))
-                            .catch(() => ({appt: a, assets: {imagesBase64: [], pdfUrls: []}}))
-                    )
-                );
+                // 2) Fetch assets for each appointment in parallel
+                const assetsList = await Promise.all(appts.map((a) => fetchAssetsForAppointment(a._id)
+                    .then((assets) => ({appt: a, assets}))
+                    .catch(() => ({appt: a, assets: {imagesBase64: [], pdfUrls: []}}))));
                 //run test
                 console.log('[assets] appt count =', assetsList.length);
-                assetsList.slice(0, 3).forEach(({ appt, assets }, i) => {
+                assetsList.slice(0, 3).forEach(({appt, assets}, i) => {
+                    // Debug: sample logs
                     console.log(`[assets] #${i}`, {
                         appt: appt?._id,
                         pdfUrls: Array.isArray(assets?.pdfUrls) ? assets.pdfUrls.length : 'N/A',
@@ -236,37 +125,33 @@ const UserAccountScreen = ({navigation}) => {
                         imagesBase64: Array.isArray(assets?.imagesBase64) ? assets.imagesBase64.length : 'N/A',
                     });
                 });
-                // 3) 合并为：xrayItems(带时间) + xrayImages(字符串数组) + pdfItems
+                // 3) Merge into: xrayItems (with time) + xrayImages (string[]) + pdfItems
                 const mergedItems = [];
                 const imagesStrList = [];
                 const pdfs = [];
 
-                for (const { appt, assets } of assetsList) {
+                for (const {appt, assets} of assetsList) {
                     const when = appt?.startAt || appt?.createdAt || null;
-
-                    // 图片
+                    // Images
                     const imgs = Array.isArray(assets?.imagesBase64) ? assets.imagesBase64 : [];
                     imgs.forEach((s, idx) => {
-                        // 统一成能被所有端识别的 dataURL
-                        const dataUrl =
-                            typeof s === 'string' && s.startsWith('data:')
-                                ? s.replace(/^data:image\/\*;/, 'data:image/png;')
-                                : `data:image/png;base64,${s}`;
+                        // Normalize into a universally recognized data URL
+                        const dataUrl = typeof s === 'string' && s.startsWith('data:') ? s.replace(/^data:image\/\*;/, 'data:image/png;') : `data:image/png;base64,${s}`;
 
                         mergedItems.push({
                             dataUrl,
                             when: when ? new Date(when).toISOString() : undefined,
                             appointmentId: appt?._id,
-                            idx, // 保留一下索引，哪怕后面你又想按 id+idx 去重也有依据
+                            idx, // Keep index so  can dedupe later via id+idx if needed
                         });
 
                         imagesStrList.push(dataUrl);
                     });
 
 
-                    // ===== PDF（放在 for 循环内部！）=====
-                    const urls    = Array.isArray(assets?.pdfUrls)    ? assets.pdfUrls    : [];
-                    const base64s = Array.isArray(assets?.pdfBase64)  ? assets.pdfBase64  : [];
+                    // ===== PDFs  =====
+                    const urls = Array.isArray(assets?.pdfUrls) ? assets.pdfUrls : [];
+                    const base64s = Array.isArray(assets?.pdfBase64) ? assets.pdfBase64 : [];
 
                     // 1) URL
                     for (const u of urls) {
@@ -285,32 +170,24 @@ const UserAccountScreen = ({navigation}) => {
                         if (!b || typeof b !== 'string') continue;
                         if (b.startsWith('data:application/pdf;base64,')) {
                             pdfs.push({
-                                source: 'dataUrl',
-                                value: b,
-                                when: when ? new Date(when).toISOString() : undefined,
+                                source: 'dataUrl', value: b, when: when ? new Date(when).toISOString() : undefined,
                             });
                         } else {
                             pdfs.push({
-                                source: 'base64',
-                                value: b,
-                                when: when ? new Date(when).toISOString() : undefined,
+                                source: 'base64', value: b, when: when ? new Date(when).toISOString() : undefined,
                             });
                         }
                     }
-                    // ===== PDF 结束 =====
+                    // ===== PDF ends =====
                 }
 
 
-                // 仅排序（新到旧），不去重
-                const orderedItems = mergedItems.sort(
-                    (a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime()
-                );
+                // Only sort (newest first), do not dedupe images
+                const orderedItems = mergedItems.sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
                 const orderedImages = imagesStrList; // 保留全部
 
-// PDF 依然可按 (source|value) 去重（这个没问题）
-                const orderedPdfs = Array.from(
-                    new Map(pdfs.map(it => [`${it.source}|${it.value}`, it])).values()
-                ).sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
+// PDFs can still be deduped by (source|value)
+                const orderedPdfs = Array.from(new Map(pdfs.map(it => [`${it.source}|${it.value}`, it])).values()).sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
 
                 if (!cancelled) {
                     setXrayItems(orderedItems);
@@ -325,19 +202,8 @@ const UserAccountScreen = ({navigation}) => {
         return () => {
             cancelled = true;
         };
-    }, [details?.nhi]); // 等 NHI 就绪
+    }, [details?.nhi]); // Wait for NHI to be ready
 
-    // useEffect(() => {
-    //   async function loadAssets() {
-    //     const appointmentId = '68aeed1ba7a2c9ee28f14115';
-    //     const assets = await fetchAssetsForAppointment(appointmentId);
-    //     setXrayImages(assets.imagesBase64);
-    //     setPdfUrls(assets.pdfUrls);
-    //     console.log('assets from API:', assets);
-    //
-    //   }
-    //   loadAssets();
-    // }, []);
 
     useEffect(() => {
         // Force re-render when language changes
@@ -349,24 +215,22 @@ const UserAccountScreen = ({navigation}) => {
         }
     }, [currentLanguage]);
 
-    useFocusEffect(
-        React.useCallback(() => {
-            const fetchUserData = async () => {
-                setIsLoading(true);
-                try {
-                    await getUser();
-                    await getDentalClinic();
-                    await checkCanDisconnect();
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                } finally {
-                    setIsLoading(false);
-                }
-            };
+    useFocusEffect(React.useCallback(() => {
+        const fetchUserData = async () => {
+            setIsLoading(true);
+            try {
+                await getUser();
+                await getDentalClinic();
+                await checkCanDisconnect();
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-            fetchUserData();
-        }, [])
-    );
+        fetchUserData();
+    }, []));
 
     // Live email validation effect
     useEffect(() => {
@@ -434,9 +298,7 @@ const UserAccountScreen = ({navigation}) => {
         if (!dateString) return 'Not specified';
         const date = new Date(dateString);
         return date.toLocaleDateString('en-NZ', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
+            day: '2-digit', month: '2-digit', year: 'numeric',
         });
     };
 
@@ -513,10 +375,7 @@ const UserAccountScreen = ({navigation}) => {
     };
 
     const isPasswordValid = (password) => {
-        return password.length >= 8 &&
-            password !== password.toLowerCase() &&
-            /\d/.test(password) &&
-            /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
+        return password.length >= 8 && password !== password.toLowerCase() && /\d/.test(password) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
     };
 
     const handleUpdateDetails = () => {
@@ -583,25 +442,13 @@ const UserAccountScreen = ({navigation}) => {
             console.log('Update result:', result);
 
             if (result.success) {
-                Alert.alert(
-                    'Success',
-                    'Your details have been updated successfully.',
-                    [{text: 'OK'}]
-                );
+                Alert.alert('Success', 'Your details have been updated successfully.', [{text: 'OK'}]);
             } else {
-                Alert.alert(
-                    'Error',
-                    result.error || 'Failed to update details. Please try again.',
-                    [{text: 'OK'}]
-                );
+                Alert.alert('Error', result.error || 'Failed to update details. Please try again.', [{text: 'OK'}]);
             }
         } catch (error) {
             console.error('Error in handleConfirmSave:', error);
-            Alert.alert(
-                'Error',
-                'An unexpected error occurred. Please try again.',
-                [{text: 'OK'}]
-            );
+            Alert.alert('Error', 'An unexpected error occurred. Please try again.', [{text: 'OK'}]);
         }
     };
 
@@ -625,9 +472,7 @@ const UserAccountScreen = ({navigation}) => {
 
     const handleChangePassword = () => {
         setPasswordData({
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: ''
+            currentPassword: '', newPassword: '', confirmPassword: ''
         });
         setShowPasswordModal(true);
     };
@@ -676,9 +521,7 @@ const UserAccountScreen = ({navigation}) => {
     const handlePasswordCancel = () => {
         setShowPasswordModal(false);
         setPasswordData({
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: ''
+            currentPassword: '', newPassword: '', confirmPassword: ''
         });
     };
 
@@ -689,30 +532,16 @@ const UserAccountScreen = ({navigation}) => {
             const result = await changePassword(passwordData.currentPassword, passwordData.newPassword);
 
             if (result.success) {
-                Alert.alert(
-                    'Success',
-                    'Your password has been changed successfully.',
-                    [{text: 'OK'}]
-                );
+                Alert.alert('Success', 'Your password has been changed successfully.', [{text: 'OK'}]);
                 // Reset password data
                 setPasswordData({
-                    currentPassword: '',
-                    newPassword: '',
-                    confirmPassword: ''
+                    currentPassword: '', newPassword: '', confirmPassword: ''
                 });
             } else {
-                Alert.alert(
-                    'Error',
-                    result.error || 'Failed to change password. Please try again.',
-                    [{text: 'OK'}]
-                );
+                Alert.alert('Error', result.error || 'Failed to change password. Please try again.', [{text: 'OK'}]);
             }
         } catch (error) {
-            Alert.alert(
-                'Error',
-                'An unexpected error occurred. Please try again.',
-                [{text: 'OK'}]
-            );
+            Alert.alert('Error', 'An unexpected error occurred. Please try again.', [{text: 'OK'}]);
         }
     };
 
@@ -720,9 +549,7 @@ const UserAccountScreen = ({navigation}) => {
         setShowPasswordConfirmModal(false);
         // Reset password data
         setPasswordData({
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: ''
+            currentPassword: '', newPassword: '', confirmPassword: ''
         });
     };
 
@@ -762,18 +589,10 @@ const UserAccountScreen = ({navigation}) => {
                 setClinicInfo(null);
                 setClinicCodeStatus(null);
             } else {
-                Alert.alert(
-                    'Error',
-                    result.error || 'Failed to update clinic. Please try again.',
-                    [{text: 'OK'}]
-                );
+                Alert.alert('Error', result.error || 'Failed to update clinic. Please try again.', [{text: 'OK'}]);
             }
         } catch (error) {
-            Alert.alert(
-                'Error',
-                'An unexpected error occurred. Please try again.',
-                [{text: 'OK'}]
-            );
+            Alert.alert('Error', 'An unexpected error occurred. Please try again.', [{text: 'OK'}]);
         }
     };
 
@@ -812,35 +631,22 @@ const UserAccountScreen = ({navigation}) => {
     };
 
     const handleSignOut = () => {
-        Alert.alert(
-            t('Sign Out'),
-            t('Are you sure you want to sign out?'),
-            [
-                {
-                    text: t('Cancel'),
-                    style: 'cancel',
-                },
-                {
-                    text: t('Sign Out'),
-                    style: 'destructive',
-                    onPress: () => signout(),
-                },
-            ]
-        );
+        Alert.alert(t('Sign Out'), t('Are you sure you want to sign out?'), [{
+            text: t('Cancel'), style: 'cancel',
+        }, {
+            text: t('Sign Out'), style: 'destructive', onPress: () => signout(),
+        },]);
     };
 
     if (isLoading) {
-        return (
-            <SafeAreaView style={styles.container}>
+        return (<SafeAreaView style={styles.container}>
                 <View style={styles.loadingContainer}>
                     <Text style={styles.loadingText}>Loading profile...</Text>
                 </View>
-            </SafeAreaView>
-        );
+            </SafeAreaView>);
     }
 
-    return (
-        <SafeAreaView style={styles.container}>
+    return (<SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 {/* Header */}
                 <View style={styles.header}>
@@ -850,21 +656,15 @@ const UserAccountScreen = ({navigation}) => {
                 {/* Profile Picture Section */}
                 <View style={styles.profilePictureContainer}>
                     <View style={styles.profilePicture}>
-                        {selectedProfilePicture !== null ? (
-                            <Image
+                        {selectedProfilePicture !== null ? (<Image
                                 source={profilePictures[selectedProfilePicture]}
                                 style={styles.profileImage}
-                            />
-                        ) : (
-                            <Text style={styles.profileInitials}>
+                            />) : (<Text style={styles.profileInitials}>
                                 {getInitials(details.firstname, details.lastname)}
-                            </Text>
-                        )}
+                            </Text>)}
                     </View>
                     <Text style={styles.profileName}>
-                        {details.firstname && details.lastname
-                            ? `${details.firstname} ${details.lastname}`
-                            : t('User Name')}
+                        {details.firstname && details.lastname ? `${details.firstname} ${details.lastname}` : t('User Name')}
                     </Text>
                     <TouchableOpacity
                         style={styles.changeProfileButton}
@@ -956,23 +756,19 @@ const UserAccountScreen = ({navigation}) => {
                             </Text>
                         </View>
 
-                        {clinic?.address && (
-                            <View style={styles.infoRow}>
+                        {clinic?.address && (<View style={styles.infoRow}>
                                 <Text style={styles.infoLabel}>{t('Clinic Address')}</Text>
                                 <Text style={styles.infoValue}>
                                     {clinic.address}
                                 </Text>
-                            </View>
-                        )}
+                            </View>)}
 
-                        {clinic?.phone && (
-                            <View style={styles.infoRow}>
+                        {clinic?.phone && (<View style={styles.infoRow}>
                                 <Text style={styles.infoLabel}>{t('Clinic Phone')}</Text>
                                 <Text style={styles.infoValue}>
                                     {clinic.phone}
                                 </Text>
-                            </View>
-                        )}
+                            </View>)}
                     </View>
 
                     {/* Account Actions Card */}
@@ -1009,8 +805,7 @@ const UserAccountScreen = ({navigation}) => {
                             <Ionicons name="chevron-forward" size={20} color="#516287"/>
                         </TouchableOpacity>
 
-                        {canDisconnect && (
-                            <TouchableOpacity
+                        {canDisconnect && (<TouchableOpacity
                                 style={[styles.actionButton, styles.disconnectButton]}
                                 onPress={handleDisconnectFromParent}
                             >
@@ -1019,8 +814,7 @@ const UserAccountScreen = ({navigation}) => {
                                     {t('Disconnect From Parent')}
                                 </Text>
                                 <Ionicons name="chevron-forward" size={20} color="#DC3545"/>
-                            </TouchableOpacity>
-                        )}
+                            </TouchableOpacity>)}
                     </View>
                 </View>
                 {/* X-ray Images */}
@@ -1030,40 +824,34 @@ const UserAccountScreen = ({navigation}) => {
                         <Text style={styles.cardTitle}>{t('My X-ray Images')}</Text>
                     </View>
 
-                    {Array.isArray(xrayItems) && xrayItems.length > 0 ? (
-                        <FlatList
+                    {Array.isArray(xrayItems) && xrayItems.length > 0 ? (<FlatList
                             horizontal
                             data={xrayItems.slice(0, 8)} // 预览前 8 张
                             keyExtractor={(_, idx) => String(idx)}
                             showsHorizontalScrollIndicator={false}
                             contentContainerStyle={{paddingVertical: 8, paddingRight: 4}}
-                            renderItem={({item}) => (
-                                <View style={{marginRight: 12, position: 'relative'}}>
+                            renderItem={({item}) => (<View style={{marginRight: 12, position: 'relative'}}>
                                     <Image
                                         source={{uri: item.dataUrl}}
                                         style={styles.xrayThumb /* 确保有 width/height/borderRadius */}
                                         resizeMode="cover"
                                     />
                                     {/* 右下角时间角标：DD/MM */}
-                                    {item.when ? (
-                                        <View style={{
+                                    {item.when ? (<View style={{
                                             position: 'absolute',
-                                            right: 4, bottom: 4,
-                                            paddingHorizontal: 6, paddingVertical: 2,
+                                            right: 4,
+                                            bottom: 4,
+                                            paddingHorizontal: 6,
+                                            paddingVertical: 2,
                                             borderRadius: 6,
                                             backgroundColor: 'rgba(0,0,0,0.55)'
                                         }}>
                                             <Text style={{color: '#fff', fontSize: 10}}>
                                                 {formatShortDay(item.when)}
                                             </Text>
-                                        </View>
-                                    ) : null}
-                                </View>
-                            )}
-                        />
-                    ) : (
-                        <Text style={styles.infoValue}>{t('None')}</Text>
-                    )}
+                                        </View>) : null}
+                                </View>)}
+                        />) : (<Text style={styles.infoValue}>{t('None')}</Text>)}
 
                     <TouchableOpacity
                         style={[styles.actionButton, {marginTop: 8}]}
@@ -1072,16 +860,14 @@ const UserAccountScreen = ({navigation}) => {
                                 .map(x => normalizeDataUrl(x?.dataUrl || ''))
                                 .filter(Boolean);
 
-                            if (!imgs.length) return; // 双保险（虽然下面也 disabled 了）
+                            if (!imgs.length) return; // Double guard
 
                             console.log('[UserAccount] navigate -> images', {
-                                count: imgs.length,
-                                sample: imgs[0]?.slice(0, 60),
+                                count: imgs.length, sample: imgs[0]?.slice(0, 60),
                             });
 
                             navigation.navigate('images', {
-                                images: imgs,
-                                imageIndex: 0,
+                                images: imgs, imageIndex: 0,
                             });
                         }}
                         disabled={!xrayItems?.length}
@@ -1099,36 +885,22 @@ const UserAccountScreen = ({navigation}) => {
                         <Text style={styles.cardTitle}>{t('My Documents')}</Text>
                     </View>
 
-                    {pdfItems?.length ? (
-                        pdfItems.map((doc, idx) => {
-                            const niceTitle =
-                                doc.name && doc.name !== 'raw'
-                                    ? doc.name
-                                    : `${t('Invoice/Referral')} ${doc.when ? new Date(doc.when).toLocaleDateString('en-NZ') : ''} #${idx + 1}`;
+                    {pdfItems?.length ? (pdfItems.map((doc, idx) => {
+                            const niceTitle = doc.name && doc.name !== 'raw' ? doc.name : `${t('Invoice/Referral')} ${doc.when ? new Date(doc.when).toLocaleDateString('en-NZ') : ''} #${idx + 1}`;
 
-                            const pdfParam =
-                                doc.source === 'url'
-                                    ? doc.value
-                                    : (doc.source === 'dataUrl'
-                                        ? doc.value                         // 已经是 dataUrl
-                                        : `data:application/pdf;base64,${doc.value}`); // 纯 base64
+                            const pdfParam = doc.source === 'url' ? doc.value : (doc.source === 'dataUrl' ? doc.value                         // 已经是 dataUrl
+                                : `data:application/pdf;base64,${doc.value}`); // raw base64
 
-                            return (
-                                <TouchableOpacity
+                            return (<TouchableOpacity
                                     key={idx}
                                     style={styles.actionButton}
-                                    onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title: niceTitle })}
+                                    onPress={() => navigation.navigate('invoice', {pdf: pdfParam, title: niceTitle})}
                                 >
-                                    <Ionicons name="document-outline" size={20} color="#516287" />
+                                    <Ionicons name="document-outline" size={20} color="#516287"/>
                                     <Text style={styles.actionButtonText}>{niceTitle}</Text>
-                                    <Ionicons name="open-outline" size={20} color="#516287" />
-                                </TouchableOpacity>
-                            );
-                        })
-                    ) : (
-                        <Text style={styles.infoValue}>{t('None')}</Text>
-                    )}
-
+                                    <Ionicons name="open-outline" size={20} color="#516287"/>
+                                </TouchableOpacity>);
+                        })) : (<Text style={styles.infoValue}>{t('None')}</Text>)}
 
 
                 </View>
@@ -1166,23 +938,16 @@ const UserAccountScreen = ({navigation}) => {
                         </View>
 
                         <View style={styles.profileGrid}>
-                            {profilePictures.map((picture, index) => (
-                                <TouchableOpacity
+                            {profilePictures.map((picture, index) => (<TouchableOpacity
                                     key={index}
-                                    style={[
-                                        styles.profileOption,
-                                        selectedProfilePicture === index && styles.selectedProfileOption
-                                    ]}
+                                    style={[styles.profileOption, selectedProfilePicture === index && styles.selectedProfileOption]}
                                     onPress={() => handleProfilePictureSelect(index)}
                                 >
                                     <Image source={picture} style={styles.profileOptionImage}/>
-                                    {selectedProfilePicture === index && (
-                                        <View style={styles.selectedOverlay}>
+                                    {selectedProfilePicture === index && (<View style={styles.selectedOverlay}>
                                             <Ionicons name="checkmark-circle" size={24} color="#516287"/>
-                                        </View>
-                                    )}
-                                </TouchableOpacity>
-                            ))}
+                                        </View>)}
+                                </TouchableOpacity>))}
                         </View>
                     </View>
                 </View>
@@ -1219,11 +984,9 @@ const UserAccountScreen = ({navigation}) => {
                                     autoCapitalize="none"
                                 />
                                 {getEmailErrorMessage() && (
-                                    <Text style={styles.errorText}>{getEmailErrorMessage()}</Text>
-                                )}
+                                    <Text style={styles.errorText}>{getEmailErrorMessage()}</Text>)}
                                 {emailStatus === 'valid' && formData.email.trim() !== '' && (
-                                    <Text style={styles.successText}>✓ {t('Email is available')}</Text>
-                                )}
+                                    <Text style={styles.successText}>✓ {t('Email is available')}</Text>)}
                             </View>
 
                             <View style={styles.inputGroup}>
@@ -1356,11 +1119,9 @@ const UserAccountScreen = ({navigation}) => {
                                     secureTextEntry={true}
                                 />
                                 {getPasswordValidationErrors(passwordData.newPassword).map((error, index) => (
-                                    <Text key={index} style={styles.errorText}>{error}</Text>
-                                ))}
+                                    <Text key={index} style={styles.errorText}>{error}</Text>))}
                                 {passwordData.newPassword.length > 0 && isPasswordValid(passwordData.newPassword) && (
-                                    <Text style={styles.successText}>✓ {t('Password meets all requirements')}</Text>
-                                )}
+                                    <Text style={styles.successText}>✓ {t('Password meets all requirements')}</Text>)}
                             </View>
 
                             <View style={styles.inputGroup}>
@@ -1373,11 +1134,9 @@ const UserAccountScreen = ({navigation}) => {
                                     secureTextEntry={true}
                                 />
                                 {passwordData.confirmPassword.length > 0 && passwordData.newPassword !== passwordData.confirmPassword && (
-                                    <Text style={styles.errorText}>{t('Passwords do not match')}</Text>
-                                )}
+                                    <Text style={styles.errorText}>{t('Passwords do not match')}</Text>)}
                                 {passwordData.confirmPassword.length > 0 && passwordData.newPassword === passwordData.confirmPassword && isPasswordValid(passwordData.newPassword) && (
-                                    <Text style={styles.successText}>✓ {t('Passwords match')}</Text>
-                                )}
+                                    <Text style={styles.successText}>✓ {t('Passwords match')}</Text>)}
                             </View>
                         </ScrollView>
 
@@ -1466,20 +1225,16 @@ const UserAccountScreen = ({navigation}) => {
                                     autoCapitalize="characters"
                                 />
                                 {getClinicCodeErrorMessage() && (
-                                    <Text style={styles.errorText}>{getClinicCodeErrorMessage()}</Text>
-                                )}
+                                    <Text style={styles.errorText}>{getClinicCodeErrorMessage()}</Text>)}
                                 {clinicCodeStatus === 'valid' && clinicInfo && (
                                     <View style={styles.clinicInfoContainer}>
                                         <Text style={styles.successText}>✓ {t('Valid clinic code')}</Text>
                                         <Text style={styles.clinicInfoTitle}>{clinicInfo.name}</Text>
                                         {clinicInfo.address && (
-                                            <Text style={styles.clinicInfoText}>{clinicInfo.address}</Text>
-                                        )}
+                                            <Text style={styles.clinicInfoText}>{clinicInfo.address}</Text>)}
                                         {clinicInfo.phone && (
-                                            <Text style={styles.clinicInfoText}>{clinicInfo.phone}</Text>
-                                        )}
-                                    </View>
-                                )}
+                                            <Text style={styles.clinicInfoText}>{clinicInfo.phone}</Text>)}
+                                    </View>)}
                             </View>
                         </ScrollView>
 
@@ -1517,14 +1272,11 @@ const UserAccountScreen = ({navigation}) => {
                             <Text style={styles.confirmMessage}>
                                 {t('Are you sure you want to change your clinic to:')}
                             </Text>
-                            {clinicInfo && (
-                                <View style={styles.clinicConfirmInfo}>
+                            {clinicInfo && (<View style={styles.clinicConfirmInfo}>
                                     <Text style={styles.clinicConfirmName}>{clinicInfo.name}</Text>
                                     {clinicInfo.address && (
-                                        <Text style={styles.clinicConfirmText}>{clinicInfo.address}</Text>
-                                    )}
-                                </View>
-                            )}
+                                        <Text style={styles.clinicConfirmText}>{clinicInfo.address}</Text>)}
+                                </View>)}
                         </View>
 
                         <View style={styles.modalButtonContainer}>
@@ -1573,8 +1325,7 @@ const UserAccountScreen = ({navigation}) => {
                     </View>
                 </View>
             </Modal>
-        </SafeAreaView>
-    );
+        </SafeAreaView>);
 };
 
 export default UserAccountScreen;

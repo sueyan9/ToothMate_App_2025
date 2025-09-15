@@ -16,7 +16,7 @@ const upload = multer({
 
 const router = express.Router();
 
-/* ---------- Buffer 兼容工具 ---------- */
+/* ---------- Buffer compatibility helpers  ---------- */
 function toNodeBuffer(bufLike) {
   if (!bufLike) return null;
   if (Buffer.isBuffer(bufLike)) return bufLike;
@@ -27,7 +27,7 @@ function toNodeBuffer(bufLike) {
 }
 
 /* ===================== Core ===================== */
-// GET /Appointment 列表
+// GET /Appointment list
 router.get('/Appointments', async (_req, res) => {
   try {
     const items = await Appointment.find().sort({ startAt: -1 }).limit(200);
@@ -35,7 +35,7 @@ router.get('/Appointments', async (_req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// GET /Appointment/:nhi  按 NHI 查询
+// GET /Appointment/:nhi  query by NHI
 router.get('/Appointments/:nhi', async (req, res) => {
   try {
     const { nhi } = req.params;
@@ -55,7 +55,7 @@ router.get('/Appointments/:nhi', async (req, res) => {
   }
 });
 
-// POST /Appointment 创建预约
+// POST /Appointment create an appointment
 router.post('/Appointments', async (req, res) => {
   try {
     const {
@@ -83,20 +83,20 @@ router.post('/Appointments', async (req, res) => {
 });
 
 /* ===================== Assets ===================== */
-// 上传图片
+// Upload an image
 router.post('/Appointments/:id/images', upload.single('file'), async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file' });
-    // 2) 允许的图片类型白名单
+    // 2) Allowed image MIME types allowlist
     const mime = (req.file.mimetype || '').toLowerCase();
     const ALLOW = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']);
     if (!ALLOW.has(mime)) {
       return res.status(415).json({ error: `Unsupported image type: ${mime}` });
     }
-    // 3) 取预约
+    // 3) Load appointment
     const appt = await Appointment.findById(req.params.id);
     if (!appt) return res.status(404).json({ error: 'Appointment not found' });
-    // 4) 计算 sha256 做去重（同一个预约里不重复存同一文件）
+    // 4) Compute sha256 to dedupe (do not store the same file twice within one appointment)
     const crypto = require('crypto');
     const hash = crypto.createHash('sha256').update(req.file.buffer).digest('hex');
     const duplicated = appt.images?.some(img => img.hash === hash);
@@ -104,17 +104,17 @@ router.post('/Appointments/:id/images', upload.single('file'), async (req, res, 
     if (!duplicated) {
       appt.images.push({
       hash,
-      uploadedAt: new Date(), // 记录上传时间（Schema 里有默认值也可以显式再写）
+      uploadedAt: new Date(), // record upload time
       img: { data: req.file.buffer, contentType: mime || 'image/jpeg' },
       meta: {
         filename: req.file.originalname,
         size: req.file.size,
-        // 如果需要，还可以扩展 width/height（前端传或服务端探测）
+
       },
     });
       await appt.save();
     }
-    // 5) 统一响应（包含一些前端可能用到的信息）
+    // 5) Unified response (include a few fields the client may use)
     return res.json({
       ok: true,
       duplicated,
@@ -122,10 +122,10 @@ router.post('/Appointments/:id/images', upload.single('file'), async (req, res, 
       item: {
         hash,
         contentType: mime || 'image/jpeg',
-        uploadedAt: new Date(), // 这里也可返回 appt.images[末尾].uploadedAt
+        uploadedAt: new Date(),
         filename: req.file.originalname,
         size: req.file.size,
-        // 前端想立即显示的话，也可以附带 dataUrl（注意可能比较大）
+        // If the client wants to preview immediately, you could attach a dataUrl (may be large):
         // dataUrl: `data:${mime};base64,${req.file.buffer.toString('base64')}`,
       },
     });
@@ -134,7 +134,7 @@ router.post('/Appointments/:id/images', upload.single('file'), async (req, res, 
   }
 });
 
-// 上传 PDF
+// upload PDF
 router.post('/Appointments/:id/pdfs', upload.single('file'), async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file' });
@@ -147,7 +147,7 @@ router.post('/Appointments/:id/pdfs', upload.single('file'), async (req, res, ne
   } catch (e) { next(e); }
 });
 
-// 列出图片（Base64）
+// List images（Base64）
 router.get('/Appointments/:id/images', async (req, res) => {
   try {
     const appt = await Appointment.findById(req.params.id);
@@ -164,12 +164,12 @@ router.get('/Appointments/:id/images', async (req, res) => {
     res.status(500).json({ error: 'fetch images failed' });
   }
 });
-// 列出某用户的所有 X-ray 图片（按时间）
+// List all X-ray images of a user (sorted by time)
 router.get('/users/:userId/images', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // 只取必要字段，减少内存
+    // Fetch only necessary fields to save memory
     const appts = await Appointment.find({ userId })
         .select('_id startAt createdAt images')
         .lean();
@@ -187,9 +187,9 @@ router.get('/users/:userId/images', async (req, res) => {
         const uploadedAt = x?.uploadedAt || appt.startAt || appt.createdAt;
         items.push({
           appointmentId: String(appt._id),
-          index: idx, // 供 raw 原图用
+          index: idx, // used by the raw link
           contentType: ct,
-          // 前端想直接显示就给 dataUrl；想省流量可以只给 rawUrl
+          // If the client wants to render directly, provide dataUrl; to save bandwidth provide only rawUrl.
           dataUrl: `data:${ct};base64,${buf.toString('base64')}`,
           rawUrl: `${host}/Appointments/${appt._id}/images/${idx}/raw`,
           uploadedAt: uploadedAt ? new Date(uploadedAt).toISOString() : null,
@@ -198,7 +198,7 @@ router.get('/users/:userId/images', async (req, res) => {
       });
     }
 
-    // 按时间倒序（优先 uploadedAt，其次 appointmentStartAt）
+    // Sort by time descending (prefer uploadedAt, then appointmentStartAt)
     items.sort((a, b) => {
       const ta = new Date(a.uploadedAt || a.appointmentStartAt || 0).getTime();
       const tb = new Date(b.uploadedAt || b.appointmentStartAt || 0).getTime();
@@ -212,7 +212,7 @@ router.get('/users/:userId/images', async (req, res) => {
   }
 });
 
-// 获取单张图片原图
+// Get one raw image
 router.get('/Appointments/:id/images/:idx/raw', async (req, res) => {
   try {
     const appt = await Appointment.findById(req.params.id);
@@ -228,7 +228,7 @@ router.get('/Appointments/:id/images/:idx/raw', async (req, res) => {
   } catch (e) { res.status(500).end(); }
 });
 
-// 获取 PDF 数量
+//get  PDF count
 router.get('/Appointments/:id/pdfs', async (req, res) => {
   try {
     const appt = await Appointment.findById(req.params.id).lean();
@@ -237,7 +237,7 @@ router.get('/Appointments/:id/pdfs', async (req, res) => {
   } catch (e) { res.status(500).json({ error: 'fetch pdfs failed' }); }
 });
 
-// 获取 PDF 原文件
+// get raw PDF
 router.get('/Appointments/:id/pdfs/:idx/raw', async (req, res) => {
   try {
     const appt = await Appointment.findById(req.params.id);
@@ -254,7 +254,7 @@ router.get('/Appointments/:id/pdfs/:idx/raw', async (req, res) => {
   } catch (e) { res.status(500).end(); }
 });
 
-// 综合资产
+// Aggregated assets for one appointment
 router.get('/Appointments/:id/assets', async (req, res) => {
   try {
     const appt = await Appointment.findById(req.params.id);
