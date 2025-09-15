@@ -71,7 +71,7 @@ class NotificationService {
   async registerForPushNotifications() {
     // First, check if we're in Expo Go and skip push notification registration entirely
     if (this.isExpoGo()) {
-      console.log('🚨 Running in Expo Go - Skipping push notification registration');
+      console.log('🚨 Running in Expo Go - Using local notifications only');
       console.log('ℹ️  Local notifications will work perfectly for appointment reminders');
       console.log('ℹ️  For push notifications, use a development build');
       console.log('ℹ️  Read more: https://docs.expo.dev/develop/development-builds/introduction/');
@@ -118,7 +118,7 @@ class NotificationService {
         console.log('Error storing token:', error.message);
       }
       
-      console.log('📱 Using local notifications only in Expo Go');
+      console.log('📱 Local notifications configured successfully in Expo Go');
       return fallbackToken;
     }
 

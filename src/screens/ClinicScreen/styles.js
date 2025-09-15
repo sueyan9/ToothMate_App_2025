@@ -330,6 +330,50 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
     },
+    // Reminder Settings Styles
+    sectionLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 12,
+        color: '#333',
+    },
+    reminderContainer: {
+        backgroundColor: '#f8f9fa',
+        borderRadius: 8,
+        padding: 12,
+        borderWidth: 1,
+        borderColor: '#e9ecef',
+    },
+    reminderRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 8,
+    },
+    reminderInfo: {
+        flex: 1,
+        marginRight: 12,
+    },
+    reminderTitle: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: 2,
+    },
+    reminderSubtitle: {
+        fontSize: 14,
+        color: '#666',
+    },
+    reminderOptions: {
+        marginTop: 8,
+        paddingTop: 8,
+        borderTopWidth: 1,
+        borderTopColor: '#e9ecef',
+    },
+    reminderOptionText: {
+        fontSize: 15,
+        color: '#333',
+    },
 });
 
 export default styles;

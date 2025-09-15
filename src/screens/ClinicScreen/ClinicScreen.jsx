@@ -12,6 +12,7 @@ import {
     Pressable,
     SafeAreaView,
     ScrollView,
+    Switch,
     Text,
     TextInput,
     TouchableOpacity,
@@ -86,6 +87,9 @@ const ClinicScreen = ({navigation, route}) => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showStartTimePicker, setShowStartTimePicker] = useState(false);
     const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+
+    // Reminder preferences for new appointment
+    const [setReminder, setSetReminder] = useState(true);
 
     useEffect(() => {
         setSelectedDate(dayjs().tz(NZ_TZ).format('YYYY-MM-DD'));
@@ -230,21 +234,40 @@ const ClinicScreen = ({navigation, route}) => {
                     const clinicName = clinic?.name || 'your dental clinic';
                     const appointmentId = response.data?._id; // Get the appointment ID from response
                     
-                    const reminderResult = await scheduleAppointmentReminder(
-                        appointmentDate, 
-                        appointmentTime, 
-                        clinicName, 
-                        appointmentId
-                    );
-                    
-                    if (reminderResult.success) {
-                        console.log(`Scheduled ${reminderResult.notifications?.length || 0} appointment reminders`);
+                    // Only schedule reminders if user has enabled them
+                    if (setReminder) {
+                        const reminderResult = await scheduleAppointmentReminder(
+                            appointmentDate, 
+                            appointmentTime, 
+                            clinicName, 
+                            appointmentId
+                        );
+                        
+                        if (reminderResult.success) {
+                            const reminderCount = reminderResult.notifications?.length || 0;
+                            console.log(`Scheduled ${reminderCount} appointment reminders`);
+                            
+                            // Show success message with reminder details
+                            if (reminderCount > 0) {
+                                const reminderTypes = reminderResult.notifications?.map(n => n.type).join(', ');
+                                Alert.alert(
+                                    'Success', 
+                                    `Appointment added successfully!\n\nReminders scheduled: ${reminderTypes}`,
+                                    [{ text: 'OK' }]
+                                );
+                            } else {
+                                Alert.alert('Success', 'Appointment added successfully.');
+                            }
+                        } else {
+                            console.warn('Failed to schedule appointment reminder:', reminderResult.error);
+                            Alert.alert('Success', 'Appointment added successfully.\n\nNote: Reminders could not be scheduled.');
+                        }
                     } else {
-                        console.warn('Failed to schedule appointment reminder:', reminderResult.error);
+                        Alert.alert('Success', 'Appointment added successfully.');
                     }
                 } catch (notificationError) {
                     console.warn('Failed to schedule appointment reminder:', notificationError);
-                    // Don't show error to user as appointment was created successfully
+                    Alert.alert('Success', 'Appointment added successfully.\n\nNote: Reminders could not be scheduled.');
                 }
                 
                 setShowAddModal(false);
@@ -285,6 +308,7 @@ const ClinicScreen = ({navigation, route}) => {
             purpose: '',
             notes: ''
         });
+        setSetReminder(true);
     }
 
     const apptDateKey = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('YYYY-MM-DD') : '');
@@ -637,6 +661,26 @@ const ClinicScreen = ({navigation, route}) => {
                                 onChangeText={(text) => setNewAppt({...newAppt, purpose: text})}
                                 placeholder="Enter appointment purpose"
                             />
+                        </View>
+
+                        {/* Reminder Settings Section */}
+                        <View style={styles.formGroup}>
+                            <View style={styles.reminderContainer}>
+                                <View style={styles.reminderRow}>
+                                    <View style={styles.reminderInfo}>
+                                        <Text style={styles.reminderTitle}>Set Reminder</Text>
+                                        <Text style={styles.reminderSubtitle}>
+                                            Get notified before your appointment
+                                        </Text>
+                                    </View>
+                                    <Switch
+                                        value={setReminder}
+                                        onValueChange={setSetReminder}
+                                        trackColor={{ false: '#ddd', true: '#78d0f5' }}
+                                        thumbColor={setReminder ? '#0066cc' : '#f4f3f4'}
+                                    />
+                                </View>
+                            </View>
                         </View>
 
                         <TouchableOpacity

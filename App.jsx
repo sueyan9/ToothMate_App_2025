@@ -28,6 +28,7 @@ import SignupScreen from './src/screens/SignupScreen';
 import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
+import ViewScheduledNotificationsScreen from './src/screens/ViewScheduledNotificationsScreen';
 
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
@@ -69,6 +70,7 @@ const AccountStack = () => (
         <Stack.Screen name="Password" component={PasswordChangeScreen} />
         <Stack.Screen name="UserAccount" component={UserAccountScreen} />
         <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ViewScheduledNotifications" component={ViewScheduledNotificationsScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
 
@@ -112,6 +114,7 @@ const ChildAccountStack = () => (
         <Stack.Screen name="Password" component={PasswordChangeScreen} />
         <Stack.Screen name="UserAccount" component={UserAccountScreen} />
         <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ViewScheduledNotifications" component={ViewScheduledNotificationsScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
 
@@ -127,6 +130,7 @@ const ProfileStack = () => (
             }} 
         />
         <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ViewScheduledNotifications" component={ViewScheduledNotificationsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Password" component={PasswordChangeScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
 );

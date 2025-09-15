@@ -3,14 +3,14 @@ import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useContext, useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    SafeAreaView,
-    ScrollView,
-    Switch,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { Context as NotificationContext } from '../../context/NotificationContext/NotificationContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
@@ -265,7 +265,7 @@ const NotificationSettingsScreen = () => {
             
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => getScheduledNotifications()}
+              onPress={() => navigation.navigate('ViewScheduledNotifications')}
             >
               <MaterialIcons name="schedule" size={24} color="#0066cc" />
               <Text style={styles.actionButtonText}>View Scheduled Notifications</Text>
