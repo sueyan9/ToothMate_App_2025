@@ -92,27 +92,14 @@ const BookingStack = () => (
 const ProfileStack = () => (
     <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="UserAccount">
         <Stack.Screen name="UserAccount" component={UserAccountScreen} />
-        <Stack.Screen name="images" component={ImagesScreen}
-                      options={{
+        <Stack.Screen name="images" component={ImagesScreen}/>
+        <Stack.Screen name="imagesList" component={AllImagesScreen}/>
+        <Stack.Screen name="invoice" component={InvoiceScreen}
+                      options={({ route }) => ({
                           headerShown: true,
-                          title: 'Image',                 // 你可以换成 Images
-                          headerTransparent: false,       // 不透明，这样箭头能看清
-                          headerBackTitleVisible: false,
-                          headerTintColor: '#333',        // 箭头颜色
-                          headerStyle: {
-                              backgroundColor: '#78d0f5',   // 保证跟页面背景区分开
-                          },
-                      }}
+                          title: route?.params?.title || 'Invoice',
+                      })}
         />
-        <Stack.Screen name="allimages" component={AllImagesScreen}
-                      options={{
-            headerShown: true,
-            title: 'All Images',
-            headerTransparent: true,
-            headerBackTitleVisible: false,
-            headerTintColor: '#333',
-        }}/>
-        <Stack.Screen name="invoice" component={InvoiceScreen} />
     </Stack.Navigator>
 );
 // Child clinic flow

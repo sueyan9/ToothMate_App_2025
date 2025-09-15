@@ -48,11 +48,12 @@ export async function fetchAppointmentPDFCount(appointmentId) {
 }
 
 // 返回每个 PDF 的原始直链（推荐用 WebBrowser.openBrowserAsync 打开）
-export async function buildAppointmentPdfRawUrls(appointmentId, count) {
+export function buildAppointmentPdfRawUrls(appointmentId, count) {
     if (typeof count !== 'number') {
-        count = await fetchAppointmentPDFCount(appointmentId);
+        throw new Error('buildAppointmentPdfRawUrls requires a count when used sync');
     }
-    return Array.from({ length: count }, (_, idx) => `${API_URL}/Appointments/${appointmentId}/pdfs/${idx}/raw`);
+    return Array.from({ length: count }, (_, idx) =>
+        `${API_URL}/Appointments/${appointmentId}/pdfs/${idx}/raw`);
 }
 
 // 如果必须 base64（例如你用 <AppointmentPDF base64="...">）：把直链转 base64

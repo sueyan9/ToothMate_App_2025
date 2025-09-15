@@ -466,4 +466,10 @@ export default StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
+  xrayThumb: {
+    width: 96,
+    height: 96,
+    borderRadius: 12,
+    backgroundColor: '#EEF1F6', // 没加载时占位
+  },
 });
