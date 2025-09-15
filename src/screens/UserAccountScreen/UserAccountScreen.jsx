@@ -8,6 +8,13 @@ const tryInferName = (url) => {
         return 'document.pdf';
     }
 };
+const normalizeDataUrl = (s) => {
+    if (typeof s !== 'string') return '';
+    const t = s.trim();
+    return t.startsWith('data:image/*;')
+        ? t.replace(/^data:image\/\*;/, 'data:image/png;')
+        : t;
+};
 import {Ionicons} from '@expo/vector-icons';
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
@@ -239,17 +246,23 @@ const UserAccountScreen = ({navigation}) => {
 
                     // 图片
                     const imgs = Array.isArray(assets?.imagesBase64) ? assets.imagesBase64 : [];
-                    for (const s of imgs) {
-                        const dataUrl = typeof s === 'string' && s.startsWith('data:')
-                            ? s
-                            : `data:image/*;base64,${s}`;
+                    imgs.forEach((s, idx) => {
+                        // 统一成能被所有端识别的 dataURL
+                        const dataUrl =
+                            typeof s === 'string' && s.startsWith('data:')
+                                ? s.replace(/^data:image\/\*;/, 'data:image/png;')
+                                : `data:image/png;base64,${s}`;
+
                         mergedItems.push({
                             dataUrl,
                             when: when ? new Date(when).toISOString() : undefined,
                             appointmentId: appt?._id,
+                            idx, // 保留一下索引，哪怕后面你又想按 id+idx 去重也有依据
                         });
+
                         imagesStrList.push(dataUrl);
-                    }
+                    });
+
 
                     // ===== PDF（放在 for 循环内部！）=====
                     const urls    = Array.isArray(assets?.pdfUrls)    ? assets.pdfUrls    : [];
@@ -287,20 +300,22 @@ const UserAccountScreen = ({navigation}) => {
                     // ===== PDF 结束 =====
                 }
 
-// 去重 + 排序
-                const dedupItems = Array.from(new Map(mergedItems.map(it => [it.dataUrl, it])).values())
-                    .sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
 
-                const dedupImages = Array.from(new Set(imagesStrList));
+                // 仅排序（新到旧），不去重
+                const orderedItems = mergedItems.sort(
+                    (a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime()
+                );
+                const orderedImages = imagesStrList; // 保留全部
 
-                const dedupPdfs = Array.from(new Map(
-                    pdfs.map(it => [it.source + '|' + it.value, it])
-                ).values()).sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
+// PDF 依然可按 (source|value) 去重（这个没问题）
+                const orderedPdfs = Array.from(
+                    new Map(pdfs.map(it => [`${it.source}|${it.value}`, it])).values()
+                ).sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
 
                 if (!cancelled) {
-                    setXrayItems(dedupItems);
-                    setXrayImages(dedupImages);
-                    setPdfItems(dedupPdfs);
+                    setXrayItems(orderedItems);
+                    setXrayImages(orderedImages);
+                    setPdfItems(orderedPdfs);
                 }
 
             } catch (e) {
@@ -1053,7 +1068,12 @@ const UserAccountScreen = ({navigation}) => {
                     <TouchableOpacity
                         style={[styles.actionButton, {marginTop: 8}]}
                         onPress={() => {
-                            const imgs = xrayItems.map(x => x.dataUrl);
+                            const imgs = (Array.isArray(xrayItems) ? xrayItems : [])
+                                .map(x => normalizeDataUrl(x?.dataUrl || ''))
+                                .filter(Boolean);
+
+                            if (!imgs.length) return; // 双保险（虽然下面也 disabled 了）
+
                             console.log('[UserAccount] navigate -> images', {
                                 count: imgs.length,
                                 sample: imgs[0]?.slice(0, 60),

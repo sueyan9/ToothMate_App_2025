@@ -90,9 +90,19 @@ const BookingStack = () => (
 );
 // Profile flow navigation
 const ProfileStack = () => (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="UserAccount">
-        <Stack.Screen name="UserAccount" component={UserAccountScreen} />
-        <Stack.Screen name="images" component={ImagesScreen}/>
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="UserAccount"
+    >
+        <Stack.Screen name="UserAccount" component={UserAccountScreen}
+                      options={{ headerBackTitle: ' ', headerBackTitleVisible: false }}
+        />
+        <Stack.Screen name="images" component={ImagesScreen}
+                      options={{
+                          headerShown: true,
+                          title: 'X-ray Images',
+                          headerBackTitleVisible: false,
+                          headerBackTitle: ' ',
+                          headerTintColor: '#000',
+                      }} />
         <Stack.Screen name="imagesList" component={AllImagesScreen}/>
         <Stack.Screen name="invoice" component={InvoiceScreen}
                       options={({ route }) => ({

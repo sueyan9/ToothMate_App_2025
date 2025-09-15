@@ -1,80 +1,90 @@
-// ImagesScreen.js
-import React, { useMemo, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
-import AppointmentImage from '../../components/AppointmentImage'; // 按你的路径修改
+import React, { useMemo, useState, useCallback } from 'react';
+import { View, Text, TouchableOpacity, Dimensions, StyleSheet, Image, SafeAreaView } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// 页面层兜底，把 data:image/*;... 改成 data:image/png;...
-const normalizeDataUrl = (s) => {
-    if (typeof s !== 'string') return '';
+const toImageUri = (s) => {
+    if (typeof s !== 'string') return null;
     const t = s.trim();
-    return t.startsWith('data:image/*;') ? t.replace(/^data:image\/\*;/, 'data:image/png;') : t;
+    if (!t) return null;
+    if (t.startsWith('data:')) {
+        return { uri: t.startsWith('data:image/*;') ? t.replace(/^data:image\/\*;/, 'data:image/png;') : t };
+    }
+    if (/^https?:\/\//i.test(t)) return { uri: t };
+    return { uri: `data:image/png;base64,${t}` };
 };
 
 export default function ImagesScreen({ route }) {
-    const params = route?.params ?? {};
+    const navigation = useNavigation();
+    const insets = useSafeAreaInsets();
 
-    // 兼容两种传参写法
+    // 进来时隐藏底部 TabBar，离开恢复
+    useFocusEffect(
+        useCallback(() => {
+            const parent = navigation.getParent();
+            parent?.setOptions({ tabBarStyle: { display: 'none' } });
+            return () => parent?.setOptions({ tabBarStyle: undefined });
+        }, [navigation])
+    );
+
+    const params = route?.params ?? {};
     const images = useMemo(() => {
-        const arr = Array.isArray(params.images)
-            ? params.images
-            : Array.isArray(params.imageIndex)
-                ? params.imageIndex
-                : [];
-        return arr.map(normalizeDataUrl).filter(Boolean);
+        const arr = Array.isArray(params.images) ? params.images : [];
+        return arr.map(toImageUri).filter(Boolean);
     }, [route?.params]);
 
-    const initialIndex =
-        typeof params.imageIndex === 'number' ? params.imageIndex : 0;
-
+    const initialIndex = Number.isInteger(params.imageIndex) ? params.imageIndex : 0;
     const [index, setIndex] = useState(
-        images.length && initialIndex >= 0 && initialIndex < images.length
-            ? initialIndex
-            : 0
+        images.length && initialIndex >= 0 && initialIndex < images.length ? initialIndex : 0
     );
 
     const canPrev = index > 0;
     const canNext = index < images.length - 1;
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {images.length === 0 ? (
                 <Text style={styles.empty}>没有可显示的图片</Text>
             ) : (
                 <View style={styles.viewer}>
-                    {/* AppointmentImage 里已处理 dataURL/纯 base64 两种情况 */}
-                    <AppointmentImage base64={images[index]} style={styles.image} />
-                    <Text style={styles.counter}>{index + 1} / {images.length}</Text>
-                    <View style={styles.toolbar}>
+                    <Image source={images[index]} style={styles.image} resizeMode="contain" />
+
+                    {/* 计数器与工具条采用绝对定位，并考虑底部安全区 */}
+                    <Text style={[styles.counter, { bottom: insets.bottom + 84 }]}>
+                        {index + 1} / {images.length}
+                    </Text>
+
+                    <View style={[styles.toolbar, { bottom: insets.bottom + 24 }]}>
                         <TouchableOpacity
                             onPress={() => canPrev && setIndex(i => i - 1)}
                             disabled={!canPrev}
                             style={[styles.btn, !canPrev && styles.btnDisabled]}
                         >
-                            <Text style={styles.btnText}>上一张</Text>
+                            <Text style={styles.btnText}>Pre</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => canNext && setIndex(i => i + 1)}
                             disabled={!canNext}
                             style={[styles.btn, !canNext && styles.btnDisabled]}
                         >
-                            <Text style={styles.btnText}>下一张</Text>
+                            <Text style={styles.btnText}>Next</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             )}
-        </View>
+        </SafeAreaView>
     );
 }
 
 const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#000', alignItems: 'center', justifyContent: 'center' },
-    viewer: { width: '100%', alignItems: 'center', justifyContent: 'center' },
-    image: { width, height: height * 0.6 },
-    counter: { color: '#fff', marginTop: 8 },
-    toolbar: { flexDirection: 'row', gap: 12, marginTop: 12 },
-    btn: { paddingHorizontal: 14, paddingVertical: 10, backgroundColor: '#fff', borderRadius: 6 },
-    btnDisabled: { opacity: 0.5 },
-    btnText: { color: '#000' },
-    empty: { color: '#fff' },
+    container: { flex: 1, backgroundColor: '#000' },
+    viewer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+    image: { width, height: height * 0.7 },
+    counter: { position: 'absolute', alignSelf: 'center', color: '#fff' },
+    toolbar: { position: 'absolute', alignSelf: 'center', flexDirection: 'row', gap: 12 },
+    btn: { paddingHorizontal: 16, paddingVertical: 10, backgroundColor: '#fff', borderRadius: 8 },
+    btnDisabled: { opacity: 0.4 },
+    btnText: { color: '#000', fontWeight: '600' },
+    empty: { color: '#fff', textAlign: 'center' },
 });
