@@ -87,12 +87,51 @@ router.post('/Appointments', async (req, res) => {
 router.post('/Appointments/:id/images', upload.single('file'), async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file' });
+    // 2) 允许的图片类型白名单
+    const mime = (req.file.mimetype || '').toLowerCase();
+    const ALLOW = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']);
+    if (!ALLOW.has(mime)) {
+      return res.status(415).json({ error: `Unsupported image type: ${mime}` });
+    }
+    // 3) 取预约
     const appt = await Appointment.findById(req.params.id);
     if (!appt) return res.status(404).json({ error: 'Appointment not found' });
-    appt.images.push({ img: { data: req.file.buffer, contentType: req.file.mimetype || 'image/jpeg' } });
-    await appt.save();
-    res.json({ ok: true, count: appt.images.length });
-  } catch (e) { next(e); }
+    // 4) 计算 sha256 做去重（同一个预约里不重复存同一文件）
+    const crypto = require('crypto');
+    const hash = crypto.createHash('sha256').update(req.file.buffer).digest('hex');
+    const duplicated = appt.images?.some(img => img.hash === hash);
+
+    if (!duplicated) {
+      appt.images.push({
+      hash,
+      uploadedAt: new Date(), // 记录上传时间（Schema 里有默认值也可以显式再写）
+      img: { data: req.file.buffer, contentType: mime || 'image/jpeg' },
+      meta: {
+        filename: req.file.originalname,
+        size: req.file.size,
+        // 如果需要，还可以扩展 width/height（前端传或服务端探测）
+      },
+    });
+      await appt.save();
+    }
+    // 5) 统一响应（包含一些前端可能用到的信息）
+    return res.json({
+      ok: true,
+      duplicated,
+      count: appt.images.length,
+      item: {
+        hash,
+        contentType: mime || 'image/jpeg',
+        uploadedAt: new Date(), // 这里也可返回 appt.images[末尾].uploadedAt
+        filename: req.file.originalname,
+        size: req.file.size,
+        // 前端想立即显示的话，也可以附带 dataUrl（注意可能比较大）
+        // dataUrl: `data:${mime};base64,${req.file.buffer.toString('base64')}`,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
 });
 
 // 上传 PDF
@@ -123,6 +162,53 @@ router.get('/Appointments/:id/images', async (req, res) => {
     res.json({ images });
   } catch (e) {
     res.status(500).json({ error: 'fetch images failed' });
+  }
+});
+// 列出某用户的所有 X-ray 图片（按时间）
+router.get('/users/:userId/images', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // 只取必要字段，减少内存
+    const appts = await Appointment.find({ userId })
+        .select('_id startAt createdAt images')
+        .lean();
+
+    const host = `${req.protocol}://${req.get('host')}`;
+    const items = [];
+
+    for (const appt of appts) {
+      const imgs = Array.isArray(appt.images) ? appt.images : [];
+      imgs.forEach((x, idx) => {
+        const buf = toNodeBuffer(x?.img?.data ?? x?.data);
+        const ct  = x?.img?.contentType ?? x?.contentType ?? 'image/jpeg';
+        if (!buf) return;
+
+        const uploadedAt = x?.uploadedAt || appt.startAt || appt.createdAt;
+        items.push({
+          appointmentId: String(appt._id),
+          index: idx, // 供 raw 原图用
+          contentType: ct,
+          // 前端想直接显示就给 dataUrl；想省流量可以只给 rawUrl
+          dataUrl: `data:${ct};base64,${buf.toString('base64')}`,
+          rawUrl: `${host}/Appointments/${appt._id}/images/${idx}/raw`,
+          uploadedAt: uploadedAt ? new Date(uploadedAt).toISOString() : null,
+          appointmentStartAt: appt.startAt ? new Date(appt.startAt).toISOString() : null,
+        });
+      });
+    }
+
+    // 按时间倒序（优先 uploadedAt，其次 appointmentStartAt）
+    items.sort((a, b) => {
+      const ta = new Date(a.uploadedAt || a.appointmentStartAt || 0).getTime();
+      const tb = new Date(b.uploadedAt || b.appointmentStartAt || 0).getTime();
+      return tb - ta;
+    });
+
+    res.json({ items, count: items.length });
+  } catch (e) {
+    console.error('GET /users/:userId/images failed:', e);
+    res.status(500).json({ error: 'list user images failed' });
   }
 });
 
@@ -181,7 +267,7 @@ router.get('/Appointments/:id/assets', async (req, res) => {
     }).filter(Boolean);
 
     const host = `${req.protocol}://${req.get('host')}`;
-    const pdfUrls = (appt.pdfs || []).map((_, i) => `${host}/Appointment/${req.params.id}/pdfs/${i}/raw`);
+    const pdfUrls = (appt.pdfs || []).map((_, i) => `${host}/Appointments/${req.params.id}/pdfs/${i}/raw`);
 
     res.json({ imagesBase64, pdfUrls });
   } catch (e) {
