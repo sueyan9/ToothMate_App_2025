@@ -19,12 +19,114 @@ class NotificationService {
     this.responseListener = null;
   }
 
+  // Helper method to detect if we're running in Expo Go
+  isExpoGo() {
+    try {
+      // Multiple ways to detect Expo Go environment
+      // Check for Expo Go specific environment variables and properties
+      return (
+        // Check if we're in development mode and not a standalone app
+        global.__DEV__ && (
+          // Check Expo Constants for app ownership
+          global.expo?.modules?.ExpoConstants?.appOwnership === 'expo' ||
+          global.expo?.modules?.ExpoConstants?.executionEnvironment === 'storeClient' ||
+          // Check for Expo Go specific user agent
+          global.navigator?.userAgent?.includes('Expo') ||
+          // Check if we're not on a device (simulator in Expo Go)
+          !Device.isDevice ||
+          // Check for Expo Go specific global variables
+          global.__expo ||
+          // Additional check for Expo Go environment
+          (typeof global.expo !== 'undefined' && !global.expo.modules?.ExpoConstants?.appOwnership)
+        )
+      );
+    } catch (error) {
+      console.log('Error detecting Expo Go environment:', error.message);
+      // If we can't determine, assume we're in Expo Go to be safe
+      return global.__DEV__ || false;
+    }
+  }
+
+  // Check if push notifications are supported in current environment
+  isPushNotificationSupported() {
+    return Device.isDevice && !this.isExpoGo();
+  }
+
+  // Debug method to check environment details
+  getEnvironmentInfo() {
+    return {
+      isExpoGo: this.isExpoGo(),
+      isPushSupported: this.isPushNotificationSupported(),
+      isDevice: Device.isDevice,
+      isDev: global.__DEV__,
+      appOwnership: global.expo?.modules?.ExpoConstants?.appOwnership,
+      executionEnvironment: global.expo?.modules?.ExpoConstants?.executionEnvironment,
+      userAgent: global.navigator?.userAgent,
+      hasExpoGlobal: typeof global.__expo !== 'undefined',
+      platform: Platform.OS
+    };
+  }
+
   // Register for push notifications and get token
   async registerForPushNotifications() {
+    // First, check if we're in Expo Go and skip push notification registration entirely
+    if (this.isExpoGo()) {
+      console.log('🚨 Running in Expo Go - Skipping push notification registration');
+      console.log('ℹ️  Local notifications will work perfectly for appointment reminders');
+      console.log('ℹ️  For push notifications, use a development build');
+      console.log('ℹ️  Read more: https://docs.expo.dev/develop/development-builds/introduction/');
+      
+      // Set up Android notification channel for local notifications
+      if (Platform.OS === 'android') {
+        try {
+          await Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#78d0f5',
+          });
+        } catch (error) {
+          console.log('Error setting up Android notification channel:', error.message);
+        }
+      }
+      
+      // Still request local notification permissions
+      try {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        
+        if (existingStatus !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        
+        if (finalStatus !== 'granted') {
+          console.log('⚠️  Local notification permissions not granted');
+          return 'expo-go-no-permissions';
+        }
+      } catch (error) {
+        console.log('Error requesting notification permissions:', error.message);
+        return 'expo-go-permission-error';
+      }
+      
+      const fallbackToken = 'expo-go-local-only';
+      this.expoPushToken = fallbackToken;
+      
+      try {
+        await AsyncStorage.setItem('expoPushToken', fallbackToken);
+      } catch (error) {
+        console.log('Error storing token:', error.message);
+      }
+      
+      console.log('📱 Using local notifications only in Expo Go');
+      return fallbackToken;
+    }
+
+    // Regular push notification registration for development builds and production
     let token;
 
     if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
+      await Notifications.setNotificationChannelAsync('default', {
         name: 'default',
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
@@ -42,51 +144,37 @@ class NotificationService {
       }
       
       if (finalStatus !== 'granted') {
-        console.log('Failed to get push token for push notification!');
-        return null;
+        console.log('❌ Failed to get push token - permissions not granted');
+        return 'no-permissions';
       }
       
       try {
-        // Check if we're in Expo Go - push notifications don't work there in SDK 53+
-        // Use a more reliable check for Expo Go
-        const isExpoGo = global.__DEV__ && !Device.isDevice;
-        
-        if (isExpoGo) {
-          console.log('Running in Expo Go - Push notifications limited to local notifications only');
-          console.log('For full push notification functionality, use a development build');
-          // Return a mock token for development
-          token = { data: 'expo-go-mock-token' };
-        } else {
-          // Only try to get real push token in development builds or production
-          try {
-            token = await Notifications.getExpoPushTokenAsync({
-              projectId: 'your-project-id', // Replace with your actual Expo project ID
-            });
-          } catch (pushTokenError) {
-            console.log('Could not get push token (this is normal in Expo Go):', pushTokenError.message);
-            token = { data: 'local-notifications-only' };
-          }
-        }
+        // Only try to get real push token in development builds or production
+        token = await Notifications.getExpoPushTokenAsync({
+          projectId: 'your-project-id', // Replace with your actual Expo project ID when deploying
+        });
+        console.log('✅ Push notification token obtained successfully');
         
         this.expoPushToken = token.data;
         
         // Store token locally
         await AsyncStorage.setItem('expoPushToken', token.data);
         
-        console.log('Push token:', token.data);
+        console.log('📱 Push notification token:', token.data);
         return token.data;
       } catch (error) {
-        console.log('Error getting push token:', error);
-        console.log('Falling back to local notifications only');
-        // Fallback for Expo Go or other limitations
+        console.log('❌ Error getting push token:', error.message);
+        console.log('ℹ️  Falling back to local notifications only');
+        
+        // Fallback for other limitations
         const fallbackToken = 'local-notifications-only';
         this.expoPushToken = fallbackToken;
         await AsyncStorage.setItem('expoPushToken', fallbackToken);
         return fallbackToken;
       }
     } else {
-      console.log('Must use physical device for Push Notifications');
-      console.log('Using simulator - local notifications only');
+      console.log('ℹ️  Must use physical device for Push Notifications');
+      console.log('ℹ️  Using simulator - local notifications only');
       return 'simulator-local-only';
     }
   }
@@ -125,28 +213,185 @@ class NotificationService {
   }
 
   // Schedule appointment reminder
-  async scheduleAppointmentReminder(appointmentDate, appointmentTime, clinicName) {
-    const appointmentDateTime = new Date(appointmentDate + ' ' + appointmentTime);
-    
-    // Schedule 24 hours before
-    const reminderDate24h = new Date(appointmentDateTime.getTime() - 24 * 60 * 60 * 1000);
-    const notification24h = await this.scheduleNotification(
-      '🦷 Appointment Reminder',
-      `You have a dental appointment tomorrow at ${appointmentTime} at ${clinicName}`,
-      { type: 'appointment', appointmentDate, appointmentTime, clinicName },
-      { trigger: reminderDate24h }
-    );
+  async scheduleAppointmentReminder(appointmentDate, appointmentTime, clinicName, appointmentId = null, userSettings = null) {
+    try {
+      console.log('🔔 Starting appointment reminder scheduling...');
+      console.log('📅 Appointment details:', { appointmentDate, appointmentTime, clinicName, appointmentId });
+      console.log('⚙️  User settings:', userSettings);
+      
+      const appointmentDateTime = new Date(appointmentDate + ' ' + appointmentTime);
+      const now = new Date();
+      
+      console.log('⏰ Appointment datetime:', appointmentDateTime);
+      console.log('⏰ Current time:', now);
+      
+      // Don't schedule notifications for past appointments
+      if (appointmentDateTime <= now) {
+        console.log('⚠️  Appointment is in the past, skipping reminder scheduling');
+        return { success: false, message: 'Cannot schedule reminders for past appointments' };
+      }
+      
+      const notifications = [];
+      
+      // Schedule 24 hours before (only if enabled in settings and appointment is more than 24 hours away)
+      const reminderDate24h = new Date(appointmentDateTime.getTime() - 24 * 60 * 60 * 1000);
+      console.log('📋 24h reminder would be at:', reminderDate24h);
+      if (reminderDate24h > now && (!userSettings || userSettings.reminderTime24h)) {
+        console.log('✅ Scheduling 24h reminder...');
+        const notification24h = await this.scheduleNotification(
+          '🦷 Appointment Reminder',
+          `You have a dental appointment tomorrow at ${appointmentTime} at ${clinicName}`,
+          { 
+            type: 'appointment_reminder', 
+            appointmentDate, 
+            appointmentTime, 
+            clinicName, 
+            appointmentId,
+            reminderType: '24h'
+          },
+          { trigger: reminderDate24h }
+        );
+        if (notification24h) {
+          notifications.push({ type: '24h', id: notification24h, scheduledFor: reminderDate24h });
+          console.log('✅ 24h reminder scheduled with ID:', notification24h);
+        }
+      } else {
+        console.log('❌ Skipping 24h reminder:', reminderDate24h <= now ? 'too late' : 'disabled in settings');
+      }
 
-    // Schedule 1 hour before
-    const reminderDate1h = new Date(appointmentDateTime.getTime() - 60 * 60 * 1000);
-    const notification1h = await this.scheduleNotification(
-      '🦷 Appointment Soon',
-      `Your dental appointment is in 1 hour at ${clinicName}`,
-      { type: 'appointment', appointmentDate, appointmentTime, clinicName },
-      { trigger: reminderDate1h }
-    );
+      // Schedule 1 hour before (only if enabled in settings and appointment is more than 1 hour away)
+      const reminderDate1h = new Date(appointmentDateTime.getTime() - 60 * 60 * 1000);
+      console.log('📋 1h reminder would be at:', reminderDate1h);
+      if (reminderDate1h > now && (!userSettings || userSettings.reminderTime1h)) {
+        console.log('✅ Scheduling 1h reminder...');
+        const notification1h = await this.scheduleNotification(
+          '🦷 Appointment Soon',
+          `Your dental appointment is in 1 hour at ${clinicName}`,
+          { 
+            type: 'appointment_reminder', 
+            appointmentDate, 
+            appointmentTime, 
+            clinicName, 
+            appointmentId,
+            reminderType: '1h'
+          },
+          { trigger: reminderDate1h }
+        );
+        if (notification1h) {
+          notifications.push({ type: '1h', id: notification1h, scheduledFor: reminderDate1h });
+          console.log('✅ 1h reminder scheduled with ID:', notification1h);
+        }
+      } else {
+        console.log('❌ Skipping 1h reminder:', reminderDate1h <= now ? 'too late' : 'disabled in settings');
+      }
 
-    return { notification24h, notification1h };
+      // Schedule 15 minutes before (only if enabled in settings and appointment is more than 15 minutes away)
+      const reminderDate15m = new Date(appointmentDateTime.getTime() - 15 * 60 * 1000);
+      console.log('📋 15m reminder would be at:', reminderDate15m);
+      if (reminderDate15m > now && (!userSettings || userSettings.reminderTime15m)) {
+        console.log('✅ Scheduling 15m reminder...');
+        const notification15m = await this.scheduleNotification(
+          '🦷 Appointment Starting Soon',
+          `Your dental appointment starts in 15 minutes at ${clinicName}`,
+          { 
+            type: 'appointment_reminder', 
+            appointmentDate, 
+            appointmentTime, 
+            clinicName, 
+            appointmentId,
+            reminderType: '15m'
+          },
+          { trigger: reminderDate15m }
+        );
+        if (notification15m) {
+          notifications.push({ type: '15m', id: notification15m, scheduledFor: reminderDate15m });
+          console.log('✅ 15m reminder scheduled with ID:', notification15m);
+        }
+      } else {
+        console.log('❌ Skipping 15m reminder:', reminderDate15m <= now ? 'too late' : 'disabled in settings');
+      }
+
+      console.log(`✅ Final result: Scheduled ${notifications.length} appointment reminders for ${appointmentDate} ${appointmentTime}`);
+      console.log('📋 Scheduled notification details:', notifications);
+      return { success: true, notifications };
+    } catch (error) {
+      console.error('Error scheduling appointment reminder:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Cancel appointment reminders for a specific appointment
+  async cancelAppointmentReminders(appointmentId = null, appointmentDate = null, appointmentTime = null) {
+    try {
+      const scheduledNotifications = await this.getAllScheduledNotifications();
+      let cancelledCount = 0;
+      
+      for (const notification of scheduledNotifications) {
+        const notificationData = notification.content?.data;
+        
+        // Check if this is an appointment reminder notification
+        if (notificationData?.type === 'appointment_reminder') {
+          let shouldCancel = false;
+          
+          // Cancel by appointment ID if provided
+          if (appointmentId && notificationData.appointmentId === appointmentId) {
+            shouldCancel = true;
+          }
+          // Cancel by date/time if appointment ID not available
+          else if (!appointmentId && appointmentDate && appointmentTime) {
+            if (notificationData.appointmentDate === appointmentDate && 
+                notificationData.appointmentTime === appointmentTime) {
+              shouldCancel = true;
+            }
+          }
+          
+          if (shouldCancel) {
+            await this.cancelNotification(notification.identifier);
+            cancelledCount++;
+            console.log(`Cancelled appointment reminder: ${notification.identifier}`);
+          }
+        }
+      }
+      
+      console.log(`Cancelled ${cancelledCount} appointment reminder(s)`);
+      return { success: true, cancelledCount };
+    } catch (error) {
+      console.error('Error cancelling appointment reminders:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Get scheduled appointment reminders
+  async getAppointmentReminders(appointmentId = null) {
+    try {
+      const scheduledNotifications = await this.getAllScheduledNotifications();
+      const appointmentReminders = [];
+      
+      for (const notification of scheduledNotifications) {
+        const notificationData = notification.content?.data;
+        
+        if (notificationData?.type === 'appointment_reminder') {
+          // Filter by appointment ID if provided
+          if (!appointmentId || notificationData.appointmentId === appointmentId) {
+            appointmentReminders.push({
+              id: notification.identifier,
+              title: notification.content.title,
+              body: notification.content.body,
+              appointmentDate: notificationData.appointmentDate,
+              appointmentTime: notificationData.appointmentTime,
+              clinicName: notificationData.clinicName,
+              reminderType: notificationData.reminderType,
+              scheduledFor: notification.trigger?.date || notification.trigger
+            });
+          }
+        }
+      }
+      
+      return { success: true, reminders: appointmentReminders };
+    } catch (error) {
+      console.error('Error getting appointment reminders:', error);
+      return { success: false, error: error.message };
+    }
   }
 
   // Schedule daily dental tip

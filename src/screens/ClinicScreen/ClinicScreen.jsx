@@ -37,7 +37,11 @@ const ClinicScreen = ({navigation, route}) => {
         getDentalClinic
     } = useContext(UserContext);
     
-    const { scheduleAppointmentReminder } = useContext(NotificationContext);
+    const { 
+        scheduleAppointmentReminder, 
+        cancelAppointmentReminders, 
+        getAppointmentReminders 
+    } = useContext(NotificationContext);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -224,9 +228,20 @@ const ClinicScreen = ({navigation, route}) => {
                     const appointmentDate = dayjs(newAppt.startDate).format('YYYY-MM-DD');
                     const appointmentTime = dayjs(newAppt.startTime).format('HH:mm');
                     const clinicName = clinic?.name || 'your dental clinic';
+                    const appointmentId = response.data?._id; // Get the appointment ID from response
                     
-                    await scheduleAppointmentReminder(appointmentDate, appointmentTime, clinicName);
-                    console.log('Appointment reminder scheduled successfully');
+                    const reminderResult = await scheduleAppointmentReminder(
+                        appointmentDate, 
+                        appointmentTime, 
+                        clinicName, 
+                        appointmentId
+                    );
+                    
+                    if (reminderResult.success) {
+                        console.log(`Scheduled ${reminderResult.notifications?.length || 0} appointment reminders`);
+                    } else {
+                        console.warn('Failed to schedule appointment reminder:', reminderResult.error);
+                    }
                 } catch (notificationError) {
                     console.warn('Failed to schedule appointment reminder:', notificationError);
                     // Don't show error to user as appointment was created successfully

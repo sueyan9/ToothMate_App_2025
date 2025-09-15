@@ -30,11 +30,26 @@ const initializeNotifications = (dispatch) => {
       // Try to register for push notifications with error handling
       try {
         const token = await notificationService.registerForPushNotifications();
-        if (token && token !== 'local-notifications-only' && token !== 'expo-go-mock-token') {
+        const expoGoTokens = [
+          'local-notifications-only', 
+          'expo-go-mock-token', 
+          'expo-go-local-only', 
+          'simulator-local-only',
+          'expo-go-no-permissions',
+          'expo-go-permission-error',
+          'no-permissions'
+        ];
+        
+        if (token && !expoGoTokens.includes(token)) {
           dispatch({ type: 'SET_PUSH_TOKEN', payload: token });
+          console.log('✅ Push notification token registered successfully');
+        } else {
+          console.log('ℹ️  Using local notifications only - push notifications not available');
+          dispatch({ type: 'SET_PUSH_TOKEN', payload: null });
         }
       } catch (tokenError) {
-        console.log('Push notification registration failed (this is normal in Expo Go):', tokenError.message);
+        console.log('⚠️  Push notification registration failed (this is normal in Expo Go):', tokenError.message);
+        dispatch({ type: 'SET_PUSH_TOKEN', payload: null });
         // Continue without push token - local notifications will still work
       }
       
@@ -55,6 +70,7 @@ const initializeNotifications = (dispatch) => {
         dailyTips: true,
         reminderTime24h: true,
         reminderTime1h: true,
+        reminderTime15m: true,
         dailyTipTime: '09:00',
       };
       dispatch({ type: 'SET_NOTIFICATION_SETTINGS', payload: settings });
@@ -115,28 +131,82 @@ const updateNotificationSettings = (dispatch) => {
 
 // Schedule appointment reminder
 const scheduleAppointmentReminder = (dispatch) => {
-  return async (appointmentDate, appointmentTime, clinicName) => {
+  return async (appointmentDate, appointmentTime, clinicName, appointmentId = null) => {
     try {
+      // Get settings from AsyncStorage with proper defaults
       const state = await AsyncStorage.getItem('notificationSettings');
-      const settings = state ? JSON.parse(state) : {};
+      const defaultSettings = {
+        appointmentReminders: true,
+        dailyTips: true,
+        reminderTime24h: true,
+        reminderTime1h: true,
+        reminderTime15m: true,
+        dailyTipTime: '09:00',
+      };
+      const settings = state ? { ...defaultSettings, ...JSON.parse(state) } : defaultSettings;
+      
+      console.log('📋 Scheduling appointment reminder with settings:', settings);
       
       if (!settings.appointmentReminders) {
+        console.log('⚠️  Appointment reminders are disabled in settings');
         return { success: false, message: 'Appointment reminders are disabled' };
       }
       
-      const notifications = await notificationService.scheduleAppointmentReminder(
+      const result = await notificationService.scheduleAppointmentReminder(
         appointmentDate,
         appointmentTime,
-        clinicName
+        clinicName,
+        appointmentId,
+        settings // Pass user settings to the service
+      );
+      
+      console.log('📋 Appointment reminder result:', result);
+      
+      // Update scheduled notifications list
+      const scheduled = await notificationService.getAllScheduledNotifications();
+      console.log('📋 Updated scheduled notifications count:', scheduled.length);
+      dispatch({ type: 'SET_SCHEDULED_NOTIFICATIONS', payload: scheduled });
+      
+      return result;
+    } catch (error) {
+      console.error('Error scheduling appointment reminder:', error);
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+      return { success: false, error: error.message };
+    }
+  };
+};
+
+// Cancel appointment reminders
+const cancelAppointmentReminders = (dispatch) => {
+  return async (appointmentId = null, appointmentDate = null, appointmentTime = null) => {
+    try {
+      const result = await notificationService.cancelAppointmentReminders(
+        appointmentId,
+        appointmentDate,
+        appointmentTime
       );
       
       // Update scheduled notifications list
       const scheduled = await notificationService.getAllScheduledNotifications();
       dispatch({ type: 'SET_SCHEDULED_NOTIFICATIONS', payload: scheduled });
       
-      return { success: true, notifications };
+      return result;
     } catch (error) {
-      console.error('Error scheduling appointment reminder:', error);
+      console.error('Error cancelling appointment reminders:', error);
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+      return { success: false, error: error.message };
+    }
+  };
+};
+
+// Get appointment reminders
+const getAppointmentReminders = (dispatch) => {
+  return async (appointmentId = null) => {
+    try {
+      const result = await notificationService.getAppointmentReminders(appointmentId);
+      return result;
+    } catch (error) {
+      console.error('Error getting appointment reminders:', error);
       dispatch({ type: 'SET_ERROR', payload: error.message });
       return { success: false, error: error.message };
     }
@@ -249,6 +319,8 @@ export const { Provider, Context } = createDataContext(
     initializeNotifications,
     updateNotificationSettings,
     scheduleAppointmentReminder,
+    cancelAppointmentReminders,
+    getAppointmentReminders,
     sendImmediateNotification,
     getScheduledNotifications,
     cancelNotification,
@@ -264,6 +336,7 @@ export const { Provider, Context } = createDataContext(
       dailyTips: true,
       reminderTime24h: true,
       reminderTime1h: true,
+      reminderTime15m: true,
       dailyTipTime: '09:00',
     },
     scheduledNotifications: [],

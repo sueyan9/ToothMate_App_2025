@@ -209,6 +209,17 @@ const NotificationSettingsScreen = () => {
                     disabled={isUpdating}
                   />
                 </View>
+                
+                <View style={styles.settingItem}>
+                  <Text style={styles.settingLabel}>15 Minutes Before</Text>
+                  <Switch
+                    value={localSettings.reminderTime15m}
+                    onValueChange={(value) => handleSettingChange('reminderTime15m', value)}
+                    trackColor={{ false: '#ddd', true: '#78d0f5' }}
+                    thumbColor={localSettings.reminderTime15m ? '#0066cc' : '#f4f3f4'}
+                    disabled={isUpdating}
+                  />
+                </View>
               </View>
             )}
 
