@@ -126,7 +126,16 @@ const ProfileStack = () => (
             component={UserAccountScreen} 
             options={{ 
                 title: 'Profile',
-                headerRight: () => <LanguageSelector/>
+                headerRight: () => <LanguageSelector/>,
+                headerStyle: {
+                    backgroundColor: '#E9F1F8',
+                },
+                headerTitleStyle: {
+                    color: '#333333',
+                },
+                headerRightContainerStyle: {
+                    paddingRight: 16,
+                }
             }} 
         />
         <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />

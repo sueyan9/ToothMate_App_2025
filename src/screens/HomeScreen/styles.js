@@ -14,6 +14,13 @@ export default StyleSheet.create({
         paddingTop: 20,
         paddingBottom: 64,
     },
+    headerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 16,
+        marginBottom: 16,
+    },
     profile: {
         width: 80,
         height: 80,

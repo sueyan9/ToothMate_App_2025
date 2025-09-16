@@ -320,6 +320,79 @@ class NotificationService {
     }
   }
 
+  // Schedule a specific reminder type for an appointment
+  async scheduleSpecificAppointmentReminder(appointmentDate, appointmentTime, clinicName, reminderType, appointmentId = null) {
+    try {
+      console.log(`🔔 Scheduling specific ${reminderType} reminder for appointment...`);
+      console.log('📅 Appointment details:', { appointmentDate, appointmentTime, clinicName, appointmentId });
+      
+      const appointmentDateTime = new Date(appointmentDate + ' ' + appointmentTime);
+      const now = new Date();
+      
+      // Don't schedule notifications for past appointments
+      if (appointmentDateTime <= now) {
+        console.log('⚠️  Appointment is in the past, skipping reminder scheduling');
+        return { success: false, message: 'Cannot schedule reminders for past appointments' };
+      }
+      
+      let reminderDate;
+      let title;
+      let body;
+      
+      // Calculate reminder time based on type
+      switch (reminderType) {
+        case '24h':
+          reminderDate = new Date(appointmentDateTime.getTime() - 24 * 60 * 60 * 1000);
+          title = '🦷 Appointment Reminder';
+          body = `You have a dental appointment tomorrow at ${appointmentTime} at ${clinicName}`;
+          break;
+        case '1h':
+          reminderDate = new Date(appointmentDateTime.getTime() - 60 * 60 * 1000);
+          title = '🦷 Appointment Soon';
+          body = `Your dental appointment is in 1 hour at ${clinicName}`;
+          break;
+        case '15m':
+          reminderDate = new Date(appointmentDateTime.getTime() - 15 * 60 * 1000);
+          title = '🦷 Appointment Starting Soon';
+          body = `Your dental appointment starts in 15 minutes at ${clinicName}`;
+          break;
+        default:
+          return { success: false, message: 'Invalid reminder type' };
+      }
+      
+      // Check if reminder time is in the future
+      if (reminderDate <= now) {
+        console.log(`⚠️  ${reminderType} reminder time is in the past, skipping`);
+        return { success: false, message: `${reminderType} reminder time has already passed` };
+      }
+      
+      console.log(`✅ Scheduling ${reminderType} reminder for:`, reminderDate);
+      const notificationId = await this.scheduleNotification(
+        title,
+        body,
+        { 
+          type: 'appointment_reminder', 
+          appointmentDate, 
+          appointmentTime, 
+          clinicName, 
+          appointmentId,
+          reminderType
+        },
+        { trigger: reminderDate }
+      );
+      
+      if (notificationId) {
+        console.log(`✅ ${reminderType} reminder scheduled with ID:`, notificationId);
+        return { success: true, notificationId, scheduledFor: reminderDate };
+      } else {
+        return { success: false, message: 'Failed to schedule notification' };
+      }
+    } catch (error) {
+      console.error(`Error scheduling ${reminderType} reminder:`, error);
+      return { success: false, error: error.message };
+    }
+  }
+
   // Cancel appointment reminders for a specific appointment
   async cancelAppointmentReminders(appointmentId = null, appointmentDate = null, appointmentTime = null) {
     try {

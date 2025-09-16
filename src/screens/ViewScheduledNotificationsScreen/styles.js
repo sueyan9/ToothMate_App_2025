@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -45,7 +45,10 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    paddingHorizontal: 20,
+  },
+  scrollViewContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
   },
   emptyContainer: {
     flex: 1,
@@ -102,6 +105,19 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 10,
     paddingHorizontal: 5,
+  },
+  appointmentsMainTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#0066cc',
+    textAlign: 'center',
+    marginTop: 15,
+    marginBottom: 25,
+    paddingHorizontal: 16,
+    textShadowColor: 'rgba(0, 102, 204, 0.3)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
+    letterSpacing: 1,
   },
   notificationCard: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -170,6 +186,111 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(244, 67, 54, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  
+  // Smaller appointment cards with app theme colors
+  appointmentCard: {
+    backgroundColor: '#78d0f5', // App's teal/blue theme color
+    padding: 12,
+    marginBottom: 12,
+    marginHorizontal: 8,
+    borderWidth: 2,
+    borderColor: '#0066cc',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  appointmentCardInner: {
+    // Remove the inner card styling for simpler design
+  },
+  appointmentHeader: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#fff',
+    paddingBottom: 6,
+    marginBottom: 8,
+  },
+  appointmentTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 6,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  },
+  appointmentSubtitle: {
+    fontSize: 12,
+    color: '#fff',
+    marginBottom: 4,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  },
+  appointmentInfo: {
+    marginBottom: 8,
+  },
+  appointmentClinic: {
+    fontSize: 11,
+    color: '#fff',
+    marginBottom: 6,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  },
+  statusText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 12,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  },
+  reminderControls: {
+    marginTop: 6,
+  },
+  reminderControlsTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 6,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  },
+  reminderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 3,
+    marginBottom: 3,
+  },
+  reminderLabel: {
+    fontSize: 11,
+    color: '#fff',
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    flex: 1,
+  },
+  activeReminders: {
+    marginTop: 8,
+    paddingTop: 6,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  activeReminderRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 6,
+  },
+  reminderBellIcon: {
+    marginRight: 6,
+    marginTop: 1,
+  },
+  activeReminderTextContainer: {
+    flex: 1,
+  },
+  activeReminderText: {
+    fontSize: 11,
+    color: '#0066cc',
+    fontWeight: '500',
+    marginBottom: 1,
+  },
+  reminderForText: {
+    fontSize: 10,
+    color: '#888',
+    fontStyle: 'italic',
   },
 });
 

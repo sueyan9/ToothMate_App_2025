@@ -248,6 +248,33 @@ const getScheduledNotifications = (dispatch) => {
   };
 };
 
+// Schedule specific appointment reminder
+const scheduleSpecificAppointmentReminder = (dispatch) => {
+  return async (appointmentDate, appointmentTime, clinicName, reminderType, appointmentId = null) => {
+    try {
+      const result = await notificationService.scheduleSpecificAppointmentReminder(
+        appointmentDate,
+        appointmentTime,
+        clinicName,
+        reminderType,
+        appointmentId
+      );
+      
+      if (result.success) {
+        // Update scheduled notifications list
+        const scheduled = await notificationService.getAllScheduledNotifications();
+        dispatch({ type: 'SET_SCHEDULED_NOTIFICATIONS', payload: scheduled });
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('Error scheduling specific appointment reminder:', error);
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+      return { success: false, error: error.message };
+    }
+  };
+};
+
 // Cancel notification
 const cancelNotification = (dispatch) => {
   return async (notificationId) => {
@@ -319,6 +346,7 @@ export const { Provider, Context } = createDataContext(
     initializeNotifications,
     updateNotificationSettings,
     scheduleAppointmentReminder,
+    scheduleSpecificAppointmentReminder,
     cancelAppointmentReminders,
     getAppointmentReminders,
     sendImmediateNotification,
