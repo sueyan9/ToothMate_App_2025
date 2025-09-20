@@ -377,9 +377,19 @@ export default StyleSheet.create({
     borderColor: '#DC3545',
     borderWidth: 2,
   },
+  warningInput: {
+    borderColor: '#FF8C00',
+    borderWidth: 2,
+  },
   errorText: {
     fontSize: 14,
     color: '#DC3545',
+    marginTop: 4,
+    marginLeft: 4,
+  },
+  warningText: {
+    fontSize: 14,
+    color: '#FF8C00',
     marginTop: 4,
     marginLeft: 4,
   },
@@ -409,6 +419,12 @@ export default StyleSheet.create({
     fontSize: 14,
     color: '#666666',
     marginTop: 2,
+  },
+  warningClinicTitle: {
+    color: '#FF8C00',
+  },
+  warningClinicText: {
+    color: '#FF8C00',
   },
   clinicConfirmInfo: {
     marginTop: 16,

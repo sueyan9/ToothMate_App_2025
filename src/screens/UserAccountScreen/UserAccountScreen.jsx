@@ -116,6 +116,7 @@ const UserAccountScreen = ({ navigation }) => {
     'Please enter a clinic code.',
     'Please enter a valid clinic code.',
     'Invalid clinic code',
+    'You are already registered with this clinic',
     'Please enter a valid email address',
     'Email already exists',
     'Error validating email',
@@ -147,7 +148,7 @@ const UserAccountScreen = ({ navigation }) => {
   const [showClinicConfirmModal, setShowClinicConfirmModal] = useState(false);
   const [showClinicSuccessModal, setShowClinicSuccessModal] = useState(false);
   const [emailStatus, setEmailStatus] = useState(null); // null | 'valid' | 'invalid' | 'exists' | 'invalid_format'
-  const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
+  const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid' | 'same-clinic'
   const [clinicInfo, setClinicInfo] = useState(null);
   const [clinicCode, setClinicCode] = useState('');
   const [formData, setFormData] = useState({
@@ -240,7 +241,13 @@ const UserAccountScreen = ({ navigation }) => {
         const response = await axiosApi.get(`/checkClinicCode/${clinicCode.trim()}`);
         if (response.data.valid) {
           setClinicInfo(response.data);
-          setClinicCodeStatus('valid');
+          
+          // Check if the entered clinic code is the same as the current clinic
+          if (clinic && clinic.code === clinicCode.trim()) {
+            setClinicCodeStatus('same-clinic');
+          } else {
+            setClinicCodeStatus('valid');
+          }
         } else {
           setClinicInfo(null);
           setClinicCodeStatus('invalid');
@@ -252,7 +259,7 @@ const UserAccountScreen = ({ navigation }) => {
     };
 
     checkClinicCode();
-  }, [clinicCode]);
+  }, [clinicCode, clinic]);
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Not specified';
@@ -301,6 +308,8 @@ const UserAccountScreen = ({ navigation }) => {
       return [styles.textInput, styles.validInput];
     } else if (clinicCodeStatus === 'invalid') {
       return [styles.textInput, styles.invalidInput];
+    } else if (clinicCodeStatus === 'same-clinic') {
+      return [styles.textInput, styles.warningInput];
     }
     return styles.textInput;
   };
@@ -309,6 +318,8 @@ const UserAccountScreen = ({ navigation }) => {
   const getClinicCodeErrorMessage = () => {
     if (clinicCodeStatus === 'invalid') {
       return t('Invalid clinic code');
+    } else if (clinicCodeStatus === 'same-clinic') {
+      return t('You are already registered with this clinic');
     }
     return null;
   };
@@ -1174,7 +1185,9 @@ const UserAccountScreen = ({ navigation }) => {
                   autoCapitalize="characters"
                 />
                 {getClinicCodeErrorMessage() && (
-                  <Text style={styles.errorText}>{getClinicCodeErrorMessage()}</Text>
+                  <Text style={clinicCodeStatus === 'same-clinic' ? styles.warningText : styles.errorText}>
+                    {getClinicCodeErrorMessage()}
+                  </Text>
                 )}
                 {clinicCodeStatus === 'valid' && clinicInfo && (
                   <View style={styles.clinicInfoContainer}>
@@ -1185,6 +1198,17 @@ const UserAccountScreen = ({ navigation }) => {
                     )}
                     {clinicInfo.phone && (
                       <Text style={styles.clinicInfoText}>{clinicInfo.phone}</Text>
+                    )}
+                  </View>
+                )}
+                {clinicCodeStatus === 'same-clinic' && clinicInfo && (
+                  <View style={styles.clinicInfoContainer}>
+                    <Text style={[styles.clinicInfoTitle, styles.warningClinicTitle]}>{clinicInfo.name}</Text>
+                    {clinicInfo.address && (
+                      <Text style={[styles.clinicInfoText, styles.warningClinicText]}>{clinicInfo.address}</Text>
+                    )}
+                    {clinicInfo.phone && (
+                      <Text style={[styles.clinicInfoText, styles.warningClinicText]}>{clinicInfo.phone}</Text>
                     )}
                   </View>
                 )}
