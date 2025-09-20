@@ -1,27 +1,26 @@
-import {MaterialIcons} from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {useFocusEffect} from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker'; //deopdown list
+import { useFocusEffect } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import {Picker} from '@react-native-picker/picker';//deopdown list
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
     Modal,
+    Platform,
     Pressable,
     SafeAreaView,
     ScrollView,
     Text,
-    TextInput,
     TouchableOpacity,
-    View,
-    Platform
+    View
 } from 'react-native';
-import {Calendar} from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import axiosApi from '../../api/axios';
-import {Context as UserContext} from '../../context/UserContext/UserContext';
+import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
 
 dayjs.extend(utc);
@@ -75,7 +74,7 @@ const ClinicScreen = ({navigation, route}) => {
         'Dr. Patel',
         'Dr. Singh',
     ];
-    const PURPOSES = ['Check-up', 'Cleaning'];
+    const PURPOSES = ['Check-up', 'Cleaning', 'Consoltation'];
 
 // Appointment slot constants
     const SLOT_MINUTES = 30;
@@ -551,13 +550,18 @@ const ClinicScreen = ({navigation, route}) => {
                                         setShowDatePicker(false);
                                         if (!date || !(date instanceof Date)) return;
 
-                                        const isToday = dayjs(date).tz(NZ_TZ).isSame(nzNow(), 'day');
+                                        const selectedDateNZ = dayjs(date).tz(NZ_TZ);
+                                        const isToday = selectedDateNZ.isSame(nzNow(), 'day');
+
+                                        const currentTimeNZ = dayjs(newAppt.startTime).tz(NZ_TZ);
 
                                         // compose a datetime on the chosen day using existing hour/minute
-                                        const base = new Date(
-                                            date.getFullYear(), date.getMonth(), date.getDate(),
-                                            newAppt.startTime.getHours(), newAppt.startTime.getMinutes(), 0, 0
-                                        );
+                                        const base = selectedDateNZ
+                                        .hour(currentTimeNZ.hour())
+                                        .minute(currentTimeNZ.minute())
+                                        .second(0)
+                                        .millisecond(0)
+                                        .toDate();
 
                                         // snap to :00/:30 and clamp to 09:00–16:30
                                         let rounded = roundTo30(base);
