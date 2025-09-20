@@ -118,7 +118,12 @@ const UserAccountScreen = ({ navigation }) => {
     'Invalid clinic code',
     'Please enter a valid email address',
     'Email already exists',
-    'Error validating email'
+    'Error validating email',
+    'We value your privacy. With your permission, we may share your personal and medical information with the next dental clinic to ensure continuity of your care.',
+    'Agree',
+    'Disagree',
+    'By agreeing, you consent to your personal and medical records being securely shared with the new clinic. This ensures that dental practitioners at the new clinic are informed of your past treatments and procedures, supporting continuity of your care.',
+    'By disagreeing, you understand that the new clinic will not be provided with your personal or medical records. As a result, dental practitioners at the new clinic will not have knowledge of your past treatments or procedures.'
   ];
 
   const { 
@@ -156,6 +161,7 @@ const UserAccountScreen = ({ navigation }) => {
     newPassword: '',
     confirmPassword: ''
   });
+  const [privacyConsent, setPrivacyConsent] = useState(null); // null | 'agree' | 'disagree'
 
   useEffect(() => {
     // Force re-render when language changes
@@ -557,6 +563,7 @@ const UserAccountScreen = ({ navigation }) => {
     }
     
     setShowClinicModal(false);
+    setPrivacyConsent(null);
     setShowClinicConfirmModal(true);
   };
 
@@ -1228,6 +1235,57 @@ const UserAccountScreen = ({ navigation }) => {
               )}
             </View>
 
+            {/* Privacy Disclaimer Section */}
+            <View style={styles.privacyDisclaimerSection}>
+              <Text style={styles.privacyDisclaimerText}>
+                {t('We value your privacy. With your permission, we may share your personal and medical information with the next dental clinic to ensure continuity of your care.')}
+              </Text>
+              
+              <View style={styles.privacyButtonContainer}>
+                <TouchableOpacity 
+                  style={[
+                    styles.privacyButton, 
+                    privacyConsent === 'agree' && styles.privacyButtonSelected
+                  ]}
+                  onPress={() => setPrivacyConsent('agree')}
+                >
+                  <Text style={[
+                    styles.privacyButtonText,
+                    privacyConsent === 'agree' && styles.privacyButtonTextSelected
+                  ]}>
+                    {t('Agree')}
+                  </Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[
+                    styles.privacyButton, 
+                    privacyConsent === 'disagree' && styles.privacyButtonSelected
+                  ]}
+                  onPress={() => setPrivacyConsent('disagree')}
+                >
+                  <Text style={[
+                    styles.privacyButtonText,
+                    privacyConsent === 'disagree' && styles.privacyButtonTextSelected
+                  ]}>
+                    {t('Disagree')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {privacyConsent === 'disagree' && (
+                <Text style={styles.secondaryDisclaimerText}>
+                  {t('By disagreeing, you understand that the new clinic will not be provided with your personal or medical records. As a result, dental practitioners at the new clinic will not have knowledge of your past treatments or procedures.')}
+                </Text>
+              )}
+
+              {privacyConsent === 'agree' && (
+                <Text style={styles.secondaryDisclaimerText}>
+                  {t('By agreeing, you consent to your personal and medical records being securely shared with the new clinic. This ensures that dental practitioners at the new clinic are informed of your past treatments and procedures, supporting continuity of your care.')}
+                </Text>
+              )}
+            </View>
+
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity 
                 style={[styles.modalButton, styles.discardButton]}
@@ -1237,10 +1295,20 @@ const UserAccountScreen = ({ navigation }) => {
               </TouchableOpacity>
               
               <TouchableOpacity 
-                style={[styles.modalButton, styles.saveButton]}
-                onPress={handleClinicConfirmSave}
+                style={[
+                  styles.modalButton, 
+                  styles.saveButton,
+                  privacyConsent === null && styles.disabledButton
+                ]}
+                onPress={privacyConsent !== null ? handleClinicConfirmSave : null}
+                disabled={privacyConsent === null}
               >
-                <Text style={styles.saveButtonText}>{t('Confirm Change')}</Text>
+                <Text style={[
+                  styles.saveButtonText,
+                  privacyConsent === null && styles.disabledButtonText
+                ]}>
+                  {t('Confirm')}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
