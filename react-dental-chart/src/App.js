@@ -115,7 +115,7 @@ const BackButton = () => {
       onClick={() => navigate('/')}
       style={{
         position: 'fixed',
-        top: '72px',
+        top: '96px',
         left: '32px',
         zIndex: 1000,
         padding: '10px 15px',
