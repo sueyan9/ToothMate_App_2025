@@ -1,14 +1,11 @@
-import React, { useState, useContext } from 'react';
-import { View, TouchableOpacity, ImageBackground } from 'react-native';
-import { Text, Input, Button } from 'react-native-elements';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts, Righteous_400Regular } from '@expo-google-fonts/righteous';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useContext, useState } from 'react';
+import { Image, TouchableOpacity, View } from 'react-native';
+import { Button, Input, Text } from 'react-native-elements';
+import ToothLogo from '../../../assets/tooth_icon.png';
 import Spacer from '../../components/Spacer';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
-import ToothLogo from '../../assets/t_logo_crop2.png';
 import styles from './styles';
-import LoadingScreen from '../LoadingScreen';
 
 const SigninScreen = props => {
   const navigation = useNavigation();
@@ -17,10 +14,6 @@ const SigninScreen = props => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const [fontsLoaded] = useFonts({
-    Righteous_400Regular,
-  });
 
   const handleSignin = () => signin({ email, password });
 
@@ -31,15 +24,12 @@ const SigninScreen = props => {
       }, [])
   );
 
-  if (!fontsLoaded) {
-    return <LoadingScreen />;
-  }
-
   return (
-      <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container}>
-        <View style={styles.container}>
-          <Text style={styles.titleTextStyle}> ToothMate </Text>
-          <ImageBackground source={ToothLogo} style={styles.imageBackgroundStyle}>
+      <View style={styles.container}>
+          <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '50%', marginBottom: 32}}>
+            <Image source={ToothLogo} style={styles.icon}/>
+            <Text style={styles.titleTextStyle}> ToothMate </Text>
+          </View>
             <Input
                 label="Email Address"
                 leftIcon={{ type: 'material-icons', name: 'email' }}
@@ -64,7 +54,7 @@ const SigninScreen = props => {
                 secureTextEntry
             />
             {state.errorMessage ? <Text style={styles.errorMessage}>{state.errorMessage}</Text> : null}
-          </ImageBackground>
+          
           <Button
               buttonStyle={styles.button}
               containerStyle={styles.buttonContainer}
@@ -75,12 +65,14 @@ const SigninScreen = props => {
           <TouchableOpacity onPress={() => navigation.navigate('loginFlow', { screen: 'Signup' })}>
             <Spacer>
               <View style={styles.link}>
-                <Text style={styles.link}> CREATE A NEW ACCOUNT </Text>
+                <Text style={styles.alreadyHaveAccountStyle}>
+                    Don't have an account?
+                <Text style={styles.link}> Create one here</Text>
+                </Text>
               </View>
             </Spacer>
           </TouchableOpacity>
-        </View>
-      </LinearGradient>
+      </View>
   );
 };
 

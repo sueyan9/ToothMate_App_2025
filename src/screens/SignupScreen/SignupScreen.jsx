@@ -1,12 +1,10 @@
-import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
 import { useFocusEffect } from '@react-navigation/native'; // New import
 import dayjs from 'dayjs';
-import { LinearGradient } from 'expo-linear-gradient';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import ToothLogo from '../../../assets/tooth_icon.png';
 import axiosApi from "../../api/axios";
 import Spacer from '../../components/Spacer';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
@@ -37,10 +35,6 @@ const SignupScreen = props => {
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
-  const [fontsLoaded] = useFonts({
-    Righteous_400Regular,
-  });
 
   useEffect(() => {
     const checkClinicCode = async () => {
@@ -200,42 +194,65 @@ const SignupScreen = props => {
     }
   };
 
-  if (!fontsLoaded) {
-    return (
-        <View style={styles.activityIndicatorViewStyle}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-    );
-  }
-
   return (
-      <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container}>
         <View style={styles.container}>
           <KeyboardAwareScrollView>
+            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '30%', marginBottom: 32}}>
+              <Image source={ToothLogo} style={styles.icon}/>
             <Text style={styles.titleTextStyle}> ToothMate </Text>
+            </View>
             <Spacer />
             <Input
-                label="First Name"
-                leftIcon={{ type: 'feather', name: 'user' }}
-                value={firstname}
-                onChangeText={setFirstName}
-                autoCapitalize="none"
+                label="NHI Number"
+                leftIcon={{ type: 'material-community', name: 'hospital-box' }}
+                value={nhi.toUpperCase()}
+                onChangeText={setNhi}
+                autoCapitalize="characters"
                 autoCorrect={false}
                 inputContainerStyle={styles.inputContainerStyle}
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
+            {nhiStatus === 'valid' && (
+                <Text style={{ color: 'green', marginLeft: 10 }}>
+                  NHI found!
+                </Text>
+            )}
+            {nhiStatus === 'exists' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  NHI already exists. Try signing in.
+                </Text>
+            )}
+            {nhiStatus === 'invalid_format' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Invalid NHI format (should be 3 letters + 4 numbers)
+                </Text>
+            )}
+            {nhiStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>
+                  Error checking NHI
+                </Text>
+            )}
             <Input
-                label="Last Name"
-                leftIcon={{ type: 'feather', name: 'user' }}
-                value={lastname}
-                onChangeText={setLastName}
-                autoCapitalize="none"
+                label="Clinic Code"
+                leftIcon={{ type: 'font-awesome', name: 'building' }}
+                value={clinicCode}
+                onChangeText={setClinicCode}
+                autoCapitalize="characters"
                 autoCorrect={false}
                 inputContainerStyle={styles.inputContainerStyle}
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
+            {clinicCodeStatus === 'valid' && clinicInfo && (
+                <Text style={{ color: 'green', marginLeft: 10 }}>
+                  Clinic found: {clinicInfo.name}
+                </Text>
+            )}
+
+            {clinicCodeStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>Invalid clinic code</Text>
+            )}
             <Input
                 label="Email"
                 leftIcon={{ type: 'material-icons', name: 'email' }}
@@ -268,37 +285,6 @@ const SignupScreen = props => {
                 </Text>
             )}
             <Input
-                label="NHI Number"
-                leftIcon={{ type: 'material-community', name: 'hospital-box' }}
-                value={nhi.toUpperCase()}
-                onChangeText={setNhi}
-                autoCapitalize="characters"
-                autoCorrect={false}
-                inputContainerStyle={styles.inputContainerStyle}
-                inputStyle={styles.textStyle}
-                labelStyle={styles.labelStyle}
-            />
-            {nhiStatus === 'valid' && (
-                <Text style={{ color: 'green', marginLeft: 10 }}>
-                  NHI found!
-                </Text>
-            )}
-            {nhiStatus === 'exists' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>
-                  NHI already exists
-                </Text>
-            )}
-            {nhiStatus === 'invalid_format' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>
-                  Invalid NHI format (should be 3 letters + 4 numbers)
-                </Text>
-            )}
-            {nhiStatus === 'invalid' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>
-                  Error checking NHI
-                </Text>
-            )}
-            <Input
                 label="Password"
                 leftIcon={{ type: 'fontawesome5', name: 'lock' }}
                 value={password}
@@ -310,51 +296,8 @@ const SignupScreen = props => {
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
-            <Input
-                label="Clinic Code"
-                leftIcon={{ type: 'font-awesome', name: 'building' }}
-                value={clinicCode}
-                onChangeText={setClinicCode}
-                autoCapitalize="characters"
-                autoCorrect={false}
-                inputContainerStyle={styles.inputContainerStyle}
-                inputStyle={styles.textStyle}
-                labelStyle={styles.labelStyle}
-            />
-            {clinicCodeStatus === 'valid' && clinicInfo && (
-                <Text style={{ color: 'green', marginLeft: 10 }}>
-                  Clinic found: {clinicInfo.name}
-                </Text>
-            )}
-
-            {clinicCodeStatus === 'invalid' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>Invalid clinic code</Text>
-            )}
-            <Text style={styles.clinicTextStyle}>Date of Birth</Text>
-            <View>
-              <View style={styles.androidModalViewStyle}>
-                <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                  <Text style={styles.dateStyle}>{dayjs(dob).format('DD/MM/YYYY')}</Text>
-                </TouchableOpacity>
-                <DateTimePickerModal
-                    isVisible={showDatePicker}
-                    mode="date"
-                    date={modalDate}
-                    minimumDate={MIN_DATE.toDate()}
-                    maximumDate={MAX_DATE.toDate()}
-                    onCancel={() => setShowDatePicker(false)}
-                    onConfirm={handleDateChange}
-                />
-              </View>
               <Spacer />
-            </View>
-            {errorMessage ? (
-                <View style={styles.link}>
-                  <Text style={styles.errorMessage}>{errorMessage}</Text>
-                </View>
-            ) : null}
             <Spacer>
-              <Spacer />
               <Button
                   buttonStyle={styles.button}
                   containerStyle={styles.buttonContainer}
@@ -375,7 +318,6 @@ const SignupScreen = props => {
             </TouchableOpacity>
           </KeyboardAwareScrollView>
         </View>
-      </LinearGradient>
   );
 };
 
