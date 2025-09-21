@@ -1,5 +1,6 @@
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useContext, useEffect, useState } from 'react';
 import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Context as EducationContext } from '../../context/EducationContext/EducationContext';
