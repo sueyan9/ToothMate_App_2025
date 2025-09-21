@@ -111,7 +111,7 @@ export default StyleSheet.create({
   topCornerBackButton: {
     position: 'absolute',
     top: 130,
-    left: 20,
+    left: 24,
     padding: 8,
     zIndex: 1,
   },
