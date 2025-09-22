@@ -90,6 +90,7 @@ export default StyleSheet.create({
         width: '100%',
         marginBottom: 20,
         alignSelf: 'center',
+        resizeMode: 'contain',
     },
     logout: {
         position: 'absolute',
