@@ -207,5 +207,11 @@ export default StyleSheet.create({
     addressText: {
         fontSize: 14,
         color: '#666',
+        marginBottom: 4,
+    },
+    contactText: {
+        fontSize: 12,
+        color: '#875B51',
+        marginBottom: 2,
     },
 });

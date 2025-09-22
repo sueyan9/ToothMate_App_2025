@@ -1,36 +1,61 @@
 
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Context as ClinicContext } from '../../context/ClinicContext/ClinicContext';
 import styles from './styles';
 
 const LocationFinder = ({ route }) => {
     
     const navigation = useNavigation();
     const [searchText, setSearchText] = useState('');
-    const [dataLoaded, setDataLoaded] = useState(true); // Set to true since we have no data to load
+    const [dataLoaded, setDataLoaded] = useState(false);
     
-    // Empty data array for now - you can populate this later with dental clinic data
-    const locationData = [];
+    // Get clinic data from context
+    const { state: clinicState, getAllClinics } = useContext(ClinicContext);
+    const locationData = clinicState || [];
     
-    // Filter and search functionality (ready for when you add data)
-    const filteredContent = locationData; // No filtering for now
+    // Load clinic data when component mounts
+    useEffect(() => {
+        const loadClinics = async () => {
+            setDataLoaded(false);
+            try {
+                await getAllClinics();
+                setDataLoaded(true);
+            } catch (error) {
+                console.error('Error loading clinics:', error);
+                setDataLoaded(true);
+            }
+        };
+        loadClinics();
+    }, []);
     
-    const searchedAndFilteredContent = filteredContent.filter(item => {
-        // This will work when you add location data with name/address fields
-        return searchText === '' || 
-               (item.name && item.name.toLowerCase().includes(searchText.toLowerCase())) ||
-               (item.address && item.address.toLowerCase().includes(searchText.toLowerCase()));
+    // Filter based on search text (searching by address)
+    const searchedAndFilteredContent = locationData.filter(item => {
+        if (searchText === '') return true;
+        
+        const searchLower = searchText.toLowerCase();
+        return (
+            (item.name && item.name.toLowerCase().includes(searchLower)) ||
+            (item.address && item.address.toLowerCase().includes(searchLower)) ||
+            (item.phone && item.phone.toLowerCase().includes(searchLower)) ||
+            (item.email && item.email.toLowerCase().includes(searchLower))
+        );
     });
 
     const searchFunction = (text) => setSearchText(text);
     const clearSearch = () => setSearchText('');
 
+    const handleClinicPress = (clinic) => {
+        // You can add navigation to clinic details or other actions here
+        console.log('Selected clinic:', clinic);
+    };
+
     if (!dataLoaded) {
         return (
             <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text>Loading locations...</Text>
+                <Text>Loading clinics...</Text>
             </View>
         );
     }
@@ -73,11 +98,11 @@ const LocationFinder = ({ route }) => {
                         </Text>
                     </View>
                 ) : (
-                    // This section will be populated when you add location data
-                    searchedAndFilteredContent.map((item, index) => (
+                    // Display clinic data from database
+                    searchedAndFilteredContent.map((item) => (
                         <TouchableOpacity
-                            key={index}
-                            onPress={() => {/* Handle location selection */}}
+                            key={item._id || item.id}
+                            onPress={() => handleClinicPress(item)}
                             style={styles.contentCard}
                         >
                             <View style={styles.absoluteArrow}>
@@ -86,6 +111,12 @@ const LocationFinder = ({ route }) => {
                             <View style={styles.cardContent}>
                                 <Text style={styles.topicText}>{item.name}</Text>
                                 <Text style={styles.addressText}>{item.address}</Text>
+                                {item.phone && (
+                                    <Text style={styles.contactText}>📞 {item.phone}</Text>
+                                )}
+                                {item.email && (
+                                    <Text style={styles.contactText}>✉️ {item.email}</Text>
+                                )}
                             </View>
                         </TouchableOpacity>
                     ))
