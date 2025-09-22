@@ -194,7 +194,7 @@ const HomeScreen = () => {
                 <View style={styles.updateBox}>
                     <Image source={require('../../../assets/map.png')}
                         style={styles.mouthImage}/>
-                    <TouchableOpacity onPress={() => navigation.navigate('AccountFlow')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('LocationFinder')}>
                         <View style={styles.mouthButton}>
                             <Text style={styles.boldText}>Toothmate Dentists</Text>
                         </View>

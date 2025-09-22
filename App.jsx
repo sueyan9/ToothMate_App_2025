@@ -18,6 +18,7 @@ import GameScreen from './src/screens/GameScreen/GameScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
+import LocationFinder from './src/screens/LocationFinder';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import SelectClinicScreen from './src/screens/SelectClinicScreen';
@@ -250,6 +251,8 @@ const AppNavigator = () => {
                 {/* main flow */}
                 <Stack.Screen name="mainFlow" component={MainFlow} />
                 
+                {/* LocationFinder - accessible from HomeScreen */}
+                <Stack.Screen name="LocationFinder" component={LocationFinder} options={{ headerShown: false }} />
 
                 {/* child flow */}
                 <Stack.Screen name="childFlow" component={ChildFlow} />
