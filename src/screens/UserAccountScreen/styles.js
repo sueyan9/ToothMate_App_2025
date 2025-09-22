@@ -470,6 +470,6 @@ export default StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 12,
-    backgroundColor: '#EEF1F6', // 没加载时占位
+    backgroundColor: '#EEF1F6',
   },
 });
