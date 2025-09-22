@@ -116,9 +116,15 @@ const UserAccountScreen = ({ navigation }) => {
     'Please enter a clinic code.',
     'Please enter a valid clinic code.',
     'Invalid clinic code',
+    'You are already registered with this clinic',
     'Please enter a valid email address',
     'Email already exists',
-    'Error validating email'
+    'Error validating email',
+    'We value your privacy. With your permission, we may share your personal and medical information with the next dental clinic to ensure continuity of your care.',
+    'Agree',
+    'Disagree',
+    'By agreeing, you consent to your personal and medical records being securely shared with the new clinic. This ensures that dental practitioners at the new clinic are informed of your past treatments and procedures, supporting continuity of your care.',
+    'By disagreeing, you understand that the new clinic will not be provided with your personal or medical records. As a result, dental practitioners at the new clinic will not have knowledge of your past treatments or procedures.'
   ];
 
   const { 
@@ -142,7 +148,7 @@ const UserAccountScreen = ({ navigation }) => {
   const [showClinicConfirmModal, setShowClinicConfirmModal] = useState(false);
   const [showClinicSuccessModal, setShowClinicSuccessModal] = useState(false);
   const [emailStatus, setEmailStatus] = useState(null); // null | 'valid' | 'invalid' | 'exists' | 'invalid_format'
-  const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
+  const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid' | 'same-clinic'
   const [clinicInfo, setClinicInfo] = useState(null);
   const [clinicCode, setClinicCode] = useState('');
   const [formData, setFormData] = useState({
@@ -156,6 +162,7 @@ const UserAccountScreen = ({ navigation }) => {
     newPassword: '',
     confirmPassword: ''
   });
+  const [privacyConsent, setPrivacyConsent] = useState(null); // null | 'agree' | 'disagree'
 
   useEffect(() => {
     // Force re-render when language changes
@@ -234,7 +241,13 @@ const UserAccountScreen = ({ navigation }) => {
         const response = await axiosApi.get(`/checkClinicCode/${clinicCode.trim()}`);
         if (response.data.valid) {
           setClinicInfo(response.data);
-          setClinicCodeStatus('valid');
+          
+          // Check if the entered clinic code is the same as the current clinic
+          if (clinic && clinic.code === clinicCode.trim()) {
+            setClinicCodeStatus('same-clinic');
+          } else {
+            setClinicCodeStatus('valid');
+          }
         } else {
           setClinicInfo(null);
           setClinicCodeStatus('invalid');
@@ -246,7 +259,7 @@ const UserAccountScreen = ({ navigation }) => {
     };
 
     checkClinicCode();
-  }, [clinicCode]);
+  }, [clinicCode, clinic]);
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Not specified';
@@ -295,6 +308,8 @@ const UserAccountScreen = ({ navigation }) => {
       return [styles.textInput, styles.validInput];
     } else if (clinicCodeStatus === 'invalid') {
       return [styles.textInput, styles.invalidInput];
+    } else if (clinicCodeStatus === 'same-clinic') {
+      return [styles.textInput, styles.warningInput];
     }
     return styles.textInput;
   };
@@ -303,6 +318,8 @@ const UserAccountScreen = ({ navigation }) => {
   const getClinicCodeErrorMessage = () => {
     if (clinicCodeStatus === 'invalid') {
       return t('Invalid clinic code');
+    } else if (clinicCodeStatus === 'same-clinic') {
+      return t('You are already registered with this clinic');
     }
     return null;
   };
@@ -557,6 +574,7 @@ const UserAccountScreen = ({ navigation }) => {
     }
     
     setShowClinicModal(false);
+    setPrivacyConsent(null);
     setShowClinicConfirmModal(true);
   };
 
@@ -1167,7 +1185,9 @@ const UserAccountScreen = ({ navigation }) => {
                   autoCapitalize="characters"
                 />
                 {getClinicCodeErrorMessage() && (
-                  <Text style={styles.errorText}>{getClinicCodeErrorMessage()}</Text>
+                  <Text style={clinicCodeStatus === 'same-clinic' ? styles.warningText : styles.errorText}>
+                    {getClinicCodeErrorMessage()}
+                  </Text>
                 )}
                 {clinicCodeStatus === 'valid' && clinicInfo && (
                   <View style={styles.clinicInfoContainer}>
@@ -1178,6 +1198,17 @@ const UserAccountScreen = ({ navigation }) => {
                     )}
                     {clinicInfo.phone && (
                       <Text style={styles.clinicInfoText}>{clinicInfo.phone}</Text>
+                    )}
+                  </View>
+                )}
+                {clinicCodeStatus === 'same-clinic' && clinicInfo && (
+                  <View style={styles.clinicInfoContainer}>
+                    <Text style={[styles.clinicInfoTitle, styles.warningClinicTitle]}>{clinicInfo.name}</Text>
+                    {clinicInfo.address && (
+                      <Text style={[styles.clinicInfoText, styles.warningClinicText]}>{clinicInfo.address}</Text>
+                    )}
+                    {clinicInfo.phone && (
+                      <Text style={[styles.clinicInfoText, styles.warningClinicText]}>{clinicInfo.phone}</Text>
                     )}
                   </View>
                 )}
@@ -1228,6 +1259,57 @@ const UserAccountScreen = ({ navigation }) => {
               )}
             </View>
 
+            {/* Privacy Disclaimer Section */}
+            <View style={styles.privacyDisclaimerSection}>
+              <Text style={styles.privacyDisclaimerText}>
+                {t('We value your privacy. With your permission, we may share your personal and medical information with the next dental clinic to ensure continuity of your care.')}
+              </Text>
+              
+              <View style={styles.privacyButtonContainer}>
+                <TouchableOpacity 
+                  style={[
+                    styles.privacyButton, 
+                    privacyConsent === 'agree' && styles.privacyButtonSelected
+                  ]}
+                  onPress={() => setPrivacyConsent('agree')}
+                >
+                  <Text style={[
+                    styles.privacyButtonText,
+                    privacyConsent === 'agree' && styles.privacyButtonTextSelected
+                  ]}>
+                    {t('Agree')}
+                  </Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[
+                    styles.privacyButton, 
+                    privacyConsent === 'disagree' && styles.privacyButtonSelected
+                  ]}
+                  onPress={() => setPrivacyConsent('disagree')}
+                >
+                  <Text style={[
+                    styles.privacyButtonText,
+                    privacyConsent === 'disagree' && styles.privacyButtonTextSelected
+                  ]}>
+                    {t('Disagree')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {privacyConsent === 'disagree' && (
+                <Text style={styles.secondaryDisclaimerText}>
+                  {t('By disagreeing, you understand that the new clinic will not be provided with your personal or medical records. As a result, dental practitioners at the new clinic will not have knowledge of your past treatments or procedures.')}
+                </Text>
+              )}
+
+              {privacyConsent === 'agree' && (
+                <Text style={styles.secondaryDisclaimerText}>
+                  {t('By agreeing, you consent to your personal and medical records being securely shared with the new clinic. This ensures that dental practitioners at the new clinic are informed of your past treatments and procedures, supporting continuity of your care.')}
+                </Text>
+              )}
+            </View>
+
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity 
                 style={[styles.modalButton, styles.discardButton]}
@@ -1237,10 +1319,20 @@ const UserAccountScreen = ({ navigation }) => {
               </TouchableOpacity>
               
               <TouchableOpacity 
-                style={[styles.modalButton, styles.saveButton]}
-                onPress={handleClinicConfirmSave}
+                style={[
+                  styles.modalButton, 
+                  styles.saveButton,
+                  privacyConsent === null && styles.disabledButton
+                ]}
+                onPress={privacyConsent !== null ? handleClinicConfirmSave : null}
+                disabled={privacyConsent === null}
               >
-                <Text style={styles.saveButtonText}>{t('Confirm Change')}</Text>
+                <Text style={[
+                  styles.saveButtonText,
+                  privacyConsent === null && styles.disabledButtonText
+                ]}>
+                  {t('Confirm')}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
