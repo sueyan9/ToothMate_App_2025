@@ -41,7 +41,7 @@ p {
   border-radius: 5px;
   max-width: 100%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transform: translateY(calc(100% - 128px));
+  transform: translateY(calc(100% - 120px));
   transition: transform 0.3s ease-in-out;
   height: auto;
   max-height: 300vh;
