@@ -229,6 +229,11 @@
         "33": {
             "name": "Lower Left Canine",
             "treatments": [
+                {
+                    "date": "2023-04-20",
+                    "type": "Root Canal",
+                    "notes": "Root canal treatment scheduled."
+                }
             ],
             "futuretreatments": [
                 {
