@@ -7,6 +7,7 @@ import LanguageSelector from './src/components/LanguageSelector';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 import AppointmentScreen from './src/screens/AppointmentScreen';
 import ChildAccountScreen from './src/screens/ChildAccountScreen';
+import ChildEducationScreen from './src/screens/ChildEducationScreen/ChildEducationScreen';
 import ClinicScreen from './src/screens/ClinicScreen';
 import DentalChartScreen from './src/screens/DentalChartScreen';
 import DisconnectChildScreen from './src/screens/DisconnectChildScreen';
@@ -55,10 +56,10 @@ const HeaderLogo = () => (
     </View>
 );
 
-// Account flow navigation
+// Account flow navigation - FIXED: Using UserAccountScreen instead of missing AccountScreen
 const AccountStack = () => (
     <Stack.Navigator initialRouteName="Account">
-        <Stack.Screen name="Account" component={AccountScreen} />
+        <Stack.Screen name="Account" component={UserAccountScreen} />
         <Stack.Screen name="User" component={UserScreen} />
         <Stack.Screen name="DisconnectChild" component={DisconnectChildScreen} />
         <Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />
@@ -80,7 +81,7 @@ const EducationStack = () => (
 const ClinicStack = () => (
     <Stack.Navigator initialRouteName="clinic">
         <Stack.Screen name="clinic" component={ClinicScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="chart"  component={DentalChartScreen}options={{ title: '' }} />
+        <Stack.Screen name="chart"  component={DentalChartScreen} options={{ title: '' }} />
         <Stack.Screen name="appointment" component={AppointmentScreen} options={{ title: '' }}/>
         <Stack.Screen name="invoice" component={InvoiceScreen} options={{ title: '' }}/>
         <Stack.Screen name="images" component={ImagesScreen} options={{ title: '' }}/>
@@ -88,12 +89,21 @@ const ClinicStack = () => (
     </Stack.Navigator>
 );
 
-// Child clinic flow - FIXED: Changed initialRouteName to "Chart"
+// Child clinic flow
 const ChildClinicStack = () => (
     <Stack.Navigator initialRouteName="Chart">
         <Stack.Screen name="Chart" component={DentalChartScreen} options={{ title: '' }}/>
-        <Stack.Screen name="Education" component={EducationScreen} options={{ title: '' }}/>
+        <Stack.Screen name="Education" component={ChildEducationScreen} options={{ title: '' }}/>
         <Stack.Screen name="Profile" component={UserAccountScreen} options={{ title: '' }}/>
+    </Stack.Navigator>
+);
+
+// Child education flow - FIXED: Now properly uses ChildEducationScreen
+const ChildEducationStack = () => (
+    <Stack.Navigator initialRouteName="Library">
+        <Stack.Screen name="Library" component={ChildEducationScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="content" component={EducationContentScreen} options={{ headerShown: false}}/>
+        <Stack.Screen name="game" component={GameScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
 
@@ -192,31 +202,46 @@ const MainFlow = () => (
     </Tab.Navigator>
 );
 
-// Child flow with bottom tab navigation - FIXED: Updated tab configuration
+// Child flow with bottom tab navigation
 const ChildFlow = () => (
   <Tab.Navigator 
-    screenOptions={{ 
-      headerShown: false,
-      tabBarActiveTintColor: '#875B51',
-      tabBarInactiveTintColor: '#333333',
-      tabBarStyle: {
-        backgroundColor: '#FFFDF6',
-        borderTopWidth: 0,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        height: 68,
-        position: 'absolute',
-        elevation: 5,
-        shadowColor: '#333333',
-        shadowOffset: {width: 0, height: -3},
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-      }
+    screenOptions={({ route, navigation }) => {
+        const state = navigation.getState();
+        const currentTab = state.routes[state.index];
+        const nestedState = currentTab.state;
+        const currentNestedRoute = nestedState?.routes?.[nestedState.index];
+
+        const isViewingIndividualContent = currentTab.name === 'ChildEducation' && currentNestedRoute?.name === 'content' &&
+        currentNestedRoute?.params?.isModal === true;
+
+        return {
+        headerShown: true,
+        headerLeft: () => <HeaderLogo/>,
+        headerTitle: '',
+        headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
+        headerTitleAlign: 'left',
+        headerTransparent: !isViewingIndividualContent,
+        tabBarActiveTintColor: '#875B51',
+        tabBarInactiveTintColor: '#333333',
+        tabBarStyle: {
+            backgroundColor: '#FFFDF6',
+            borderTopWidth: 0,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            height: 68,
+            position: 'absolute',
+            elevation: 5,
+            shadowColor: '#333333',
+            shadowOffset: {width: 0, height: -3},
+            shadowOpacity: 0.1,
+            shadowRadius: 5,
+        }
+    }
     }}
   >
     <Tab.Screen
-      name="Education"
-      component={EducationStack}
+      name="ChildEducation"
+      component={ChildEducationStack}
       options={{
         title: 'Library',
         tabBarIcon: ({ color, size }) => (
