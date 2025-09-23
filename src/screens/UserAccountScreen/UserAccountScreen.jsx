@@ -34,7 +34,7 @@ const profilePictures = [
 const UserAccountScreen = ({ navigation }) => {
   // Translation hook
   const { t, translateAndCache, currentLanguage } = useTranslation();
-  
+
   // State to force re-render on language change
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -43,6 +43,7 @@ const UserAccountScreen = ({ navigation }) => {
     'Account Settings',
     'User Name',
     'Change Profile Picture',
+    'Switch Profile',
     'Personal Information',
     'First Name',
     'Last Name',
@@ -121,19 +122,23 @@ const UserAccountScreen = ({ navigation }) => {
     'Error validating email'
   ];
 
-  const { 
-    state: { details, clinic, canDisconnect, selectedProfilePicture }, 
-    getUser, 
-    getDentalClinic, 
+const {
+    state: { details, clinic, canDisconnect, selectedProfilePicture, currentAccountType },
+    getUser,
+    getDentalClinic,
     checkCanDisconnect,
     setProfilePicture,
     updateUser,
     changePassword,
-    updateClinic
+    updateClinic,
+    setCurrentAccount, // ADDED
   } = useContext(UserContext);
+
   const { signout } = useContext(AuthContext);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false); // For profile picture selection
+  const [showProfileSwitchModal, setShowProfileSwitchModal] = useState(false); // For profile switching
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -157,10 +162,34 @@ const UserAccountScreen = ({ navigation }) => {
     confirmPassword: ''
   });
 
+  // Instagram-style profiles for switching
+  const [profiles] = useState([
+    {
+      id: 'current',
+      name: `${details.firstname && details.lastname ? `${details.firstname} ${details.lastname}` : 'Your Account'}`,
+      username: details.email || 'user@email.com',
+      profilePicture: selectedProfilePicture,
+      isCurrentUser: true
+    },
+    {
+      id: 'sarah',
+      name: 'Sarah M',
+      username: 'sarah.m@email.com',
+      profilePicture: 2,
+      isCurrentUser: false
+    },
+    {
+      id: 'adam',
+      name: 'Adam M', 
+      username: 'adam.m@email.com',
+      profilePicture: 5,
+      isCurrentUser: false
+    }
+  ]);
+
   useEffect(() => {
     // Force re-render when language changes
     setRefreshKey(prev => prev + 1);
-    
     // Translate texts when language changes
     if (currentLanguage !== 'en') {
       translateAndCache(textsToTranslate);
@@ -310,23 +339,18 @@ const UserAccountScreen = ({ navigation }) => {
   // Helper functions for password validation
   const getPasswordValidationErrors = (password) => {
     const errors = [];
-    
     if (password.length > 0 && password.length < 8) {
       errors.push(t('Password must be at least 8 characters'));
     }
-    
     if (password.length > 0 && password === password.toLowerCase()) {
       errors.push(t('Must contain at least one capital letter'));
     }
-    
     if (password.length > 0 && !/\d/.test(password)) {
       errors.push(t('Must contain at least one number'));
     }
-    
     if (password.length > 0 && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)) {
       errors.push(t('Must contain at least one special character'));
     }
-    
     return errors;
   };
 
@@ -355,27 +379,27 @@ const UserAccountScreen = ({ navigation }) => {
       Alert.alert(t('Error'), t('Please enter your email address.'));
       return;
     }
-    
+
     if (emailStatus === 'invalid_format') {
       Alert.alert(t('Error'), t('Please enter a valid email address.'));
       return;
     }
-    
+
     if (emailStatus === 'exists') {
       Alert.alert(t('Error'), t('Email already exists. Please choose a different email.'));
       return;
     }
-    
+
     if (emailStatus === 'invalid') {
       Alert.alert(t('Error'), t('Error validating email. Please try again.'));
       return;
     }
-    
+
     if (emailStatus !== 'valid' && emailStatus !== null) {
       Alert.alert(t('Error'), t('Please wait for email validation to complete.'));
       return;
     }
-    
+
     setShowUpdateModal(false);
     setShowConfirmModal(true);
   };
@@ -393,13 +417,10 @@ const UserAccountScreen = ({ navigation }) => {
 
   const handleConfirmSave = async () => {
     setShowConfirmModal(false);
-    
     console.log('Saving form data:', formData);
-    
     try {
       const result = await updateUser(formData);
       console.log('Update result:', result);
-      
       if (result.success) {
         Alert.alert(
           'Success',
@@ -456,37 +477,37 @@ const UserAccountScreen = ({ navigation }) => {
       Alert.alert(t('Error'), t('Please enter your current password.'));
       return;
     }
-    
+
     if (passwordData.newPassword.trim() === '') {
       Alert.alert(t('Error'), t('Please enter a new password.'));
       return;
     }
-    
+
     if (passwordData.newPassword.length < 8) {
       Alert.alert(t('Error'), t('Password must be at least 8 characters long.'));
       return;
     }
-    
+
     if (passwordData.newPassword === passwordData.newPassword.toLowerCase()) {
       Alert.alert(t('Error'), t('Password must contain at least one capital letter.'));
       return;
     }
-    
+
     if (!/\d/.test(passwordData.newPassword)) {
       Alert.alert(t('Error'), t('Password must contain at least one number.'));
       return;
     }
-    
+
     if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(passwordData.newPassword)) {
       Alert.alert(t('Error'), t('Password must contain at least one special character.'));
       return;
     }
-    
+
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       Alert.alert(t('Error'), t('New passwords do not match.'));
       return;
     }
-    
+
     setShowPasswordModal(false);
     setShowPasswordConfirmModal(true);
   };
@@ -502,10 +523,8 @@ const UserAccountScreen = ({ navigation }) => {
 
   const handlePasswordConfirmSave = async () => {
     setShowPasswordConfirmModal(false);
-    
     try {
       const result = await changePassword(passwordData.currentPassword, passwordData.newPassword);
-      
       if (result.success) {
         Alert.alert(
           'Success',
@@ -550,12 +569,12 @@ const UserAccountScreen = ({ navigation }) => {
       Alert.alert(t('Error'), t('Please enter a clinic code.'));
       return;
     }
-    
+
     if (clinicCodeStatus !== 'valid') {
       Alert.alert(t('Error'), t('Please enter a valid clinic code.'));
       return;
     }
-    
+
     setShowClinicModal(false);
     setShowClinicConfirmModal(true);
   };
@@ -569,10 +588,8 @@ const UserAccountScreen = ({ navigation }) => {
 
   const handleClinicConfirmSave = async () => {
     setShowClinicConfirmModal(false);
-    
     try {
       const result = await updateClinic(clinicInfo.id);
-      
       if (result.success) {
         setShowClinicSuccessModal(true);
         // Reset clinic data
@@ -607,14 +624,57 @@ const UserAccountScreen = ({ navigation }) => {
     setShowClinicSuccessModal(false);
   };
 
-  const handleChangeProfilePicture = () => {
+const handleChangeProfilePicture = () => {
     setShowProfileModal(true);
   };
 
-  const handleProfilePictureSelect = (pictureIndex) => {
+  const handleSwitchProfiles = () => {
+    setShowProfileSwitchModal(true);
+  };
+
+ const handleProfilePictureSelect = (pictureIndex) => {
     setProfilePicture(pictureIndex);
     setShowProfileModal(false);
     console.log(`Profile picture ${pictureIndex + 1} selected`);
+  };
+
+  // Instagram-style profile switching handler
+  const handleProfileSwitch = (profileId) => {
+    if (profileId === 'current') {
+      setShowProfileSwitchModal(false);
+      return;
+    }
+    
+    const selectedProfile = profiles.find(p => p.id === profileId);
+    
+    Alert.alert(
+      'Switch Profile',
+      `Switch to ${selectedProfile?.name}?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Switch',
+          onPress: async () => {
+            setShowProfileSwitchModal(false);
+            
+            // Update the current account in context
+            await setCurrentAccount(profileId, selectedProfile);
+            
+            // Navigate to child flow for Sarah and Adam
+            if (profileId === 'sarah' || profileId === 'adam') {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'childFlow' }],
+              });
+            }
+            // Current user is already in mainFlow, so no navigation needed
+          }
+        }
+      ]
+    );
   };
 
   const handleDisconnectFromParent = () => {
@@ -661,8 +721,8 @@ const UserAccountScreen = ({ navigation }) => {
         <View style={styles.profilePictureContainer}>
           <View style={styles.profilePicture}>
             {selectedProfilePicture !== null ? (
-              <Image 
-                source={profilePictures[selectedProfilePicture]} 
+              <Image
+                source={profilePictures[selectedProfilePicture]}
                 style={styles.profileImage}
               />
             ) : (
@@ -676,11 +736,17 @@ const UserAccountScreen = ({ navigation }) => {
               ? `${details.firstname} ${details.lastname}`
               : t('User Name')}
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.changeProfileButton}
             onPress={handleChangeProfilePicture}
           >
             <Text style={styles.changeProfileText}>{t('Change Profile Picture')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.changeProfileButton}
+            onPress={handleSwitchProfiles}
+          >
+            <Text style={styles.switchProfileText}>{t('Switch Profile')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -692,59 +758,49 @@ const UserAccountScreen = ({ navigation }) => {
               <Ionicons name="person-outline" size={24} color="#516287" />
               <Text style={styles.cardTitle}>{t('Personal Information')}</Text>
             </View>
-            
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('First Name')}</Text>
               <Text style={styles.infoValue}>
                 {details.firstname || t('Not specified')}
               </Text>
             </View>
-            
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Last Name')}</Text>
               <Text style={styles.infoValue}>
                 {details.lastname || t('Not specified')}
               </Text>
             </View>
-            
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Date of Birth')}</Text>
               <Text style={styles.infoValue}>
                 {formatDate(details.dob)}
               </Text>
             </View>
-            
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Email')}</Text>
               <Text style={styles.infoValue}>
                 {details.email || t('Not specified')}
               </Text>
             </View>
-            
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Address')}</Text>
               <Text style={styles.infoValue}>
                 {details.address || t('None')}
               </Text>
             </View>
-
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Emergency Contact Name')}</Text>
               <Text style={styles.infoValue}>
                 {details.emergencyContactName || t('None')}
               </Text>
             </View>
-
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Emergency Contact Phone')}</Text>
               <Text style={styles.infoValue}>
                 {details.emergencyContactPhone || t('None')}
               </Text>
             </View>
-            
           </View>
-
-          
 
           {/* Medical Information Card */}
           <View style={styles.infoCard}>
@@ -752,21 +808,18 @@ const UserAccountScreen = ({ navigation }) => {
               <Ionicons name="medical-outline" size={24} color="#516287" />
               <Text style={styles.cardTitle}>{t('Medical Information')}</Text>
             </View>
-            
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('NHI Number')}</Text>
               <Text style={styles.infoValue}>
                 {details.nhi || t('Not specified')}
               </Text>
             </View>
-            
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Dental Clinic')}</Text>
               <Text style={styles.infoValue}>
                 {clinic?.name || t('Not specified')}
               </Text>
             </View>
-            
             {clinic?.address && (
               <View style={styles.infoRow}>
                 <Text style={styles.infoLabel}>{t('Clinic Address')}</Text>
@@ -775,7 +828,6 @@ const UserAccountScreen = ({ navigation }) => {
                 </Text>
               </View>
             )}
-            
             {clinic?.phone && (
               <View style={styles.infoRow}>
                 <Text style={styles.infoLabel}>{t('Clinic Phone')}</Text>
@@ -792,8 +844,7 @@ const UserAccountScreen = ({ navigation }) => {
               <Ionicons name="settings-outline" size={24} color="#516287" />
               <Text style={styles.cardTitle}>{t('Account Settings')}</Text>
             </View>
-            
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.actionButton}
               onPress={handleUpdateDetails}
             >
@@ -801,8 +852,7 @@ const UserAccountScreen = ({ navigation }) => {
               <Text style={styles.actionButtonText}>{t('Update Your Details')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
-            
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.actionButton}
               onPress={handleChangeClinic}
             >
@@ -810,8 +860,7 @@ const UserAccountScreen = ({ navigation }) => {
               <Text style={styles.actionButtonText}>{t('Change Clinic')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
-            
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.actionButton}
               onPress={handleChangePassword}
             >
@@ -819,9 +868,8 @@ const UserAccountScreen = ({ navigation }) => {
               <Text style={styles.actionButtonText}>{t('Change Your Password')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
-
             {canDisconnect && (
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.actionButton, styles.disconnectButton]}
                 onPress={handleDisconnectFromParent}
               >
@@ -837,7 +885,7 @@ const UserAccountScreen = ({ navigation }) => {
 
         {/* Sign Out Button */}
         <View style={styles.signOutSection}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.signOutButton}
             onPress={handleSignOut}
           >
@@ -889,6 +937,106 @@ const UserAccountScreen = ({ navigation }) => {
         </View>
       </Modal>
 
+      {/* Instagram-Style Profile Switch Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showProfileSwitchModal}
+        onRequestClose={() => setShowProfileSwitchModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.profileSwitchModal}>
+            {/* Modal Header with Close Button */}
+            <View style={styles.modalHeader}>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setShowProfileSwitchModal(false)}
+              >
+                <Ionicons name="close" size={24} color="#333333" />
+              </TouchableOpacity>
+            </View>
+            
+            {/* Current Account Section */}
+            <View style={styles.currentAccountSection}>
+              <TouchableOpacity 
+                style={styles.currentAccountRow}
+                onPress={() => handleProfileSwitch('current')}
+              >
+                <View style={styles.currentAccountInfo}>
+                  <View style={styles.currentAccountAvatar}>
+                    {selectedProfilePicture !== null ? (
+                      <Image 
+                        source={profilePictures[selectedProfilePicture]} 
+                        style={styles.currentAccountImage} 
+                      />
+                    ) : (
+                      <Text style={styles.currentAccountInitials}>
+                        {getInitials(details.firstname, details.lastname)}
+                      </Text>
+                    )}
+                  </View>
+                  <View style={styles.currentAccountText}>
+                    <Text style={styles.currentAccountName}>
+                      {details.firstname && details.lastname ? 
+                        `${details.firstname} ${details.lastname}` : 
+                        'Your Account'
+                      }
+                    </Text>
+                    <Text style={styles.currentAccountUsername}>
+                      {details.email || 'user@email.com'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.checkmarkContainer}>
+                  <Ionicons name="checkmark-circle" size={24} color="#3797F0" />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* Other Accounts Section */}
+            <View style={styles.otherAccountsSection}>
+              {profiles.filter(profile => !profile.isCurrentUser).map((profile) => (
+                <TouchableOpacity
+                  key={profile.id}
+                  style={styles.accountRow}
+                  onPress={() => handleProfileSwitch(profile.id)}
+                >
+                  <View style={styles.accountInfo}>
+                    <View style={styles.accountAvatar}>
+                      <Image 
+                        source={profilePictures[profile.profilePicture]} 
+                        style={styles.accountImage} 
+                      />
+                    </View>
+                    <View style={styles.accountText}>
+                      <Text style={styles.accountName}>{profile.name}</Text>
+                      <Text style={styles.accountUsername}>{profile.username}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            {/* Add Account Section */}
+            <View style={styles.addAccountSection}>
+              <TouchableOpacity 
+                style={styles.addAccountRow}
+                onPress={() => {
+                  setShowProfileSwitchModal(false);
+                  // Handle add account logic
+                  Alert.alert('Add Account', 'Add account functionality would go here');
+                }}
+              >
+                <View style={styles.addAccountIcon}>
+                  <Ionicons name="add" size={24} color="#000" />
+                </View>
+                <Text style={styles.addAccountText}>Add account</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Update Details Modal */}
       <Modal
         animationType="slide"
@@ -900,14 +1048,13 @@ const UserAccountScreen = ({ navigation }) => {
           <View style={styles.updateModalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{t('Update Your Details')}</Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.closeButton}
                 onPress={handleUpdateCancel}
               >
                 <Ionicons name="close" size={24} color="#333333" />
               </TouchableOpacity>
             </View>
-            
             <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('Email')}</Text>
@@ -926,7 +1073,6 @@ const UserAccountScreen = ({ navigation }) => {
                   <Text style={styles.successText}>✓ {t('Email is available')}</Text>
                 )}
               </View>
-
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('Address')}</Text>
                 <TextInput
@@ -938,7 +1084,6 @@ const UserAccountScreen = ({ navigation }) => {
                   numberOfLines={3}
                 />
               </View>
-
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('Emergency Contact Name')}</Text>
                 <TextInput
@@ -948,7 +1093,6 @@ const UserAccountScreen = ({ navigation }) => {
                   placeholder={t('Enter emergency contact name')}
                 />
               </View>
-
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('Emergency Contact Phone')}</Text>
                 <TextInput
@@ -960,16 +1104,14 @@ const UserAccountScreen = ({ navigation }) => {
                 />
               </View>
             </ScrollView>
-
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={handleUpdateCancel}
               >
                 <Text style={styles.cancelButtonText}>{t('Cancel')}</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.submitButton]}
                 onPress={handleUpdateSubmit}
               >
@@ -996,16 +1138,14 @@ const UserAccountScreen = ({ navigation }) => {
                 {t('Are you sure you want to save these changes to your profile?')}
               </Text>
             </View>
-
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.discardButton]}
                 onPress={handleConfirmDiscard}
               >
                 <Text style={styles.discardButtonText}>{t('Discard Changes')}</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.saveButton]}
                 onPress={handleConfirmSave}
               >
@@ -1027,14 +1167,13 @@ const UserAccountScreen = ({ navigation }) => {
           <View style={styles.updateModalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{t('Change Password')}</Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.closeButton}
                 onPress={handlePasswordCancel}
               >
                 <Ionicons name="close" size={24} color="#333333" />
               </TouchableOpacity>
             </View>
-            
             <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('Current Password')}</Text>
@@ -1046,7 +1185,6 @@ const UserAccountScreen = ({ navigation }) => {
                   secureTextEntry={true}
                 />
               </View>
-
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('New Password')}</Text>
                 <TextInput
@@ -1063,7 +1201,6 @@ const UserAccountScreen = ({ navigation }) => {
                   <Text style={styles.successText}>✓ {t('Password meets all requirements')}</Text>
                 )}
               </View>
-
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('Confirm New Password')}</Text>
                 <TextInput
@@ -1081,16 +1218,14 @@ const UserAccountScreen = ({ navigation }) => {
                 )}
               </View>
             </ScrollView>
-
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={handlePasswordCancel}
               >
                 <Text style={styles.cancelButtonText}>{t('Cancel')}</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.submitButton]}
                 onPress={handlePasswordSubmit}
               >
@@ -1117,16 +1252,14 @@ const UserAccountScreen = ({ navigation }) => {
                 {t('Are you sure you want to change your password? You will need to use the new password for future logins.')}
               </Text>
             </View>
-
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.discardButton]}
                 onPress={handlePasswordConfirmDiscard}
               >
                 <Text style={styles.discardButtonText}>Cancel</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.saveButton]}
                 onPress={handlePasswordConfirmSave}
               >
@@ -1148,14 +1281,13 @@ const UserAccountScreen = ({ navigation }) => {
           <View style={styles.updateModalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{t('Change Clinic')}</Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.closeButton}
                 onPress={handleClinicCancel}
               >
                 <Ionicons name="close" size={24} color="#333333" />
               </TouchableOpacity>
             </View>
-            
             <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('Clinic Code')}</Text>
@@ -1183,16 +1315,14 @@ const UserAccountScreen = ({ navigation }) => {
                 )}
               </View>
             </ScrollView>
-
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={handleClinicCancel}
               >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.submitButton]}
                 onPress={handleClinicSubmit}
               >
@@ -1227,16 +1357,14 @@ const UserAccountScreen = ({ navigation }) => {
                 </View>
               )}
             </View>
-
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.discardButton]}
                 onPress={handleClinicConfirmDiscard}
               >
                 <Text style={styles.discardButtonText}>{t('Cancel')}</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.modalButton, styles.saveButton]}
                 onPress={handleClinicConfirmSave}
               >
@@ -1257,15 +1385,14 @@ const UserAccountScreen = ({ navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.successModalContent}>
             <View style={styles.successHeader}>
-              <Image 
-                source={require('../../../assets/confirm_toothmates.png')} 
+              <Image
+                source={require('../../../assets/confirm_toothmates.png')}
                 style={styles.successImage}
                 resizeMode="contain"
               />
               <Text style={styles.successTitle}>{t('Your Clinic Request has been Accepted!')}</Text>
             </View>
-
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.successCloseButton}
               onPress={handleClinicSuccessClose}
             >

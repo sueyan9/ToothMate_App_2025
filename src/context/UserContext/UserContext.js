@@ -20,7 +20,20 @@ const UserReducer = (state, action) => {
     case 'get_all_images':
       return { ...state, images: payload };
     case 'set_profile_picture':
-      return {...state, selectedProfilePicture: payload};
+      return { ...state, selectedProfilePicture: payload };
+    // NEW: Add profile switching cases
+    case 'set_current_account':
+      return {
+        ...state,
+        currentAccountType: payload.accountType,
+        currentAccountData: payload.accountData,
+      };
+    case 'load_current_account':
+      return {
+        ...state,
+        currentAccountType: payload.accountType,
+        currentAccountData: payload.accountData,
+      };
     default:
       return state;
   }
@@ -62,7 +75,7 @@ const getUser = dispatch => {
     const id = await AsyncStorage.getItem('id');
     try {
       const response = await axiosApi.get(`/user/${id}`);
-      
+
       // Always add the hardcoded fields when getting user data
       const userDataWithHardcodedFields = {
         ...response.data,
@@ -70,7 +83,7 @@ const getUser = dispatch => {
         emergencyContactName: await getStoredField('emergencyContactName') || '',
         emergencyContactPhone: await getStoredField('emergencyContactPhone') || ''
       };
-      
+
       dispatch({ type: 'get_user', payload: userDataWithHardcodedFields });
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -146,7 +159,7 @@ const setProfilePicture = dispatch => {
   return async (pictureIndex) => {
     try {
       await AsyncStorage.setItem('selectedProfilePicture', pictureIndex.toString());
-      dispatch({type: 'set_profile_picture', payload: pictureIndex});
+      dispatch({ type: 'set_profile_picture', payload: pictureIndex });
     } catch (error) {
       console.error("Error saving profile picture: ", error);
     }
@@ -158,7 +171,7 @@ const getProfilePicture = dispatch => {
     try {
       const savedPicture = await AsyncStorage.getItem('selectedProfilePicture');
       if (savedPicture !== null) {
-        dispatch({type: 'set_profile_picture', payload: parseInt(savedPicture)});
+        dispatch({ type: 'set_profile_picture', payload: parseInt(savedPicture) });
       }
     } catch (error) {
       console.error('Error loading profile picture: ', error);
@@ -166,26 +179,82 @@ const getProfilePicture = dispatch => {
   }
 }
 
+// NEW: Profile switching functions
+const setCurrentAccount = dispatch => {
+  return async (accountType, accountData) => {
+    try {
+      // Store the current account in AsyncStorage for persistence
+      await AsyncStorage.setItem('currentAccountType', accountType);
+      await AsyncStorage.setItem('currentAccountData', JSON.stringify(accountData));
+
+      dispatch({
+        type: 'set_current_account',
+        payload: { accountType, accountData }
+      });
+    } catch (error) {
+      console.error('Error setting current account:', error);
+    }
+  };
+};
+
+const loadCurrentAccount = dispatch => {
+  return async () => {
+    try {
+      const savedAccountType = await AsyncStorage.getItem('currentAccountType');
+      const savedAccountData = await AsyncStorage.getItem('currentAccountData');
+
+      if (savedAccountType && savedAccountData) {
+        dispatch({
+          type: 'load_current_account',
+          payload: {
+            accountType: savedAccountType,
+            accountData: JSON.parse(savedAccountData)
+          }
+        });
+      } else {
+        // Default to main account if nothing is saved
+        dispatch({
+          type: 'load_current_account',
+          payload: {
+            accountType: 'current',
+            accountData: null
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error loading current account:', error);
+      // Default to main account on error
+      dispatch({
+        type: 'load_current_account',
+        payload: {
+          accountType: 'current',
+          accountData: null
+        }
+      });
+    }
+  };
+};
+
 const updateUser = dispatch => {
   return async (formData) => {
     try {
       const id = await AsyncStorage.getItem('id');
       console.log('Updating user with ID:', id);
-      
+
       // Get current user data to compare emails
       const currentUserResponse = await axiosApi.get(`/user/${id}`);
       const currentEmail = currentUserResponse.data.email;
       const newEmail = formData.email.trim().toLowerCase();
-      
+
       // Basic email format validation
       if (!formData.email.includes('@') || !formData.email.includes('.')) {
         return { success: false, error: 'Please enter a valid email address.' };
       }
-      
+
       // Only check if email exists if the user is changing their email
       if (currentEmail.toLowerCase() !== newEmail) {
         console.log('Email is being changed, checking if new email exists...');
-        
+
         // Check if the new email already exists
         try {
           const emailCheckResponse = await axiosApi.get(`/checkEmail/${newEmail}`);
@@ -200,24 +269,24 @@ const updateUser = dispatch => {
       } else {
         console.log('Email unchanged, skipping email validation');
       }
-      
+
       // Only send email to database
       const updateData = { email: formData.email };
       console.log('Update data (email only):', updateData);
-      
+
       const response = await axiosApi.put(`/updateUser/${id}`, updateData);
       console.log('Update response:', response.data);
-      
+
       if (response.data.error === "") {
         // Store the hardcoded fields in AsyncStorage for persistence
         await storeField('userAddress', formData.address || '');
         await storeField('emergencyContactName', formData.emergencyContactName || '');
         await storeField('emergencyContactPhone', formData.emergencyContactPhone || '');
-        
+
         // Get current user data
         const userResponse = await axiosApi.get(`/user/${id}`);
         console.log('Fetched user data:', userResponse.data);
-        
+
         // Merge with the stored hardcoded fields
         const updatedUserData = {
           ...userResponse.data,
@@ -225,7 +294,7 @@ const updateUser = dispatch => {
           emergencyContactName: formData.emergencyContactName || '',
           emergencyContactPhone: formData.emergencyContactPhone || ''
         };
-        
+
         console.log('Final user data with hardcoded fields:', updatedUserData);
         dispatch({ type: 'get_user', payload: updatedUserData });
         return { success: true };
@@ -243,22 +312,22 @@ const changePassword = dispatch => {
   return async (currentPassword, newPassword) => {
     try {
       const id = await AsyncStorage.getItem('id');
-      
+
       const response = await axiosApi.put(`/changePassword/${id}`, {
         oldPassword: currentPassword,
         newPassword: newPassword
       });
-      
+
       // If no error is thrown, the password was changed successfully
       return { success: true };
     } catch (error) {
       console.error('Error changing password:', error);
-      
+
       // Check if it's a 422 error (invalid current password)
       if (error.response && error.response.status === 422) {
         return { success: false, error: error.response.data.error || 'Invalid current password' };
       }
-      
+
       return { success: false, error: 'Failed to change password. Please try again.' };
     }
   };
@@ -268,18 +337,18 @@ const updateClinic = dispatch => {
   return async (clinicId) => {
     try {
       const id = await AsyncStorage.getItem('id');
-      
+
       const response = await axiosApi.put(`/updateUserClinic/${id}`, {
         clinic: clinicId
       });
-      
+
       if (response.data.error === "") {
         // Refresh clinic data after successful update
         const userClinic = await axiosApi.get(`/getUserClinic/${id}`);
         const clinicID = userClinic.data.clinic;
         const clinicResponse = await axiosApi.get(`/getDentalClinic/${clinicID}`);
         dispatch({ type: 'get_clinic', payload: clinicResponse.data.clinic });
-        
+
         return { success: true };
       } else {
         return { success: false, error: response.data.error };
@@ -292,27 +361,33 @@ const updateClinic = dispatch => {
 };
 
 export const { Provider, Context } = createDataContext(
-    UserReducer,
-    {
-      getUserDOB,
-      getNhiAndAppointments,
-      getDentalClinic,
-      getUser,
-      checkCanDisconnect,
-      disconnectChild,
-      getAllImages,
-      setProfilePicture,
-      getProfilePicture,
-      updateUser,
-      changePassword,
-      updateClinic,
-    },
-    {
-      appointments: [],
-      clinic: null,
-      details: {},
-      canDisconnect: null,
-      images: [],
-      selectedProfilePicture: null,
-    },
+  UserReducer,
+  {
+    getUserDOB,
+    getNhiAndAppointments,
+    getDentalClinic,
+    getUser,
+    checkCanDisconnect,
+    disconnectChild,
+    getAllImages,
+    setProfilePicture,
+    getProfilePicture,
+    updateUser,
+    changePassword,
+    updateClinic,
+    // NEW: Add profile switching actions
+    setCurrentAccount,
+    loadCurrentAccount,
+  },
+  {
+    appointments: [],
+    clinic: null,
+    details: {},
+    canDisconnect: null,
+    images: [],
+    selectedProfilePicture: null,
+    // NEW: Add current account state
+    currentAccountType: 'current', // 'current' | 'sarah' | 'adam'
+    currentAccountData: null,
+  },
 );

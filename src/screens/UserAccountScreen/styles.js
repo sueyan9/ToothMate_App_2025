@@ -18,7 +18,7 @@ export default StyleSheet.create({
     fontSize: 16,
     color: '#333333',
   },
-  
+
   // Header
   header: {
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
@@ -30,7 +30,7 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     color: '#333333',
   },
-  
+
   // Profile Picture Section
   profilePictureContainer: {
     alignItems: 'center',
@@ -61,7 +61,7 @@ export default StyleSheet.create({
     color: '#333333',
     textAlign: 'center',
   },
-  
+
   // Information Section
   infoSection: {
     marginBottom: 32,
@@ -91,7 +91,7 @@ export default StyleSheet.create({
     color: '#333333',
     marginLeft: 12,
   },
-  
+
   // Information Rows
   infoRow: {
     marginBottom: 12,
@@ -108,7 +108,7 @@ export default StyleSheet.create({
     fontWeight: '400',
     lineHeight: 22,
   },
-  
+
   // Action Buttons
   actionButton: {
     flexDirection: 'row',
@@ -134,7 +134,7 @@ export default StyleSheet.create({
   disconnectText: {
     color: '#DC3545',
   },
-  
+
   // Sign Out Section
   signOutSection: {
     paddingBottom: 120,
@@ -191,6 +191,13 @@ export default StyleSheet.create({
     fontWeight: '500',
   },
 
+  switchProfileText: {
+    fontSize: 14,
+    color: '#516287',
+    marginLeft: 6,
+    fontWeight: '500',
+  },
+
   // Modal Styles
   modalOverlay: {
     flex: 1,
@@ -220,7 +227,9 @@ export default StyleSheet.create({
     color: '#333333',
   },
   closeButton: {
-    padding: 4,
+    padding: 6,
+    left: 3,
+    top: 4,
   },
   profileGrid: {
     flexDirection: 'row',
@@ -256,7 +265,201 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: 40,
   },
-  
+
+  // Instagram-Style Profile Switch Modal Styles
+  profileSwitchModal: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 20,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    maxHeight: '80%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+
+  modalHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#C7C7CC',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginTop: 8,
+    marginBottom: 20,
+  },
+
+  currentAccountSection: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EFEFEF',
+  },
+
+  currentAccountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+
+  currentAccountInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+
+  currentAccountAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#F0F0F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+    borderWidth: 2,
+    borderColor: '#3797F0',
+  },
+
+  currentAccountImage: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+  },
+
+  currentAccountInitials: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#516287',
+  },
+
+  currentAccountText: {
+    flex: 1,
+  },
+
+  currentAccountName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 2,
+  },
+
+  currentAccountUsername: {
+    fontSize: 14,
+    color: '#8E8E93',
+  },
+
+  checkmarkContainer: {
+    marginLeft: 12,
+  },
+
+  otherAccountsSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+
+  accountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+
+  accountInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+
+  accountAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#F0F0F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+
+  accountImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+  },
+
+  accountText: {
+    flex: 1,
+  },
+
+  accountName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000',
+    marginBottom: 2,
+  },
+
+  accountUsername: {
+    fontSize: 14,
+    color: '#8E8E93',
+  },
+
+  addAccountSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#EFEFEF',
+  },
+
+  addAccountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+
+  addAccountIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#F0F0F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+    borderWidth: 2,
+    borderColor: '#DBDBDB',
+    borderStyle: 'dashed',
+  },
+
+  addAccountText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000',
+  },
+
+  bottomSection: {
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#EFEFEF',
+  },
+
+  bottomButton: {
+    paddingVertical: 16,
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+
+  bottomButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#3797F0',
+  },
+
   // Update Details Modal
   updateModalContent: {
     backgroundColor: '#FFFDF6',
@@ -323,7 +526,7 @@ export default StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  
+
   // Confirmation Modal
   confirmModalContent: {
     backgroundColor: '#FFFDF6',
@@ -367,7 +570,7 @@ export default StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  
+
   // Input validation styles
   validInput: {
     borderColor: '#28A745',
@@ -389,7 +592,7 @@ export default StyleSheet.create({
     marginTop: 4,
     marginLeft: 4,
   },
-  
+
   // Clinic update specific styles
   clinicInfoContainer: {
     marginTop: 8,
@@ -430,7 +633,7 @@ export default StyleSheet.create({
     textAlign: 'center',
     marginTop: 4,
   },
-  
+
   // Success modal styles
   successModalContent: {
     backgroundColor: '#FFFDF6',

@@ -1,11 +1,9 @@
-import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // import all screens
 import LanguageSelector from './src/components/LanguageSelector';
-import AccountScreen from './src/screens/AccountScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 import AppointmentScreen from './src/screens/AppointmentScreen';
 import ChildAccountScreen from './src/screens/ChildAccountScreen';
@@ -90,12 +88,12 @@ const ClinicStack = () => (
     </Stack.Navigator>
 );
 
-// Child clinic flow
+// Child clinic flow - FIXED: Changed initialRouteName to "Chart"
 const ChildClinicStack = () => (
-    <Stack.Navigator initialRouteName="list">
-        <Stack.Screen name="list" component={ClinicScreen} options={{ title: '' }}/>
-        <Stack.Screen name="chart" component={DentalChartScreen} options={{ title: '' }}/>
-        <Stack.Screen name="content" component={AppointmentScreen} options={{ title: '' }}/>
+    <Stack.Navigator initialRouteName="Chart">
+        <Stack.Screen name="Chart" component={DentalChartScreen} options={{ title: '' }}/>
+        <Stack.Screen name="Education" component={EducationScreen} options={{ title: '' }}/>
+        <Stack.Screen name="Profile" component={UserAccountScreen} options={{ title: '' }}/>
     </Stack.Navigator>
 );
 
@@ -165,7 +163,7 @@ const MainFlow = () => (
             }}
         />
         <Tab.Screen
-            name="DentalChart"
+            name="Chart"
             component={DentalChartScreen}
             options={{
                 title: 'Dental Chart',
@@ -194,34 +192,62 @@ const MainFlow = () => (
     </Tab.Navigator>
 );
 
-// Child flow with bottom tab navigation
+// Child flow with bottom tab navigation - FIXED: Updated tab configuration
 const ChildFlow = () => (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
-        <Tab.Screen
-            name="AccountFlow"
-            component={ChildAccountStack}
-            options={{
-                title: 'Home',
-                tabBarIcon: ({color, size}) => <Entypo name="home" size={size} color={color} />
-            }}
-        />
-        <Tab.Screen
-            name="Education"
-            component={EducationStack}
-            options={{
-                title: 'Library',
-                tabBarIcon: ({color, size}) => <Entypo name="open-book" size={size} color={color} />
-            }}
-        />
-        <Tab.Screen
-            name="Clinic"
-            component={ChildClinicStack}
-            options={{
-                title: 'Clinic',
-                tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="toothbrush-paste" size={size} color={color} />
-            }}
-        />
-    </Tab.Navigator>
+  <Tab.Navigator 
+    screenOptions={{ 
+      headerShown: false,
+      tabBarActiveTintColor: '#875B51',
+      tabBarInactiveTintColor: '#333333',
+      tabBarStyle: {
+        backgroundColor: '#FFFDF6',
+        borderTopWidth: 0,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        height: 68,
+        position: 'absolute',
+        elevation: 5,
+        shadowColor: '#333333',
+        shadowOffset: {width: 0, height: -3},
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+      }
+    }}
+  >
+    <Tab.Screen
+      name="Education"
+      component={EducationStack}
+      options={{
+        title: 'Library',
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="education" color={color} size={size} />
+        ),
+      }}
+    />
+
+    <Tab.Screen
+      name="DentalChart"
+      component={DentalChartScreen}
+      options={{
+        title: 'Dental Chart',
+        tabBarIcon: ({ color, size }) => (
+          <ToothIcon color={color} size={size} />
+        ),
+      }}
+    />
+
+    <Tab.Screen
+      name="Account"
+      component={ChildAccountScreen}
+      options={{
+        title: 'Profile',
+        headerRight: () => <LanguageSelector />,
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="profile" color={color} size={size} />
+        ),
+      }}
+    />
+  </Tab.Navigator>
 );
 
 // Main app navigator
