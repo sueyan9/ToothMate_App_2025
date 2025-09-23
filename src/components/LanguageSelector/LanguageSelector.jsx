@@ -9,7 +9,8 @@ const LanguageSelector = () => {
     changeLanguage, 
     getAvailableLanguages, 
     getCurrentLanguageDisplay,
-    LANGUAGE_CODES 
+    LANGUAGE_CODES,
+    t 
   } = useTranslation();
   
   const [modalVisible, setModalVisible] = useState(false);
@@ -33,7 +34,8 @@ const LanguageSelector = () => {
       'English': '🇺🇸',
       'Spanish': '🇪🇸',
       'Chinese': '🇨🇳',
-      'Dutch': '🇳🇱'
+      'Dutch': '🇳🇱',
+      'Maori': '🇳🇿'
     };
     return flags[language] || '🌐';
   };
@@ -65,7 +67,7 @@ const LanguageSelector = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Language</Text>
+            <Text style={styles.modalTitle}>{t('Select Language')}</Text>
             
             {getAvailableLanguages().map((language) => (
               <TouchableOpacity
@@ -92,7 +94,7 @@ const LanguageSelector = () => {
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
             >
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Text style={styles.closeButtonText}>{t('Close')}</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -1,13 +1,16 @@
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useContext, useEffect, useState } from 'react';
 import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Context as EducationContext } from '../../context/EducationContext/EducationContext';
+import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import styles from './styles';
 
 const EducationContentScreen = ({ route }) => {
     
     const {state, getEducationContent, toggleFavourite, syncFavouritesFromStorage} = useContext(EducationContext);
+    const { t } = useTranslation();
     const {educationData} = state;
     const [dataLoaded, setDataLoaded] = useState(false);
     const navigation = useNavigation();
@@ -68,7 +71,7 @@ const EducationContentScreen = ({ route }) => {
     if (!dataLoaded) {
         return (
             <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-                <Text>Loading education content...</Text>
+                <Text>{t('Loading education content...')}</Text>
             </View>
         );
     }
@@ -129,7 +132,7 @@ const EducationContentScreen = ({ route }) => {
 
                             >
                                 <Text style={styles.buttonText}>
-                                    {quizCompleted ? `Try Again (${quizScore}/${totalQuestions})` : 'Take Quiz'}
+                                    {quizCompleted ? `${t('Try Again')} (${quizScore}/${totalQuestions})` : t('Take Quiz')}
                                 </Text>
                             </TouchableOpacity>
                         )}
@@ -142,7 +145,7 @@ const EducationContentScreen = ({ route }) => {
     if (!isFilterView && !individualContent) {
         return (
             <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container} >
-                <Text style={styles.errorText}>{('Content not found')}</Text>
+                <Text style={styles.errorText}>{t('Content not found')}</Text>
             </LinearGradient>
         );
     }
@@ -193,7 +196,7 @@ const EducationContentScreen = ({ route }) => {
                 <View style={styles.headerTextContainer}>
                     <Text style={[styles.titleText]}>{selectedFilter}</Text>
                     <Text style={[styles.itemCountText]}>
-                        {searchedAndFilteredContent.length} item{searchedAndFilteredContent.length !== 1 ? 's' : ''}
+                        {searchedAndFilteredContent.length} {searchedAndFilteredContent.length !== 1 ? t('items') : t('item')}
                     </Text>
                 </View>
             </View>
@@ -202,7 +205,7 @@ const EducationContentScreen = ({ route }) => {
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
-                    placeholder='Search Educational Readings...'
+                    placeholder={t('Search Educational Readings...')}
                     placeholderTextColor={'#C0CCD6'}
                     onPress={clearSearch}
                     onChangeText={searchFunction}
@@ -215,7 +218,7 @@ const EducationContentScreen = ({ route }) => {
                 {searchedAndFilteredContent.length === 0 ? (
                     <View style={styles.emptyContainer}>
                         <Text style={styles.emptyText}>
-                            {searchText ? ('No results found for your search.') : ('No items in this category.')}
+                            {searchText ? t('No results found for your search.') : t('No items in this category.')}
                         </Text>
                     </View>
                 ) : (
