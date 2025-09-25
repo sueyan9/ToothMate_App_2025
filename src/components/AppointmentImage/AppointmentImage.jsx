@@ -8,7 +8,7 @@ import styles from './styles';
  */
 const sniffMime = (b64) => {
     if (!b64) return null;
-    const s = b64.slice(0, 16); // 取前缀判断即可
+    const s = b64.slice(0, 16);
     if (s.startsWith('iVBOR')) return 'image/png';
     if (s.startsWith('/9j/'))   return 'image/jpeg';
     if (s.startsWith('R0lGOD')) return 'image/gif';
