@@ -27,7 +27,6 @@ import {
 
 } from '../../api/appointments';
 import * as WebBrowser from 'expo-web-browser';
-import {openDocument} from '../../utils/openDocument'
 import styles from './styles';
 
 // Import profile pictures
@@ -104,7 +103,7 @@ const UserAccountScreen = ({navigation}) => {
         let cancelled = false;
         (async () => {
             try {
-                // 需要 NHI；getUser() 在 useFocusEffect 里已经触发，这里等 details.nhi 出来再拉
+                // need NHI；getUser() traged in  useFocusEffect
                 if (!details?.nhi) return;
 
                 // 1) Fetch all appointments for this NHI
@@ -152,7 +151,19 @@ const UserAccountScreen = ({navigation}) => {
                     // ===== PDFs  =====
                     const urls = Array.isArray(assets?.pdfUrls) ? assets.pdfUrls : [];
                     const base64s = Array.isArray(assets?.pdfBase64) ? assets.pdfBase64 : [];
-
+                    const structured = Array.isArray(assets?.pdfItems) ? assets.pdfItems : [];
+                    //0) use structure
+                    for (const it of structured) {
+                        if (typeof it?.url === 'string' && it.url) {
+                            pdfs.push({
+                                source: 'url',
+                                value: it.url,
+                                when: it.when ? new Date(it.when).toISOString() : (when ? new Date(when).toISOString() : undefined),
+                                name: it.name || tryInferName(it.url),
+                                category: it.category,
+                            });
+                        }
+                    }
                     // 1) URL
                     for (const u of urls) {
                         if (typeof u === 'string' && u) {
@@ -184,9 +195,9 @@ const UserAccountScreen = ({navigation}) => {
 
                 // Only sort (newest first), do not dedupe images
                 const orderedItems = mergedItems.sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
-                const orderedImages = imagesStrList; // 保留全部
+                const orderedImages = imagesStrList;
 
-// PDFs can still be deduped by (source|value)
+                // PDFs can still be deduped by (source|value)
                 const orderedPdfs = Array.from(new Map(pdfs.map(it => [`${it.source}|${it.value}`, it])).values()).sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
 
                 if (!cancelled) {
@@ -645,6 +656,8 @@ const UserAccountScreen = ({navigation}) => {
                 </View>
             </SafeAreaView>);
     }
+    const accDocs = Array.isArray(pdfItems) ? pdfItems.filter(d => d.category === 'acc') : [];
+    const otherDocs = Array.isArray(pdfItems) ? pdfItems.filter(d => d.category !== 'acc') : [];
 
     return (<SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -826,17 +839,17 @@ const UserAccountScreen = ({navigation}) => {
 
                     {Array.isArray(xrayItems) && xrayItems.length > 0 ? (<FlatList
                             horizontal
-                            data={xrayItems.slice(0, 8)} // 预览前 8 张
+                            data={xrayItems.slice(0, 8)} // review  first  8  images
                             keyExtractor={(_, idx) => String(idx)}
                             showsHorizontalScrollIndicator={false}
                             contentContainerStyle={{paddingVertical: 8, paddingRight: 4}}
                             renderItem={({item}) => (<View style={{marginRight: 12, position: 'relative'}}>
                                     <Image
                                         source={{uri: item.dataUrl}}
-                                        style={styles.xrayThumb /* 确保有 width/height/borderRadius */}
+                                        style={styles.xrayThumb /*  width/height/borderRadius */}
                                         resizeMode="cover"
                                     />
-                                    {/* 右下角时间角标：DD/MM */}
+                                    {/* right bottom corner：DD/MM */}
                                     {item.when ? (<View style={{
                                             position: 'absolute',
                                             right: 4,
@@ -885,7 +898,7 @@ const UserAccountScreen = ({navigation}) => {
                         <Text style={styles.cardTitle}>{t('My Documents')}</Text>
                     </View>
 
-                    {pdfItems?.length ? (pdfItems.map((doc, idx) => {
+                    {otherDocs?.length ? (otherDocs.map((doc, idx) => {
                             const niceTitle = doc.name && doc.name !== 'raw' ? doc.name : `${t('Invoice/Referral')} ${doc.when ? new Date(doc.when).toLocaleDateString('en-NZ') : ''} #${idx + 1}`;
 
                             const pdfParam = doc.source === 'url' ? doc.value : (doc.source === 'dataUrl' ? doc.value                         // 已经是 dataUrl
@@ -903,6 +916,33 @@ const UserAccountScreen = ({navigation}) => {
                         })) : (<Text style={styles.infoValue}>{t('None')}</Text>)}
 
 
+                </View>
+
+                {/* ACC Documents */}
+                <View style={styles.infoCard}>
+                    <View style={styles.cardHeader}>
+                        <Ionicons name="shield-checkmark-outline" size={24} color="#516287"/>
+                        <Text style={styles.cardTitle}>ACC Documents</Text>
+                    </View>
+
+                    {accDocs?.length ? (accDocs.map((doc, idx) => {
+                        const title = doc.name || `ACC Document #${idx + 1}`;
+                        const pdfParam = doc.source === 'url'
+                            ? doc.value
+                            : (doc.source === 'dataUrl' ? doc.value : `data:application/pdf;base64,${doc.value}`);
+
+                        return (
+                            <TouchableOpacity
+                                key={`acc-${idx}`}
+                                style={styles.actionButton}
+                                onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title })}
+                            >
+                                <Ionicons name="document-outline" size={20} color="#516287"/>
+                                <Text style={styles.actionButtonText}>{title}</Text>
+                                <Ionicons name="open-outline" size={20} color="#516287"/>
+                            </TouchableOpacity>
+                        );
+                    })) : (<Text style={styles.infoValue}>{t('None')}</Text>)}
                 </View>
 
 

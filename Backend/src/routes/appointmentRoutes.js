@@ -134,18 +134,39 @@ router.post('/Appointments/:id/images', upload.single('file'), async (req, res, 
   }
 });
 
-// upload PDF
+// upload PDF ( invoice / acc )
 router.post('/Appointments/:id/pdfs', upload.single('file'), async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file' });
     if (!/pdf$/i.test(req.file.mimetype || '')) return res.status(415).json({ error: 'Not a PDF' });
+
     const appt = await Appointment.findById(req.params.id);
     if (!appt) return res.status(404).json({ error: 'Appointment not found' });
-    appt.pdfs.push({ pdf: { data: req.file.buffer, contentType: req.file.mimetype } });
+
+    // get the category from body.category ，default " invoice"
+    const category = (req.body.category || 'invoice').toLowerCase();
+    if (!['invoice', 'acc'].includes(category)) {
+      return res.status(400).json({ error: 'category must be invoice or acc' });
+    }
+
+    appt.pdfs.push({
+      pdf: { data: req.file.buffer, contentType: req.file.mimetype },
+      name: req.file.originalname,
+      category,
+    });
+
     await appt.save();
-    res.json({ ok: true, count: appt.pdfs.length });
-  } catch (e) { next(e); }
+
+    res.json({
+      ok: true,
+      count: appt.pdfs.length,
+      added: { name: req.file.originalname, category },
+    });
+  } catch (e) {
+    next(e);
+  }
 });
+
 
 // List images（Base64）
 router.get('/Appointments/:id/images', async (req, res) => {
@@ -267,9 +288,21 @@ router.get('/Appointments/:id/assets', async (req, res) => {
     }).filter(Boolean);
 
     const host = `${req.protocol}://${req.get('host')}`;
-    const pdfUrls = (appt.pdfs || []).map((_, i) => `${host}/Appointments/${req.params.id}/pdfs/${i}/raw`);
 
-    res.json({ imagesBase64, pdfUrls });
+     //the rest pdf
+    const pdfUrls = (appt.pdfs || []).map((_, i) => `${host}/Appointments/${req.params.id}/pdfs/${i}/raw`);
+    //new structure ,return acc with category
+    const pdfItems = (appt.pdfs || []).map((p, i) => {
+      const when = p?.createdAt || appt?.startAt || appt?.createdAt;
+      const item = {
+        url: `${host}/Appointments/${req.params.id}/pdfs/${i}/raw`,
+        name: p?.name || `document-${i + 1}.pdf`,
+        when: when ? new Date(when).toISOString() : undefined,
+      };
+      if (p?.category === 'acc') item.category = 'acc';
+      return item;
+    });
+    res.json({ imagesBase64, pdfUrls , pdfItems });
   } catch (e) {
     res.status(500).json({ error: 'fetch assets failed' });
   }
