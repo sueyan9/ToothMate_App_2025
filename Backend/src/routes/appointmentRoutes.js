@@ -145,14 +145,23 @@ router.post('/Appointments/:id/pdfs', upload.single('file'), async (req, res, ne
 
     // get the category from body.category ，default " invoice"
     const category = (req.body.category || 'invoice').toLowerCase();
-    if (!['invoice', 'acc'].includes(category)) {
-      return res.status(400).json({ error: 'category must be invoice or acc' });
+    if (!['invoice', 'acc', 'referral', 'report', 'other'].includes(category)) {
+      return res.status(400).json({ error: 'invalid category' });
     }
+    const name = (req.body.name && String(req.body.name).trim()) || req.file.originalname;
+
+    let when = null;
+    if (req.body.when) {
+      const d = new Date(req.body.when);
+      if (!isNaN(d.getTime())) when = d;
+    }
+    if (!when) when = appt.startAt || new Date();
 
     appt.pdfs.push({
       pdf: { data: req.file.buffer, contentType: req.file.mimetype },
-      name: req.file.originalname,
+      name,
       category,
+      when,
     });
 
     await appt.save();
@@ -160,7 +169,7 @@ router.post('/Appointments/:id/pdfs', upload.single('file'), async (req, res, ne
     res.json({
       ok: true,
       count: appt.pdfs.length,
-      added: { name: req.file.originalname, category },
+      added: { name, category, when: when.toISOString() }
     });
   } catch (e) {
     next(e);
@@ -280,6 +289,7 @@ router.get('/Appointments/:id/assets', async (req, res) => {
   try {
     const appt = await Appointment.findById(req.params.id);
     if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+    const host = `${req.protocol}://${req.get('host')}`;
 
     const imagesBase64 = (appt.images || []).map(x => {
       const buf = toNodeBuffer(x?.img?.data ?? x?.data);
@@ -287,32 +297,29 @@ router.get('/Appointments/:id/assets', async (req, res) => {
       return buf ? `data:${ct};base64,${buf.toString('base64')}` : null;
     }).filter(Boolean);
 
-    const host = `${req.protocol}://${req.get('host')}`;
+//previous URL
+    const pdfUrls = (appt.pdfs || []).map((_, i) =>
+        `${host}/Appointments/${req.params.id}/pdfs/${i}/raw`
+    );
 
-     //the rest pdf
-    const pdfUrls = (appt.pdfs || []).map((_, i) => `${host}/Appointments/${req.params.id}/pdfs/${i}/raw`);
-    //new structure ,return acc with category
     const pdfItems = (appt.pdfs || []).map((p, i) => {
-      const when = p?.createdAt || appt?.startAt || appt?.createdAt;
-      const item = {
+      const rawWhen = p?.when || p?.createdAt || appt?.startAt || appt?.createdAt;
+      const when = rawWhen ? new Date(rawWhen).toISOString() : undefined;
+      return {
         url: `${host}/Appointments/${req.params.id}/pdfs/${i}/raw`,
         name: p?.name || `document-${i + 1}.pdf`,
-        when: when ? new Date(when).toISOString() : undefined,
+        when,
+        category: p?.category || null,
       };
-      if (p?.category === 'acc') item.category = 'acc';
-      return item;
     });
+
     res.json({
-      imagesBase64: images,
+      imagesBase64,
       pdfUrls,
-      pdfItems: pdfs.map((p, i) => ({
-        url: `${base}/pdfs/${i}/raw`,
-        name: p.name || 'raw',
-        when: p.when,
-        category: p.category || null,
-      })),
+      pdfItems,
     });
   } catch (e) {
+    console.error('fetch assets failed:', e);
     res.status(500).json({ error: 'fetch assets failed' });
   }
 });

@@ -13,6 +13,7 @@ var PdfSchema = new Schema({
         default: 'other',
         index: true
     },
+    when: { type: Date, index: true }
     }, {
     timestamps: true
 });
