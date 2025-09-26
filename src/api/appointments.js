@@ -1,69 +1,73 @@
 import axiosApi from './axios';
-// Allow override from env; otherwise fall back to axios default or localhost
-const API_URL = process.env.API_BASE_URL || (axiosApi?.defaults?.baseURL ?? 'http://localhost:3000');
 
-/** -------------------- Basic queries - -------------------- **/
+// Keep baseURL consistent with global axios instance (strip trailing slash)
+const BASE_URL = (axiosApi?.defaults?.baseURL || '').replace(/\/+$/, '');
+if (!BASE_URL) {
+    console.warn('[appointments] axiosApi.defaults.baseURL is not set, RAW links cannot be built');
+}
+
+/** -------------------- Basic queries -------------------- **/
 
 // Get appointments by NHI
 export async function getAppointmentsByNHI(nhi, params = {}) {
     const res = await axiosApi.get(`/Appointments/${encodeURIComponent(nhi)}`, {
         params: { limit: 100, ...params },
     });
-    return res.data; // 由后端决定结构
+    return res.data;
 }
 
-// Get a single appointment by id
+// Get a single appointment by ID
 export async function getAppointmentById(appointmentId) {
     const res = await axiosApi.get(`/Appointments/byId/${appointmentId}`);
     return res.data;
 }
 
-/** -------------------- Images (X-ray, etc.) -------------------- **/
+/** -------------------- Images -------------------- **/
 
-// Return an array of base64 strings (compatible with <AppointmentImage base64="..." />)
+// Return images as base64 strings
 export async function fetchAppointmentImages(appointmentId) {
-    const url = `${API_URL}/Appointments/${appointmentId}/images`;
-    const res = await fetch(url); // 用 fetch 避免 axios 把 base64 当 JSON 再处理
-    if (!res.ok) throw new Error('Fetch images failed');
-    const json = await res.json(); // { images: [{ contentType, base64 }, ...] }
-    return (json.images || []).map(i => i.base64);
+    // This endpoint returns JSON, axios is safer here
+    const { data } = await axiosApi.get(`/Appointments/${appointmentId}/images`);
+    const list = Array.isArray(data?.images) ? data.images : [];
+    return list.map(i => i?.base64 || i?.data || i?.content || ''); // support multiple field names
 }
 
-// If you prefer "direct links" (skip base64 to save bandwidth): return RAW URLs for each image
+// Build direct RAW URLs for each image
 export async function buildAppointmentImageRawUrls(appointmentId, count) {
-    // If count is not provided, call the base64 API to infer length (costs one extra request)
     if (typeof count !== 'number') {
         const list = await fetchAppointmentImages(appointmentId);
         count = list.length;
     }
-    return Array.from({ length: count }, (_, idx) => `${API_URL}/Appointments/${appointmentId}/images/${idx}/raw`);
+    if (!BASE_URL) throw new Error('BASE_URL not set, cannot build image RAW links');
+    return Array.from({ length: count }, (_, idx) =>
+        `${BASE_URL}/Appointments/${appointmentId}/images/${idx}/raw`
+    );
 }
 
-/** -------------------- PDF（invoice / referral） -------------------- **/
+/** -------------------- PDFs -------------------- **/
 
-// Fetch only the PDF count (backend /pdfs returns { count })
+// Get PDF count from backend
 export async function fetchAppointmentPDFCount(appointmentId) {
     const res = await axiosApi.get(`/Appointments/${appointmentId}/pdfs`);
     return res.data?.count ?? 0;
 }
 
-// Build direct RAW URLs for each PDF (use with WebBrowser.openBrowserAsync)
+// Build direct RAW URLs for PDFs
 export function buildAppointmentPdfRawUrls(appointmentId, count) {
     if (typeof count !== 'number') {
-        throw new Error('buildAppointmentPdfRawUrls requires a count when used sync');
+        throw new Error('buildAppointmentPdfRawUrls requires count');
     }
+    if (!BASE_URL) throw new Error('BASE_URL not set, cannot build PDF RAW links');
     return Array.from({ length: count }, (_, idx) =>
-        `${API_URL}/Appointments/${appointmentId}/pdfs/${idx}/raw`);
+        `${BASE_URL}/Appointments/${appointmentId}/pdfs/${idx}/raw`
+    );
 }
 
-// If you must embed base64 (e.g., <AppointmentPDF base64="...">): convert RAW to base64
+// Fetch PDFs as base64 (fallback when embedding inline)
 export async function fetchAppointmentPDFBase64s(appointmentId) {
     const count = await fetchAppointmentPDFCount(appointmentId);
     const urls = buildAppointmentPdfRawUrls(appointmentId, count);
-
-
     const { Buffer } = require('buffer');
-
     const arr = [];
     for (const url of urls) {
         const r = await fetch(url);
@@ -72,19 +76,31 @@ export async function fetchAppointmentPDFBase64s(appointmentId) {
         const b64 = Buffer.from(ab).toString('base64');
         arr.push(b64);
     }
-    return arr; // ['JVBERi0xLjQKJc...', ...]
+    return arr;
 }
 
-/** -------------------- Aggregated helpers (for Profile screens) --------------------------- **/
+/** -------------------- Aggregated helpers -------------------- **/
 
-// Fetch all images (base64) and PDF direct links for a single appointment
+// Prefer the backend /assets endpoint; fallback to legacy logic if unavailable
 export async function fetchAssetsForAppointment(appointmentId) {
-    const [images, pdfCount] = await Promise.all([
-        fetchAppointmentImages(appointmentId),           // array of base64 strings
-        fetchAppointmentPDFCount(appointmentId),         // count
-    ]);
-    const pdfUrls = buildAppointmentPdfRawUrls(appointmentId, pdfCount);
-    return { imagesBase64: images, pdfUrls, pdfCount };
+    try {
+        const res = await axiosApi.get(`/Appointments/${appointmentId}/assets`);
+        const data = res.data || {};
+        return {
+            imagesBase64: Array.isArray(data.imagesBase64) ? data.imagesBase64 : [],
+            pdfUrls: Array.isArray(data.pdfUrls) ? data.pdfUrls : [],
+            pdfItems: Array.isArray(data.pdfItems) ? data.pdfItems : [],
+            pdfCount: typeof data.count === 'number' ? data.count : (data.pdfUrls?.length || 0),
+        };
+    } catch (e) {
+        console.warn('[assets] fallback to legacy logic:', appointmentId, e?.message || e);
+        const [images, pdfCount] = await Promise.all([
+            fetchAppointmentImages(appointmentId),
+            fetchAppointmentPDFCount(appointmentId),
+        ]);
+        const pdfUrls = buildAppointmentPdfRawUrls(appointmentId, pdfCount);
+        return { imagesBase64: images, pdfUrls, pdfItems: [], pdfCount };
+    }
 }
 
 export default {
