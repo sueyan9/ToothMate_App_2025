@@ -1,3 +1,35 @@
+
+const tryInferName = (url) => {
+    try {
+        const u = new URL(url);
+        const file = u.pathname.split('/').pop();
+        return decodeURIComponent(file || 'document.pdf');
+    } catch {
+        return 'document.pdf';
+    }
+};
+const normalizeDataUrl = (s) => {
+    if (typeof s !== 'string') return '';
+    const t = s.trim();
+    return t.startsWith('data:image/*;') ? t.replace(/^data:image\/\*;/, 'data:image/png;') : t;
+};
+// fallback: get YYYY-MM-DD / YYYY_MM_DD from document name
+const inferDateFromName = (name) => {
+    if (!name) return null;
+    const m = String(name).match(/(\d{4})[-_/](\d{2})[-_/](\d{2})/);
+    if (!m) return null;
+    return new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00`);
+};
+
+// use doc.when when there is no date
+const formatDocWhen = (doc) => {
+    const d = doc?.when ? new Date(doc.when) : inferDateFromName(doc?.name);
+    if (!d || Number.isNaN(d.getTime())) return '';
+    return d.toLocaleString('en-NZ', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+    });
+};
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
@@ -11,13 +43,18 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+    FlatList
 } from 'react-native';
 import axiosApi from '../../api/axios';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
+import {
+    fetchAssetsForAppointment,
 
+} from '../../api/appointments';
+import * as WebBrowser from 'expo-web-browser';
 // Import profile pictures
 const profilePictures = [
   require('../../../assets/profile pictures/p0.png'),
@@ -163,6 +200,160 @@ const UserAccountScreen = ({ navigation }) => {
     newPassword: '',
     confirmPassword: ''
   });
+// New: list of items with timestamp/appointment info for display here
+    /** @type {Array<{dataUrl:string, when?:string, appointmentId?:string}>} */
+    const [xrayItems, setXrayItems] = useState([]);
+
+//Short date format (DD/MM)
+    const formatShortDay = (iso) => {
+        if (!iso) return '';
+        try {
+            return new Date(iso).toLocaleDateString('en-NZ', {day: '2-digit', month: '2-digit'});
+        } catch {
+            return '';
+        }
+    };
+
+// Fetch all appointments for this user by NHI (using your existing /Appointments/:nhi API)
+    async function fetchAppointmentsByNhi(nhi, {limit = 100, skip = 0} = {}) {
+        const {data} = await axiosApi.get(`/Appointments/${String(nhi).toUpperCase()}`, {
+            params: {limit, skip},
+        });
+        return data?.items ?? [];
+    }
+
+// Fetch images & PDFs for all appointments, then merge and sort by time (newest first)
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                // need NHI；getUser() traged in  useFocusEffect
+                if (!details?.nhi) return;
+
+                // 1) Fetch all appointments for this NHI
+                const appts = await fetchAppointmentsByNhi(details.nhi, {limit: 200});
+
+                // 2) Fetch assets for each appointment in parallel
+                const assetsList = await Promise.all(appts.map((a) => fetchAssetsForAppointment(a._id)
+                    .then((assets) => ({appt: a, assets}))
+                    .catch(() => ({appt: a, assets: {imagesBase64: [], pdfUrls: []}}))));
+                //run test
+                console.log('[assets] appt count =', assetsList.length);
+                assetsList.slice(0, 3).forEach(({appt, assets}, i) => {
+                    // Debug: sample logs
+                    console.log(`[assets] #${i}`, {
+                        appt: appt?._id,
+                        pdfUrls: Array.isArray(assets?.pdfUrls) ? assets.pdfUrls.length : 'N/A',
+                        pdfItems: Array.isArray(assets?.pdfItems) ? assets.pdfItems.length : 'N/A',
+                        imagesBase64: Array.isArray(assets?.imagesBase64) ? assets.imagesBase64.length : 'N/A',
+                    });
+                });
+                // 3) Merge into: xrayItems (with time) + xrayImages (string[]) + pdfItems
+                const mergedItems = [];
+                const imagesStrList = [];
+                const pdfs = [];
+
+
+                for (const {appt, assets} of assetsList) {
+                    const when = appt?.startAt || appt?.createdAt || null;
+                    // Images
+                    const imgs = Array.isArray(assets?.imagesBase64) ? assets.imagesBase64 : [];
+                    imgs.forEach((s, idx) => {
+                        // Normalize into a universally recognized data URL
+                        const dataUrl = typeof s === 'string' && s.startsWith('data:') ? s.replace(/^data:image\/\*;/, 'data:image/png;') : `data:image/png;base64,${s}`;
+
+                        mergedItems.push({
+                            dataUrl,
+                            when: when ? new Date(when).toISOString() : undefined,
+                            appointmentId: appt?._id,
+                            idx, // Keep index so  can dedupe later via id+idx if needed
+                        });
+
+                        imagesStrList.push(dataUrl);
+                    });
+
+
+                    // ===== PDFs  =====
+                    const urls = Array.isArray(assets?.pdfUrls) ? assets.pdfUrls : [];
+                    const base64s = Array.isArray(assets?.pdfBase64) ? assets.pdfBase64 : [];
+                    const structured = Array.isArray(assets?.pdfItems) ? assets.pdfItems : [];
+                    console.log('[PDF Items - structured]', structured);
+
+                    //0) use structure
+                    for (const it of structured) {
+                        if (typeof it?.url === 'string' && it.url) {
+                            pdfs.push({
+                                source: 'url',
+                                value: it.url,
+                                when: it.when ? new Date(it.when).toISOString() : (when ? new Date(when).toISOString() : undefined),
+                                name: it.name || tryInferName(it.url),
+                                category: it.category,
+                            });
+                        }
+                    }
+                    // 1) URL
+                    for (const u of urls) {
+                        if (typeof u === 'string' && u) {
+                            pdfs.push({
+                                source: 'url',
+                                value: u,
+                                when: when ? new Date(when).toISOString() : undefined,
+                                name: tryInferName(u),
+                            });
+                        }
+                    }
+
+                    // 2) base64 / dataUrl
+                    for (const b of base64s) {
+                        if (!b || typeof b !== 'string') continue;
+                        if (b.startsWith('data:application/pdf;base64,')) {
+                            pdfs.push({
+                                source: 'dataUrl', value: b, when: when ? new Date(when).toISOString() : undefined,
+                            });
+                        } else {
+                            pdfs.push({
+                                source: 'base64', value: b, when: when ? new Date(when).toISOString() : undefined,
+                            });
+                        }
+                    }
+                    // ===== PDF ends =====
+                }
+
+
+                // Only sort (newest first), do not dedupe images
+                const orderedItems = mergedItems.sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
+                const orderedImages = imagesStrList;
+
+                // PDFs can still be deduped by (source|value)
+                //const orderedPdfs = Array.from(new Map(pdfs.map(it => [`${it.source}|${it.value}`, it])).values()).sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
+                const byKey = new Map();
+                for (const it of pdfs) {
+                    const key = `${it.source}|${it.value}`;
+                    const existed = byKey.get(key);
+                    if (!existed) {
+                        byKey.set(key, it);
+                    } else if (!existed.category && it.category) {
+
+                        byKey.set(key, it);
+                    }
+                }
+                const orderedPdfs = Array.from(byKey.values())
+                    .sort((a, b) => new Date(b.when || 0) - new Date(a.when || 0));
+                setPdfItems(orderedPdfs);
+                if (!cancelled) {
+                    setXrayItems(orderedItems);
+                    setXrayImages(orderedImages);
+                    setPdfItems(orderedPdfs);
+                }
+
+            } catch (e) {
+                console.error('load user images failed:', e);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [details?.nhi]); // Wait for NHI to be ready
 
   useEffect(() => {
     // Force re-render when language changes
@@ -174,24 +365,25 @@ const UserAccountScreen = ({ navigation }) => {
     }
   }, [currentLanguage]);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetchUserData = async () => {
-        setIsLoading(true);
-        try {
-          await getUser();
-          await getDentalClinic();
-          await checkCanDisconnect();
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
+    useEffect(() => {
+        let cancelled = false;
 
-      fetchUserData();
-    }, [])
-  );
+        const fetchUserData = async () => {
+            setIsLoading(true);
+            try {
+                await getUser();
+                await getDentalClinic();
+                await checkCanDisconnect();
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                if (!cancelled) setIsLoading(false);
+            }
+        };
+
+        fetchUserData();
+        return () => { cancelled = true; };
+    }, []);
 
   // Live email validation effect
   useEffect(() => {
@@ -655,7 +847,10 @@ const UserAccountScreen = ({ navigation }) => {
       </SafeAreaView>
     );
   }
+    const accDocs = pdfItems.filter(p => p.category === 'acc');
+    const invoiceDocs = pdfItems.filter(p => !p.category || p.category === 'invoice');
 
+    console.log('[ACC] accDocs:', accDocs);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -841,6 +1036,131 @@ const UserAccountScreen = ({ navigation }) => {
             )}
           </View>
         </View>
+          {/* X-ray Images */}
+          <View style={styles.infoCard}>
+              <View style={styles.cardHeader}>
+                  <Ionicons name="image-outline" size={24} color="#516287"/>
+                  <Text style={styles.cardTitle}>{t('My X-ray Images')}</Text>
+              </View>
+
+              {Array.isArray(xrayItems) && xrayItems.length > 0 ? (<FlatList
+                  horizontal
+                  data={xrayItems.slice(0, 8)} // review  first  8  images
+                  keyExtractor={(_, idx) => String(idx)}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{paddingVertical: 8, paddingRight: 4}}
+                  renderItem={({item}) => (<View style={{marginRight: 12, position: 'relative'}}>
+                      <Image
+                          source={{uri: item.dataUrl}}
+                          style={styles.xrayThumb /*  width/height/borderRadius */}
+                          resizeMode="cover"
+                      />
+                      {/* right bottom corner：DD/MM */}
+                      {item.when ? (<View style={{
+                          position: 'absolute',
+                          right: 4,
+                          bottom: 4,
+                          paddingHorizontal: 6,
+                          paddingVertical: 2,
+                          borderRadius: 6,
+                          backgroundColor: 'rgba(0,0,0,0.55)'
+                      }}>
+                          <Text style={{color: '#fff', fontSize: 10}}>
+                              {formatShortDay(item.when)}
+                          </Text>
+                      </View>) : null}
+                  </View>)}
+              />) : (<Text style={styles.infoValue}>{t('None')}</Text>)}
+
+              <TouchableOpacity
+                  style={[styles.actionButton, {marginTop: 8}]}
+                  onPress={() => {
+                      const imgs = (Array.isArray(xrayItems) ? xrayItems : [])
+                          .map(x => normalizeDataUrl(x?.dataUrl || ''))
+                          .filter(Boolean);
+
+                      if (!imgs.length) return; // Double guard
+
+                      console.log('[UserAccount] navigate -> images', {
+                          count: imgs.length, sample: imgs[0]?.slice(0, 60),
+                      });
+
+                      navigation.navigate('images', {
+                          images: imgs, imageIndex: 0,
+                      });
+                  }}
+                  disabled={!xrayItems?.length}
+              >
+                  <Ionicons name="expand-outline" size={20} color="#516287"/>
+                  <Text style={styles.actionButtonText}>{t('View All')}</Text>
+                  <Ionicons name="chevron-forward" size={20} color="#516287"/>
+              </TouchableOpacity>
+          </View>
+
+          {/* My Documents (Invoices / Referrals) */}
+          <View style={styles.infoCard}>
+              <View style={styles.cardHeader}>
+                  <Ionicons name="document-text-outline" size={24} color="#516287"/>
+                  <Text style={styles.cardTitle}>{t('My Documents')}</Text>
+              </View>
+
+              {invoiceDocs?.length ? (invoiceDocs.map((doc, idx) => {
+                      const whenStr = formatDocWhen(doc);
+                      const baseName =
+                          doc.name && doc.name !== 'raw' ? doc.name : t('Invoice/Referral');
+
+                      const niceTitle = whenStr ? `${baseName} · ${whenStr}` : baseName;
+
+                      const pdfParam = doc.source === 'url' ? doc.value : (doc.source === 'dataUrl' ? doc.value
+                          : `data:application/pdf;base64,${doc.value}`); // raw base64
+                      const key = `inv-${doc.source}|${doc.value}`;
+                      return (
+                          <TouchableOpacity
+                              key={key}
+                              style={styles.actionButton}
+                              onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title:  niceTitle})}
+                          >
+                              <Ionicons name="document-outline" size={20} color="#516287" />
+                              <Text style={styles.actionButtonText}>{niceTitle}</Text>
+                              <Ionicons name="open-outline" size={20} color="#516287" />
+                          </TouchableOpacity>
+                      );
+                  })
+              ) : (
+                  <Text style={styles.infoValue}>{t('None')}</Text>)}
+
+
+          </View>
+
+          {/* ACC Documents */}
+          <View style={styles.infoCard}>
+              <View style={styles.cardHeader}>
+                  <Ionicons name="shield-checkmark-outline" size={24} color="#516287"/>
+                  <Text style={styles.cardTitle}>ACC Documents</Text>
+              </View>
+
+              {accDocs?.length ? (accDocs.map((doc, idx) => {
+                  const whenStr = formatDocWhen(doc);
+                  const baseName = doc.name || `ACC Document #${idx + 1}`;
+                  const title = whenStr ? `${baseName} · ${whenStr}` : baseName;
+
+                  const pdfParam = doc.source === 'url'
+                      ? doc.value
+                      : (doc.source === 'dataUrl' ? doc.value : `data:application/pdf;base64,${doc.value}`);
+                  const key = `acc-${doc.source}|${doc.value}`;
+                  return (
+                      <TouchableOpacity
+                          key={key}
+                          style={styles.actionButton}
+                          onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title })}
+                      >
+                          <Ionicons name="document-outline" size={20} color="#516287"/>
+                          <Text style={styles.actionButtonText}>{title}</Text>
+                          <Ionicons name="open-outline" size={20} color="#516287"/>
+                      </TouchableOpacity>
+                  );
+              })) : (<Text style={styles.infoValue}>{t('None')}</Text>)}
+          </View>
 
         {/* Sign Out Button */}
         <View style={styles.signOutSection}>
