@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        top: '15%',
+        top: '10%',
         transform: [{ translateX:0 }],
         backgroundColor: '#fff',
         borderTopLeftRadius: 16,
