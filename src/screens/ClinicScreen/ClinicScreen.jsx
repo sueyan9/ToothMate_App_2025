@@ -283,99 +283,6 @@ const ClinicScreen = ({navigation, route}) => {
     const onDayPress = (day) => setSelectedDate(day.dateString);
     const formatDate = (d) => (d ? dayjs.tz(d, NZ_TZ).format('D MMMM YYYY') : '');
 
-    // // Function to format date from YYYY-MM-DD to readable format
-    // const formatDate = (dateString) => {
-    //     if (!dateString) return '';
-    //     const date = new Date(dateString);
-    //     const options = {day: 'numeric', month: 'long', year: 'numeric'};
-    //     return date.toLocaleDateString('en-GB', options);
-    // };
-    //
-    // // Mock appointment data for August 14th, 15th, and 16th, 2025
-    // const [appointmentData] = useState([
-    //     {
-    //         id: '1',
-    //         date: '2025-08-14',
-    //         time: '9:00 AM',
-    //         location: 'AUT Dentist',
-    //         dentist: 'Dr. Toothmate',
-    //         type: 'Check-up'
-    //     },
-    //     {
-    //         id: '2',
-    //         date: '2025-08-14',
-    //         time: '11:30 AM',
-    //         location: 'AUT Dentist',
-    //         dentist: 'Dr. Toothmate',
-    //         type: 'Cleaning'
-    //     },
-    //     {
-    //         id: '3',
-    //         date: '2025-08-15',
-    //         time: '10:00 AM',
-    //         location: 'AUT Dentist',
-    //         dentist: 'Dr. Toothmate',
-    //         type: 'Consultation'
-    //     },
-    //     {
-    //         id: '4',
-    //         date: '2025-08-15',
-    //         time: '2:00 PM',
-    //         location: 'AUT Dentist',
-    //         dentist: 'Dr. Toothmate',
-    //         type: 'Filling'
-    //     },
-    //     {
-    //         id: '5',
-    //         date: '2025-08-15',
-    //         time: '4:30 PM',
-    //         location: 'AUT Dentist',
-    //         dentist: 'Dr. Toothmate',
-    //         type: 'Check-up'
-    //     },
-    //     {
-    //         id: '6',
-    //         date: '2025-08-16',
-    //         time: '8:30 AM',
-    //         location: 'AUT Dentist',
-    //         dentist: 'Dr. Toothmate',
-    //         type: 'Cleaning'
-    //     },
-    //     {
-    //         id: '7',
-    //         date: '2025-08-16',
-    //         time: '1:00 PM',
-    //         location: 'AUT Dentist',
-    //         dentist: 'Dr. Toothmate',
-    //         type: 'Root Canal'
-    //     }
-    // ]);
-
-    // // Filter appointments based on selected date
-    // const filteredAppointments = selectedDate
-    //     ? appointmentData.filter(appointment => appointment.date === selectedDate)
-    //     : [];
-    //
-    // // Create marked dates object for calendar with appointment indicators
-    // const markedDates = {
-    //     ...appointmentData.reduce((acc, appointment) => {
-    //         acc[appointment.date] = {
-    //             marked: true,
-    //             dotColor: '#00adf5'
-    //         };
-    //         return acc;
-    //     }, {}),
-    //     [selectedDate]: {
-    //         selected: true,
-    //         marked: appointmentData.some(apt => apt.date === selectedDate),
-    //         selectedColor: '#00adf5',
-    //         selectedTextColor: '#ffffff'
-    //     }
-    // };
-    //
-    // const onDayPress = (day) => {
-    //     setSelectedDate(day.dateString);
-    // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -427,7 +334,7 @@ const ClinicScreen = ({navigation, route}) => {
                             {dayList.length > 0 ? (
                                 dayList.map((a) => (
                                     <TouchableOpacity key={a._id} style={styles.appointmentCard}
-                                                      onPress={() => setSelectedAppointment(a)}>
+                                        onPress={() => setSelectedAppointment(a)}>
 
                                         <View style={styles.cardContent}>
                                             <View style={styles.appointmentInfo}>
@@ -438,8 +345,13 @@ const ClinicScreen = ({navigation, route}) => {
                                             </View>
                                             <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51"/>
                                         </View>
-                                        <View style={styles.typeTag}>
-                                            <Text style={styles.typeText}>{a.purpose || a.notes}</Text>
+                                        <View style={{display: 'flex', flexDirection: 'row'}}>
+                                            <View style={styles.typeTag}>
+                                                <Text style={styles.typeText}>{a.purpose || a.notes}</Text>
+                                            </View>
+                                            <View style={styles.typeTag}>
+                                                <Text style={styles.typeText}>Patient: {details.firstname} {details.lastname}</Text>
+                                            </View>
                                         </View>
                                     </TouchableOpacity>
                                 ))

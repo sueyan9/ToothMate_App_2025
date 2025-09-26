@@ -194,6 +194,7 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         paddingHorizontal: 10,
         marginTop: 8,
+        marginRight: 8,
     },
     typeText: {
         fontSize: 12,
