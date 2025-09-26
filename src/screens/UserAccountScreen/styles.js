@@ -377,9 +377,19 @@ export default StyleSheet.create({
     borderColor: '#DC3545',
     borderWidth: 2,
   },
+  warningInput: {
+    borderColor: '#FF8C00',
+    borderWidth: 2,
+  },
   errorText: {
     fontSize: 14,
     color: '#DC3545',
+    marginTop: 4,
+    marginLeft: 4,
+  },
+  warningText: {
+    fontSize: 14,
+    color: '#FF8C00',
     marginTop: 4,
     marginLeft: 4,
   },
@@ -409,6 +419,12 @@ export default StyleSheet.create({
     fontSize: 14,
     color: '#666666',
     marginTop: 2,
+  },
+  warningClinicTitle: {
+    color: '#FF8C00',
+  },
+  warningClinicText: {
+    color: '#FF8C00',
   },
   clinicConfirmInfo: {
     marginTop: 16,
@@ -466,10 +482,76 @@ export default StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
+  
+  // Privacy Disclaimer Section
+  privacyDisclaimerSection: {
+    marginTop: 20,
+    marginBottom: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E9ECEF',
+    width: '100%',
+  },
+  privacyDisclaimerText: {
+    fontSize: 14,
+    color: '#495057',
+    textAlign: 'left',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  privacyButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 12,
+  },
+  privacyButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#CED4DA',
+    backgroundColor: '#FFFFFF',
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  privacyButtonSelected: {
+    backgroundColor: '#516287',
+    borderColor: '#516287',
+  },
+  privacyButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#495057',
+  },
+  privacyButtonTextSelected: {
+    color: '#FFFFFF',
+  },
+  secondaryDisclaimerText: {
+    fontSize: 12,
+    color: '#6C757D',
+    textAlign: 'left',
+    lineHeight: 16,
+    fontStyle: 'italic',
+    marginTop: 8,
+  },
+  
+  // Disabled Button Styles
+  disabledButton: {
+    backgroundColor: '#E9ECEF',
+    borderColor: '#CED4DA',
+  },
+  disabledButtonText: {
+    color: '#6C757D',
+  },
+  //images display
   xrayThumb: {
     width: 96,
     height: 96,
     borderRadius: 12,
-    backgroundColor: '#EEF1F6', // 没加载时占位
+    backgroundColor: '#EEF1F6',
   },
+
 });
