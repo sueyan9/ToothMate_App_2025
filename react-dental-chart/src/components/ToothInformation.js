@@ -1,10 +1,16 @@
 
-import { useEffect, useState } from "react";
-import teethData from './Util/toothData.json';
+import { useContext, useEffect, useState } from "react";
+import { Context as DentalContext } from "../context/DentalContext/DentalContext";
 
 export default function ToothInformation({ toothNumber }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [toothInfo, setToothInfo] = useState(null);
+
+  const {
+    state: {teethData, loading, currentNHI},
+    getToothInfo
+  } = useContext(DentalContext);
+
+  const toothInfo = getToothInfo(toothNumber, teethData);
 
     const latestTreatmentType = (arr = []) => {
         if (!Array.isArray(arr) || arr.length === 0) return null;
@@ -14,18 +20,10 @@ export default function ToothInformation({ toothNumber }) {
       };
   const onToggle = () => setIsOpen(!isOpen);
 
-  useEffect(() => {
-    const tooth = teethData.teeth[toothNumber];
-    setToothInfo(tooth || {
-      name: `Tooth ${toothNumber}`,
-      treatments: [],
-      futuretreatments: []
-    });
-  }, [toothNumber]);
-
     // 👉 When the individual tooth panel opens, notify React Native
       useEffect(() => {
         if (!isOpen || !toothInfo || !window.ReactNativeWebView) return;
+
         window.ReactNativeWebView.postMessage(JSON.stringify({
           type: 'TOOTH_SELECTED',
           payload: {
@@ -74,6 +72,16 @@ export default function ToothInformation({ toothNumber }) {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="tooth-info loading">
+        <div className="tooth-info-header">
+          Loading tooth {toothNumber}...
+        </div>
+      </div>
+    );
+  }
+
   if (!toothInfo) return null;
 
   return (
@@ -91,7 +99,6 @@ export default function ToothInformation({ toothNumber }) {
             <div>
               <strong>Previous Work Done</strong>
               {toothInfo.treatments.length > 0 ? (
-
                 <>
                   <ul className="treatment-list">
                     {toothInfo.treatments.map((treatment, index) => (
