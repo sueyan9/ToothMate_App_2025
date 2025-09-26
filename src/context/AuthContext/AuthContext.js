@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import createDataContext from '../createDataContext';
 import axiosApi from '../../api/axios';
 import { navigate } from '../../navigationRef';
+import createDataContext from '../createDataContext';
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -178,6 +178,46 @@ const signin =
     }
   };
 
+  const completeRegistration = dispatch => async ({ signupCode, nhi, email, password, patientId }) => {
+  try {
+    const response = await axiosApi.post('/completeRegistration', {
+      signupCode,
+      nhi,
+      email,
+      password,
+      patientId
+    });
+    
+    console.log("Registration completion success:", response.data);
+    
+    // Store token and ID in AsyncStorage
+    await AsyncStorage.setItem('token', response.data.token);
+    await AsyncStorage.setItem('id', response.data.id);
+    
+    // Update state with signin
+    dispatch({
+      type: 'signin',
+      payload: { 
+        token: response.data.token, 
+        id: response.data.id 
+      },
+    });
+    
+    // Navigate to main app
+    console.log("Navigating to mainFlow after registration completion");
+    navigate('mainFlow', { screen: 'AccountFlow' });
+    
+  } catch (err) {
+    console.error("Registration completion failed:", err.response?.data || err.message);
+    dispatch({
+      type: 'add_error',
+      payload: err.response?.data?.error || 'Registration completion failed',
+    });
+    // Re-throw the error so the component can handle it
+    throw err;
+  }
+};
+
 const updateUser = dispatch => {
   return async ({ firstname, lastname, email, mobile, dob }) => {
     try {
@@ -273,6 +313,7 @@ export const { Provider, Context } = createDataContext(
     updateUser,
     updateUserClinic,
     changePassword,
+    completeRegistration,
   },
   { token: null, errorMessage: '', id: null },
 );

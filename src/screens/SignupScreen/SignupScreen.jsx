@@ -17,54 +17,49 @@ const DEFAULT_DATE = dayjs('2000-01-01');
 const SignupScreen = props => {
   const { navigation } = props;
 
-  const { clearErrorMessage, signUp } = useContext(AuthContext);
-  const [clinicInfo, setClinicInfo] = useState(null);
-  const [clinicCodeStatus, setClinicCodeStatus] = useState(null); // null | 'valid' | 'invalid'
-  const [clinicCode, setClinicCode] = useState('');
+  const { clearErrorMessage, completeRegistration } = useContext(AuthContext);
+  const [patientInfo, setPatientInfo] = useState(null);
+  const [signupCodeStatus, setSignupCodeStatus] = useState(null); // null | 'valid' | 'invalid'
+  const [signupCode, setSignupCode] = useState('');
   
   const [nhiStatus, setNhiStatus] = useState(null); // null | 'valid' | 'invalid'
   const [emailStatus, setEmailStatus] = useState(null); // null | 'valid' | 'invalid' | 'exists'
 
-  const [firstname, setFirstName] = useState('');
-  const [lastname, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nhi, setNhi] = useState('');
-  const [dob, setDob] = useState(DEFAULT_DATE.toDate());
-  const modalDate = React.useMemo(() => (dob ? dayjs(dob).toDate() : ''), [dob]);
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    const checkClinicCode = async () => {
-      if (clinicCode.trim() === '') {
-        setClinicInfo(null);
-        setClinicCodeStatus(null);
+    const checkSignupCode = async () => {
+      if (signupCode.trim() === '') {
+        setPatientInfo(null);
+        setSignupCodeStatus(null);
         return;
       }
 
       try {
-        const response = await axiosApi.get(`/checkClinicCode/${clinicCode.trim()}`);
-        if (response.data.valid) {
-          setClinicInfo(response.data);
-          setClinicCodeStatus('valid');
+        const response = await axiosApi.get(`/checkSignupCode/${signupCode.trim()}`);
+        if (response.data.valid && response.data.patient) {
+          setPatientInfo(response.data.patient);
+          setSignupCodeStatus('valid');
         } else {
-          setClinicInfo(null);
-          setClinicCodeStatus('invalid');
+          setPatientInfo(null);
+          setSignupCodeStatus('invalid');
         }
       } catch (err) {
-        setClinicInfo(null);
-        setClinicCodeStatus('invalid');
+        setPatientInfo(null);
+        setSignupCodeStatus('invalid');
       }
     };
 
-    checkClinicCode();
-  }, [clinicCode]);
+    checkSignupCode();
+  }, [signupCode]);
 
   useEffect(() => {
     const checkNhi = async () => {
-      if (nhi.trim() === '') {
+      if (nhi.trim() === '' || !patientInfo) {
         setNhiStatus(null);
         return;
       }
@@ -75,20 +70,15 @@ const SignupScreen = props => {
         return;
       }
 
-      try {
-        const response = await axiosApi.get(`/checkNhi/${nhi.trim().toUpperCase()}`);
-        if (response.data.exists) {
-          setNhiStatus('exists');
-        } else {
-          setNhiStatus('valid');
-        }
-      } catch (err) {
-        setNhiStatus('invalid');
+      if (nhi.trim().toUpperCase() === patientInfo.nhi.toUpperCase()) {
+        setNhiStatus('valid');
+      } else {
+        setNhiStatus('mismatch');
       }
     };
 
     checkNhi();
-  }, [nhi]);
+  }, [nhi, patientInfo]);
 
   useEffect(() => {
     const checkEmail = async () => {
@@ -97,23 +87,13 @@ const SignupScreen = props => {
         return;
       }
 
-      // First check if email format is valid
-      if (!email.includes('@') || !email.includes('.')) {
-        setEmailStatus('invalid_format');
-        return;
-      }
-
-      try {
-        const response = await axiosApi.get(`/checkEmail/${email.trim().toLowerCase()}`);
-        if (response.data.exists) {
-          setEmailStatus('exists');
-        } else {
-          setEmailStatus('valid');
-        }
-      } catch (err) {
-        setEmailStatus('invalid');
-      }
-    };
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(email.trim())) {
+      setEmailStatus('valid');
+    } else {
+      setEmailStatus('invalid');
+    }
+  };
 
     checkEmail();
   }, [email]);
@@ -125,71 +105,47 @@ const SignupScreen = props => {
       }, [])
   );
 
-  const handleDateChange = newDate => {
-    const currentDate = newDate ?? dob;
-    setShowDatePicker(false);
-    setDob(currentDate);
-  };
-
   const handleSubmit = async () => {
-    if (firstname === '') {
-      setErrorMessage('Please enter your first name');
-    } else if (lastname === '') {
-      setErrorMessage('Please enter your last name');
-    } else if (email === '') {
-      setErrorMessage('Please enter your email');
-    } else if (emailStatus !== 'valid') {
-      if (emailStatus === 'exists') {
-        setErrorMessage('Email already exists');
-      } else if (emailStatus === 'invalid_format') {
-        setErrorMessage('Please enter a valid email format');
-      } else {
-        setErrorMessage('Please enter a valid email');
-      }
+    if (signupCode === '') {
+      setErrorMessage('Please enter your signup code');
+    } else if (signupCodeStatus !== 'valid') {
+      setErrorMessage('Invalid signup code');
     } else if (nhi === '') {
       setErrorMessage('Please enter your NHI');
     } else if (nhiStatus !== 'valid') {
-      if (nhiStatus === 'exists') {
-        setErrorMessage('NHI already exists');
+      if (nhiStatus === 'mismatch') {
+        setErrorMessage('NHI does not match our records');
       } else if (nhiStatus === 'invalid_format') {
         setErrorMessage('Please enter a valid NHI format (3 letters + 4 numbers)');
       } else {
         setErrorMessage('Please enter a valid NHI');
       }
+    } else if (email === '') {
+      setErrorMessage('Please enter your email');
+    } else if (emailStatus !== 'valid') {
+      setErrorMessage('Please enter a valid email format');
     } else if (password === '') {
       setErrorMessage('Please enter your password');
     } else if (password.length < 8) {
       setErrorMessage('Password must be at least 8 characters');
     } else if (password === password.toLowerCase()) {
       setErrorMessage('Please enter a password with at least one capital letter');
-    } else if (/\d/.test(password) === false) {
+    } else if (!/\d/.test(password)) {
       setErrorMessage('Please enter a password with at least one number');
-    } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password) === false) {
+    } else if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)) {
       setErrorMessage('Please enter a password with at least one special character');
-    } else if (clinicInfo === null) {
-      setErrorMessage('Please enter your clinic code');
     } else {
-      // navigation.navigate('SelectClinic', {
-      //   firstname,
-      //   lastname,
-      //   email,
-      //   nhi,
-      //   password,
-      //   dob,
-      // });
       try {
-        await signUp({
-          firstname,
-          lastname,
-          email,
+        await completeRegistration({
+          signupCode: signupCode.trim(),
           nhi: nhi.toUpperCase(),
+          email: email.trim().toLowerCase(),
           password,
-          dob: dob.toISOString(),
-          clinic: clinicInfo.id,
+          patientId: patientInfo._id
         });
       } catch (err) {
-        console.log("Signup failed:", err.response?.data || err.message);
-        setErrorMessage(err.response?.data?.error || 'Failed to register');
+        console.log("Registration completion failed:", err.response?.data || err.message);
+        setErrorMessage(err.response?.data?.error || 'Failed to complete registration');
       }
     }
   };
@@ -203,6 +159,27 @@ const SignupScreen = props => {
             </View>
             <Spacer />
             <Input
+                label="Signup Code"
+                leftIcon={{ type: 'font-awesome', name: 'building' }}
+                value={signupCode}
+                onChangeText={setSignupCode}
+                autoCapitalize="characters"
+                autoCorrect={false}
+                inputContainerStyle={styles.inputContainerStyle}
+                inputStyle={styles.textStyle}
+                labelStyle={styles.labelStyle}
+            />
+            {signupCodeStatus === 'valid' && patientInfo && (
+                <Text style={{ color: 'green', marginLeft: 10 }}>
+                  Signin code found!
+                </Text>
+            )}
+
+            {signupCodeStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 10 }}>Invalid signin code</Text>
+            )}
+
+            <Input
                 label="NHI Number"
                 leftIcon={{ type: 'material-community', name: 'hospital-box' }}
                 value={nhi.toUpperCase()}
@@ -215,12 +192,12 @@ const SignupScreen = props => {
             />
             {nhiStatus === 'valid' && (
                 <Text style={{ color: 'green', marginLeft: 10 }}>
-                  NHI found!
+                  NHI confirmed!
                 </Text>
             )}
             {nhiStatus === 'exists' && (
                 <Text style={{ color: 'red', marginLeft: 10 }}>
-                  NHI already exists. Try signing in.
+                  NHI does not match our records.
                 </Text>
             )}
             {nhiStatus === 'invalid_format' && (
@@ -233,26 +210,7 @@ const SignupScreen = props => {
                   Error checking NHI
                 </Text>
             )}
-            <Input
-                label="Clinic Code"
-                leftIcon={{ type: 'font-awesome', name: 'building' }}
-                value={clinicCode}
-                onChangeText={setClinicCode}
-                autoCapitalize="characters"
-                autoCorrect={false}
-                inputContainerStyle={styles.inputContainerStyle}
-                inputStyle={styles.textStyle}
-                labelStyle={styles.labelStyle}
-            />
-            {clinicCodeStatus === 'valid' && clinicInfo && (
-                <Text style={{ color: 'green', marginLeft: 10 }}>
-                  Clinic found: {clinicInfo.name}
-                </Text>
-            )}
-
-            {clinicCodeStatus === 'invalid' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>Invalid clinic code</Text>
-            )}
+            
             <Input
                 label="Email"
                 leftIcon={{ type: 'material-icons', name: 'email' }}
@@ -296,6 +254,11 @@ const SignupScreen = props => {
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
+            {errorMessage !== '' && (
+              <Text style={{ color: 'red', marginLeft: 10, marginTop: 10 }}>
+                {errorMessage}
+              </Text>
+            )}
               <Spacer />
             <Spacer>
               <Button
