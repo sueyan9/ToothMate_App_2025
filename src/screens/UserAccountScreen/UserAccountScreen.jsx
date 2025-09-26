@@ -260,7 +260,9 @@ const UserAccountScreen = ({navigation}) => {
         }
     }, [currentLanguage]);
 
-    useFocusEffect(React.useCallback(() => {
+    useEffect(() => {
+        let cancelled = false;
+
         const fetchUserData = async () => {
             setIsLoading(true);
             try {
@@ -270,12 +272,13 @@ const UserAccountScreen = ({navigation}) => {
             } catch (error) {
                 console.error('Error fetching user data:', error);
             } finally {
-                setIsLoading(false);
+                if (!cancelled) setIsLoading(false);
             }
         };
 
         fetchUserData();
-    }, []));
+        return () => { cancelled = true; };
+    }, []);
 
     // Live email validation effect
     useEffect(() => {
@@ -945,11 +948,12 @@ const UserAccountScreen = ({navigation}) => {
 
                             const pdfParam = doc.source === 'url' ? doc.value : (doc.source === 'dataUrl' ? doc.value
                                 : `data:application/pdf;base64,${doc.value}`); // raw base64
-
-                            return (<TouchableOpacity
-                                    key={`inv-${idx}`}
+                            const key = `inv-${doc.source}|${doc.value}`;
+                            return (
+                                <TouchableOpacity
+                                    key={key}
                                     style={styles.actionButton}
-                                    onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title: baseName })}
+                                    onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title:  niceTitle})}
                                 >
                                     <Ionicons name="document-outline" size={20} color="#516287" />
                                     <Text style={styles.actionButtonText}>{niceTitle}</Text>
@@ -978,10 +982,10 @@ const UserAccountScreen = ({navigation}) => {
                         const pdfParam = doc.source === 'url'
                             ? doc.value
                             : (doc.source === 'dataUrl' ? doc.value : `data:application/pdf;base64,${doc.value}`);
-
+                        const key = `acc-${doc.source}|${doc.value}`;
                         return (
                             <TouchableOpacity
-                                key={`acc-${idx}`}
+                                key={key}
                                 style={styles.actionButton}
                                 onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title })}
                             >
