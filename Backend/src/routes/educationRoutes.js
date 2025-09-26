@@ -18,10 +18,15 @@ router.get("/education", async (req, res) => {
             filter.topic = { $regex: search, $options: 'i' };
         }
 
-        const education = await Education.find(filter);
+        // Force lean() to get raw data and explicitly select all fields
+        const education = await Education.find(filter)
+            .select('_id topic category content recommended favourite')
+            .lean();
+        
         res.json(education);
     } catch (err) {
-        res.status(404).json({ error: 'No topics found' });
+        console.error('Error in education route:', err);
+        res.status(500).json({ error: 'Error fetching education content' });
     }
 });
 
