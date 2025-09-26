@@ -12,6 +12,24 @@ const normalizeDataUrl = (s) => {
     const t = s.trim();
     return t.startsWith('data:image/*;') ? t.replace(/^data:image\/\*;/, 'data:image/png;') : t;
 };
+// fallback: get YYYY-MM-DD / YYYY_MM_DD from document name
+const inferDateFromName = (name) => {
+    if (!name) return null;
+    const m = String(name).match(/(\d{4})[-_/](\d{2})[-_/](\d{2})/);
+    if (!m) return null;
+    return new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00`);
+};
+
+// use doc.when when there is no date
+const formatDocWhen = (doc) => {
+    const d = doc?.when ? new Date(doc.when) : inferDateFromName(doc?.name);
+    if (!d || Number.isNaN(d.getTime())) return '';
+    return d.toLocaleString('en-NZ', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+    });
+};
+
 import {Ionicons} from '@expo/vector-icons';
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
@@ -120,7 +138,7 @@ const UserAccountScreen = ({navigation}) => {
                     console.log(`[assets] #${i}`, {
                         appt: appt?._id,
                         pdfUrls: Array.isArray(assets?.pdfUrls) ? assets.pdfUrls.length : 'N/A',
-                        pdfBase64: Array.isArray(assets?.pdfBase64) ? assets.pdfBase64.length : 'N/A',
+                        pdfItems: Array.isArray(assets?.pdfItems) ? assets.pdfItems.length : 'N/A',
                         imagesBase64: Array.isArray(assets?.imagesBase64) ? assets.imagesBase64.length : 'N/A',
                     });
                 });
@@ -128,6 +146,7 @@ const UserAccountScreen = ({navigation}) => {
                 const mergedItems = [];
                 const imagesStrList = [];
                 const pdfs = [];
+
 
                 for (const {appt, assets} of assetsList) {
                     const when = appt?.startAt || appt?.createdAt || null;
@@ -152,6 +171,8 @@ const UserAccountScreen = ({navigation}) => {
                     const urls = Array.isArray(assets?.pdfUrls) ? assets.pdfUrls : [];
                     const base64s = Array.isArray(assets?.pdfBase64) ? assets.pdfBase64 : [];
                     const structured = Array.isArray(assets?.pdfItems) ? assets.pdfItems : [];
+                    console.log('[PDF Items - structured]', structured);
+
                     //0) use structure
                     for (const it of structured) {
                         if (typeof it?.url === 'string' && it.url) {
@@ -198,8 +219,21 @@ const UserAccountScreen = ({navigation}) => {
                 const orderedImages = imagesStrList;
 
                 // PDFs can still be deduped by (source|value)
-                const orderedPdfs = Array.from(new Map(pdfs.map(it => [`${it.source}|${it.value}`, it])).values()).sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
+                //const orderedPdfs = Array.from(new Map(pdfs.map(it => [`${it.source}|${it.value}`, it])).values()).sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
+                const byKey = new Map();
+                for (const it of pdfs) {
+                    const key = `${it.source}|${it.value}`;
+                    const existed = byKey.get(key);
+                    if (!existed) {
+                        byKey.set(key, it);
+                    } else if (!existed.category && it.category) {
 
+                        byKey.set(key, it);
+                    }
+                }
+                const orderedPdfs = Array.from(byKey.values())
+                    .sort((a, b) => new Date(b.when || 0) - new Date(a.when || 0));
+                setPdfItems(orderedPdfs);
                 if (!cancelled) {
                     setXrayItems(orderedItems);
                     setXrayImages(orderedImages);
@@ -656,8 +690,12 @@ const UserAccountScreen = ({navigation}) => {
                 </View>
             </SafeAreaView>);
     }
-    const accDocs = Array.isArray(pdfItems) ? pdfItems.filter(d => d.category === 'acc') : [];
-    const otherDocs = Array.isArray(pdfItems) ? pdfItems.filter(d => d.category !== 'acc') : [];
+
+
+    const accDocs = pdfItems.filter(p => p.category === 'acc');
+    const invoiceDocs = pdfItems.filter(p => !p.category || p.category === 'invoice');
+
+    console.log('[ACC] accDocs:', accDocs);
 
     return (<SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -898,22 +936,29 @@ const UserAccountScreen = ({navigation}) => {
                         <Text style={styles.cardTitle}>{t('My Documents')}</Text>
                     </View>
 
-                    {otherDocs?.length ? (otherDocs.map((doc, idx) => {
-                            const niceTitle = doc.name && doc.name !== 'raw' ? doc.name : `${t('Invoice/Referral')} ${doc.when ? new Date(doc.when).toLocaleDateString('en-NZ') : ''} #${idx + 1}`;
+                    {invoiceDocs?.length ? (invoiceDocs.map((doc, idx) => {
+                        const whenStr = formatDocWhen(doc);
+                        const baseName =
+                            doc.name && doc.name !== 'raw' ? doc.name : t('Invoice/Referral');
 
-                            const pdfParam = doc.source === 'url' ? doc.value : (doc.source === 'dataUrl' ? doc.value                         // 已经是 dataUrl
+                        const niceTitle = whenStr ? `${baseName} · ${whenStr}` : baseName;
+
+                            const pdfParam = doc.source === 'url' ? doc.value : (doc.source === 'dataUrl' ? doc.value
                                 : `data:application/pdf;base64,${doc.value}`); // raw base64
 
                             return (<TouchableOpacity
-                                    key={idx}
+                                    key={`inv-${idx}`}
                                     style={styles.actionButton}
-                                    onPress={() => navigation.navigate('invoice', {pdf: pdfParam, title: niceTitle})}
+                                    onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title: baseName })}
                                 >
-                                    <Ionicons name="document-outline" size={20} color="#516287"/>
+                                    <Ionicons name="document-outline" size={20} color="#516287" />
                                     <Text style={styles.actionButtonText}>{niceTitle}</Text>
-                                    <Ionicons name="open-outline" size={20} color="#516287"/>
-                                </TouchableOpacity>);
-                        })) : (<Text style={styles.infoValue}>{t('None')}</Text>)}
+                                    <Ionicons name="open-outline" size={20} color="#516287" />
+                                </TouchableOpacity>
+                            );
+                        })
+                    ) : (
+                        <Text style={styles.infoValue}>{t('None')}</Text>)}
 
 
                 </View>
@@ -926,7 +971,10 @@ const UserAccountScreen = ({navigation}) => {
                     </View>
 
                     {accDocs?.length ? (accDocs.map((doc, idx) => {
-                        const title = doc.name || `ACC Document #${idx + 1}`;
+                        const whenStr = formatDocWhen(doc);
+                        const baseName = doc.name || `ACC Document #${idx + 1}`;
+                        const title = whenStr ? `${baseName} · ${whenStr}` : baseName;
+
                         const pdfParam = doc.source === 'url'
                             ? doc.value
                             : (doc.source === 'dataUrl' ? doc.value : `data:application/pdf;base64,${doc.value}`);

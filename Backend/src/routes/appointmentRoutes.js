@@ -302,7 +302,16 @@ router.get('/Appointments/:id/assets', async (req, res) => {
       if (p?.category === 'acc') item.category = 'acc';
       return item;
     });
-    res.json({ imagesBase64, pdfUrls , pdfItems });
+    res.json({
+      imagesBase64: images,
+      pdfUrls,
+      pdfItems: pdfs.map((p, i) => ({
+        url: `${base}/pdfs/${i}/raw`,
+        name: p.name || 'raw',
+        when: p.when,
+        category: p.category || null,
+      })),
+    });
   } catch (e) {
     res.status(500).json({ error: 'fetch assets failed' });
   }
