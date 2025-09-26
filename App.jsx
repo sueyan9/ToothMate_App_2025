@@ -127,8 +127,8 @@ const MainFlow = () => (
         return {
         headerShown: true,
         headerLeft: () => <HeaderLogo/>,
-        headerTitle: '',
-        headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
+        headerTitle: 'ToothMate',
+        headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0},
         headerTitleAlign: 'left',
         headerTransparent: !isViewingIndividualContent,
         tabBarActiveTintColor: '#875B51',
