@@ -35,7 +35,6 @@ const ChildEducationScreen = ({ navigation }) => {
         'Complete daily missions',
         'Cavity Monsters Game',
         'Protect your teeth from sugar bugs!',
-        'Smile Photo Booth',
         'Show off your healthy smile',
         'Dental Quiz Adventure',
         'Test your tooth knowledge'
@@ -116,33 +115,8 @@ const ChildEducationScreen = ({ navigation }) => {
             screen: 'ToothHero',
             size: 'medium'
         },
-        {
-            id: 'cavity-game',
-            title: t('Cavity Monsters Game'),
-            subtitle: t('Protect your teeth from sugar bugs!'),
-            icon: 'games',
-            color: ['#A8E6CF', '#7FCDCD'],
-            screen: 'CavityGame',
-            size: 'large'
-        },
-        {
-            id: 'photo-booth',
-            title: t('Smile Photo Booth'),
-            subtitle: t('Show off your healthy smile'),
-            icon: 'photo-camera',
-            color: ['#FFB3E6', '#FF6B9D'],
-            screen: 'PhotoBooth',
-            size: 'small'
-        },
-        {
-            id: 'quiz-adventure',
-            title: t('Dental Quiz Adventure'),
-            subtitle: t('Test your tooth knowledge'),
-            icon: 'quiz',
-            color: ['#B8B5FF', '#7B68EE'],
-            screen: 'QuizAdventure',
-            size: 'small'
-        }
+        
+        
     ];
 
     const handleGamePress = (game) => {

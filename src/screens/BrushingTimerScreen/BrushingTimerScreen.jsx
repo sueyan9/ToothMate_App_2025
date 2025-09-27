@@ -224,7 +224,7 @@ const BrushingTimerScreen = ({ navigation }) => {
 
   return (
     <LinearGradient
-      colors={['#FF6B9D', '#FF8E8E', '#FFB3BA']}
+      colors={['#FF6B9D', '#FF8E8E']}
       style={styles.container}
     >
       {/* Header */}

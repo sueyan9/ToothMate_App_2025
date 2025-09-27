@@ -175,6 +175,7 @@ export default StyleSheet.create({
     color: '#7F8C8D',
     textAlign: 'center',
     fontFamily: 'VarelaRound_400Regular',
+    flexWrap: 'wrap',
   },
   progressValue: {
     fontSize: 18,
@@ -229,6 +230,8 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    paddingHorizontal: 8,
   },
   topicText: {
     fontSize: 17,

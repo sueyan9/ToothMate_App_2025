@@ -242,12 +242,10 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 23,
     fontWeight: 'bold',
     color: 'white',
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+
   },
   topicsContainer: {
     flex: 1,

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const ToothHeroScreen = ({ navigation }) => {
   const [completedMissions, setCompletedMissions] = useState(new Set());
@@ -147,7 +147,7 @@ const ToothHeroScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Header */}
       <LinearGradient
-        colors={['#FFD93D', '#FF9A56']}
+        colors={['#97cfffff', '#97cfffff']}
         style={styles.header}
       >
         <TouchableOpacity 
