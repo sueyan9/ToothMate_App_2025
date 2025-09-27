@@ -181,23 +181,30 @@ router.get("/checkSignupCode/:code", async (req, res) => {
 
 
 router.post("/signin", async (req, res) => {
-  const { email, password } = req.body;
+  const { emailOrNhi, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(422).send({ error: "Must provide email and password" });
-  }
-
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(422).send({ error: "Invalid password or email" });
+  if (!emailOrNhi || !password) {
+    return res.status(422).send({ error: "Must provide email/nhi and password" });
   }
 
   try {
+    const user = await User.findOne({
+      $or: [
+        {email: emailOrNhi.toLowerCase()},
+        {nhi: emailOrNhi.toUpperCase()}
+      ]
+    });
+
+    if (!user) {
+      return res.status(422).send({error: "Invalid login credentials."});
+    }
+
     await user.comparePassword(password);
+
     const token = jwt.sign({ userId: user._id }, "MY_SECRET_KEY");
     res.send({ token, id: user._id, user });
   } catch (err) {
-    return res.status(422).send({ error: "Invalid password or email" });
+    return res.status(422).send({ error: "Invalid login credentials." });
   }
 });
 

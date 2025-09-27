@@ -158,9 +158,9 @@ const signupchild =
 
 const signin =
   dispatch =>
-  async ({ email, password }) => {
+  async ({ emailOrNhi, password }) => {
     try {
-      const response = await axiosApi.post('/signin', { email, password });
+      const response = await axiosApi.post('/signin', { emailOrNhi, password });
 
       await AsyncStorage.setItem('token', response.data.token);
       await AsyncStorage.setItem('id', response.data.id);

@@ -117,6 +117,10 @@ const ClinicScreen = ({navigation, route}) => {
     const addMinutes = (date, mins) => new Date(date.getTime() + mins * 60000);
     const nzNow = () => dayjs().tz(NZ_TZ);
 
+    const [lastAppointmentTime, setLastAppointmentTime] = useState(null);
+    const [cooldownRemaining, setCooldownRemaining] = useState(0);
+    const COOLDOWN_MINUTES = 2;
+
     const minutesOfDay = (d) => d.getHours() * 60 + d.getMinutes();
 
     const clampToBusinessStart = (dateObj) => {
@@ -171,6 +175,25 @@ const ClinicScreen = ({navigation, route}) => {
             setClinicInfo(null);
         }
     }, [clinic]);
+
+    //cooldown func on appts
+    useEffect(() => {
+    let interval;
+    if (cooldownRemaining > 0) {
+        interval = setInterval(() => {
+            setCooldownRemaining(prev => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    }
+    return () => {
+        if (interval) clearInterval(interval);
+    };
+    }, [cooldownRemaining]);
 
     const logReq = (label, url, cfgOrBody) => {
         const base = axiosApi?.defaults?.baseURL;
@@ -239,6 +262,15 @@ const ClinicScreen = ({navigation, route}) => {
     };
 // Submit a new appointment
     const handleNewAppt = async () => {
+
+        if (cooldownRemaining > 0) {
+        Alert.alert(
+            'Please Wait', 
+            `You can create another appointment in ${Math.ceil(cooldownRemaining / 60)} minute(s) and ${cooldownRemaining % 60} second(s).`
+        );
+        return;
+        }
+
         if (!newAppt.purpose) {
             Alert.alert('Validation Error', 'Purpose is required.');
             return;
@@ -300,6 +332,10 @@ const ClinicScreen = ({navigation, route}) => {
 
             if (response.status === 201 || response.status === 200) {
                 Alert.alert('Success', 'Appointment added successfully.');
+
+                setLastAppointmentTime(Date.now());
+                setCooldownRemaining(COOLDOWN_MINUTES * 60);
+
                 setShowAddModal(false);
                 resetForm();
                 loadAppointments(); // Refresh the appointment list
@@ -438,9 +474,12 @@ const ClinicScreen = ({navigation, route}) => {
                                             <View style={styles.typeTag}>
                                                 <Text style={styles.typeText}>{a.purpose || a.notes}</Text>
                                             </View>
-                                            <View style={styles.typeTag}>
-                                                <Text style={styles.typeText}>Patient: {details.firstname} {details.lastname}</Text>
+                                            <View style={[styles.confirmedTag, a.confirmed ? styles.confirmed : styles.unconfirmed]}>
+                                                <Text style={a.confirmed ? styles.confirmedText : styles.unconfirmedText}>{a.confirmed ? "Confirmed" : "Unconfirmed"}</Text>
                                             </View>
+                                        </View>
+                                        <View style={styles.typeTag}>
+                                                <Text style={styles.typeText}>Patient: {details.firstname} {details.lastname}</Text>
                                         </View>
                                     </TouchableOpacity>
                                 ))
@@ -515,6 +554,10 @@ const ClinicScreen = ({navigation, route}) => {
                                 <View style={styles.modalDetailRow}>
                                     <Text style={styles.modalDetailLabel}>Type:</Text>
                                     <Text style={styles.modalDetailValue}>{selectedAppointment.purpose}</Text>
+                                </View>
+                                <View style={styles.modalDetailCancel}>
+                                    <Text style={styles.modalDetailValueCancel}>If you wish to cancel this appointment,</Text>
+                                    <Text style={styles.modalDetailValueCancel}>please call {selectedAppointment.clinic?.phone}</Text>
                                 </View>
                             </View>
                         )}

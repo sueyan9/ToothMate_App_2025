@@ -37,6 +37,11 @@ const appointmentSchema = new mongoose.Schema({
     enum: ['Check-up', 'Cleaning', 'Consoltation', 'Crown', 'Other'],
     required: true,
   },
+  confirmed: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   pdfs: [PdfSchema],
   images: [ImgSchema],
       notes: String,

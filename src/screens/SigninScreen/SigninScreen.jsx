@@ -12,10 +12,10 @@ const SigninScreen = props => {
 
   const { state, signin, clearErrorMessage } = useContext(AuthContext);
 
-  const [email, setEmail] = useState('');
+  const [emailOrNhi, setEmailOrNhi] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignin = () => signin({ email, password });
+  const handleSignin = () => signin({ emailOrNhi, password });
 
   // 使用 useFocusEffect 来清除错误消息
   useFocusEffect(
@@ -31,13 +31,13 @@ const SigninScreen = props => {
             <Text style={styles.titleTextStyle}> ToothMate </Text>
           </View>
             <Input
-                label="Email Address"
+                label="Email Address or NHI"
                 leftIcon={{ type: 'material-icons', name: 'email' }}
                 inputContainerStyle={styles.inputContainer}
                 inputStyle={styles.inputStyle}
                 labelStyle={styles.labelStyles}
-                value={email}
-                onChangeText={setEmail}
+                value={emailOrNhi}
+                onChangeText={setEmailOrNhi}
                 autoCapitalize="none"
                 autoCorrect={false}
             />
