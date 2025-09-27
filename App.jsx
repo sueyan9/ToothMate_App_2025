@@ -27,6 +27,11 @@ import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
+import BrushingTimerScreen from './src/screens/BrushingTimerScreen/BrushingTimerScreen';
+import LearnTeethScreen from './src/screens/LearnTeethScreen/LearnTeethScreen';
+import ToothHeroScreen from './src/screens/ToothHeroScreen/ToothHeroScreen';
+
+
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
@@ -98,12 +103,18 @@ const ChildClinicStack = () => (
     </Stack.Navigator>
 );
 
-// Child education flow - FIXED: Now properly uses ChildEducationScreen
+// Child education flow - UPDATED: Now includes all the new game screens
 const ChildEducationStack = () => (
     <Stack.Navigator initialRouteName="Library">
         <Stack.Screen name="Library" component={ChildEducationScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="content" component={EducationContentScreen} options={{ headerShown: false}}/>
         <Stack.Screen name="game" component={GameScreen} options={{ headerShown: false }} />
+        
+        {/* New Game Screens */}
+        <Stack.Screen name="BrushingTimer" component={BrushingTimerScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LearnTeeth" component={LearnTeethScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ToothHero" component={ToothHeroScreen} options={{ headerShown: false }} />
+
     </Stack.Navigator>
 );
 
@@ -202,7 +213,7 @@ const MainFlow = () => (
     </Tab.Navigator>
 );
 
-// Child flow with bottom tab navigation
+// Child flow with bottom tab navigation - UPDATED: Now properly handles game screen navigation
 const ChildFlow = () => (
   <Tab.Navigator 
     screenOptions={({ route, navigation }) => {
@@ -214,8 +225,12 @@ const ChildFlow = () => (
         const isViewingIndividualContent = currentTab.name === 'ChildEducation' && currentNestedRoute?.name === 'content' &&
         currentNestedRoute?.params?.isModal === true;
 
+        // Hide tab bar for game screens
+        const isGameScreen = currentTab.name === 'ChildEducation' && 
+        ['BrushingTimer', 'LearnTeeth', 'ToothHero', 'CavityGame', 'PhotoBooth', 'QuizAdventure'].includes(currentNestedRoute?.name);
+
         return {
-        headerShown: true,
+        headerShown: !isGameScreen, // Hide header for game screens
         headerLeft: () => <HeaderLogo/>,
         headerTitle: '',
         headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
@@ -235,6 +250,7 @@ const ChildFlow = () => (
             shadowOffset: {width: 0, height: -3},
             shadowOpacity: 0.1,
             shadowRadius: 5,
+            display: isGameScreen ? 'none' : 'flex', // Hide tab bar for game screens
         }
     }
     }}

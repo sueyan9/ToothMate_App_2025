@@ -1,20 +1,189 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E9F1F8',
-    paddingHorizontal: 16,
-    paddingTop: 96,
+    backgroundColor: '#F0F8FF',
+    paddingTop: 60,
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    alignItems: 'center',
+    position: 'relative',
   },
   titleText: {
-    fontSize: 24,
-    color: '#333333',
-    marginTop: 50,
-    marginBottom: 32,
-    alignSelf: 'center',
-    fontWeight: 'semi-bold',
+    fontSize: 28,
+    fontFamily: 'Righteous_400Regular',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 8,
+    textShadowColor: 'rgba(0,0,0,0.1)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+    paddingTop: 30,
   },
+  subtitleText: {
+    fontSize: 16,
+    color: '#7F8C8D',
+    textAlign: 'center',
+    fontFamily: 'VarelaRound_400Regular',
+  },
+  star: {
+    position: 'absolute',
+    zIndex: 1,
+  },
+  starEmoji: {
+    fontSize: 20,
+  },
+  toothEmoji: {
+    fontSize: 24,
+  },
+  contentList: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  scrollContent: {
+    paddingBottom: 100,
+  },
+  gamesGrid: {
+    marginTop: 20,
+  },
+  mediumRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  smallRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  largeCard: {
+    width: width - 32,
+    height: 120,
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  mediumCard: {
+    width: (width - 48) / 2,
+    height: 140,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  smallCard: {
+    width: (width - 48) / 2,
+    height: 100,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  gradientCard: {
+    flex: 1,
+    padding: 16,
+    justifyContent: 'space-between',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  cardContent: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  gameTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    fontFamily: 'VarelaRound_400Regular',
+    marginBottom: 4,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  gameSubtitle: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.9)',
+    fontFamily: 'VarelaRound_400Regular',
+  },
+  playButton: {
+    position: 'absolute',
+    bottom: 12,
+    right: 12,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  progressSection: {
+    marginTop: 16,
+    marginBottom: 16,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  progressTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 16,
+    fontFamily: 'VarelaRound_400Regular',
+  },
+  progressCards: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  progressCard: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 12,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    marginHorizontal: 4,
+  },
+  progressEmoji: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  progressLabel: {
+    fontSize: 12,
+    color: '#7F8C8D',
+    textAlign: 'center',
+    fontFamily: 'VarelaRound_400Regular',
+  },
+  progressValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginTop: 4,
+  },
+
+  // Legacy styles for backward compatibility
   filterContainer: {
     paddingBottom: 24,
     paddingHorizontal: 8,
@@ -43,9 +212,6 @@ export default StyleSheet.create({
   activeFilterText: {
     color: '#333333',
     fontSize: 16,
-  },
-  contentList: {
-    marginBottom: 68,
   },
   contentCard: {
     backgroundColor: '#FFFDF6',
@@ -158,13 +324,12 @@ export default StyleSheet.create({
     paddingVertical: 10,
     fontSize: 16,
   },
-  // Header styles for content screen
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    paddingTop: 60, // Account for status bar
+    paddingTop: 60,
   },
   backButton: {
     padding: 8,
@@ -178,7 +343,6 @@ export default StyleSheet.create({
     color: '#666666',
     marginTop: 2,
   },
-  // Error text style for EducationContentScreen
   errorText: {
     fontSize: 18,
     color: '#333333',
