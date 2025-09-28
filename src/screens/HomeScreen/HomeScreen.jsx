@@ -173,6 +173,7 @@ const HomeScreen = () => {
                 </View>
             </View>
 
+            {/* dental chart card */}
             <View style={styles.updateContainer}>
                 <View style={styles.updateBox}>
                     <Image source={require('../../../assets/mouthIcons.png')}
@@ -180,6 +181,19 @@ const HomeScreen = () => {
                     <TouchableOpacity onPress={() => navigation.navigate('DentalChart')}>
                         <View style={styles.mouthButton}>
                             <Text style={styles.boldText}>{t('See My Mouth')}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            {/* toothmate dentists card */}
+            <View style={styles.updateContainer}>
+                <View style={styles.updateBox}>
+                    <Image source={require('../../../assets/map.png')}
+                        style={styles.mouthImage}/>
+                    <TouchableOpacity onPress={() => navigation.navigate('LocationFinder')}>
+                        <View style={styles.mouthButton}>
+                            <Text style={styles.boldText}>Toothmate Dentists</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

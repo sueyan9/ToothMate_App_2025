@@ -134,18 +134,48 @@ router.post('/Appointments/:id/images', upload.single('file'), async (req, res, 
   }
 });
 
-// upload PDF
+// upload PDF ( invoice / acc )
 router.post('/Appointments/:id/pdfs', upload.single('file'), async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file' });
     if (!/pdf$/i.test(req.file.mimetype || '')) return res.status(415).json({ error: 'Not a PDF' });
+
     const appt = await Appointment.findById(req.params.id);
     if (!appt) return res.status(404).json({ error: 'Appointment not found' });
-    appt.pdfs.push({ pdf: { data: req.file.buffer, contentType: req.file.mimetype } });
+
+    // get the category from body.category ，default " invoice"
+    const category = (req.body.category || 'invoice').toLowerCase();
+    if (!['invoice', 'acc', 'referral', 'report', 'other'].includes(category)) {
+      return res.status(400).json({ error: 'invalid category' });
+    }
+    const name = (req.body.name && String(req.body.name).trim()) || req.file.originalname;
+
+    let when = null;
+    if (req.body.when) {
+      const d = new Date(req.body.when);
+      if (!isNaN(d.getTime())) when = d;
+    }
+    if (!when) when = appt.startAt || new Date();
+
+    appt.pdfs.push({
+      pdf: { data: req.file.buffer, contentType: req.file.mimetype },
+      name,
+      category,
+      when,
+    });
+
     await appt.save();
-    res.json({ ok: true, count: appt.pdfs.length });
-  } catch (e) { next(e); }
+
+    res.json({
+      ok: true,
+      count: appt.pdfs.length,
+      added: { name, category, when: when.toISOString() }
+    });
+  } catch (e) {
+    next(e);
+  }
 });
+
 
 // List images（Base64）
 router.get('/Appointments/:id/images', async (req, res) => {
@@ -259,6 +289,7 @@ router.get('/Appointments/:id/assets', async (req, res) => {
   try {
     const appt = await Appointment.findById(req.params.id);
     if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+    const host = `${req.protocol}://${req.get('host')}`;
 
     const imagesBase64 = (appt.images || []).map(x => {
       const buf = toNodeBuffer(x?.img?.data ?? x?.data);
@@ -266,11 +297,29 @@ router.get('/Appointments/:id/assets', async (req, res) => {
       return buf ? `data:${ct};base64,${buf.toString('base64')}` : null;
     }).filter(Boolean);
 
-    const host = `${req.protocol}://${req.get('host')}`;
-    const pdfUrls = (appt.pdfs || []).map((_, i) => `${host}/Appointments/${req.params.id}/pdfs/${i}/raw`);
+//previous URL
+    const pdfUrls = (appt.pdfs || []).map((_, i) =>
+        `${host}/Appointments/${req.params.id}/pdfs/${i}/raw`
+    );
 
-    res.json({ imagesBase64, pdfUrls });
+    const pdfItems = (appt.pdfs || []).map((p, i) => {
+      const rawWhen = p?.when || p?.createdAt || appt?.startAt || appt?.createdAt;
+      const when = rawWhen ? new Date(rawWhen).toISOString() : undefined;
+      return {
+        url: `${host}/Appointments/${req.params.id}/pdfs/${i}/raw`,
+        name: p?.name || `document-${i + 1}.pdf`,
+        when,
+        category: p?.category || null,
+      };
+    });
+
+    res.json({
+      imagesBase64,
+      pdfUrls,
+      pdfItems,
+    });
   } catch (e) {
+    console.error('fetch assets failed:', e);
     res.status(500).json({ error: 'fetch assets failed' });
   }
 });
