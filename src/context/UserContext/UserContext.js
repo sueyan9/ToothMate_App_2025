@@ -62,11 +62,39 @@ const getUser = dispatch => {
     const id = await AsyncStorage.getItem('id');
     try {
       const response = await axiosApi.get(`/user/${id}`);
-      dispatch({ type: 'get_user', payload: response.data });
+      
+      // Always add the hardcoded fields when getting user data
+      const userDataWithHardcodedFields = {
+        ...response.data,
+        address: await getStoredField('userAddress') || '',
+        emergencyContactName: await getStoredField('emergencyContactName') || '',
+        emergencyContactPhone: await getStoredField('emergencyContactPhone') || ''
+      };
+      
+      dispatch({ type: 'get_user', payload: userDataWithHardcodedFields });
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
   };
+};
+
+// Helper function to get stored fields
+const getStoredField = async (key) => {
+  try {
+    return await AsyncStorage.getItem(key);
+  } catch (error) {
+    console.error(`Error getting stored field ${key}:`, error);
+    return null;
+  }
+};
+
+// Helper function to store fields
+const storeField = async (key, value) => {
+  try {
+    await AsyncStorage.setItem(key, value);
+  } catch (error) {
+    console.error(`Error storing field ${key}:`, error);
+  }
 };
 
 const getNhiAndAppointments = dispatch => {
@@ -138,6 +166,131 @@ const getProfilePicture = dispatch => {
   }
 }
 
+const updateUser = dispatch => {
+  return async (formData) => {
+    try {
+      const id = await AsyncStorage.getItem('id');
+      console.log('Updating user with ID:', id);
+      
+      // Get current user data to compare emails
+      const currentUserResponse = await axiosApi.get(`/user/${id}`);
+      const currentEmail = currentUserResponse.data.email;
+      const newEmail = formData.email.trim().toLowerCase();
+      
+      // Basic email format validation
+      if (!formData.email.includes('@') || !formData.email.includes('.')) {
+        return { success: false, error: 'Please enter a valid email address.' };
+      }
+      
+      // Only check if email exists if the user is changing their email
+      if (currentEmail.toLowerCase() !== newEmail) {
+        console.log('Email is being changed, checking if new email exists...');
+        
+        // Check if the new email already exists
+        try {
+          const emailCheckResponse = await axiosApi.get(`/checkEmail/${newEmail}`);
+          if (emailCheckResponse.data.exists) {
+            console.log('Email already exists');
+            return { success: false, error: 'Email already exists. Please choose a different email.' };
+          }
+        } catch (emailCheckError) {
+          console.error('Error checking email:', emailCheckError);
+          return { success: false, error: 'Error validating email. Please try again.' };
+        }
+      } else {
+        console.log('Email unchanged, skipping email validation');
+      }
+      
+      // Only send email to database
+      const updateData = { email: formData.email };
+      console.log('Update data (email only):', updateData);
+      
+      const response = await axiosApi.put(`/updateUser/${id}`, updateData);
+      console.log('Update response:', response.data);
+      
+      if (response.data.error === "") {
+        // Store the hardcoded fields in AsyncStorage for persistence
+        await storeField('userAddress', formData.address || '');
+        await storeField('emergencyContactName', formData.emergencyContactName || '');
+        await storeField('emergencyContactPhone', formData.emergencyContactPhone || '');
+        
+        // Get current user data
+        const userResponse = await axiosApi.get(`/user/${id}`);
+        console.log('Fetched user data:', userResponse.data);
+        
+        // Merge with the stored hardcoded fields
+        const updatedUserData = {
+          ...userResponse.data,
+          address: formData.address || '',
+          emergencyContactName: formData.emergencyContactName || '',
+          emergencyContactPhone: formData.emergencyContactPhone || ''
+        };
+        
+        console.log('Final user data with hardcoded fields:', updatedUserData);
+        dispatch({ type: 'get_user', payload: updatedUserData });
+        return { success: true };
+      } else {
+        return { success: false, error: response.data.error };
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+      return { success: false, error: 'Failed to update user details' };
+    }
+  };
+};
+
+const changePassword = dispatch => {
+  return async (currentPassword, newPassword) => {
+    try {
+      const id = await AsyncStorage.getItem('id');
+      
+      const response = await axiosApi.put(`/changePassword/${id}`, {
+        oldPassword: currentPassword,
+        newPassword: newPassword
+      });
+      
+      // If no error is thrown, the password was changed successfully
+      return { success: true };
+    } catch (error) {
+      console.error('Error changing password:', error);
+      
+      // Check if it's a 422 error (invalid current password)
+      if (error.response && error.response.status === 422) {
+        return { success: false, error: error.response.data.error || 'Invalid current password' };
+      }
+      
+      return { success: false, error: 'Failed to change password. Please try again.' };
+    }
+  };
+};
+
+const updateClinic = dispatch => {
+  return async (clinicId) => {
+    try {
+      const id = await AsyncStorage.getItem('id');
+      
+      const response = await axiosApi.put(`/updateUserClinic/${id}`, {
+        clinic: clinicId
+      });
+      
+      if (response.data.error === "") {
+        // Refresh clinic data after successful update
+        const userClinic = await axiosApi.get(`/getUserClinic/${id}`);
+        const clinicID = userClinic.data.clinic;
+        const clinicResponse = await axiosApi.get(`/getDentalClinic/${clinicID}`);
+        dispatch({ type: 'get_clinic', payload: clinicResponse.data.clinic });
+        
+        return { success: true };
+      } else {
+        return { success: false, error: response.data.error };
+      }
+    } catch (error) {
+      console.error('Error updating clinic:', error);
+      return { success: false, error: 'Failed to update clinic. Please try again.' };
+    }
+  };
+};
+
 export const { Provider, Context } = createDataContext(
     UserReducer,
     {
@@ -150,6 +303,9 @@ export const { Provider, Context } = createDataContext(
       getAllImages,
       setProfilePicture,
       getProfilePicture,
+      updateUser,
+      changePassword,
+      updateClinic,
     },
     {
       appointments: [],

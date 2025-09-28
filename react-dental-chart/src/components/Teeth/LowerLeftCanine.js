@@ -92,14 +92,6 @@ export const LowerLeftCanine = () => {
           position: 'relative',
         }}
       >
-        <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
-          <img
-            src="../assets/back_arrow.png"
-            alt="Back"
-            onClick={() => (window.location = '/')}
-            className='back-button'
-          />
-        </div>
 
         <Canvas style={{ width: '100%', height: '80%' }}>
           <CameraController />

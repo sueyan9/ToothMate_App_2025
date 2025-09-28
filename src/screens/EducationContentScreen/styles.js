@@ -29,7 +29,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#E9F1F8',
     paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingTop: 52,
   },
   scrollContent: {
     flex: 1,
@@ -46,7 +46,8 @@ export default StyleSheet.create({
     fontSize: 24,
     color: '#333333',
     marginBottom: 8,
-    alignSelf: 'center',
+    textAlign: 'center', // Changed from alignSelf: 'center'
+    fontWeight: 'semi-bold',
   },
 
   // Filters (from old EducationScreen)
@@ -105,6 +106,14 @@ export default StyleSheet.create({
     fontSize: 16,
     color: '#333333',
     flex: 1,
+    marginBottom: 16,
+  },
+  topCornerBackButton: {
+    position: 'absolute',
+    top: 130,
+    left: 24,
+    padding: 8,
+    zIndex: 1,
   },
   categoryTag: {
     alignSelf: 'flex-start',
@@ -140,7 +149,7 @@ export default StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    marginTop: 5,
+    marginTop: 0,
     padding: 10,
     marginBottom: 10,
     color: '#333333',
@@ -151,8 +160,9 @@ export default StyleSheet.create({
   contentTitle: {
     fontSize: 28,
     color: '#333333',
-    marginBottom: 24,
-    alignSelf: 'center',
+    marginBottom: 20,
+    marginTop: 20,
+    alignSelf: 'right',
   },
   contentCategory: {
     fontSize: 18,
@@ -164,9 +174,11 @@ export default StyleSheet.create({
     height: 200,
     borderRadius: 10,
     marginBottom: 20,
+    marginLeft: 5,
   },
   contentDetails: {
     marginBottom: 30,
+    paddingHorizontal: 5,
   },
   detailItem: {
     flexDirection: 'row',
@@ -195,13 +207,13 @@ export default StyleSheet.create({
     marginTop: 24,
   },
   searchInput: {
-    backgroundColor: 'none',
     borderWidth: 2.5,
     borderColor: '#516287',
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
     fontSize: 16,
+    color: '#333333',
   },
 
   // Header (unique to content screen)
@@ -210,7 +222,8 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    paddingTop: 60, // status bar space
+    paddingTop: 80, // status bar space
+    justifyContent: 'center', // Add this to center the content
   },
   backButton: {
     padding: 8,
@@ -219,9 +232,162 @@ export default StyleSheet.create({
   headerTextContainer: {
     flex: 1,
   },
+  button: {
+    backgroundColor: '#875B51',
+    padding: 16,
+    marginTop: 20,
+    borderRadius: 16,
+    marginHorizontal: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  buttonText: {
+    fontSize: 17,
+    textAlign: 'center',
+    color: '#FFFDF6',
+    fontWeight: '600',
+  },
   itemCountText: {
     fontSize: 14,
     color: '#666666',
     marginTop: 2,
+    alignSelf: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#333333',
+    textAlign: 'center',
+  },
+  favourite: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+  },
+  absoluteArrow: {
+    position: 'absolute',
+    right: 10,
+    top: 16, // Position at the top instead of center
+  },
+
+  // Navigation Controls Styles
+  navigationContainer: {
+    marginTop: 24,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+  },
+  contentListButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5F5F5',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  contentListButtonText: {
+    fontSize: 16,
+    color: '#875B51',
+    marginLeft: 8,
+    fontWeight: '500',
+  },
+  prevNextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  navButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    minWidth: 100,
+    justifyContent: 'center',
+  },
+  navButtonDisabled: {
+    backgroundColor: '#F0F0F0',
+    borderColor: '#D0D0D0',
+  },
+  navButtonText: {
+    fontSize: 14,
+    color: '#875B51',
+    fontWeight: '500',
+    marginHorizontal: 4,
+  },
+  navButtonTextDisabled: {
+    color: '#CCC',
+  },
+
+  // Modal Styles
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    backgroundColor: '#FFFFFF',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333333',
+  },
+  closeModalButton: {
+    padding: 8,
+  },
+  modalContentList: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+  },
+  modalContentItem: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginVertical: 4,
+    padding: 16,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  currentContentItem: {
+    backgroundColor: '#E8F5E8',
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+  },
+  modalItemContent: {
+    flex: 1,
+  },
+  modalItemTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333333',
+    marginBottom: 4,
+  },
+  currentContentItemText: {
+    color: '#2E7D32',
+    fontWeight: '600',
+  },
+  modalItemCategory: {
+    fontSize: 12,
+    color: '#666666',
+    backgroundColor: '#F0F0F0',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
   },
 });

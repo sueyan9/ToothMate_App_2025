@@ -7,7 +7,6 @@ require("./models/ImgModel");
 require("./models/PdfModel");
 require("./models/Tooth");
 require("./models/Treatment");
-
 const express = require("express");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
@@ -19,7 +18,8 @@ const treatmentRoutes = require("./routes/treatmentRoutes");
 const requireAuth = require("./middlewares/requireAuth");
 
 const app = express();
-
+// no case_sensitive
+app.set('case sensitive routing', false);
 // mid-parts
 app.use(express.json());
 
@@ -43,6 +43,7 @@ app.use(clinicRoutes);
 app.use(appointmentRoutes);
 app.use(toothRoutes);
 app.use(treatmentRoutes);
+listRoutes(app);
 // check link health
 app.get('/health', (req, res) => {
     res.json({

@@ -256,4 +256,294 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: 40,
   },
+  
+  // Update Details Modal
+  updateModalContent: {
+    backgroundColor: '#FFFDF6',
+    borderRadius: 16,
+    padding: 20,
+    width: '90%',
+    maxHeight: '85%',
+  },
+  formContainer: {
+    maxHeight: 400,
+  },
+  inputGroup: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333333',
+    marginBottom: 8,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#EDDFD3',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: '#FFFFFF',
+    color: '#333333',
+  },
+  multilineInput: {
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#EDDFD3',
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginHorizontal: 8,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666666',
+  },
+  submitButton: {
+    backgroundColor: '#516287',
+  },
+  submitButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  
+  // Confirmation Modal
+  confirmModalContent: {
+    backgroundColor: '#FFFDF6',
+    borderRadius: 16,
+    padding: 24,
+    width: '85%',
+    alignItems: 'center',
+  },
+  confirmHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  confirmTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  confirmMessage: {
+    fontSize: 16,
+    color: '#666666',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  discardButton: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+  },
+  discardButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666666',
+  },
+  saveButton: {
+    backgroundColor: '#28A745',
+  },
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  
+  // Input validation styles
+  validInput: {
+    borderColor: '#28A745',
+    borderWidth: 2,
+  },
+  invalidInput: {
+    borderColor: '#DC3545',
+    borderWidth: 2,
+  },
+  warningInput: {
+    borderColor: '#FF8C00',
+    borderWidth: 2,
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#DC3545',
+    marginTop: 4,
+    marginLeft: 4,
+  },
+  warningText: {
+    fontSize: 14,
+    color: '#FF8C00',
+    marginTop: 4,
+    marginLeft: 4,
+  },
+  successText: {
+    fontSize: 14,
+    color: '#28A745',
+    marginTop: 4,
+    marginLeft: 4,
+  },
+  
+  // Clinic update specific styles
+  clinicInfoContainer: {
+    marginTop: 8,
+    padding: 12,
+    backgroundColor: '#F0F8F0',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#28A745',
+  },
+  clinicInfoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginTop: 4,
+  },
+  clinicInfoText: {
+    fontSize: 14,
+    color: '#666666',
+    marginTop: 2,
+  },
+  warningClinicTitle: {
+    color: '#FF8C00',
+  },
+  warningClinicText: {
+    color: '#FF8C00',
+  },
+  clinicConfirmInfo: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+    alignItems: 'center',
+    width: '100%',
+  },
+  clinicConfirmName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'center',
+  },
+  clinicConfirmText: {
+    fontSize: 14,
+    color: '#666666',
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  
+  // Success modal styles
+  successModalContent: {
+    backgroundColor: '#FFFDF6',
+    borderRadius: 16,
+    padding: 24,
+    width: '85%',
+    alignItems: 'center',
+  },
+  successHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  successImage: {
+    width: 120,
+    height: 120,
+    marginBottom: 16,
+  },
+  successTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#28A745',
+    textAlign: 'center',
+    lineHeight: 26,
+  },
+  successCloseButton: {
+    backgroundColor: '#516287',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+  },
+  successCloseText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  
+  // Privacy Disclaimer Section
+  privacyDisclaimerSection: {
+    marginTop: 20,
+    marginBottom: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E9ECEF',
+    width: '100%',
+  },
+  privacyDisclaimerText: {
+    fontSize: 14,
+    color: '#495057',
+    textAlign: 'left',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  privacyButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 12,
+  },
+  privacyButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#CED4DA',
+    backgroundColor: '#FFFFFF',
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  privacyButtonSelected: {
+    backgroundColor: '#516287',
+    borderColor: '#516287',
+  },
+  privacyButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#495057',
+  },
+  privacyButtonTextSelected: {
+    color: '#FFFFFF',
+  },
+  secondaryDisclaimerText: {
+    fontSize: 12,
+    color: '#6C757D',
+    textAlign: 'left',
+    lineHeight: 16,
+    fontStyle: 'italic',
+    marginTop: 8,
+  },
+  
+  // Disabled Button Styles
+  disabledButton: {
+    backgroundColor: '#E9ECEF',
+    borderColor: '#CED4DA',
+  },
+  disabledButtonText: {
+    color: '#6C757D',
+  },
 });
