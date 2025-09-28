@@ -546,4 +546,12 @@ export default StyleSheet.create({
   disabledButtonText: {
     color: '#6C757D',
   },
+  //images display
+  xrayThumb: {
+    width: 96,
+    height: 96,
+    borderRadius: 12,
+    backgroundColor: '#EEF1F6',
+  },
+
 });
