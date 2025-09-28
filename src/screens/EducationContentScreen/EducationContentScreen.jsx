@@ -241,7 +241,7 @@ const EducationContentScreen = ({ route }) => {
                                 </View>
                             )}
                             <TouchableOpacity onPress={() => favouritePress(item._id || item.id)}>
-                                <Entypo name="heart" size={24} color={item.favourite === true ? "#C0C6CB" : "#FF6B6B"} style={styles.favourite}/>
+                                <Entypo name="heart" size={24} color={item.favourite === true ? "#FF6B6B" : "#C0C6CB"} style={styles.favourite}/>
                             </TouchableOpacity>
                         </TouchableOpacity>
                     ))
