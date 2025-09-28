@@ -148,11 +148,13 @@ const MainFlow = () => (
         const isProfileInner =
             currentTab.name === 'Profile' &&
             ['images', 'allimages', 'invoice'].includes(currentNestedRoute?.name);
+
+
         return {
             headerShown: !isProfileInner,   // 在二级页时关掉 Tab header
             ...( !isProfileInner ? {
                 headerLeft: () => <HeaderLogo />,
-                headerTitle: '',
+                headerTitle: 'ToothMate',
                 headerStyle: {
                     backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
                     borderBottomWidth: 0,
