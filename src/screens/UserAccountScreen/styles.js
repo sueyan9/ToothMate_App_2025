@@ -546,4 +546,27 @@ export default StyleSheet.create({
   disabledButtonText: {
     color: '#6C757D',
   },
+  //images display
+  xrayThumb: {
+    width: 96,
+    height: 96,
+    borderRadius: 12,
+    backgroundColor: '#EEF1F6',
+  },
+  //Collapsible
+  badge: {
+    minWidth: 24,
+    height: 20,
+    paddingHorizontal: 6,
+    borderRadius: 10,
+    backgroundColor: '#ECEFF5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 6,
+  },
+  badgeText: {
+    color: '#516287',
+    fontSize: 12,
+    fontWeight: '600',
+  },
 });
