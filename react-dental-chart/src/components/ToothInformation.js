@@ -21,7 +21,7 @@ export default function ToothInformation({ toothNumber }) {
     });
   }, [toothNumber]);
 
-    // 👉 When the individual tooth panel opens, notify React Native
+    // When the individual tooth panel opens, notify React Native
       useEffect(() => {
         if (!isOpen || !toothInfo || !window.ReactNativeWebView) return;
         window.ReactNativeWebView.postMessage(JSON.stringify({
