@@ -33,8 +33,8 @@ const ChildEducationScreen = ({ navigation }) => {
         'Fun facts and tooth care',
         'Tooth Hero Challenge',
         'Complete daily missions',
-        'Cavity Monsters Game',
-        'Protect your teeth from sugar bugs!',
+        'ToothMaze Adventure',
+        'Navigate mazes and answer questions!',
         'Show off your healthy smile',
         'Dental Quiz Adventure',
         'Test your tooth knowledge'
@@ -96,6 +96,7 @@ const ChildEducationScreen = ({ navigation }) => {
             color: ['#FF6B9D', '#FF8E8E'],
             screen: 'BrushingTimer',
             size: 'large'
+            
         },
         {
             id: 'learn-teeth',
@@ -115,8 +116,15 @@ const ChildEducationScreen = ({ navigation }) => {
             screen: 'ToothHero',
             size: 'medium'
         },
-        
-        
+        {
+            id: 'toothmaze-adventure',
+            title: t('ToothMaze Adventure'),
+            subtitle: t('Navigate mazes and answer questions!'),
+            icon: 'extension',
+            color: ['#7FCDCD', '#7FCDCD'],
+            screen: 'ToothMazeAdventure',
+            size: 'large'
+        },
     ];
 
     const handleGamePress = (game) => {
@@ -141,7 +149,7 @@ const ChildEducationScreen = ({ navigation }) => {
             <TouchableOpacity 
                 key={game.id}
                 onPress={() => handleGamePress(game)}
-                style={[cardStyle, { marginBottom: 16 }]}
+                style={cardStyle}
                 testID={`game-card-${game.id}`}
             >
                 <LinearGradient
@@ -158,7 +166,7 @@ const ChildEducationScreen = ({ navigation }) => {
                             </Animated.View>
                         )}
                     </View>
-                    <View style={styles.cardContent}>
+                    <View style={styles.cardTextColumn}>
                         <Text style={styles.gameTitle}>{game.title}</Text>
                         <Text style={styles.gameSubtitle}>{game.subtitle}</Text>
                     </View>
@@ -230,7 +238,7 @@ const ChildEducationScreen = ({ navigation }) => {
             >
                 {/* Daily Progress Section */}
                 <View style={styles.progressSection}>
-                    <Text style={styles.progressTitle}>Today's Progress 📊</Text>
+                    <Text style={styles.progressTitle}>Today's Progress</Text>
                     <View style={styles.progressCards}>
                         <View style={styles.progressCard}>
                             <Text style={styles.progressEmoji}>🪥</Text>

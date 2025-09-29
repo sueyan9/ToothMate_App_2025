@@ -27,10 +27,11 @@ import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
+// Import new game screens
 import BrushingTimerScreen from './src/screens/BrushingTimerScreen/BrushingTimerScreen';
+import ToothMazeAdventure from './src/screens/ToothMazeAdventure/ToothMazeAdventure';
 import LearnTeethScreen from './src/screens/LearnTeethScreen/LearnTeethScreen';
 import ToothHeroScreen from './src/screens/ToothHeroScreen/ToothHeroScreen';
-
 
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
@@ -114,7 +115,7 @@ const ChildEducationStack = () => (
         <Stack.Screen name="BrushingTimer" component={BrushingTimerScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LearnTeeth" component={LearnTeethScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ToothHero" component={ToothHeroScreen} options={{ headerShown: false }} />
-
+        <Stack.Screen name="ToothMazeAdventure" component={ToothMazeAdventure} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
 
@@ -227,7 +228,7 @@ const ChildFlow = () => (
 
         // Hide tab bar for game screens
         const isGameScreen = currentTab.name === 'ChildEducation' && 
-        ['BrushingTimer', 'LearnTeeth', 'ToothHero', 'CavityGame', 'PhotoBooth', 'QuizAdventure'].includes(currentNestedRoute?.name);
+        ['BrushingTimer', 'LearnTeeth', 'ToothHero', 'ToothMazeAdventure'].includes(currentNestedRoute?.name);
 
         return {
         headerShown: !isGameScreen, // Hide header for game screens

@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
-import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import styles from './styles';
 
 const LearnTeethScreen = ({ navigation }) => {
   const [selectedTopic, setSelectedTopic] = useState(null);
@@ -12,7 +12,7 @@ const LearnTeethScreen = ({ navigation }) => {
       id: 'tooth-types',
       title: 'Types of Teeth',
       emoji: '🦷',
-      color: ['#FF9A9E', '#FECFEF'],
+      color: '#FF9A9E',
       content: {
         title: 'Meet Your Tooth Family! 👨‍👩‍👧‍👦',
         facts: [
@@ -28,7 +28,7 @@ const LearnTeethScreen = ({ navigation }) => {
       id: 'tooth-parts',
       title: 'Parts of a Tooth',
       emoji: '🏗️',
-      color: ['#A8EDEA', '#FED6E3'],
+      color: '#A8EDEA',
       content: {
         title: 'Tooth Anatomy Adventure! 🔍',
         facts: [
@@ -44,7 +44,7 @@ const LearnTeethScreen = ({ navigation }) => {
       id: 'good-foods',
       title: 'Tooth-Friendly Foods',
       emoji: '🥕',
-      color: ['#FBAB7E', '#F7CE68'],
+      color: '#FBAB7E',
       content: {
         title: 'Super Foods for Super Teeth! 🦸‍♀️',
         facts: [
@@ -60,7 +60,7 @@ const LearnTeethScreen = ({ navigation }) => {
       id: 'bad-foods',
       title: 'Foods to Limit',
       emoji: '🍭',
-      color: ['#FF8A80', '#FFCDD2'],
+      color: '#FF8A80',
       content: {
         title: 'Sugar Bugs Love These Foods! 🐛',
         facts: [
@@ -76,7 +76,7 @@ const LearnTeethScreen = ({ navigation }) => {
       id: 'brushing-tips',
       title: 'How to Brush',
       emoji: '🪥',
-      color: ['#667eea', '#764ba2'],
+      color: '#667eea',
       content: {
         title: 'Become a Brushing Champion! 🏆',
         facts: [
@@ -92,7 +92,7 @@ const LearnTeethScreen = ({ navigation }) => {
       id: 'fun-facts',
       title: 'Amazing Tooth Facts',
       emoji: '🤯',
-      color: ['#ffecd2', '#fcb69f'],
+      color: '#8ff7b0ff',
       content: {
         title: 'Mind-Blowing Tooth Facts! 🧠💥',
         facts: [
@@ -127,10 +127,7 @@ const LearnTeethScreen = ({ navigation }) => {
 
   if (selectedTopic) {
     return (
-      <LinearGradient
-        colors={selectedTopic.color}
-        style={styles.container}
-      >
+      <View style={[styles.container, { backgroundColor: selectedTopic.color }]}>
         <View style={styles.header}>
           <TouchableOpacity 
             style={styles.backButton}
@@ -162,7 +159,6 @@ const LearnTeethScreen = ({ navigation }) => {
           <TouchableOpacity 
             style={styles.quizButton}
             onPress={() => {
-              // Navigate to quiz about this topic
               navigation.navigate('QuizAdventure', { topic: selectedTopic.id });
             }}
           >
@@ -170,7 +166,7 @@ const LearnTeethScreen = ({ navigation }) => {
             <Text style={styles.quizButtonText}>Test Your Knowledge!</Text>
           </TouchableOpacity>
         </Animated.ScrollView>
-      </LinearGradient>
+      </View>
     );
   }
 
@@ -192,24 +188,17 @@ const LearnTeethScreen = ({ navigation }) => {
       >
         <Text style={styles.sectionTitle}>Choose a Topic to Explore! 🚀</Text>
         
-        {topics.map((topic, index) => (
+        {topics.map((topic) => (
           <TouchableOpacity
             key={topic.id}
-            style={styles.topicCard}
+            style={[styles.topicCard, { backgroundColor: topic.color }]}
             onPress={() => handleTopicPress(topic)}
           >
-            <LinearGradient
-              colors={topic.color}
-              style={styles.topicGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <Text style={styles.topicCardEmoji}>{topic.emoji}</Text>
-              <View style={styles.topicInfo}>
-                <Text style={styles.topicCardTitle}>{topic.title}</Text>
-                <MaterialIcons name="arrow-forward" size={24} color="white" />
-              </View>
-            </LinearGradient>
+            <Text style={styles.topicCardEmoji}>{topic.emoji}</Text>
+            <View style={styles.topicInfo}>
+              <Text style={styles.topicCardTitle}>{topic.title}</Text>
+              <MaterialIcons name="arrow-forward" size={24} color="white" />
+            </View>
           </TouchableOpacity>
         ))}
 
@@ -224,168 +213,5 @@ const LearnTeethScreen = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F0F8FF',
-    paddingTop: 60,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  backButton: {
-    padding: 8,
-    marginRight: 12,
-  },
-  headerTitle: {
-    fontSize: 23,
-    fontWeight: 'bold',
-    color: 'white',
-
-  },
-  topicsContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  topicCard: {
-    marginBottom: 16,
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  topicGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-  },
-  topicCardEmoji: {
-    fontSize: 40,
-    marginRight: 16,
-  },
-  topicInfo: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  topicCardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  contentContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  topicHeader: {
-    alignItems: 'center',
-    marginVertical: 30,
-  },
-  topicEmoji: {
-    fontSize: 80,
-    marginBottom: 16,
-  },
-  topicTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
-  },
-  factsContainer: {
-    marginBottom: 30,
-  },
-  factCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  factIcon: {
-    fontSize: 24,
-    marginRight: 16,
-    minWidth: 32,
-    textAlign: 'center',
-  },
-  factText: {
-    flex: 1,
-    fontSize: 16,
-    color: '#2C3E50',
-    lineHeight: 24,
-  },
-  quizButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 25,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    marginBottom: 40,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  quizButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  encouragementSection: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 20,
-    marginVertical: 20,
-    marginBottom: 40,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  encouragementTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  encouragementText: {
-    fontSize: 16,
-    color: '#7F8C8D',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-});
 
 export default LearnTeethScreen;

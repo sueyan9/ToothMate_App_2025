@@ -5,7 +5,7 @@ const { width } = Dimensions.get('window');
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F8FF',
+    backgroundColor: '#E9F1F8',
     paddingTop: 60,
   },
   header: {
@@ -15,21 +15,22 @@ export default StyleSheet.create({
     position: 'relative',
   },
   titleText: {
-    fontSize: 28,
-    fontFamily: 'Righteous_400Regular',
+    fontSize: 25,
+    fontFamily: 'Varela_400Regular',
     color: '#2C3E50',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
+    marginTop: 8,
     textShadowColor: 'rgba(0,0,0,0.1)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
-    paddingTop: 30,
+    paddingTop: 35,
   },
   subtitleText: {
     fontSize: 16,
     color: '#7F8C8D',
     textAlign: 'center',
-    fontFamily: 'VarelaRound_400Regular',
+    fontFamily: 'Varela_400Regular',
   },
   star: {
     position: 'absolute',
@@ -63,7 +64,7 @@ export default StyleSheet.create({
   },
   largeCard: {
     width: width - 32,
-    height: 120,
+    height: 150,
     borderRadius: 20,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -71,10 +72,11 @@ export default StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 6,
+    marginBottom: 16, 
   },
   mediumCard: {
     width: (width - 48) / 2,
-    height: 140,
+    height: 180,
     borderRadius: 16,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -107,21 +109,36 @@ export default StyleSheet.create({
   cardContent: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'flex-start', // left align
+    flexDirection: 'column',  // stack vertically
   },
+
+  cardTextColumn: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start', // Keep text left-aligned like original
+    paddingHorizontal: 0,
+    paddingVertical: 10,
+  },
+
   gameTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
     fontFamily: 'VarelaRound_400Regular',
-    marginBottom: 4,
+    textAlign: 'left', // Keep left-aligned
+    marginBottom: 6, // Space between title and subtitle
     textShadowColor: 'rgba(0,0,0,0.3)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
   gameSubtitle: {
-    fontSize: 12,
+    fontSize: 13,
     color: 'rgba(255,255,255,0.9)',
     fontFamily: 'VarelaRound_400Regular',
+    textAlign: 'left', // Keep left-aligned
+    lineHeight: 16,
   },
   playButton: {
     position: 'absolute',
@@ -147,7 +164,7 @@ export default StyleSheet.create({
     elevation: 3,
   },
   progressTitle: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#2C3E50',
     textAlign: 'center',
@@ -161,27 +178,31 @@ export default StyleSheet.create({
   progressCard: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 12,
     backgroundColor: '#F8F9FA',
     borderRadius: 12,
     marginHorizontal: 4,
+    minHeight: 85,
   },
   progressEmoji: {
     fontSize: 24,
     marginBottom: 8,
+    textAlign: 'center',
   },
   progressLabel: {
     fontSize: 12,
     color: '#7F8C8D',
     textAlign: 'center',
-    fontFamily: 'VarelaRound_400Regular',
-    flexWrap: 'wrap',
+    fontFamily: 'Varela_400Regular',
+    marginBottom: 4,
+    lineHeight: 14,
   },
   progressValue: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#2C3E50',
-    marginTop: 4,
+    textAlign: 'center',
   },
 
   // Legacy styles for backward compatibility
@@ -225,6 +246,9 @@ export default StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     marginTop: 5,
+  },
+  gameCards: {
+    flexWrap: 'wrap',
   },
   cardContent: {
     flexDirection: 'row',
