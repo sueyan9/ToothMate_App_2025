@@ -2,7 +2,7 @@ import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useContext, useEffect, useState } from 'react';
-import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Context as EducationContext } from '../../context/EducationContext/EducationContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import styles from './styles';
@@ -13,6 +13,7 @@ const EducationContentScreen = ({ route }) => {
     const { t } = useTranslation();
     const {educationData} = state;
     const [dataLoaded, setDataLoaded] = useState(false);
+    const [showContentListModal, setShowContentListModal] = useState(false);
     const navigation = useNavigation();
     
     const TREATMENT_TO_TOPIC = {
@@ -76,6 +77,48 @@ const EducationContentScreen = ({ route }) => {
         );
     }
 
+    // Helper functions for content navigation
+    const getFilteredContentForNavigation = () => {
+        if (!fromFilter || !educationData.length) return [];
+        
+        return fromFilter === 'All'
+            ? educationData
+            : educationData.filter(item =>
+                item.category === fromFilter || item.recommended === fromFilter
+            );
+    };
+
+    const getCurrentContentIndex = () => {
+        const filteredContent = getFilteredContentForNavigation();
+        return filteredContent.findIndex(content => content._id === contentId);
+    };
+
+    const navigateToContent = (targetContent) => {
+        navigation.replace('content', { 
+            id: targetContent._id,
+            fromFilter: fromFilter,
+            isModal: true
+        });
+    };
+
+    const navigateToNextContent = () => {
+        const filteredContent = getFilteredContentForNavigation();
+        const currentIndex = getCurrentContentIndex();
+        
+        if (currentIndex !== -1 && currentIndex < filteredContent.length - 1) {
+            navigateToContent(filteredContent[currentIndex + 1]);
+        }
+    };
+
+    const navigateToPreviousContent = () => {
+        const filteredContent = getFilteredContentForNavigation();
+        const currentIndex = getCurrentContentIndex();
+        
+        if (currentIndex > 0) {
+            navigateToContent(filteredContent[currentIndex - 1]);
+        }
+    };
+
     // Individual content view
     const individualContent = contentId ? educationData.find(content => content._id === contentId) : null;
     if (!isFilterView && individualContent) {
@@ -136,8 +179,122 @@ const EducationContentScreen = ({ route }) => {
                                 </Text>
                             </TouchableOpacity>
                         )}
+
+                        {/* Navigation Controls */}
+                        {fromFilter && getFilteredContentForNavigation().length > 1 && (
+                            <View style={styles.navigationContainer}>
+                                {/* Content List Button */}
+                                <TouchableOpacity 
+                                    style={styles.contentListButton}
+                                    onPress={() => setShowContentListModal(true)}
+                                >
+                                    <MaterialIcons name="list" size={20} color="#875B51" />
+                                    <Text style={styles.contentListButtonText}>
+                                        View All ({getFilteredContentForNavigation().length})
+                                    </Text>
+                                </TouchableOpacity>
+
+                                {/* Previous/Next Buttons */}
+                                <View style={styles.prevNextContainer}>
+                                    <TouchableOpacity 
+                                        style={[
+                                            styles.navButton, 
+                                            getCurrentContentIndex() === 0 && styles.navButtonDisabled
+                                        ]}
+                                        onPress={navigateToPreviousContent}
+                                        disabled={getCurrentContentIndex() === 0}
+                                    >
+                                        <MaterialIcons 
+                                            name="keyboard-arrow-left" 
+                                            size={24} 
+                                            color={getCurrentContentIndex() === 0 ? "#CCC" : "#875B51"} 
+                                        />
+                                        <Text style={[
+                                            styles.navButtonText,
+                                            getCurrentContentIndex() === 0 && styles.navButtonTextDisabled
+                                        ]}>
+                                            Previous
+                                        </Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity 
+                                        style={[
+                                            styles.navButton,
+                                            getCurrentContentIndex() === getFilteredContentForNavigation().length - 1 && styles.navButtonDisabled
+                                        ]}
+                                        onPress={navigateToNextContent}
+                                        disabled={getCurrentContentIndex() === getFilteredContentForNavigation().length - 1}
+                                    >
+                                        <Text style={[
+                                            styles.navButtonText,
+                                            getCurrentContentIndex() === getFilteredContentForNavigation().length - 1 && styles.navButtonTextDisabled
+                                        ]}>
+                                            Next
+                                        </Text>
+                                        <MaterialIcons 
+                                            name="keyboard-arrow-right" 
+                                            size={24} 
+                                            color={getCurrentContentIndex() === getFilteredContentForNavigation().length - 1 ? "#CCC" : "#875B51"} 
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        )}
                     </View>
                 </ScrollView>
+
+                {/* Content List Modal */}
+                <Modal
+                    visible={showContentListModal}
+                    animationType="slide"
+                    presentationStyle="pageSheet"
+                    onRequestClose={() => setShowContentListModal(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>{fromFilter}</Text>
+                            <TouchableOpacity 
+                                onPress={() => setShowContentListModal(false)}
+                                style={styles.closeModalButton}
+                            >
+                                <MaterialIcons name="close" size={24} color="#875B51" />
+                            </TouchableOpacity>
+                        </View>
+                        
+                        <ScrollView style={styles.modalContentList}>
+                            {getFilteredContentForNavigation().map((item, index) => (
+                                <TouchableOpacity
+                                    key={item._id}
+                                    style={[
+                                        styles.modalContentItem,
+                                        item._id === contentId && styles.currentContentItem
+                                    ]}
+                                    onPress={() => {
+                                        setShowContentListModal(false);
+                                        if (item._id !== contentId) {
+                                            navigateToContent(item);
+                                        }
+                                    }}
+                                >
+                                    <View style={styles.modalItemContent}>
+                                        <Text style={[
+                                            styles.modalItemTitle,
+                                            item._id === contentId && styles.currentContentItemText
+                                        ]}>
+                                            {item.topic}
+                                        </Text>
+                                        <Text style={styles.modalItemCategory}>
+                                            {item.category}
+                                        </Text>
+                                    </View>
+                                    {item._id === contentId && (
+                                        <MaterialIcons name="check-circle" size={20} color="#4CAF50" />
+                                    )}
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    </View>
+                </Modal>
             </View>
         );
     }

@@ -111,7 +111,7 @@ export default StyleSheet.create({
   topCornerBackButton: {
     position: 'absolute',
     top: 130,
-    left: 20,
+    left: 24,
     padding: 8,
     zIndex: 1,
   },
@@ -270,5 +270,124 @@ export default StyleSheet.create({
     position: 'absolute',
     right: 10,
     top: 16, // Position at the top instead of center
+  },
+
+  // Navigation Controls Styles
+  navigationContainer: {
+    marginTop: 24,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+  },
+  contentListButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5F5F5',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  contentListButtonText: {
+    fontSize: 16,
+    color: '#875B51',
+    marginLeft: 8,
+    fontWeight: '500',
+  },
+  prevNextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  navButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    minWidth: 100,
+    justifyContent: 'center',
+  },
+  navButtonDisabled: {
+    backgroundColor: '#F0F0F0',
+    borderColor: '#D0D0D0',
+  },
+  navButtonText: {
+    fontSize: 14,
+    color: '#875B51',
+    fontWeight: '500',
+    marginHorizontal: 4,
+  },
+  navButtonTextDisabled: {
+    color: '#CCC',
+  },
+
+  // Modal Styles
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    backgroundColor: '#FFFFFF',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333333',
+  },
+  closeModalButton: {
+    padding: 8,
+  },
+  modalContentList: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+  },
+  modalContentItem: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginVertical: 4,
+    padding: 16,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  currentContentItem: {
+    backgroundColor: '#E8F5E8',
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+  },
+  modalItemContent: {
+    flex: 1,
+  },
+  modalItemTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333333',
+    marginBottom: 4,
+  },
+  currentContentItemText: {
+    color: '#2E7D32',
+    fontWeight: '600',
+  },
+  modalItemCategory: {
+    fontSize: 12,
+    color: '#666666',
+    backgroundColor: '#F0F0F0',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
   },
 });

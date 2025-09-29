@@ -14,13 +14,6 @@ export default StyleSheet.create({
         paddingTop: 20,
         paddingBottom: 64,
     },
-    headerRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: 16,
-        marginBottom: 16,
-    },
     profile: {
         width: 80,
         height: 80,
@@ -134,5 +127,91 @@ export default StyleSheet.create({
     loadingText: {
         fontSize: 16,
         color: '#333333',
-    }
+    },
+    
+    // New styles for LocationFinder
+    topCornerBackButton: {
+        position: 'absolute',
+        top: 52,
+        left: 16,
+        zIndex: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 20,
+        padding: 8,
+    },
+    headerContainer: {
+        marginTop: 100,
+        marginBottom: 20,
+        alignItems: 'center',
+    },
+    headerTextContainer: {
+        alignItems: 'center',
+    },
+    itemCountText: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+    },
+    searchContainer: {
+        marginBottom: 20,
+        paddingHorizontal: 8,
+    },
+    searchInput: {
+        backgroundColor: '#FFFDF6',
+        borderRadius: 25,
+        paddingHorizontal: 20,
+        paddingVertical: 12,
+        fontSize: 16,
+        color: '#333333',
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
+    },
+    contentList: {
+        flex: 1,
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 60,
+    },
+    emptyText: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+        paddingHorizontal: 20,
+    },
+    contentCard: {
+        backgroundColor: '#FFFDF6',
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 12,
+        marginHorizontal: 8,
+        position: 'relative',
+    },
+    absoluteArrow: {
+        position: 'absolute',
+        right: 16,
+        top: '50%',
+        transform: [{ translateY: -15 }],
+    },
+    cardContent: {
+        paddingRight: 40,
+    },
+    topicText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333333',
+        marginBottom: 4,
+    },
+    addressText: {
+        fontSize: 14,
+        color: '#666',
+        marginBottom: 4,
+    },
+    contactText: {
+        fontSize: 12,
+        color: '#875B51',
+        marginBottom: 2,
+    },
 });

@@ -20,6 +20,7 @@ import GameScreen from './src/screens/GameScreen/GameScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
+import LocationFinder from './src/screens/LocationFinder';
 import NotificationSettingsScreen from './src/screens/NotificationSettingsScreen';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
@@ -70,6 +71,7 @@ const AccountStack = () => (
         <Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />
         <Stack.Screen name="Password" component={PasswordChangeScreen} />
         <Stack.Screen name="UserAccount" component={UserAccountScreen} />
+
         <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ViewScheduledNotifications" component={ViewScheduledNotificationsScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
@@ -84,18 +86,39 @@ const EducationStack = () => (
     </Stack.Navigator>
 );
 
-// Clinic flow navigation
-const ClinicStack = () => (
+// Booking flow navigation
+const BookingStack = () => (
     <Stack.Navigator initialRouteName="clinic">
         <Stack.Screen name="clinic" component={ClinicScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="chart"  component={DentalChartScreen}options={{ title: '' }} />
         <Stack.Screen name="appointment" component={AppointmentScreen} options={{ title: '' }}/>
-        <Stack.Screen name="invoice" component={InvoiceScreen} options={{ title: '' }}/>
-        <Stack.Screen name="images" component={ImagesScreen} options={{ title: '' }}/>
-        <Stack.Screen name="allimages" component={AllImagesScreen} options={{ title: '' }}/>
+
     </Stack.Navigator>
 );
-
+// Profile flow navigation
+const ProfileStack = () => (
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="UserAccount"
+    >
+        <Stack.Screen name="UserAccount" component={UserAccountScreen}
+                      options={{ headerBackTitle: ' ', headerBackTitleVisible: false }}
+        />
+        <Stack.Screen name="images" component={ImagesScreen}
+                      options={{
+                          headerShown: true,
+                          title: 'X-ray Images',
+                          headerBackTitleVisible: false,
+                          headerBackTitle: ' ',
+                          headerTintColor: '#000',
+                      }} />
+        <Stack.Screen name="imagesList" component={AllImagesScreen}/>
+        <Stack.Screen name="invoice" component={InvoiceScreen}
+                      options={({ route }) => ({
+                          headerShown: true,
+                          title: route?.params?.title || 'Invoice',
+                      })}
+        />
+    </Stack.Navigator>
+);
 // Child clinic flow
 const ChildClinicStack = () => (
     <Stack.Navigator initialRouteName="list">
@@ -168,76 +191,92 @@ const MainFlow = () => {
             const isViewingIndividualContent = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' &&
             currentNestedRoute?.params?.isModal === true;
 
-            const isContentPage = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' && currentNestedRoute?.params?.id && !currentNestedRoute?.params?.selectedFilter;
-
-            return {
-            headerShown: true,
-            headerLeft: () => <HeaderLogo/>,
-            headerTitle: '',
-            headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
-            headerTitleAlign: 'left',
-            headerTransparent: !isViewingIndividualContent,
-            tabBarActiveTintColor: '#875B51',
-            tabBarInactiveTintColor: '#333333',
-            tabBarStyle: {
-                backgroundColor: '#FFFDF6',
-                borderTopWidth: 0,
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                height: 68,
-                position: 'absolute',
-                elevation: 5,
-                shadowColor: '#333333',
-                shadowOffset: {width: 0, height: -3},
-                shadowOpacity: 0.1,
-                shadowRadius: 5,
-            }
+        const isContentPage = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' && currentNestedRoute?.params?.id && !currentNestedRoute?.params?.selectedFilter;
+        const isProfileInner =
+            currentTab.name === 'Profile' &&
+            ['images', 'allimages', 'invoice'].includes(currentNestedRoute?.name);
+        return {
+            headerShown: !isProfileInner,   // 在二级页时关掉 Tab header
+            ...( !isProfileInner ? {
+                headerLeft: () => <HeaderLogo />,
+                headerTitle: '',
+                headerStyle: {
+                    backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
+                    borderBottomWidth: 0,
+                    elevation: 0,
+                    shadowOpacity: 0,
+                },
+                headerTitleAlign: 'left',
+                headerTransparent: !isViewingIndividualContent,
+            } : {}),
+        // headerShown: true,
+        // headerLeft: () => <HeaderLogo/>,
+        // headerTitle: '',
+        // headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
+        // headerTitleAlign: 'left',
+        // headerTransparent: !isViewingIndividualContent,
+        tabBarActiveTintColor: '#875B51',
+        tabBarInactiveTintColor: '#333333',
+        tabBarStyle: {
+            backgroundColor: '#FFFDF6',
+            borderTopWidth: 0,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            height: 68,
+            position: 'absolute',
+            elevation: 5,
+            shadowColor: '#333333',
+            shadowOffset: {width: 0, height: -3},
+            shadowOpacity: 0.1,
+            shadowRadius: 5,
         }
-        }}>
-            <Tab.Screen
-                name="AccountFlow"
-                component={HomeScreen}
-                options={{
-                    title: t('Home'),
-                    tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
-                }}
-            />
-            <Tab.Screen
-                name="Education"
-                component={EducationStack}
-                options={{
-                    title: t('Library'),
-                    tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
-                }}
-            />
-            <Tab.Screen
-                name="DentalChart"
-                component={DentalChartScreen}
-                options={{
-                    title: t('Dental Chart'),
-                    tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
-                }}
-            />
-            <Tab.Screen
-                name="Bookings"
-                component={ClinicStack}
-                options={{
-                    title: t('Bookings'),
-                    headerTransparent: false,
-                    tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
-                }}
-            />
-            <Tab.Screen
-                name="Profile"
-                component={ProfileStack}
-                options={{
-                    headerShown: false,
-                    tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
-                }}
-            />
-        </Tab.Navigator>
-    );
-};
+    };
+    }}>
+        <Tab.Screen
+            name="AccountFlow"
+            component={HomeScreen}
+            options={{
+                title: 'Home',
+                tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
+            }}
+        />
+        <Tab.Screen
+            name="Education"
+            component={EducationStack}
+            options={{
+                title: 'Library',
+                tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
+            }}
+        />
+        <Tab.Screen
+            name="DentalChart"
+            component={DentalChartScreen}
+            options={{
+                title: 'Dental Chart',
+                tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
+            }}
+        />
+        <Tab.Screen
+            // NEED TO REFACTOR TO APPOINTMENTS :)
+            name="Bookings"
+            component={BookingStack}
+            options={{
+                title: 'Bookings',
+                headerTransparent: false,
+                tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
+            }}
+        />
+        <Tab.Screen
+            name="Profile"
+            component={ProfileStack}
+            options={{
+                title: 'Profile',
+                headerRight: () => <LanguageSelector/>,
+                tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
+            }}
+        />
+    </Tab.Navigator>
+);
 
 // Child flow with bottom tab navigation
 const ChildFlow = () => {
@@ -304,6 +343,8 @@ const AppNavigator = () => {
                 {/* main flow */}
                 <Stack.Screen name="mainFlow" component={MainFlow} />
                 
+                {/* LocationFinder - accessible from HomeScreen */}
+                <Stack.Screen name="LocationFinder" component={LocationFinder} options={{ headerShown: false }} />
 
                 {/* child flow */}
                 <Stack.Screen name="childFlow" component={ChildFlow} />
