@@ -84,7 +84,7 @@ const AccountScreen = () => {
               <Button
                   buttonStyle={styles.button}
                   title="Sign Up A Child/Elderly Account"
-                  onPress={() => navigation.navigate('signUpChildFlow')} // 确保 'signUpChildFlow' 在导航器中存在
+                  onPress={() => navigation.navigate('signUpChildFlow')}
                   titleStyle={styles.titleContainer}
               />
             </View>

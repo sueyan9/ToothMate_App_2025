@@ -17,52 +17,55 @@ router.post("/createTreatment", async (req, res) => {
 // Get all treatments
 router.get("/getAllTreatments", async (req, res) => {
     try {
-        const treatments = await Treatment.find()
-            .populate("toothId", "name code tooth_number")  // 改为 toothId
-            .populate("appointmentId", "date doctor");
+        const treatments = await Treatment.find();
         res.json(treatments);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-// Get treatments by user NHI
-router.get("/getTreatmentsByUser/:userNhi", async (req, res) => {
+// Get treatments by userNhi (legacy)
+router.get("/getTreatmentsByUserNhi/:userNhi", async (req, res) => {
     try {
-        const treatments = await Treatment.find({ userNhi: req.params.userNhi })
-            .populate("toothId", "name code tooth_number")
-            .populate("appointmentId", "date doctor");
+        const treatments = await Treatment.find({ userNhi: req.params.userNhi });
         res.json(treatments);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-// Get treatments by tooth ID
-router.get("/getTreatmentsByTooth/:toothId", async (req, res) => {
+// Get treatments by userId (new) — return { historical, future }
+router.get("/getTreatmentsByUser/:userId", async (req, res) => {
     try {
-        const toothId = req.params.toothId;
-        const treatments = await Treatment.find({ toothId })
-            .populate("appointmentId", "date doctor");
+        const { userId } = req.params;
+        const treatments = await Treatment.find({ userId });
+        const now = new Date();
 
-        if (!treatments.length) {
-            return res.status(404).json({ message: "No treatments found for this tooth" });
-        }
+        const historical = [];
+        const future = [];
 
-        res.json(treatments);
+        treatments.forEach(t => {
+            if (t.completed || new Date(t.date) < now) {
+                historical.push(t);
+            } else {
+                future.push(t);
+            }
+        });
+
+        res.json({ historical, future });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-// Get treatments by tooth number and user NHI
-router.get("/getTreatmentsByToothNumber/:userNhi/:toothNumber", async (req, res) => {
+// Get treatments by tooth number (userId version)
+router.get("/getTreatmentsByToothNumber/:userId/:toothNumber", async (req, res) => {
     try {
-        const { userNhi, toothNumber } = req.params;
+        const { userId, toothNumber } = req.params;
         const treatments = await Treatment.find({
-            userNhi,
-            tooth_number: parseInt(toothNumber)
-        }).populate("appointmentId", "date doctor");
+            userId,
+            tooth_number: parseInt(toothNumber),
+        });
 
         if (!treatments.length) {
             return res.status(404).json({ message: "No treatments found for this tooth" });
@@ -77,9 +80,7 @@ router.get("/getTreatmentsByToothNumber/:userNhi/:toothNumber", async (req, res)
 // Get treatment by ID
 router.get("/getTreatmentById/:id", async (req, res) => {
     try {
-        const treatment = await Treatment.findById(req.params.id)
-            .populate("toothId", "name code tooth_number")
-            .populate("appointmentId", "date doctor");
+        const treatment = await Treatment.findById(req.params.id);
 
         if (!treatment) {
             return res.status(404).json({ message: "Treatment not found" });
@@ -135,35 +136,6 @@ router.get("/getAllTreatmentTypes/:userNhi", async (req, res) => {
         }
 
         res.json(treatmentTypes);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-// Get treatments by status
-router.get("/getTreatmentsByStatus/:status", async (req, res) => {
-    try {
-        const { status } = req.params;
-        const treatments = await Treatment.find({ status })
-            .populate("toothId", "name code tooth_number")
-            .populate("appointmentId", "date doctor");
-
-        res.json(treatments);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-// Get future planned treatments
-router.get("/getFutureTreatments/:userNhi", async (req, res) => {
-    try {
-        const treatments = await Treatment.find({
-            userNhi: req.params.userNhi,
-            status: { $in: ["planned", "in-progress"] }
-        }).populate("toothId", "name code tooth_number")
-            .populate("appointmentId", "date doctor");
-
-        res.json(treatments);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
