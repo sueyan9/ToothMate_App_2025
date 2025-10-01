@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import '../styles.css';
 import { getToothPositionFromData } from './Util/getToothPositionFromData';
+
 const CameraController = () => {
     const { camera, gl } = useThree();
     useEffect(() => {
@@ -99,7 +100,27 @@ const WholeMouthModel = ({
             <mesh geometry={nodes.upper_jaw.geometry} material={materials.Gum} position={P.upper} rotation={[1.11, 0, 0]} scale={39.99} />
             <mesh geometry={nodes.lower_jaw.geometry} material={materials.Gum} position={P.lower} rotation={[Math.PI / 2, 0, 0]} scale={39.99} />
             <mesh geometry={nodes.tongue.geometry} material={materials.tongue} position={P.lower} rotation={[Math.PI / 2, 0, 0]} scale={39.99} />
-
+            <mesh
+                geometry={nodes.upper_jaw.geometry}
+                material={materials.Gum}
+                position={[0, 0.36, -0.29]}
+                rotation={[1.11, 0, 0]}
+                scale={39.99}
+            />
+            <mesh
+                geometry={nodes.lower_jaw.geometry}
+                material={materials.Gum}
+                position={[0, 0.36, -0.07]}
+                rotation={[Math.PI / 2, 0, 0]}
+                scale={39.99}
+            />
+            <mesh
+                geometry={nodes.tongue.geometry}
+                material={materials.tongue}
+                position={[0, 0.36, -0.07]}
+                rotation={[Math.PI / 2, 0, 0]}
+                scale={39.99}
+            />
             {/* === 示例：把所有牙位改成下列两处 —— material 与 position === */}
             {/* LOWER RIGHT */}
             <mesh
@@ -108,6 +129,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(48, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
+                onClick={() => (window.location = '/lower-right-wisdom')}
             />
             <mesh
                 geometry={nodes.lower_right_second_molar.geometry}
@@ -115,12 +137,167 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(47, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
+                onClick={() => (window.location = '/lower-right-second-molar')}
             />
-            {/* 其余 46~31、18~11、28~21 全部按上面两处替换 —— 略 */}
+            <mesh geometry={nodes.lower_right_first_molar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(46, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-right-first-molar')} />
+            <mesh geometry={nodes.lower_right_second_premolar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(45, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-right-second-premolar')} />
+            <mesh geometry={nodes.lower_right_first_premolar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(44, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-right-first-premolar')} />
+            <mesh geometry={nodes.lower_right_canine.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(43, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-right-canine')} />
+            <mesh geometry={nodes.lower_right_lateral_incisor.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(42, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-right-lateral-incisor')} />
+            <mesh geometry={nodes.lower_right_central_incisor.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(41, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-right-central-incisor')} />
+
+            {/* LOWER LEFT 38–31 */}
+            <mesh geometry={nodes.lower_left_wisdom.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(38, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-left-wisdom')} />
+            <mesh geometry={nodes.lower_left_second_molar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(37, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-left-second-molar')} />
+            <mesh geometry={nodes.lower_left_first_molar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(36, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-left-first-molar')} />
+            <mesh geometry={nodes.lower_left_second_premolar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(35, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-left-second-premolar')} />
+            <mesh geometry={nodes.lower_left_first_premolar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(34, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-left-first-premolar')} />
+            <mesh geometry={nodes.lower_left_canine.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(33, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-left-canine')} />
+            <mesh geometry={nodes.lower_left_lateral_incisor.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(32, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-left-lateral-incisor')} />
+            <mesh geometry={nodes.lower_left_central_incisor.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(31, P.lower, eruptionLevels)}
+                  rotation={[Math.PI / 2, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/lower-left-central-incisor')} />
+
+            {/* UPPER RIGHT 18–11 */}
+            <mesh geometry={nodes.upper_right_wisdom.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(18, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-right-wisdom')} />
+            <mesh geometry={nodes.upper_right_second_molar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(17, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-right-second-molar')} />
+            <mesh geometry={nodes.upper_right_first_molar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(16, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-right-first-molar')} />
+            <mesh geometry={nodes.upper_right_second_premolar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(15, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-right-second-premolar')} />
+            <mesh geometry={nodes.upper_right_first_premolar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(14, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-right-first-premolar')} />
+            <mesh geometry={nodes.upper_right_canine.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(13, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-right-canine')} />
+            <mesh geometry={nodes.upper_right_lateral_incisor.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(12, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-right-lateral-incisor')} />
+            <mesh geometry={nodes.upper_right_central_incisor.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(11, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-right-central-incisor')} />
+
+            {/* UPPER LEFT 28–21 */}
+            <mesh geometry={nodes.upper_left_wisdom.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(28, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-left-wisdom')} />
+            <mesh geometry={nodes.upper_left_second_molar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(27, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-left-second-molar')} />
+            <mesh geometry={nodes.upper_left_first_molar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(26, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-left-first-molar')} />
+            <mesh geometry={nodes.upper_left_second_premolar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(25, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-left-second-premolar')} />
+            <mesh geometry={nodes.upper_left_first_premolar.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(24, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-left-first-premolar')} />
+            <mesh geometry={nodes.upper_left_canine.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(23, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-left-canine')} />
+            <mesh geometry={nodes.upper_left_lateral_incisor.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(22, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-left-lateral-incisor')} />
+            <mesh geometry={nodes.upper_left_central_incisor.geometry}
+                  material={getToothMaterial()}
+                  position={getToothPositionFromData(21, P.upper, eruptionLevels)}
+                  rotation={[1.11, 0, 0]} scale={39.99}
+                  onClick={() => (window.location = '/upper-left-central-incisor')} />
         </group>
     );
 };
-
 export default function WholeMouth({
                                        selectedTreatment,
                                        activeTimePeriod,
