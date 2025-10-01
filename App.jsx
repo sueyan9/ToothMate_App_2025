@@ -88,7 +88,7 @@ const EducationStack = () => (
 const ClinicStack = () => (
     <Stack.Navigator initialRouteName="clinic">
         <Stack.Screen name="clinic" component={ClinicScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="chart"  component={DentalChartScreen}options={{ title: '' }} />
+        <Stack.Screen name="chart"  component={DentalChartScreen} options={{ title: '' }} />
         <Stack.Screen name="appointment" component={AppointmentScreen} options={{ title: '' }}/>
         <Stack.Screen name="invoice" component={InvoiceScreen} options={{ title: '' }}/>
         <Stack.Screen name="images" component={ImagesScreen} options={{ title: '' }}/>
