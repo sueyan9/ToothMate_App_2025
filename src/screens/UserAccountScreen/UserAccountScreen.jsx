@@ -32,9 +32,10 @@ const formatDocWhen = (doc) => {
 };
 import { Ionicons } from '@expo/vector-icons';
 //import { useFocusEffect } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   Alert,
+  FlatList,
   Image,
   Modal,
   SafeAreaView,
@@ -42,19 +43,16 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-    FlatList
+  View
 } from 'react-native';
+import {
+  fetchAssetsForAppointment,
+} from '../../api/appointments';
 import axiosApi from '../../api/axios';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
-import {
-    fetchAssetsForAppointment,
-
-} from '../../api/appointments';
-import * as WebBrowser from 'expo-web-browser';
 // Import profile pictures
 const profilePictures = [
   require('../../../assets/profile pictures/p0.png'),
@@ -1158,7 +1156,7 @@ const UserAccountScreen = ({ navigation }) => {
 
           {/* My Documents (Invoices ) */}
           <Collapsible
-              title={t('My Documents')}
+              title={t('My Invoices')}
               icon="document-text-outline"
               count={invoiceDocs.length}
               defaultOpen={false}
@@ -1192,7 +1190,7 @@ const UserAccountScreen = ({ navigation }) => {
 
           {/* ACC Documents */}
           <Collapsible
-              title="ACC Documents"
+              title="My ACC Documents"
               icon="shield-checkmark-outline"
               count={accDocs.length}
               defaultOpen={false}
@@ -1225,7 +1223,7 @@ const UserAccountScreen = ({ navigation }) => {
           </Collapsible>
           {/* ReferralDocs */}
           <Collapsible
-              title={t('Referrals')}
+              title={t('My Referrals')}
               icon="send-outline"
               count={referralDocs.length}
               defaultOpen={false}
