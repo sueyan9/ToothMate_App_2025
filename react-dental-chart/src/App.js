@@ -1,6 +1,5 @@
-import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 // =====teeth components======
 import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine';
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor';
@@ -99,39 +98,6 @@ function getUniqueTreatmentsByPeriod(period) {
   return [];
 }
 
-// BackButton component that shows on individual tooth pages
-const BackButton = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  
-  // Check if current path is an individual tooth page
-  const isToothPage = location.pathname !== '/';
-  
-  if (!isToothPage) return null;
-  
-  return (
-
-    <button 
-      onClick={() => navigate('/')}
-      style={{
-        position: 'fixed',
-        top: '130px',
-        left: '24px',
-        zIndex: 1000,
-        padding: '10px 15px',
-        backgroundColor: '#E9F1F8',
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        fontSize: '14px',
-        fontWeight: 'bold'
-      }}
-    >
-      <ArrowLeft size={24} color={'#333333'}/>
-    </button>
-  );
-};
-
 export default function App() {
   const [showMenu, setShowMenu] = useState(false);
   const [selectedTreatment, setSelectedTreatment] = useState('historical');
@@ -211,7 +177,6 @@ export default function App() {
     <div>
       <Router>
         <div className="container">
-          <BackButton/>
           <Routes>
             <Route
               exact path="/"

@@ -22,6 +22,7 @@ const EducationScreen = ({ navigation }) => {
     // Define texts to translate
     const textsToTranslate = [
         'All',
+        'ToothMate Library',
         'Dentist Recommended Readings',
         'Whats Good for My Teeth',
         'Whats Bad for My Teeth',

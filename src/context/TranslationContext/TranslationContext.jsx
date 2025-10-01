@@ -51,6 +51,10 @@ const translateText = (dispatch) => async (texts, targetLanguage) => {
       deeplLangCode = 'ZH'; // Chinese (simplified)
     } else if (targetLanguage === 'nl') {
       deeplLangCode = 'NL'; // Dutch
+    } else if (targetLanguage === 'mi') {
+      // Maori is not supported by DeepL, return original texts
+      console.log('Maori language not supported by DeepL API, returning original texts');
+      return texts;
     }
 
     console.log('Translating to:', deeplLangCode);

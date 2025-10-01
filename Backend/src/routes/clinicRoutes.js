@@ -13,7 +13,7 @@ router.get("/Clinics", (req, res) => {
 router.get("/getDentalClinics", async (req, res) => {
   console.log("Query params:", req.query);
   try {
-    // get param of ids from  query ，e.g. ?ids=1,2,3
+    // 从 query 里接收 ids 参数，例如 ?ids=1,2,3
     const ids = (req.query.ids || "")
         .split(",")
         .map(id => id.trim())

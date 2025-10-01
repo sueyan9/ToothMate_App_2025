@@ -179,33 +179,6 @@ const WholeMouthModel = ({ selectedTreatment, activeTimePeriod, missingTeeth = [
 return toothMaterials.normal;
 }
 
-const getToothPositionFromData = (toothNumber, basePosition) => {
-  const toothInfo = teethData.teeth[toothNumber.toString()];
-  const eruptionLevel = toothInfo?.eruptionLevel || 1.0; // 1.0 = fully erupted, 0.5 = half erupted, etc.
-  
-  if (eruptionLevel >= 1.0) return basePosition;
-  
-  const eruptionOffset = (1 - eruptionLevel) * 0.15;
-  const isUpperTooth = toothNumber >= 11 && toothNumber <= 28;
-  
-  // Move at roughly 45 degree angle into the gums
-  if (isUpperTooth) {
-    // Upper teeth - move up and back into upper gum at 45 degree angle
-    return [
-      basePosition[0],
-      basePosition[1] + eruptionOffset * 2.0, // upward movement
-      basePosition[2] + eruptionOffset * -1.5 // backward movement into gum
-    ];
-  } else {
-    // Lower teeth - move down and forward into lower gum at 45 degree angle  
-    return [
-      basePosition[0],
-      basePosition[1] - eruptionOffset * 1.55, // downward movement
-      basePosition[2] - eruptionOffset * 0.5 // forward movement into gum
-    ];
-  }
-};
-
   const { nodes, materials } = useGLTF('/assets/adult_whole_mouth.glb')
 
   return (
@@ -236,7 +209,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_right_wisdom.geometry}
         material={getToothMaterial(48, toothData[48].treatment)}
-        position={getToothPositionFromData(48, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-right-wisdom')}
@@ -244,7 +217,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_right_second_molar.geometry}
         material={getToothMaterial(47, toothData[47].treatment)}
-        position={getToothPositionFromData(47, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-right-second-molar')}
@@ -252,7 +225,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_right_first_molar.geometry}
         material={getToothMaterial(46, toothData[46].treatment)}
-        position={getToothPositionFromData(46, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-right-first-molar')}
@@ -260,7 +233,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_right_second_premolar.geometry}
         material={getToothMaterial(45, toothData[45].treatment)}
-        position={getToothPositionFromData(45, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-right-second-premolar')}
@@ -268,7 +241,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_right_first_premolar.geometry}
         material={getToothMaterial(44, toothData[44].treatment)}
-        position={getToothPositionFromData(44, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-right-first-premolar')}
@@ -276,7 +249,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_right_canine.geometry}
         material={getToothMaterial(43, toothData[43].treatment)}
-        position={getToothPositionFromData(43, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-right-canine')}
@@ -284,7 +257,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_right_lateral_incisor.geometry}
         material={getToothMaterial(42, toothData[42].treatment)}
-        position={getToothPositionFromData(42, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-right-lateral-incisor')}
@@ -292,7 +265,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_right_central_incisor.geometry}
         material={getToothMaterial(41, toothData[41].treatment)}
-        position={getToothPositionFromData(41, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-right-central-incisor')}
@@ -302,7 +275,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_left_wisdom.geometry}
         material={getToothMaterial(38, toothData[38].treatment)}
-        position={getToothPositionFromData(38, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-left-wisdom')}
@@ -310,7 +283,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_left_second_molar.geometry}
         material={getToothMaterial(37, toothData[37].treatment)}
-        position={getToothPositionFromData(37, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-left-second-molar')}
@@ -318,7 +291,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_left_first_molar.geometry}
         material={getToothMaterial(36, toothData[36].treatment)}
-        position={getToothPositionFromData(36, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-left-first-molar')}
@@ -326,7 +299,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_left_second_premolar.geometry}
         material={getToothMaterial(35, toothData[35].treatment)}
-        position={getToothPositionFromData(35, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-left-second-premolar')}
@@ -334,7 +307,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_left_first_premolar.geometry}
         material={getToothMaterial(34, toothData[34].treatment)}
-        position={getToothPositionFromData(34, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-left-first-premolar')}
@@ -342,7 +315,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_left_canine.geometry}
         material={getToothMaterial(33, toothData[33].treatment)}
-        position={getToothPositionFromData(33, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-left-canine')}
@@ -350,7 +323,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_left_lateral_incisor.geometry}
         material={getToothMaterial(32, toothData[32].treatment)}
-        position={getToothPositionFromData(32, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-left-lateral-incisor')}
@@ -358,7 +331,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.lower_left_central_incisor.geometry}
         material={getToothMaterial(31, toothData[31].treatment)}
-        position={getToothPositionFromData(31, [0, 0.36, -0.07])}
+        position={[0, 0.36, -0.07]}
         rotation={[Math.PI / 2, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/lower-left-central-incisor')}
@@ -368,7 +341,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_right_wisdom.geometry}
         material={getToothMaterial(18, toothData[18].treatment)}
-        position={getToothPositionFromData(18, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-right-wisdom')}
@@ -376,7 +349,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_right_second_molar.geometry}
         material={getToothMaterial(17, toothData[17].treatment)}
-        position={getToothPositionFromData(17, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-right-second-molar')}
@@ -384,7 +357,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_right_first_molar.geometry}
         material={getToothMaterial(16, toothData[16].treatment)}
-        position={getToothPositionFromData(16, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-right-first-molar')}
@@ -392,7 +365,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_right_second_premolar.geometry}
         material={getToothMaterial(15, toothData[15].treatment)}
-        position={getToothPositionFromData(15, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-right-second-premolar')}
@@ -400,7 +373,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_right_first_premolar.geometry}
         material={getToothMaterial(14, toothData[14].treatment)}
-        position={getToothPositionFromData(14, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-right-first-premolar')}
@@ -408,7 +381,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_right_canine.geometry}
         material={getToothMaterial(13, toothData[13].treatment)}
-        position={getToothPositionFromData(13, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-right-canine')}
@@ -416,7 +389,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_right_lateral_incisor.geometry}
         material={getToothMaterial(12, toothData[12].treatment)}
-        position={getToothPositionFromData(12, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-right-lateral-incisor')}
@@ -424,7 +397,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_right_central_incisor.geometry}
         material={getToothMaterial(11, toothData[11].treatment)}
-        position={getToothPositionFromData(11, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-right-central-incisor')}
@@ -434,7 +407,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_left_wisdom.geometry}
         material={getToothMaterial(28, toothData[28].treatment)}
-        position={getToothPositionFromData(28, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-left-wisdom')}
@@ -442,7 +415,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_left_second_molar.geometry}
         material={getToothMaterial(27, toothData[27].treatment)}
-        position={getToothPositionFromData(27, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-left-second-molar')}
@@ -450,7 +423,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_left_first_molar.geometry}
         material={getToothMaterial(26, toothData[26].treatment)}
-        position={getToothPositionFromData(26, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-left-first-molar')}
@@ -458,7 +431,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_left_second_premolar.geometry}
         material={getToothMaterial(25, toothData[25].treatment)}
-        position={getToothPositionFromData(25, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-left-second-premolar')}
@@ -466,7 +439,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_left_first_premolar.geometry}
         material={getToothMaterial(24, toothData[24].treatment)}
-        position={getToothPositionFromData(24, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-left-first-premolar')}
@@ -474,7 +447,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_left_canine.geometry}
         material={getToothMaterial(23, toothData[23].treatment)}
-        position={getToothPositionFromData(23, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-left-canine')}
@@ -482,7 +455,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_left_lateral_incisor.geometry}
         material={getToothMaterial(22, toothData[22].treatment)}
-        position={getToothPositionFromData(22, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-left-lateral-incisor')}
@@ -490,7 +463,7 @@ const getToothPositionFromData = (toothNumber, basePosition) => {
       <mesh
         geometry={nodes.upper_left_central_incisor.geometry}
         material={getToothMaterial(21, toothData[21].treatment)}
-        position={getToothPositionFromData(21, [0, 0.36, -0.29])}
+        position={[0, 0.36, -0.29]}
         rotation={[1.11, 0, 0]}
         scale={39.99}
         onClick={() => (window.location = '/upper-left-central-incisor')}

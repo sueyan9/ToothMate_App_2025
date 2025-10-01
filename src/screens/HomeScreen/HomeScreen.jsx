@@ -2,7 +2,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import LanguageSelector from '../../components/LanguageSelector';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
+import { Context as NotificationContext } from '../../context/NotificationContext/NotificationContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
@@ -46,6 +48,8 @@ const HomeScreen = () => {
     const {
         signout,
     } = useContext(AuthContext);
+    
+    const { initializeNotifications } = useContext(NotificationContext);
 
     // Translate texts when language changes
     useEffect(() => {
@@ -53,6 +57,11 @@ const HomeScreen = () => {
             translateAndCache(textsToTranslate);
         }
     }, [currentLanguage]);
+    
+    // Initialize notifications when component mounts
+    useEffect(() => {
+        initializeNotifications();
+    }, []);
 
     const handleSignOut = () => {
     Alert.alert(
@@ -123,7 +132,10 @@ const HomeScreen = () => {
     return (
         <View style={styles.container}>
             
-            <MaterialCommunityIcons name="logout" size={32} color={'#333333'} style={styles.logout} onPress={handleSignOut}/>
+            <View style={styles.headerRow}>
+                <MaterialCommunityIcons name="logout" size={32} color={'#333333'} style={styles.logout} onPress={handleSignOut}/>
+                <LanguageSelector />
+            </View>
 
             <View style={styles.helloContainer}>
                 <View style={styles.profileContainer}>
@@ -176,7 +188,6 @@ const HomeScreen = () => {
                 </View>
             </View>
 
-            {/* dental chart card */}
             <View style={styles.updateContainer}>
                 <View style={styles.updateBox}>
                     <Image source={require('../../../assets/mouthIcons.png')}
@@ -184,19 +195,6 @@ const HomeScreen = () => {
                     <TouchableOpacity onPress={() => navigation.navigate('DentalChart')}>
                         <View style={styles.mouthButton}>
                             <Text style={styles.boldText}>{t('See My Mouth')}</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            {/* toothmate dentists card */}
-            <View style={styles.updateContainer}>
-                <View style={styles.updateBox}>
-                    <Image source={require('../../../assets/map.png')}
-                        style={styles.mouthImage}/>
-                    <TouchableOpacity onPress={() => navigation.navigate('LocationFinder')}>
-                        <View style={styles.mouthButton}>
-                            <Text style={styles.boldText}>Toothmate Dentists</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
