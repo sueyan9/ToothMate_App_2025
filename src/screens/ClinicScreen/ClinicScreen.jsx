@@ -74,7 +74,7 @@ const ClinicScreen = ({navigation, route}) => {
         'Dr. Patel',
         'Dr. Singh',
     ];
-    const PURPOSES = ['Check-up', 'Consoltation'];
+    const PURPOSES = ['Check-up', 'Consultation'];
 
 // Appointment slot constants
     const SLOT_MINUTES = 30;
