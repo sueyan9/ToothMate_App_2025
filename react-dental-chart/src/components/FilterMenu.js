@@ -44,6 +44,7 @@ export default function FilterMenu({
   const normalizeTreatmentType = (treatmentType) => {
     const typeMap = {
       'Root Canal': 'rootCanal',
+      'rootCanal': 'rootCanal',
       'Crown Placement': 'crown',
       'Filling': 'filling',
       'Extraction': 'extraction',

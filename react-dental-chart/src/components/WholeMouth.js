@@ -41,6 +41,7 @@ const normalizeTreatmentType = (t) => {
     if (!t) return '';
     const map = {
         'Root Canal': 'rootCanal',
+        'root_canal': 'root_canal',
         'Crown Placement': 'crown',
         'Filling': 'filling',
         'Extraction': 'extraction',
@@ -48,7 +49,6 @@ const normalizeTreatmentType = (t) => {
         'Implant': 'implant',
         'Veneer': 'veneer',
         'Sealant': 'sealant',
-        'root_canal': 'rootCanal',
         'crown': 'crown',
         'filling': 'filling',
         'extraction': 'extraction',
