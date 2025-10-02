@@ -52,7 +52,7 @@ export default StyleSheet.create({
   mediumRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 0,
   },
   smallRow: {
     flexDirection: 'row',

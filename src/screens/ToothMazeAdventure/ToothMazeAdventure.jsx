@@ -6,7 +6,7 @@ import { Alert, Animated, Dimensions, StyleSheet, Text, TouchableOpacity, View }
 const { width, height } = Dimensions.get('window');
 
 const CavityMonstersScreen = ({ navigation }) => {
-  const [gameState, setGameState] = useState('menu'); // 'menu', 'playing', 'quiz', 'gameOver', 'victory'
+  const [gameState, setGameState] = useState('menu');
   const [currentLevel, setCurrentLevel] = useState(1);
   const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
   const [score, setScore] = useState(0);
@@ -14,7 +14,6 @@ const CavityMonstersScreen = ({ navigation }) => {
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [collectedItems, setCollectedItems] = useState([]);
   
-  // Animation values
   const [pulseAnim] = useState(new Animated.Value(1));
   const [playerAnim] = useState(new Animated.Value(0));
 
@@ -56,24 +55,23 @@ const CavityMonstersScreen = ({ navigation }) => {
     }
   ];
 
-  // Simple maze layout (1 = wall, 0 = path, 2 = collectible, 3 = monster, 4 = quiz spot, 5 = finish)
   const mazeLayouts = {
     1: [
-      [0, 2, 1, 0, 0, 1, 0, 2],
-      [0, 0, 1, 0, 3, 1, 0, 0],
-      [1, 0, 0, 0, 1, 0, 0, 1],
-      [0, 0, 1, 4, 0, 0, 1, 0],
-      [0, 1, 0, 0, 1, 0, 0, 0],
-      [2, 0, 0, 1, 0, 0, 3, 1],
-      [1, 0, 1, 0, 0, 1, 0, 0],
-      [0, 0, 0, 2, 0, 0, 0, 5]
+      [0, 2, 1, 0, 2, 1, 0, 2],
+      [0, 1, 1, 0, 3, 1, 0, 0],
+      [0, 1, 1, 0, 1, 0, 0, 0],
+      [0, 1, 1, 4, 0, 0, 1, 0],
+      [0, 0, 4, 0, 1, 1, 1, 0],
+      [2, 3, 0, 1, 1, 0, 0, 0],
+      [1, 3, 1, 1, 1, 0, 1, 1],
+      [1, 1, 1, 2, 0, 0, 0, 5]
     ],
     2: [
       [0, 1, 0, 2, 1, 0, 3, 0],
       [0, 1, 0, 1, 0, 0, 1, 0],
       [0, 0, 0, 1, 2, 0, 0, 0],
       [1, 1, 4, 0, 1, 1, 0, 1],
-      [0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 1, 0, 0, 0, 0],
       [0, 1, 1, 2, 0, 1, 3, 0],
       [0, 0, 0, 1, 0, 0, 1, 4],
       [2, 1, 0, 0, 0, 1, 0, 5]
@@ -81,7 +79,6 @@ const CavityMonstersScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    // Pulse animation
     const pulse = Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
@@ -98,7 +95,6 @@ const CavityMonstersScreen = ({ navigation }) => {
     );
     pulse.start();
 
-    // Player animation
     const playerAnimation = Animated.loop(
       Animated.timing(playerAnim, {
         toValue: 1,
@@ -143,7 +139,6 @@ const CavityMonstersScreen = ({ navigation }) => {
         break;
     }
 
-    // Check if new position is valid (not a wall)
     if (currentMaze[newY] && currentMaze[newY][newX] !== 1) {
       setPlayerPosition({ x: newX, y: newY });
       handleCellInteraction(currentMaze[newY][newX], newX, newY);
@@ -152,14 +147,14 @@ const CavityMonstersScreen = ({ navigation }) => {
 
   const handleCellInteraction = (cellType, x, y) => {
     switch (cellType) {
-      case 2: // Collectible (toothbrush power-up)
+      case 2:
         if (!collectedItems.includes(`${x}-${y}`)) {
           setCollectedItems(prev => [...prev, `${x}-${y}`]);
           setScore(prev => prev + 10);
           Alert.alert('🪥 Power-up!', 'You found a magic toothbrush! +10 points!');
         }
         break;
-      case 3: // Monster
+      case 3:
         setLives(prev => {
           const newLives = prev - 1;
           if (newLives <= 0) {
@@ -171,12 +166,12 @@ const CavityMonstersScreen = ({ navigation }) => {
           return newLives;
         });
         break;
-      case 4: // Quiz spot
+      case 4:
         const randomQuiz = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
         setCurrentQuiz(randomQuiz);
         setGameState('quiz');
         break;
-      case 5: // Finish
+      case 5:
         if (currentLevel < 2) {
           Alert.alert('🎉 Level Complete!', 'Moving to next level!', [
             {
@@ -229,24 +224,24 @@ const CavityMonstersScreen = ({ navigation }) => {
     let cellStyle = styles.pathCell;
 
     switch (cellType) {
-      case 1: // Wall
+      case 1:
         cellStyle = styles.wallCell;
         break;
-      case 2: // Collectible
+      case 2:
         if (!isCollected) {
           cellContent = '🪥';
         }
         break;
-      case 3: // Monster
+      case 3:
         cellContent = '👾';
         break;
-      case 4: // Quiz spot
+      case 4:
         cellContent = '❓';
         break;
-      case 5: // Finish
+      case 5:
         cellContent = '🏁';
         break;
-      default: // Path
+      default:
         cellContent = '';
         break;
     }
@@ -285,15 +280,10 @@ const CavityMonstersScreen = ({ navigation }) => {
           >
             <MaterialIcons name="arrow-back" size={28} color="white" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Tooth Maze Adventure</Text>
         </View>
 
         <View style={styles.menuContainer}>
-          <Animated.Text style={[styles.gameTitle
-
-          ]}>
-            Tooth Maze Adventure
-          </Animated.Text>
+          <Text style={styles.gameTitle}>Tooth Maze Adventure</Text>
           
           <View style={styles.instructionsCard}>
             <Text style={styles.instructionsTitle}>How to Play:</Text>
@@ -397,12 +387,10 @@ const CavityMonstersScreen = ({ navigation }) => {
     );
   }
 
-  // Playing state
   const currentMaze = mazeLayouts[currentLevel];
 
   return (
     <View style={styles.container}>
-      {/* Game Header */}
       <View style={styles.gameHeader}>
         <TouchableOpacity style={styles.pauseButton} onPress={() => navigation.goBack()}>
           <MaterialIcons name="home" size={24} color="white" />
@@ -417,7 +405,6 @@ const CavityMonstersScreen = ({ navigation }) => {
         <View style={styles.placeholder} />
       </View>
 
-      {/* Maze */}
       <View style={styles.mazeContainer}>
         <Text style={styles.levelTitle}>Level {currentLevel} - Find the Flag! 🏁</Text>
         <View style={styles.maze}>
@@ -427,7 +414,6 @@ const CavityMonstersScreen = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Controls */}
       <View style={styles.controlsContainer}>
         <View style={styles.controlsRow}>
           <TouchableOpacity style={styles.controlButton} onPress={() => movePlayer('up')}>
@@ -447,7 +433,6 @@ const CavityMonstersScreen = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Legend */}
       <View style={styles.legendContainer}>
         <Text style={styles.legendText}>🪥 = Points  👾 = Monster  ❓ = Quiz  🏁 = Finish</Text>
       </View>
@@ -459,9 +444,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F8FF',
-    paddingTop: 60,
   },
   header: {
+    position: 'absolute',
+    top: 60,
+    left: 0,
+    right: 0,
+    zIndex: 10,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
@@ -469,23 +458,15 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 8,
-    marginRight: 12,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
   menuContainer: {
     flex: 1,
     paddingHorizontal: 20,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   gameTitle: {
-    fontSize: 24,
+    fontSize: 25,
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
@@ -497,19 +478,22 @@ const styles = StyleSheet.create({
   instructionsCard: {
     backgroundColor: 'rgba(255,255,255,0.9)',
     borderRadius: 16,
-    padding: 20,
+    padding: 18,
     marginBottom: 30,
+    width: '100%',
   },
   instructionsTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#2C3E50',
-    marginBottom: 12,
+    marginBottom: 16,
+    textAlign: 'center',
   },
   instructionText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#2C3E50',
-    marginBottom: 6,
+    marginBottom: 8,
+    lineHeight: 20,
   },
   startButton: {
     borderRadius: 25,
@@ -519,6 +503,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
+    width: '100%',
   },
   buttonGradient: {
     flexDirection: 'row',
@@ -540,12 +525,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#2C3E50',
     paddingHorizontal: 16,
     paddingVertical: 12,
+    paddingTop: 60,
   },
   gameStats: {
     alignItems: 'center',
   },
   statText: {
-    color: 'white',
+    color: 'black',
     fontSize: 14,
     fontWeight: 'bold',
   },

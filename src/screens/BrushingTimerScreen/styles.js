@@ -24,6 +24,8 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(0,0,0,0.3)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
+        textAlign: 'center',
+        width: width - 150,
     },
     animationContainer: {
         flex: 1,

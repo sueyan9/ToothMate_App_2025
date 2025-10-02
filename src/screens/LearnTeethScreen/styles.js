@@ -18,9 +18,14 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
     headerTitle: {
-        fontSize: 23,
+        fontSize: 24,
         fontWeight: 'bold',
         color: 'white',
+        textShadowColor: 'rgba(0,0,0,0.2)',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1,
+        textAlign: 'center',
+        width: width - 150,
     },
     topicsContainer: {
         flex: 1,
