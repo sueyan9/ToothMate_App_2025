@@ -65,6 +65,41 @@ const profilePictures = [
   require('../../../assets/profile pictures/p7.png'),
   require('../../../assets/profile pictures/p8.png'),
 ];
+//Collapsible components
+const Collapsible = ({
+                       title,
+                       icon = 'chevron-forward',
+                       count = 0,
+                       defaultOpen = false,
+                       children,
+                     }) => {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+      <View style={styles.infoCard}>
+        <TouchableOpacity
+            onPress={() => setOpen(o => !o)}
+            style={[styles.cardHeader, { alignItems: 'center' }]}
+            accessibilityRole="button"
+            accessibilityLabel={`${title}, ${open ? 'collapse' : 'expand'}`}
+        >
+          <Ionicons name={icon} size={24} color="#516287" />
+          <Text style={styles.cardTitle}>{title}</Text>
+          <View style={{ flex: 1 }} />
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{count}</Text>
+          </View>
+          <Ionicons
+              name={open ? 'chevron-up' : 'chevron-down'}
+              size={22}
+              color="#516287"
+              style={{ marginLeft: 4 }}
+          />
+        </TouchableOpacity>
+
+        {open ? <View style={{ marginTop: 8 }}>{children}</View> : null}
+      </View>
+  );
+};
 
 const UserAccountScreen = ({ navigation }) => {
   // Translation hook
@@ -320,7 +355,6 @@ const UserAccountScreen = ({ navigation }) => {
                     }
                     // ===== PDF ends =====
                 }
-
 
                 // Only sort (newest first), do not dedupe images
                 const orderedItems = mergedItems.sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime());
@@ -861,6 +895,7 @@ const UserAccountScreen = ({ navigation }) => {
   }
     const accDocs = pdfItems.filter(p => p.category === 'acc');
     const invoiceDocs = pdfItems.filter(p => !p.category || p.category === 'invoice');
+    const referralDocs = pdfItems.filter(p => p.category === 'referral');
 
     console.log('[ACC] accDocs:', accDocs);
   return (
@@ -957,9 +992,6 @@ const UserAccountScreen = ({ navigation }) => {
             </View>
             
           </View>
-
-          
-
           {/* Medical Information Card */}
           <View style={styles.infoCard}>
             <View style={styles.cardHeader}>
@@ -1049,88 +1081,101 @@ const UserAccountScreen = ({ navigation }) => {
           </View>
         </View>
           {/* X-ray Images */}
-          <View style={styles.infoCard}>
-              <View style={styles.cardHeader}>
-                  <Ionicons name="image-outline" size={24} color="#516287"/>
-                  <Text style={styles.cardTitle}>{t('My X-ray Images')}</Text>
-              </View>
-
-              {Array.isArray(xrayItems) && xrayItems.length > 0 ? (<FlatList
-                  horizontal
-                  data={xrayItems.slice(0, 8)} // review  first  8  images
-                  keyExtractor={(_, idx) => String(idx)}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{paddingVertical: 8, paddingRight: 4}}
-                  renderItem={({item}) => (<View style={{marginRight: 12, position: 'relative'}}>
-                      <Image
-                          source={{uri: item.dataUrl}}
-                          style={styles.xrayThumb /*  width/height/borderRadius */}
-                          resizeMode="cover"
+          <Collapsible
+              title={t('My X-ray Images')}
+              icon="image-outline"
+              count={Array.isArray(xrayItems) ? xrayItems.length : 0}
+              defaultOpen={false}
+          >
+              {Array.isArray(xrayItems) && xrayItems.length > 0 ? (
+                  <>
+                      <FlatList
+                          horizontal
+                          data={xrayItems.slice(0, 8)} // review first 8 images
+                          keyExtractor={(_, idx) => String(idx)}
+                          showsHorizontalScrollIndicator={false}
+                          contentContainerStyle={{ paddingVertical: 8, paddingRight: 4 }}
+                          renderItem={({ item }) => (
+                              <View style={{ marginRight: 12, position: 'relative' }}>
+                                  <Image
+                                      source={{ uri: item.dataUrl }}
+                                      style={styles.xrayThumb /* width/height/borderRadius */}
+                                      resizeMode="cover"
+                                  />
+                                  {/* right bottom corner：DD/MM */}
+                                  {item.when ? (
+                                      <View
+                                          style={{
+                                              position: 'absolute',
+                                              right: 4,
+                                              bottom: 4,
+                                              paddingHorizontal: 6,
+                                              paddingVertical: 2,
+                                              borderRadius: 6,
+                                              backgroundColor: 'rgba(0,0,0,0.55)',
+                                          }}
+                                      >
+                                          <Text style={{ color: '#fff', fontSize: 10 }}>{formatShortDay(item.when)}</Text>
+                                      </View>
+                                  ) : null}
+                              </View>
+                          )}
                       />
-                      {/* right bottom corner：DD/MM */}
-                      {item.when ? (<View style={{
-                          position: 'absolute',
-                          right: 4,
-                          bottom: 4,
-                          paddingHorizontal: 6,
-                          paddingVertical: 2,
-                          borderRadius: 6,
-                          backgroundColor: 'rgba(0,0,0,0.55)'
-                      }}>
-                          <Text style={{color: '#fff', fontSize: 10}}>
-                              {formatShortDay(item.when)}
-                          </Text>
-                      </View>) : null}
-                  </View>)}
-              />) : (<Text style={styles.infoValue}>{t('None')}</Text>)}
 
-              <TouchableOpacity
-                  style={[styles.actionButton, {marginTop: 8}]}
-                  onPress={() => {
-                      const imgs = (Array.isArray(xrayItems) ? xrayItems : [])
-                          .map(x => normalizeDataUrl(x?.dataUrl || ''))
-                          .filter(Boolean);
+                      <TouchableOpacity
+                          style={[styles.actionButton, { marginTop: 8 }]}
+                          onPress={() => {
+                              const imgs = (Array.isArray(xrayItems) ? xrayItems : [])
+                                  .map(x => normalizeDataUrl(x?.dataUrl || ''))
+                                  .filter(Boolean);
 
-                      if (!imgs.length) return; // Double guard
+                              if (!imgs.length) return; // Double guard
 
-                      console.log('[UserAccount] navigate -> images', {
-                          count: imgs.length, sample: imgs[0]?.slice(0, 60),
-                      });
+                              console.log('[UserAccount] navigate -> images', {
+                                  count: imgs.length,
+                                  sample: imgs[0]?.slice(0, 60),
+                              });
 
-                      navigation.navigate('images', {
-                          images: imgs, imageIndex: 0,
-                      });
-                  }}
-                  disabled={!xrayItems?.length}
-              >
-                  <Ionicons name="expand-outline" size={20} color="#516287"/>
-                  <Text style={styles.actionButtonText}>{t('View All')}</Text>
-                  <Ionicons name="chevron-forward" size={20} color="#516287"/>
-              </TouchableOpacity>
-          </View>
+                              navigation.navigate('images', {
+                                  images: imgs,
+                                  imageIndex: 0,
+                              });
+                          }}
+                          disabled={!xrayItems?.length}
+                      >
+                          <Ionicons name="expand-outline" size={20} color="#516287" />
+                          <Text style={styles.actionButtonText}>{t('View All')}</Text>
+                          <Ionicons name="chevron-forward" size={20} color="#516287" />
+                      </TouchableOpacity>
+                  </>
+              ) : (
+                  <Text style={styles.infoValue}>{t('None')}</Text>
+              )}
+          </Collapsible>
 
-          {/* My Documents (Invoices / Referrals) */}
-          <View style={styles.infoCard}>
-              <View style={styles.cardHeader}>
-                  <Ionicons name="document-text-outline" size={24} color="#516287"/>
-                  <Text style={styles.cardTitle}>{t('My Documents')}</Text>
-              </View>
 
-              {invoiceDocs?.length ? (invoiceDocs.map((doc, idx) => {
+          {/* My Documents (Invoices ) */}
+          <Collapsible
+              title={t('My Invoices')}
+              icon="document-text-outline"
+              count={invoiceDocs.length}
+              defaultOpen={false}
+          >
+              {invoiceDocs.length ? (
+                  invoiceDocs.map((doc, idx) => {
                       const whenStr = formatDocWhen(doc);
-                      const baseName =
-                          doc.name && doc.name !== 'raw' ? doc.name : t('Invoice/Referral');
-
+                      const baseName = doc.name && doc.name !== 'raw' ? doc.name : t('Invoice/Referral');
                       const niceTitle = whenStr ? `${baseName} · ${whenStr}` : baseName;
-
-                      const pdfParam = doc.source === 'url' ? doc.value : (doc.source === 'dataUrl' ? doc.value
-                          : `data:application/pdf;base64,${doc.value}`); // raw base64
+                      const pdfParam = doc.source === 'url'
+                          ? doc.value
+                          : (doc.source === 'dataUrl' ? doc.value : `data:application/pdf;base64,${doc.value}`);
                       const key = `inv-${doc.source}|${doc.value}`;
+
                       return (
                           <TouchableOpacity
                               key={key}
                               style={styles.actionButton}
-                              onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title:  niceTitle})}
+                              onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title: niceTitle })}
                           >
                               <Ionicons name="document-outline" size={20} color="#516287" />
                               <Text style={styles.actionButtonText}>{niceTitle}</Text>
@@ -1139,42 +1184,79 @@ const UserAccountScreen = ({ navigation }) => {
                       );
                   })
               ) : (
-                  <Text style={styles.infoValue}>{t('None')}</Text>)}
-
-
-          </View>
+                  <Text style={styles.infoValue}>{t('None')}</Text>
+              )}
+          </Collapsible>
 
           {/* ACC Documents */}
-          <View style={styles.infoCard}>
-              <View style={styles.cardHeader}>
-                  <Ionicons name="shield-checkmark-outline" size={24} color="#516287"/>
-                  <Text style={styles.cardTitle}>ACC Documents</Text>
-              </View>
+          <Collapsible
+              title="My ACC Documents"
+              icon="shield-checkmark-outline"
+              count={accDocs.length}
+              defaultOpen={false}
+          >
+              {accDocs.length ? (
+                  accDocs.map((doc, idx) => {
+                      const whenStr = formatDocWhen(doc);
+                      const baseName = doc.name || `ACC Document #${idx + 1}`;
+                      const title = whenStr ? `${baseName} · ${whenStr}` : baseName;
+                      const pdfParam = doc.source === 'url'
+                          ? doc.value
+                          : (doc.source === 'dataUrl' ? doc.value : `data:application/pdf;base64,${doc.value}`);
+                      const key = `acc-${doc.source}|${doc.value}`;
 
-              {accDocs?.length ? (accDocs.map((doc, idx) => {
-                  const whenStr = formatDocWhen(doc);
-                  const baseName = doc.name || `ACC Document #${idx + 1}`;
-                  const title = whenStr ? `${baseName} · ${whenStr}` : baseName;
+                      return (
+                          <TouchableOpacity
+                              key={key}
+                              style={styles.actionButton}
+                              onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title })}
+                          >
+                              <Ionicons name="document-outline" size={20} color="#516287" />
+                              <Text style={styles.actionButtonText}>{title}</Text>
+                              <Ionicons name="open-outline" size={20} color="#516287" />
+                          </TouchableOpacity>
+                      );
+                  })
+              ) : (
+                  <Text style={styles.infoValue}>{t('None')}</Text>
+              )}
+          </Collapsible>
+          {/* ReferralDocs */}
+          <Collapsible
+              title={t('My Referrals')}
+              icon="send-outline"
+              count={referralDocs.length}
+              defaultOpen={false}
+          >
+              {referralDocs.length ? (
+                  referralDocs.map((doc, idx) => {
+                      const whenStr = formatDocWhen(doc);
+                      const baseName = doc.name || `Referral #${idx + 1}`;
+                      const title = whenStr ? `${baseName} · ${whenStr}` : baseName;
+                      const pdfParam = doc.source === 'url'
+                          ? doc.value
+                          : (doc.source === 'dataUrl' ? doc.value : `data:application/pdf;base64,${doc.value}`);
+                      const key = `ref-${doc.source}|${doc.value}`;
 
-                  const pdfParam = doc.source === 'url'
-                      ? doc.value
-                      : (doc.source === 'dataUrl' ? doc.value : `data:application/pdf;base64,${doc.value}`);
-                  const key = `acc-${doc.source}|${doc.value}`;
-                  return (
-                      <TouchableOpacity
-                          key={key}
-                          style={styles.actionButton}
-                          onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title })}
-                      >
-                          <Ionicons name="document-outline" size={20} color="#516287"/>
-                          <Text style={styles.actionButtonText}>{title}</Text>
-                          <Ionicons name="open-outline" size={20} color="#516287"/>
-                      </TouchableOpacity>
-                  );
-              })) : (<Text style={styles.infoValue}>{t('None')}</Text>)}
-          </View>
+                      return (
+                          <TouchableOpacity
+                              key={key}
+                              style={styles.actionButton}
+                              onPress={() => navigation.navigate('invoice', { pdf: pdfParam, title })}
+                          >
+                              <Ionicons name="document-outline" size={20} color="#516287" />
+                              <Text style={styles.actionButtonText}>{title}</Text>
+                              <Ionicons name="open-outline" size={20} color="#516287" />
+                          </TouchableOpacity>
+                      );
+                  })
+              ) : (
+                  <Text style={styles.infoValue}>{t('None')}</Text>
+              )}
+          </Collapsible>
 
-        {/* Sign Out Button */}
+
+          {/* Sign Out Button */}
         <View style={styles.signOutSection}>
           <TouchableOpacity 
             style={styles.signOutButton}
