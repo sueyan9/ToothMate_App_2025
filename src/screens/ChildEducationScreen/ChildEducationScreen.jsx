@@ -106,7 +106,7 @@ const ChildEducationScreen = ({ navigation }) => {
             color: ['#4ECDC4', '#44A08D'],
             screen: 'LearnTeeth',
             size: 'medium'
-        },
+        }, 
         {
             id: 'tooth-hero',
             title: t('Tooth Hero Challenge'),

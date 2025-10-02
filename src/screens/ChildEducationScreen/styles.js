@@ -20,11 +20,11 @@ export default StyleSheet.create({
     color: '#2C3E50',
     textAlign: 'center',
     marginBottom: 6,
-    marginTop: 8,
+    marginTop: 6,
     textShadowColor: 'rgba(0,0,0,0.1)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
-    paddingTop: 35,
+    paddingTop: 20,
   },
   subtitleText: {
     fontSize: 16,
@@ -49,9 +49,6 @@ export default StyleSheet.create({
   scrollContent: {
     paddingBottom: 100,
   },
-  gamesGrid: {
-    marginTop: 20,
-  },
   mediumRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -72,11 +69,12 @@ export default StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 6,
-    marginBottom: 16, 
+    marginBottom: 16,
+    marginTop: 16,
   },
   mediumCard: {
     width: (width - 48) / 2,
-    height: 180,
+    height: 200,
     borderRadius: 16,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -98,52 +96,54 @@ export default StyleSheet.create({
   },
   gradientCard: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     justifyContent: 'space-between',
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
+    marginBottom: -5,
   },
   cardContent: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'flex-start', // left align
-    flexDirection: 'column',  // stack vertically
+    alignItems: 'flex-start',
+    flexDirection: 'column',
   },
 
   cardTextColumn: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'flex-start', // Keep text left-aligned like original
+    alignItems: 'flex-start',
     paddingHorizontal: 0,
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
 
   gameTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 'bold',
     color: 'white',
     fontFamily: 'VarelaRound_400Regular',
-    textAlign: 'left', // Keep left-aligned
-    marginBottom: 6, // Space between title and subtitle
+    textAlign: 'left',
+    marginBottom: 8,
     textShadowColor: 'rgba(0,0,0,0.3)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
+    lineHeight: 18,
   },
   gameSubtitle: {
     fontSize: 13,
     color: 'rgba(255,255,255,0.9)',
     fontFamily: 'VarelaRound_400Regular',
-    textAlign: 'left', // Keep left-aligned
-    lineHeight: 16,
+    textAlign: 'left',
+    lineHeight: 18,
   },
   playButton: {
     position: 'absolute',
-    bottom: 12,
-    right: 12,
+    bottom: 16,
+    right: 16,
     backgroundColor: 'rgba(255,255,255,0.2)',
     borderRadius: 20,
     width: 40,
@@ -152,11 +152,10 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   progressSection: {
-    marginTop: 16,
-    marginBottom: 16,
+    marginTop: 5,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 20,
+    padding: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
