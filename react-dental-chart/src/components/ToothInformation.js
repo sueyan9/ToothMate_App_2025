@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export default function ToothInformation({ toothNumber }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [toothInfo, setToothInfo] = useState(null);
   const [userId, setUserId] = useState(null);
   const [userNhi, setUserNhi] = useState(null);
