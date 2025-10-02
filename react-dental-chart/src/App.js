@@ -35,7 +35,6 @@ import { UpperRightSecondMolar } from './components/Teeth/UpperRightSecondMolar'
 import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPremolar';
 import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth';
 
-
 // ====================== Component Imports ======================
 import FilterMenu from './components/FilterMenu';
 import WholeMouth from './components/WholeMouth';
@@ -103,18 +102,18 @@ function useUserId() {
       setUserId(id ? String(id) : null);
     };
     // 代理 pushState/replaceState，捕获 SPA 内部导航（用 window.history）
-       const origPush = window.history.pushState;
-       const origReplace = window.history.replaceState;
-       window.history.pushState = function (...args) {
-         const ret = origPush.apply(window.history, args);
-           window.dispatchEvent(new Event("urlchange"));
-           return ret;
-         };
-      window.history.replaceState = function (...args) {
-          const ret = origReplace.apply(window.history, args);
-           window.dispatchEvent(new Event("urlchange"));
-           return ret;
-         };
+    const origPush = window.history.pushState;
+    const origReplace = window.history.replaceState;
+    window.history.pushState = function (...args) {
+      const ret = origPush.apply(window.history, args);
+      window.dispatchEvent(new Event("urlchange"));
+      return ret;
+    };
+    window.history.replaceState = function (...args) {
+      const ret = origReplace.apply(window.history, args);
+      window.dispatchEvent(new Event("urlchange"));
+      return ret;
+    };
     // RN → Web 的 message（你的 WebView onLoadEnd 注入的那条）
     const onMessage = (e) => {
       try {
@@ -154,11 +153,12 @@ const API_BASE_URL =
     (typeof window !== 'undefined' && window.API_BASE_URL) ||
     (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
     (typeof process !== 'undefined' && process.env && (process.env.REACT_APP_API_BASE_URL || process.env.API_BASE_URL)) ||
-    '';
+    'http://192.168.1.166:3000';
 
 function normalizeTreatments(payload) {
-  // 期望返回结构：
-  // { historical: [], future: [], eruptionLevels: { 11: 0.8, ... } }
+  console.log('Normalizing payload:', payload);
+
+  // 如果后端直接返回 { historical: [], future: [] } 格式
   if (payload?.historical || payload?.future) {
     return {
       historical: Array.isArray(payload.historical) ? payload.historical : [],
@@ -167,69 +167,53 @@ function normalizeTreatments(payload) {
     };
   }
 
-  // 兼容返回 { treatments: [...] } 的情况：按时间或 period 字段切分
-  const all = Array.isArray(payload?.treatments) ? payload.treatments : [];
-  const now = Date.now();
+  // 如果后端返回的是治疗记录数组，需要按时间分类
+  const all = Array.isArray(payload) ? payload : [];
+  const now = new Date();
   const historical = [];
   const future = [];
+
   for (const t of all) {
-    if (t?.period === 'historical') historical.push(t);
-    else if (t?.period === 'future') future.push(t);
-    else if (t?.date || t?.scheduledAt) {
-      const ts = new Date(t.date || t.scheduledAt).getTime();
-      (isFinite(ts) && ts > now ? future : historical).push(t);
+    // 根据 completed 字段和 date 字段分类
+    if (t.completed || (t.date && new Date(t.date) < now)) {
+      historical.push(t);
     } else {
-      historical.push(t); // 默认丢到历史
+      future.push(t);
     }
   }
-  return { historical, future, eruptionLevels: payload?.eruptionLevels || {} };
+
+  console.log('Normalized data:', { historical, future });
+  return { historical, future, eruptionLevels: {} };
 }
 
-// 用于 UI 上展示的键集合（你之前报错的函数也一并给出）
+// 用于 UI 上展示的键集合
 function uniqueKeysFrom(list) {
   const s = new Set();
   (Array.isArray(list) ? list : []).forEach((item) => {
-    let k = item?.key ?? item?.code ?? item?.id ?? item?.name ?? item?.treatmentKey;
+    // 后端返回的数据字段名是 treatmentType
+    let k = item?.treatmentType ?? item?.key ?? item?.type ?? item?.id ?? item?.name;
     if (!k && item?.toothNumber != null) k = `tooth_${item.toothNumber}`;
     if (!k && item?.toothId != null) k = `tooth_${item.toothId}`;
-    if (!k && item?.type) k = String(item.type);
     if (k != null) s.add(String(k));
   });
   return Array.from(s).sort();
 }
 
-// 真正的获取函数：App.js 里直接调用 pull(userId) -> 这里
-async function fetchTreatmentsByUser(userId) {
-  // 如果没配置 API_BASE_URL，直接给出可用的本地 mock，便于先跑通 UI
-  if (!API_BASE_URL) {
-    // console.warn('API_BASE_URL is empty; returning mock data.');
-    return {
-      historical: [
-        { id: 'h1', key: 'filling', toothNumber: 26, date: '2024-08-01' },
-        { id: 'h2', key: 'root_canal', toothNumber: 36, date: '2024-09-12' },
-      ],
-      future: [
-        { id: 'f1', key: 'crown', toothNumber: 16, date: '2025-12-01' },
-      ],
-      eruptionLevels: { 11: 0.9, 12: 0.7 },
-    };
-  }
-
+// 获取治疗数据的函数
+async function fetchTreatmentsByUser(idOrNhi) {
+  if (!API_BASE_URL) throw new Error('API_BASE_URL is not configured');
   const base = API_BASE_URL.replace(/\/$/, '');
-  // 你后端如果是另一种路径，自行改成 /api/treatments/by-user/:id 也可以
-  const url = `${base}/treatments?userId=${encodeURIComponent(userId)}`;
+  const isObjectId = /^[0-9a-fA-F]{24}$/.test(String(idOrNhi));
 
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-  });
+  const url = isObjectId
+      ? `${base}/getTreatmentsByUser?userId=${encodeURIComponent(idOrNhi)}`
+      : `${base}/getTreatmentsByUserNhi?nhi=${encodeURIComponent(idOrNhi)}`;
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`HTTP ${res.status} ${res.statusText} ${text ? `- ${text}` : ''}`);
-  }
-
-  const data = await res.json();
+  console.log('Fetching treatments from:', url);
+  const res = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`HTTP ${res.status} - ${text.slice(0,200)}`);
+  const data = JSON.parse(text);
   return normalizeTreatments(data);
 }
 
@@ -248,15 +232,14 @@ const BackButton = () => {
       </button>
   );
 };
+
 export default function App() {
   const [userId] = useUserId();
-
 
   const [showMenu, setShowMenu] = useState(false);
   const [selectedTreatment, setSelectedTreatment] = useState([]);
   const [mode, setMode] = useState(null); // 'parent' | 'child'
   const [activeTimePeriod, setActiveTimePeriod] = useState('historical'); // 'historical' | 'future'
-
 
   const [treatmentsByPeriod, setTreatmentsByPeriod] = useState({ historical: [], future: [] });
   const [eruptionLevels, setEruptionLevels] = useState({});
@@ -264,22 +247,42 @@ export default function App() {
   const [error, setError] = useState('');
   const latestUserRef = useRef(null);
 
-
   const pull = useCallback(async (uid) => {
-    setLoading(true); setError(''); latestUserRef.current = uid;
+    setLoading(true);
+    setError('');
+    latestUserRef.current = uid;
+
     try {
+      console.log('Fetching data for userId:', uid);
       const data = await fetchTreatmentsByUser(uid);
+      console.log('Received data:', data);
+
       if (latestUserRef.current !== uid) return; // avoid race
-      setTreatmentsByPeriod({ historical: data.historical, future: data.future });
-      if (data.eruptionLevels) setEruptionLevels(data.eruptionLevels);
-      const keys = uniqueKeysFrom(activeTimePeriod === 'future' ? data.future : data.historical);
+
+      setTreatmentsByPeriod({
+        historical: data.historical,
+        future: data.future
+      });
+
+      if (data.eruptionLevels) {
+        setEruptionLevels(data.eruptionLevels);
+      }
+
+      const keys = uniqueKeysFrom(
+          activeTimePeriod === 'future' ? data.future : data.historical
+      );
+      console.log('Treatment keys:', keys);
       setSelectedTreatment(keys);
     } catch (e) {
+      console.error('Error in pull:', e);
       setError(e && e.message ? e.message : 'Load failed');
+      setTreatmentsByPeriod({ historical: [], future: [] });
+      setSelectedTreatment([]);
     } finally {
       setLoading(false);
     }
   }, [activeTimePeriod]);
+
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const parentParam = query.get('parent');
@@ -290,17 +293,14 @@ export default function App() {
     }
   }, []);
 
-
   useEffect(() => {
     if (userId) pull(userId);
   }, [userId, pull]);
-
 
   useEffect(() => {
     const list = activeTimePeriod === 'future' ? treatmentsByPeriod.future : treatmentsByPeriod.historical;
     setSelectedTreatment(uniqueKeysFrom(list));
   }, [activeTimePeriod, treatmentsByPeriod]);
-
 
   const handleSelect = (key, autoSelectedTreatments = null) => {
     if (key === 'auto') {
@@ -316,6 +316,7 @@ export default function App() {
       setSelectedTreatment((prev) => prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]);
     }
   };
+
   const handleTimePeriodSelect = (timePeriod) => {
     if (timePeriod === 'all') return;
     setActiveTimePeriod(timePeriod);
@@ -325,95 +326,92 @@ export default function App() {
     const list = activeTimePeriod === 'future' ? treatmentsByPeriod.future : treatmentsByPeriod.historical;
     return uniqueKeysFrom(list);
   }, [treatmentsByPeriod, activeTimePeriod]);
+
   return (
       <div>
-  <Router>
-    <div className="container">
-      <BackButton />
-      <Routes>
-        <Route
-            path="/"
-            element={
-              <div className="main-layout">
-                <div className="main-3d" onClick={() => setShowMenu(false)} style={{ cursor: 'default' }}>
-                  {loading && <p>Loading…</p>}
-                  {error && <p style={{ color: '#B00020' }}>Failed: {error}</p>}
-                  {!loading && !error && userId && (
-                      mode === 'child' ? (
-                          <WholeMouthKid selectedTreatment={selectedTreatment} />
-                      ) : (
-                          <WholeMouth
-                              selectedTreatment={selectedTreatment}
-                              setSelectedTreatment={setSelectedTreatment}
-                              activeTimePeriod={activeTimePeriod}
-                              treatmentsByPeriod={treatmentsByPeriod}
-                              eruptionLevels={eruptionLevels}
-                          />
-                      )
-                  )}
-                  {!userId && !loading && <p>No user set. Use /u/:userId or ?userId=, or RN WebView postMessage.</p>}
-                </div>
-                <div className={`filter-menu-container ${showMenu ? 'active' : ''}`} onClick={(e) => e.stopPropagation()}>
-                  <FilterMenu
-                      selected={selectedTreatment}
-                      onSelect={handleSelect}
-                      isOpen={showMenu}
-                      activeTimePeriod={activeTimePeriod}
-                      onTimePeriodSelect={handleTimePeriodSelect}
-                      treatmentsByPeriod={treatmentsByPeriod}
-                      availableTreatmentKeys={availableTreatmentKeys}
-                  />
-                </div>
-              </div>
-            }
-        />
+        <Router>
+          <div className="container">
+            <BackButton />
+            <Routes>
+              <Route
+                  path="/"
+                  element={
+                    <div className="main-layout">
+                      <div className="main-3d" onClick={() => setShowMenu(false)} style={{ cursor: 'default' }}>
+                        {loading && <p>Loading…</p>}
+                        {error && <p style={{ color: '#B00020' }}>Failed: {error}</p>}
+                        {!loading && !error && userId && (
+                            mode === 'child' ? (
+                                <WholeMouthKid selectedTreatment={selectedTreatment} />
+                            ) : (
+                                <WholeMouth
+                                    selectedTreatment={selectedTreatment}
+                                    setSelectedTreatment={setSelectedTreatment}
+                                    activeTimePeriod={activeTimePeriod}
+                                    treatmentsByPeriod={treatmentsByPeriod}
+                                    eruptionLevels={eruptionLevels}
+                                />
+                            )
+                        )}
+                        {!userId && !loading && <p>No user set. Use /u/:userId or ?userId=, or RN WebView postMessage.</p>}
+                      </div>
+                      <div className={`filter-menu-container ${showMenu ? 'active' : ''}`} onClick={(e) => e.stopPropagation()}>
+                        <FilterMenu
+                            selected={selectedTreatment}
+                            onSelect={handleSelect}
+                            isOpen={showMenu}
+                            activeTimePeriod={activeTimePeriod}
+                            onTimePeriodSelect={handleTimePeriodSelect}
+                            treatmentsByPeriod={treatmentsByPeriod}
+                            availableTreatmentKeys={availableTreatmentKeys}
+                        />
+                      </div>
+                    </div>
+                  }
+              />
 
+              {/* LOWER LEFT */}
+              <Route path="/lower-left-wisdom" element={<LowerLeftWisdomTooth />} />
+              <Route path="/lower-left-second-molar" element={<LowerLeftSecondMolar />} />
+              <Route path="/lower-left-first-molar" element={<LowerLeftFirstMolar />} />
+              <Route path="/lower-left-second-premolar" element={<LowerLeftSecondPremolar />} />
+              <Route path="/lower-left-first-premolar" element={<LowerLeftFirstPremolar />} />
+              <Route path="/lower-left-canine" element={<LowerLeftCanine />} />
+              <Route path="/lower-left-lateral-incisor" element={<LowerLeftLateralIncisor />} />
+              <Route path="/lower-left-central-incisor" element={<LowerLeftCentralIncisor />} />
 
-        {/* LOWER LEFT */}
-        <Route path="/lower-left-wisdom" element={<LowerLeftWisdomTooth />} />
-        <Route path="/lower-left-second-molar" element={<LowerLeftSecondMolar />} />
-        <Route path="/lower-left-first-molar" element={<LowerLeftFirstMolar />} />
-        <Route path="/lower-left-second-premolar" element={<LowerLeftSecondPremolar />} />
-        <Route path="/lower-left-first-premolar" element={<LowerLeftFirstPremolar />} />
-        <Route path="/lower-left-canine" element={<LowerLeftCanine />} />
-        <Route path="/lower-left-lateral-incisor" element={<LowerLeftLateralIncisor />} />
-        <Route path="/lower-left-central-incisor" element={<LowerLeftCentralIncisor />} />
+              {/* LOWER RIGHT */}
+              <Route path="/lower-right-wisdom" element={<LowerRightWisdomTooth />} />
+              <Route path="/lower-right-second-molar" element={<LowerRightSecondMolar />} />
+              <Route path="/lower-right-first-molar" element={<LowerRightFirstMolar />} />
+              <Route path="/lower-right-second-premolar" element={<LowerRightSecondPremolar />} />
+              <Route path="/lower-right-first-premolar" element={<LowerRightFirstPremolar />} />
+              <Route path="/lower-right-canine" element={<LowerRightCanine />} />
+              <Route path="/lower-right-lateral-incisor" element={<LowerRightLateralIncisor />} />
+              <Route path="/lower-right-central-incisor" element={<LowerRightCentralIncisor />} />
 
+              {/* UPPER LEFT */}
+              <Route path="/upper-left-wisdom" element={<UpperLeftWisdomTooth />} />
+              <Route path="/upper-left-second-molar" element={<UpperLeftSecondMolar />} />
+              <Route path="/upper-left-first-molar" element={<UpperLeftFirstMolar />} />
+              <Route path="/upper-left-second-premolar" element={<UpperLeftSecondPremolar />} />
+              <Route path="/upper-left-first-premolar" element={<UpperLeftFirstPremolar />} />
+              <Route path="/upper-left-canine" element={<UpperLeftCanine />} />
+              <Route path="/upper-left-lateral-incisor" element={<UpperLeftLateralIncisor />} />
+              <Route path="/upper-left-central-incisor" element={<UpperLeftCentralIncisor />} />
 
-        {/* LOWER RIGHT */}
-        <Route path="/lower-right-wisdom" element={<LowerRightWisdomTooth />} />
-        <Route path="/lower-right-second-molar" element={<LowerRightSecondMolar />} />
-        <Route path="/lower-right-first-molar" element={<LowerRightFirstMolar />} />
-        <Route path="/lower-right-second-premolar" element={<LowerRightSecondPremolar />} />
-        <Route path="/lower-right-first-premolar" element={<LowerRightFirstPremolar />} />
-        <Route path="/lower-right-canine" element={<LowerRightCanine />} />
-        <Route path="/lower-right-lateral-incisor" element={<LowerRightLateralIncisor />} />
-        <Route path="/lower-right-central-incisor" element={<LowerRightCentralIncisor />} />
-
-
-        {/* UPPER LEFT */}
-        <Route path="/upper-left-wisdom" element={<UpperLeftWisdomTooth />} />
-        <Route path="/upper-left-second-molar" element={<UpperLeftSecondMolar />} />
-        <Route path="/upper-left-first-molar" element={<UpperLeftFirstMolar />} />
-        <Route path="/upper-left-second-premolar" element={<UpperLeftSecondPremolar />} />
-        <Route path="/upper-left-first-premolar" element={<UpperLeftFirstPremolar />} />
-        <Route path="/upper-left-canine" element={<UpperLeftCanine />} />
-        <Route path="/upper-left-lateral-incisor" element={<UpperLeftLateralIncisor />} />
-        <Route path="/upper-left-central-incisor" element={<UpperLeftCentralIncisor />} />
-
-
-        {/* UPPER RIGHT */}
-        <Route path="/upper-right-wisdom" element={<UpperRightWisdomTooth />} />
-        <Route path="/upper-right-second-molar" element={<UpperRightSecondMolar />} />
-        <Route path="/upper-right-first-molar" element={<UpperRightFirstMolar />} />
-        <Route path="/upper-right-second-premolar" element={<UpperRightSecondPremolar />} />
-        <Route path="/upper-right-first-premolar" element={<UpperRightFirstPremolar />} />
-        <Route path="/upper-right-canine" element={<UpperRightCanine />} />
-        <Route path="/upper-right-lateral-incisor" element={<UpperRightLateralIncisor />} />
-        <Route path="/upper-right-central-incisor" element={<UpperRightCentralIncisor />} />
-      </Routes>
-    </div>
-  </Router>
-</div>
-);
+              {/* UPPER RIGHT */}
+              <Route path="/upper-right-wisdom" element={<UpperRightWisdomTooth />} />
+              <Route path="/upper-right-second-molar" element={<UpperRightSecondMolar />} />
+              <Route path="/upper-right-first-molar" element={<UpperRightFirstMolar />} />
+              <Route path="/upper-right-second-premolar" element={<UpperRightSecondPremolar />} />
+              <Route path="/upper-right-first-premolar" element={<UpperRightFirstPremolar />} />
+              <Route path="/upper-right-canine" element={<UpperRightCanine />} />
+              <Route path="/upper-right-lateral-incisor" element={<UpperRightLateralIncisor />} />
+              <Route path="/upper-right-central-incisor" element={<UpperRightCentralIncisor />} />
+            </Routes>
+          </div>
+        </Router>
+      </div>
+  );
 }

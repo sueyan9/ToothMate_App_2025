@@ -1,14 +1,16 @@
 const mongoose = require("mongoose");
 
 const treatmentSchema = new mongoose.Schema({
-    userId: {                    //  patientId？
-        type: mongoose.Schema.Types.ObjectId, ref: "User",
-        required: true,
-    },
-    userNhi: {               // for old API
-    type: String,
+    nhi: {
+        type: String,
         index: true,
-},
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        index: true
+    },
     toothNumber: {
         type: Number,
         required: true,
@@ -27,7 +29,8 @@ const treatmentSchema = new mongoose.Schema({
     completed: {
         type: Boolean,
         required: true,
+        default: false,
     },
 }, { timestamps: true });
 
-mongoose.model("Treatment", treatmentSchema);
+module.exports = mongoose.model("Treatment", treatmentSchema);

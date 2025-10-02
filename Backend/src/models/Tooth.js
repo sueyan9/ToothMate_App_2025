@@ -1,41 +1,27 @@
 const mongoose = require("mongoose");
 
 const toothSchema = new mongoose.Schema({
-    userNhi: {
+    nhi: {
         type: String,   // user NHI
         required: true,
     },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        index: true,
+},
     toothNumber: {
         type: Number,   // e.g. 33、32
         required: true,
-    //},
-    // name: {
-    //     type: String,   // e.g. "Upper Left First Molar"
-    //     required: true,
-    // },
-    // code: {
-    //     type: String,   // e.g. UL4, LL1
-    //     required: true,
-    // },
-    // location: {
-    //     type: String,   // e.g. "upper-left", "lower-right"
-    //     required: true,
-    // },
-    // type: {
-    //     type: String,   // e.g. "premolar", "canine", "molar", "incisor"
-    //     required: true,
     },
     extracted: {
         type: Boolean,
         default: false,
     },
-    // deciduous: {
-    //     type: Boolean,
-    //     default: false,
-    // },
 });
 
 //make  sure the code is unique for every user
-toothSchema.index({ userNhi: 1, code: 1 }, { unique: true });
-toothSchema.index({ userNhi: 1, tooth_number: 1 }, { unique: true });
-mongoose.model("Tooth", toothSchema);
+toothSchema.index({ userId: 1, toothNumber: 1 }, { unique: true });
+toothSchema.index({ nhi: 1, toothNumber: 1 }, { unique: true });
+module.exports = mongoose.model("Tooth", toothSchema);

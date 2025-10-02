@@ -1,26 +1,15 @@
 import { useEffect, useState } from "react";
 import { TREATMENTS } from './Treatment';
 
-export default function FilterMenu({ userId, selected, onSelect, isOpen, onTimePeriodSelect, activeTimePeriod }) {
-  const [treatmentsByPeriod, setTreatmentsByPeriod] = useState({ historical: [], future: [] });
-
-  useEffect(() => {
-    if (!userId) return;
-
-    const fetchData = async () => {
-      try {
-        const res = await fetch(`/treatment/getTreatmentsByUser/${userId}`);
-        if (!res.ok) throw new Error("Failed to fetch treatments");
-        const data = await res.json();
-        setTreatmentsByPeriod(data);
-      } catch (err) {
-        console.error("Error fetching treatments:", err);
-      }
-    };
-
-    fetchData();
-  }, [userId]);
-
+export default function FilterMenu({
+                                     selected,
+                                     onSelect,
+                                     isOpen,
+                                     activeTimePeriod,
+                                     onTimePeriodSelect,
+                                     treatmentsByPeriod,
+                                     availableTreatmentKeys
+                                   }) {
   const getFilterStyle = (filterType) => ({
     backgroundColor: activeTimePeriod === filterType ? '#EDDFD3' : 'transparent',
     color: '#333333',
@@ -37,11 +26,11 @@ export default function FilterMenu({ userId, selected, onSelect, isOpen, onTimeP
     outline: 'none',
   });
 
-  // get treatmentType
+  // 获取可用的治疗类型
   const getAvailableTreatments = (timePeriod) => {
     const treatmentSet = new Set();
-
     const arr = treatmentsByPeriod[timePeriod] || [];
+
     arr.forEach(t => {
       const normalizedType = normalizeTreatmentType(t.treatmentType);
       if (normalizedType) {
@@ -62,6 +51,14 @@ export default function FilterMenu({ userId, selected, onSelect, isOpen, onTimeP
       'Implant': 'implant',
       'Veneer': 'veneer',
       'Sealant': 'sealant',
+      'root_canal': 'rootCanal',
+      'crown': 'crown',
+      'filling': 'filling',
+      'extraction': 'extraction',
+      'bridge': 'bridge',
+      'implant': 'implant',
+      'veneer': 'veneer',
+      'sealant': 'sealant',
       // no change
       'Cleaning': null,
       'Checkup': null
@@ -82,11 +79,9 @@ export default function FilterMenu({ userId, selected, onSelect, isOpen, onTimeP
 
     if (timePeriod === 'historical' || timePeriod === 'future') {
       const availableTreatments = getAvailableTreatments(timePeriod);
-
       const validTreatments = availableTreatments.filter(treatment =>
           TREATMENTS.some(t => t.key === treatment)
       );
-
       onSelect('auto', validTreatments);
     }
   };
@@ -104,6 +99,14 @@ export default function FilterMenu({ userId, selected, onSelect, isOpen, onTimeP
       fontStyle: hasData ? 'normal' : 'italic'
     };
   };
+
+  // 调试信息
+  console.log('FilterMenu props:', {
+    selected,
+    activeTimePeriod,
+    treatmentsByPeriod,
+    availableTreatmentKeys
+  });
 
   return (
       <div className={`filter-menu ${isOpen ? 'active' : ''}`}>
@@ -148,37 +151,37 @@ export default function FilterMenu({ userId, selected, onSelect, isOpen, onTimeP
                       onClick={() => onSelect(item.key)}
                       style={itemStyle}
                   >
-                <span style={{
-                  display: 'flex',
-                  width: 14,
-                  height: 14,
-                  borderRadius: '50%',
-                  backgroundColor: item.colour,
-                  marginRight: 8,
-                  boxSizing: 'border-box',
-                  opacity: itemStyle.opacity || 1,
-                  border: isSelected ? '7px solid rgba(255, 255, 255, 0.4)' : '2px solid transparent',
-                  position: 'relative',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }} >
-                  {isSelected && (
-                      <span style={{
-                        color: '#333333',
-                        fontSize: '10px',
-                        fontWeight: 'bold',
-                        lineHeight: '1'
-                      }}>
-                      X
+                    <span style={{
+                      display: 'flex',
+                      width: 14,
+                      height: 14,
+                      borderRadius: '50%',
+                      backgroundColor: item.colour,
+                      marginRight: 8,
+                      boxSizing: 'border-box',
+                      opacity: itemStyle.opacity || 1,
+                      border: isSelected ? '7px solid rgba(255, 255, 255, 0.4)' : '2px solid transparent',
+                      position: 'relative',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      {isSelected && (
+                          <span style={{
+                            color: '#333333',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                            lineHeight: '1'
+                          }}>
+                            X
+                          </span>
+                      )}
                     </span>
-                  )}
-                </span>
                     <span className="filter-label" style={{
                       color: isSelected ? '#333' : '#656B69',
                       ...itemStyle
                     }}>
-                  {item.label}
-                </span>
+                      {item.label}
+                    </span>
                   </div>
               );
             })}
