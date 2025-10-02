@@ -2,7 +2,7 @@ import { useFocusEffect } from '@react-navigation/native'; // New import
 import dayjs from 'dayjs';
 import React, { useContext, useEffect, useState } from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
-import { Button, Input, Text } from 'react-native-elements';
+import { Button, Icon, Input, Text } from 'react-native-elements';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ToothLogo from '../../../assets/tooth_icon.png';
 import axiosApi from "../../api/axios";
@@ -27,7 +27,25 @@ const SignupScreen = props => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [nhi, setNhi] = useState('');
+
+  const [nhiQ, setNhiQ] = useState(false);
+  const [codeQ, setCodeQ] = useState(false);
+
+  const [hidePassword, sethidePassword] = useState(true);
+  const [hide2Password, sethide2Password] = useState(true);
+  const [eyeStatus, setEyeStatus] = useState('eye');
+  const [eye2Status, setEye2Status] = useState('eye');
+
+  const setEye = (bool, eyeType) => {
+    if (bool) {
+      eyeType === 1 ? setEyeStatus("eye") : setEye2Status("eye");
+    }
+    else {
+      eyeType === 1 ? setEyeStatus("eye-closed") : setEye2Status("eye-closed");
+    }
+  }
 
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -157,60 +175,6 @@ const SignupScreen = props => {
               <Image source={ToothLogo} style={styles.icon}/>
             <Text style={styles.titleTextStyle}> ToothMate </Text>
             </View>
-            <Spacer />
-            <Input
-                label="Signup Code"
-                leftIcon={{ type: 'font-awesome', name: 'building' }}
-                value={signupCode}
-                onChangeText={setSignupCode}
-                autoCapitalize="characters"
-                autoCorrect={false}
-                inputContainerStyle={styles.inputContainerStyle}
-                inputStyle={styles.textStyle}
-                labelStyle={styles.labelStyle}
-            />
-            {signupCodeStatus === 'valid' && patientInfo && (
-                <Text style={{ color: 'green', marginLeft: 10 }}>
-                  Signin code found!
-                </Text>
-            )}
-
-            {signupCodeStatus === 'invalid' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>Invalid signin code</Text>
-            )}
-
-            <Input
-                label="NHI Number"
-                leftIcon={{ type: 'material-community', name: 'hospital-box' }}
-                value={nhi.toUpperCase()}
-                onChangeText={setNhi}
-                autoCapitalize="characters"
-                autoCorrect={false}
-                inputContainerStyle={styles.inputContainerStyle}
-                inputStyle={styles.textStyle}
-                labelStyle={styles.labelStyle}
-            />
-            {nhiStatus === 'valid' && (
-                <Text style={{ color: 'green', marginLeft: 10 }}>
-                  NHI confirmed!
-                </Text>
-            )}
-            {nhiStatus === 'exists' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>
-                  NHI does not match our records.
-                </Text>
-            )}
-            {nhiStatus === 'invalid_format' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>
-                  Invalid NHI format (should be 3 letters + 4 numbers)
-                </Text>
-            )}
-            {nhiStatus === 'invalid' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>
-                  Error checking NHI
-                </Text>
-            )}
-            
             <Input
                 label="Email"
                 leftIcon={{ type: 'material-icons', name: 'email' }}
@@ -223,44 +187,149 @@ const SignupScreen = props => {
                 labelStyle={styles.labelStyle}
             />
             {emailStatus === 'valid' && (
-                <Text style={{ color: 'green', marginLeft: 10 }}>
+                <Text style={{ color: 'green', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
                   Email is available!
                 </Text>
             )}
             {emailStatus === 'exists' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>
+                <Text style={{ color: 'red', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
                   Email already exists
                 </Text>
             )}
             {emailStatus === 'invalid_format' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>
+                <Text style={{ color: 'red', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
                   Invalid email format
                 </Text>
             )}
             {emailStatus === 'invalid' && (
-                <Text style={{ color: 'red', marginLeft: 10 }}>
+                <Text style={{ color: 'red', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
                   Error checking email
                 </Text>
             )}
+
             <Input
-                label="Password"
-                leftIcon={{ type: 'fontawesome5', name: 'lock' }}
-                value={password}
-                onChangeText={setPassword}
-                autoCapitalize="none"
+                label="NHI Number"
+                leftIcon={{ type: 'material-community', name: 'hospital-box' }}
+                rightIcon={
+                  <TouchableOpacity onPress={() => {
+                    setNhiQ(!nhiQ)}}>
+                    <Icon type='material-community' name={'help'} style={{marginRight: 8}}/>
+                  </TouchableOpacity>
+                }
+                value={nhi.toUpperCase()}
+                onChangeText={setNhi}
+                autoCapitalize="characters"
                 autoCorrect={false}
-                secureTextEntry
                 inputContainerStyle={styles.inputContainerStyle}
                 inputStyle={styles.textStyle}
                 labelStyle={styles.labelStyle}
             />
-            {errorMessage !== '' && (
-              <Text style={{ color: 'red', marginLeft: 10, marginTop: 10 }}>
+            {nhiQ && (
+              <Text style={{ color: '#656B69', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
+                  Your NHI number is on your prescriptions, lab results, or ask your GP/healthcare provider.
+              </Text>
+            )}
+            {nhiStatus === 'valid' && (
+                <Text style={{ color: 'green', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
+                  NHI confirmed!
+                </Text>
+            )}
+            {nhiStatus === 'exists' && (
+                <Text style={{ color: 'red', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
+                  NHI does not match our records.
+                </Text>
+            )}
+            {nhiStatus === 'invalid_format' && (
+                <Text style={{ color: 'red', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
+                  Invalid NHI format (should be 3 letters + 4 numbers)
+                </Text>
+            )}
+            {nhiStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
+                  Error checking NHI
+                </Text>
+            )}
+
+            <Input
+                label="Signup Code"
+                leftIcon={{ type: 'font-awesome', name: 'building' }}
+                rightIcon={
+                  <TouchableOpacity onPress={() => {
+                    setCodeQ(!codeQ)}}>
+                    <Icon type='material-community' name={'help'} style={{marginRight: 8}}/>
+                  </TouchableOpacity>
+                }
+                value={signupCode.toUpperCase()}
+                onChangeText={setSignupCode}
+                autoCapitalize="characters"
+                autoCorrect={false}
+                inputContainerStyle={styles.inputContainerStyle}
+                inputStyle={styles.textStyle}
+                labelStyle={styles.labelStyle}
+            />
+            {codeQ && (
+              <Text style={{ color: '#656B69', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
+                  This signup code is emailed to you when you ask your dental clinic to join the ToothMate app.
+              </Text>
+            )}
+            {signupCodeStatus === 'valid' && patientInfo && (
+                <Text style={{ color: 'green', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
+                  Signin code found!
+                </Text>
+            )}
+
+            {signupCodeStatus === 'invalid' && (
+                <Text style={{ color: 'red', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>Invalid signin code</Text>
+            )}
+
+            <Input
+                label="Password"
+                leftIcon={{ type: 'fontawesome5', name: 'lock' }}
+                rightIcon={
+                  <TouchableOpacity onPress={() => {
+                    sethidePassword(!hidePassword)
+                    setEye(!hidePassword, 1)}}>
+                    <Icon type='material-community' name={eyeStatus} style={{marginRight: 8}}/>
+                  </TouchableOpacity>
+                }
+                value={password}
+                onChangeText={setPassword}
+                autoCapitalize="none"
+                autoCorrect={false}
+                secureTextEntry={hidePassword}
+                inputContainerStyle={styles.inputContainerStyle}
+                inputStyle={styles.textStyle}
+                labelStyle={styles.labelStyle}
+            />
+            <Input
+                label="Confirm Password"
+                leftIcon={{ type: 'fontawesome5', name: 'lock' }}
+                rightIcon={
+                  <TouchableOpacity onPress={() => {
+                    sethide2Password(!hide2Password)
+                    setEye(!hide2Password, 2)}}>
+                    <Icon type='material-community' name={eye2Status} style={{marginRight: 8}}/>
+                  </TouchableOpacity>
+                }
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                autoCapitalize="none"
+                autoCorrect={false}
+                secureTextEntry={hide2Password}
+                inputContainerStyle={styles.inputContainerStyle}
+                inputStyle={styles.textStyle}
+                labelStyle={styles.labelStyle}
+            />
+            {password !== confirmPassword && (
+              <Text style={{ color: 'red', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
+                Passwords entered do not match.
+              </Text>
+            )}
+            {errorMessage !== '' && password === confirmPassword && (
+              <Text style={{ color: 'red', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
                 {errorMessage}
               </Text>
             )}
-              <Spacer />
-            <Spacer>
               <Button
                   buttonStyle={styles.button}
                   containerStyle={styles.buttonContainer}
@@ -268,7 +337,6 @@ const SignupScreen = props => {
                   titleStyle={styles.buttonText}
                   onPress={handleSubmit}
               />
-            </Spacer>
             <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
               <Spacer>
                 <View style={styles.link}>
