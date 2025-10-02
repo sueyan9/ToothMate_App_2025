@@ -1,12 +1,13 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Alert, Animated, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const ToothHeroScreen = ({ navigation }) => {
   const [completedMissions, setCompletedMissions] = useState(new Set());
   const [heroPoints, setHeroPoints] = useState(0);
   const [heroLevel, setHeroLevel] = useState(1);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   const missions = [
     {
@@ -143,8 +144,27 @@ const ToothHeroScreen = ({ navigation }) => {
   const currentBadge = getCurrentBadge();
   const nextBadge = getNextBadge();
 
+  // Animated values for hero status card
+  const cardScale = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0.85],
+    extrapolate: 'clamp',
+  });
+
+  const cardOpacity = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0.7],
+    extrapolate: 'clamp',
+  });
+
+  const badgeScale = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0.7],
+    extrapolate: 'clamp',
+  });
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
       <LinearGradient
         colors={['#97cfffff', '#97cfffff']}
@@ -160,9 +180,22 @@ const ToothHeroScreen = ({ navigation }) => {
       </LinearGradient>
 
       {/* Hero Status */}
-      <View style={styles.heroStatus}>
+      <Animated.View 
+        style={[
+          styles.heroStatus,
+          {
+            transform: [{ scale: cardScale }],
+            opacity: cardOpacity,
+          }
+        ]}
+      >
         <View style={styles.badgeContainer}>
-          <Text style={styles.badgeEmoji}>{currentBadge.emoji}</Text>
+          <Animated.Text style={[
+            styles.badgeEmoji, 
+            { transform: [{ scale: badgeScale }] }
+          ]}>
+            {currentBadge.emoji}
+          </Animated.Text>
           <Text style={styles.badgeTitle}>{currentBadge.title}</Text>
           <Text style={styles.heroPoints}>{heroPoints} Hero Points</Text>
         </View>
@@ -182,10 +215,18 @@ const ToothHeroScreen = ({ navigation }) => {
             </Text>
           </View>
         )}
-      </View>
+      </Animated.View>
 
       {/* Daily Missions */}
-      <ScrollView style={styles.missionsContainer} showsVerticalScrollIndicator={false}>
+      <Animated.ScrollView 
+        style={styles.missionsContainer} 
+        showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
+      >
         <Text style={styles.sectionTitle}>Today's Missions 🎯</Text>
 
         {missions.map((mission) => {
@@ -281,16 +322,15 @@ const ToothHeroScreen = ({ navigation }) => {
             })}
           </ScrollView>
         </View>
-      </ScrollView>
-    </View>
+      </Animated.ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F8FF',
-    paddingTop: 60,
+    backgroundColor: '#97cfffff',
   },
   header: {
     flexDirection: 'row',
@@ -312,9 +352,11 @@ const styles = StyleSheet.create({
   },
   heroStatus: {
     backgroundColor: 'white',
-    margin: 20,
+    marginHorizontal: 20,
+    marginTop: 5,
+    marginBottom: 10,
     borderRadius: 20,
-    padding: 20,
+    padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -486,7 +528,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#2C3E50',
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   badgeCardPoints: {
     fontSize: 10,
@@ -502,7 +544,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFD93D',
     borderRadius: 8,
     paddingHorizontal: 4,
-    paddingVertical: 2,
+    paddingVertical: 6,
   },
   currentText: {
     fontSize: 8,
