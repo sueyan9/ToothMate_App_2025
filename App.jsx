@@ -29,9 +29,9 @@ import UserScreen from './src/screens/UserScreen';
 
 // Import new game screens
 import BrushingTimerScreen from './src/screens/BrushingTimerScreen/BrushingTimerScreen';
-import ToothMazeAdventure from './src/screens/ToothMazeAdventure/ToothMazeAdventure';
 import LearnTeethScreen from './src/screens/LearnTeethScreen/LearnTeethScreen';
 import ToothHeroScreen from './src/screens/ToothHeroScreen/ToothHeroScreen';
+import ToothMazeAdventure from './src/screens/ToothMazeAdventure/ToothMazeAdventure';
 
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
@@ -45,6 +45,7 @@ import { navigationRef } from './src/navigationRef';
 //splash screen
 import { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
+import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
@@ -260,9 +261,13 @@ const ChildFlow = () => (
       name="ChildEducation"
       component={ChildEducationStack}
       options={{
-        title: 'Library',
+        title: 'Fun Zone',
         tabBarIcon: ({ color, size }) => (
-          <Icon name="education" color={color} size={size} />
+          <Image 
+  source={GameIcon} 
+  style={{ width: size, height: size, tintColor: color }} 
+/>
+
         ),
       }}
     />
