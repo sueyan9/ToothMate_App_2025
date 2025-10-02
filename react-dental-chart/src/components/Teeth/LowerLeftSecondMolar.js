@@ -36,14 +36,17 @@ const LeftLowerSecondMolar = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Second_Molar_Geo_2.geometry}
           material={materials['2']}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Second_Molar_Geo_3.geometry}
           material={materials['3']}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Second_Molar_Geo_4.geometry}
           material={materials['4']}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Second_Molar_Geo_5.geometry}

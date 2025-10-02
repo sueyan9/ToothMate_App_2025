@@ -49,15 +49,37 @@ const EducationReducer = (state, action) => {
 const getEducationContent = dispatch => {
   return async () => {
     try {
+      console.log('Fetching education content...');
       const response = await axiosApi.get('/education');
       const educationData = response.data;
       
+      // Debug: Log the raw response to see what we're getting from backend
+      console.log('Raw education data from backend:', educationData);
+      console.log('First item from backend:', educationData[0]);
+      console.log('Content field in first item:', educationData[0]?.content);
+      
       const favouriteIds = await getStoredFavourites();
       
-      const educationDataWithFavourites = educationData.map(item => ({
-        ...item,
-        favourite: favouriteIds.includes(item._id)
-      }));
+      // Make sure we preserve ALL original fields when adding favourite status
+      const educationDataWithFavourites = educationData.map(item => {
+        // Debug: Log each item before transformation
+        console.log('Original item:', item);
+        console.log('Item keys:', Object.keys(item));
+        
+        const transformedItem = {
+          ...item, // This should preserve all original fields including 'content'
+          favourite: favouriteIds.includes(item._id)
+        };
+        
+        // Debug: Log after transformation
+        console.log('Transformed item:', transformedItem);
+        console.log('Transformed item keys:', Object.keys(transformedItem));
+        console.log('Content in transformed item:', transformedItem.content);
+        
+        return transformedItem;
+      });
+      
+      console.log('Final education data with favourites:', educationDataWithFavourites);
       
       dispatch({ 
         type: 'get_education_content', 

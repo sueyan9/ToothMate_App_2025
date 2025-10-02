@@ -82,6 +82,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 8,
   },
+  confirmedTag: {
+    alignSelf: 'flex-start',
+    borderRadius: 12,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    marginTop: 8,
+  },
+  confirmed: {
+    backgroundColor: '#A5D6B0',
+  },
+  unconfirmed: {
+    backgroundColor: '#FFE4BD',
+  },
+  confirmedText: {
+    fontSize: 12,
+    color: '#495F4D',
+  },
+  unconfirmedText: {
+    fontSize: 12,
+    color: '#78685C',
+  },
   typeText: {
     fontSize: 12,
     color: '#875B51',
@@ -194,6 +215,7 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         paddingHorizontal: 10,
         marginTop: 8,
+        marginRight: 8,
     },
     typeText: {
         fontSize: 12,
@@ -239,7 +261,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        top: '15%',
+        top: '10%',
         transform: [{ translateX:0 }],
         backgroundColor: '#fff',
         borderTopLeftRadius: 16,
@@ -287,6 +309,11 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#F0F0F0',
     },
+    modalDetailCancel: {
+        paddingVertical: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F0F0F0',
+    },
     modalDetailLabel: {
         fontSize: 14,
         fontWeight: '600',
@@ -297,6 +324,12 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#333',
         flex: 1,
+    },
+    modalDetailValueCancel: {
+        fontSize: 12,
+        color: 'red',
+        flex: 1,
+        textAlign: 'center'
     },
     formGroup: {
         marginBottom: 16,

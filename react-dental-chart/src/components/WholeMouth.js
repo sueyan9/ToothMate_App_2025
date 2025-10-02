@@ -503,7 +503,7 @@ export default function WholeMouth({ selectedTreatment, activeTimePeriod, setSel
 
   return (
     <div className='mouth-container'>
-      <Canvas camera={{ fov: 95 }}>
+      <Canvas camera={{ fov: 90 }}>
         <CameraController />
         <ambientLight intensity={0.7} />
         <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
