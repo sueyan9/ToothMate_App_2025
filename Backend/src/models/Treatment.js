@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 
 const treatmentSchema = new mongoose.Schema({
     userId: {                    //  patientId？
-        type: String,
+        type: mongoose.Schema.Types.ObjectId, ref: "User",
         required: true,
     },
     userNhi: {               // for old API
     type: String,
         index: true,
 },
-    tooth_Number: {
+    toothNumber: {
         type: Number,
         required: true,
     },
