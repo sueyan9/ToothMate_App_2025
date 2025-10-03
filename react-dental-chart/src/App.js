@@ -185,20 +185,49 @@ function normalizeTreatments(payload) {
   console.log('Normalized data:', { historical, future });
   return { historical, future, eruptionLevels: {} };
 }
-
+// 在 uniqueKeysFrom 函数之前添加这个函数
+function normalizeTreatmentType(treatmentType) {
+  const typeMap = {
+    'Root Canal': 'rootCanal',
+    'Crown Placement': 'crown',
+    'Filling': 'filling',
+    'Extraction': 'extraction',
+    'Bridge': 'bridge',
+    'Implant': 'implant',
+    'Veneer': 'veneer',
+    'Sealant': 'sealant',
+    'root_canal': 'rootCanal',
+    'crown': 'crown',
+    'filling': 'filling',
+    'extraction': 'extraction',
+    'bridge': 'bridge',
+    'implant': 'implant',
+    'veneer': 'veneer',
+    'sealant': 'sealant',
+    'rootCanal': 'rootCanal',
+    'Cleaning': null,
+    'Checkup': null
+  };
+  return typeMap[treatmentType] || treatmentType?.toLowerCase();
+}
 // 用于 UI 上展示的键集合
 function uniqueKeysFrom(list) {
   const s = new Set();
   (Array.isArray(list) ? list : []).forEach((item) => {
-    // 后端返回的数据字段名是 treatmentType
-    let k = item?.treatmentType ?? item?.key ?? item?.type ?? item?.id ?? item?.name;
-    if (!k && item?.toothNumber != null) k = `tooth_${item.toothNumber}`;
-    if (!k && item?.toothId != null) k = `tooth_${item.toothId}`;
-    if (k != null) s.add(String(k));
+    console.log('Processing item:', item.treatmentType);
+    let k = item?.treatmentType;
+    if (k) {
+      const normalized = normalizeTreatmentType(k);
+      console.log('Normalized to:', normalized);
+      if (normalized) {
+        s.add(normalized);
+      }
+    }
   });
-  return Array.from(s).sort();
+  const result = Array.from(s).sort();
+  console.log('Final unique keys:', result);
+  return result;
 }
-
 // 获取治疗数据的函数
 async function fetchTreatmentsByUser(idOrNhi) {
   if (!API_BASE_URL) throw new Error('API_BASE_URL is not configured');

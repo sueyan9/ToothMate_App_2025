@@ -1,6 +1,7 @@
 import { useGLTF } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import React, { Suspense, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom'; // 添加这行
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import '../styles.css';
@@ -68,6 +69,7 @@ const WholeMouthModel = ({
                              activeTimePeriod,
                              treatmentsByPeriod,
                              eruptionLevels = {},
+                             onToothClick, // 添加这个prop
                              ...props
                          }) => {
     const group = useRef();
@@ -77,7 +79,7 @@ const WholeMouthModel = ({
         const list = activeTimePeriod === 'future'
             ? (treatmentsByPeriod?.future || [])
             : (treatmentsByPeriod?.historical || []);
-        return list.filter((t) => t.toothNumber === toothNumber); // 修复字段名
+        return list.filter((t) => t.toothNumber === toothNumber);
     };
 
     const getToothMaterial = (toothNumber) => {
@@ -87,7 +89,6 @@ const WholeMouthModel = ({
 
         if (!types.length) return toothMaterials.normal;
 
-        // 当没有选择任何过滤项时，直接用数据里的类型着色（给“拔除”留透明）
         if (!selectedTreatment || selectedTreatment.length === 0 || selectedTreatment[0] === 'none') {
             return types.includes('extraction') ? toothMaterials.missing : (toothMaterials[types[0]] || toothMaterials.normal);
         }
@@ -102,7 +103,6 @@ const WholeMouthModel = ({
         lower: [0, 0.36, -0.07],
     };
 
-    // 调试信息
     console.log('WholeMouthModel props:', {
         selectedTreatment,
         activeTimePeriod,
@@ -122,7 +122,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(48, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-right-wisdom')}
+                onClick={() => onToothClick(48, 'lower-right-wisdom')}
             />
             <mesh
                 geometry={nodes.lower_right_second_molar.geometry}
@@ -130,7 +130,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(47, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-right-second-molar')}
+                onClick={() => onToothClick(47, 'lower-right-second-molar')}
             />
             <mesh
                 geometry={nodes.lower_right_first_molar.geometry}
@@ -138,7 +138,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(46, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-right-first-molar')}
+                onClick={() => onToothClick(46, 'lower-right-first-molar')}
             />
             <mesh
                 geometry={nodes.lower_right_second_premolar.geometry}
@@ -146,7 +146,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(45, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-right-second-premolar')}
+                onClick={() => onToothClick(45, 'lower-right-second-premolar')}
             />
             <mesh
                 geometry={nodes.lower_right_first_premolar.geometry}
@@ -154,7 +154,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(44, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-right-first-premolar')}
+                onClick={() => onToothClick(44, 'lower-right-first-premolar')}
             />
             <mesh
                 geometry={nodes.lower_right_canine.geometry}
@@ -162,7 +162,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(43, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-right-canine')}
+                onClick={() => onToothClick(43, 'lower-right-canine')}
             />
             <mesh
                 geometry={nodes.lower_right_lateral_incisor.geometry}
@@ -170,7 +170,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(42, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-right-lateral-incisor')}
+                onClick={() => onToothClick(42, 'lower-right-lateral-incisor')}
             />
             <mesh
                 geometry={nodes.lower_right_central_incisor.geometry}
@@ -178,7 +178,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(41, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-right-central-incisor')}
+                onClick={() => onToothClick(41, 'lower-right-central-incisor')}
             />
 
             {/* LOWER LEFT 38–31 */}
@@ -188,7 +188,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(38, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-left-wisdom')}
+                onClick={() => onToothClick(38, 'lower-left-wisdom')}
             />
             <mesh
                 geometry={nodes.lower_left_second_molar.geometry}
@@ -196,7 +196,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(37, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-left-second-molar')}
+                onClick={() => onToothClick(37, 'lower-left-second-molar')}
             />
             <mesh
                 geometry={nodes.lower_left_first_molar.geometry}
@@ -204,7 +204,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(36, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-left-first-molar')}
+                onClick={() => onToothClick(36, 'lower-left-first-molar')}
             />
             <mesh
                 geometry={nodes.lower_left_second_premolar.geometry}
@@ -212,7 +212,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(35, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-left-second-premolar')}
+                onClick={() => onToothClick(35, 'lower-left-second-premolar')}
             />
             <mesh
                 geometry={nodes.lower_left_first_premolar.geometry}
@@ -220,7 +220,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(34, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-left-first-premolar')}
+                onClick={() => onToothClick(34, 'lower-left-first-premolar')}
             />
             <mesh
                 geometry={nodes.lower_left_canine.geometry}
@@ -228,7 +228,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(33, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-left-canine')}
+                onClick={() => onToothClick(33, 'lower-left-canine')}
             />
             <mesh
                 geometry={nodes.lower_left_lateral_incisor.geometry}
@@ -236,7 +236,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(32, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-left-lateral-incisor')}
+                onClick={() => onToothClick(32, 'lower-left-lateral-incisor')}
             />
             <mesh
                 geometry={nodes.lower_left_central_incisor.geometry}
@@ -244,7 +244,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(31, P.lower, eruptionLevels)}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/lower-left-central-incisor')}
+                onClick={() => onToothClick(31, 'lower-left-central-incisor')}
             />
 
             {/* UPPER RIGHT 18–11 */}
@@ -254,7 +254,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(18, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-right-wisdom')}
+                onClick={() => onToothClick(18, 'upper-right-wisdom')}
             />
             <mesh
                 geometry={nodes.upper_right_second_molar.geometry}
@@ -262,7 +262,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(17, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-right-second-molar')}
+                onClick={() => onToothClick(17, 'upper-right-second-molar')}
             />
             <mesh
                 geometry={nodes.upper_right_first_molar.geometry}
@@ -270,7 +270,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(16, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-right-first-molar')}
+                onClick={() => onToothClick(16, 'upper-right-first-molar')}
             />
             <mesh
                 geometry={nodes.upper_right_second_premolar.geometry}
@@ -278,7 +278,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(15, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-right-second-premolar')}
+                onClick={() => onToothClick(15, 'upper-right-second-premolar')}
             />
             <mesh
                 geometry={nodes.upper_right_first_premolar.geometry}
@@ -286,7 +286,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(14, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-right-first-premolar')}
+                onClick={() => onToothClick(14, 'upper-right-first-premolar')}
             />
             <mesh
                 geometry={nodes.upper_right_canine.geometry}
@@ -294,7 +294,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(13, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-right-canine')}
+                onClick={() => onToothClick(13, 'upper-right-canine')}
             />
             <mesh
                 geometry={nodes.upper_right_lateral_incisor.geometry}
@@ -302,7 +302,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(12, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-right-lateral-incisor')}
+                onClick={() => onToothClick(12, 'upper-right-lateral-incisor')}
             />
             <mesh
                 geometry={nodes.upper_right_central_incisor.geometry}
@@ -310,7 +310,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(11, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-right-central-incisor')}
+                onClick={() => onToothClick(11, 'upper-right-central-incisor')}
             />
 
             {/* UPPER LEFT 28–21 */}
@@ -320,7 +320,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(28, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-left-wisdom')}
+                onClick={() => onToothClick(28, 'upper-left-wisdom')}
             />
             <mesh
                 geometry={nodes.upper_left_second_molar.geometry}
@@ -328,7 +328,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(27, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-left-second-molar')}
+                onClick={() => onToothClick(27, 'upper-left-second-molar')}
             />
             <mesh
                 geometry={nodes.upper_left_first_molar.geometry}
@@ -336,7 +336,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(26, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-left-first-molar')}
+                onClick={() => onToothClick(26, 'upper-left-first-molar')}
             />
             <mesh
                 geometry={nodes.upper_left_second_premolar.geometry}
@@ -344,7 +344,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(25, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-left-second-premolar')}
+                onClick={() => onToothClick(25, 'upper-left-second-premolar')}
             />
             <mesh
                 geometry={nodes.upper_left_first_premolar.geometry}
@@ -352,7 +352,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(24, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-left-first-premolar')}
+                onClick={() => onToothClick(24, 'upper-left-first-premolar')}
             />
             <mesh
                 geometry={nodes.upper_left_canine.geometry}
@@ -360,7 +360,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(23, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-left-canine')}
+                onClick={() => onToothClick(23, 'upper-left-canine')}
             />
             <mesh
                 geometry={nodes.upper_left_lateral_incisor.geometry}
@@ -368,7 +368,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(22, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-left-lateral-incisor')}
+                onClick={() => onToothClick(22, 'upper-left-lateral-incisor')}
             />
             <mesh
                 geometry={nodes.upper_left_central_incisor.geometry}
@@ -376,7 +376,7 @@ const WholeMouthModel = ({
                 position={getToothPositionFromData(21, P.upper, eruptionLevels)}
                 rotation={[1.11, 0, 0]}
                 scale={39.99}
-                onClick={() => (window.location = '/upper-left-central-incisor')}
+                onClick={() => onToothClick(21, 'upper-left-central-incisor')}
             />
         </group>
     );
@@ -388,6 +388,23 @@ export default function WholeMouth({
                                        treatmentsByPeriod,
                                        eruptionLevels,
                                    }) {
+    const navigate = useNavigate();
+
+    // 添加牙齿点击处理函数
+    const handleToothClick = (toothNumber, toothComponent) => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId');
+
+        if (userId) {
+            // 使用React Router导航，保持userId参数
+            navigate(`/${toothComponent}?userId=${encodeURIComponent(userId)}`);
+        } else {
+            console.error('No userId found for navigation');
+            // 如果没有userId，仍然导航但不带参数
+            navigate(`/${toothComponent}`);
+        }
+    };
+
     return (
         <div className="mouth-container">
             <Canvas camera={{ fov: 95 }}>
@@ -400,6 +417,7 @@ export default function WholeMouth({
                         activeTimePeriod={activeTimePeriod}
                         treatmentsByPeriod={treatmentsByPeriod}
                         eruptionLevels={eruptionLevels}
+                        onToothClick={handleToothClick} // 传递点击处理函数
                     />
                 </Suspense>
             </Canvas>

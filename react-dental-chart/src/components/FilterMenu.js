@@ -32,19 +32,21 @@ export default function FilterMenu({
     const arr = treatmentsByPeriod[timePeriod] || [];
 
     arr.forEach(t => {
+      console.log('Raw treatmentType:', t.treatmentType);
       const normalizedType = normalizeTreatmentType(t.treatmentType);
+      console.log('Normalized to:', normalizedType);
       if (normalizedType) {
         treatmentSet.add(normalizedType);
       }
     });
-
-    return Array.from(treatmentSet);
+    const result = Array.from(treatmentSet);
+    console.log('Available treatments for', timePeriod, ':', result);
+    return result;
   };
 
   const normalizeTreatmentType = (treatmentType) => {
     const typeMap = {
       'Root Canal': 'rootCanal',
-      'rootCanal': 'rootCanal',
       'Crown Placement': 'crown',
       'Filling': 'filling',
       'Extraction': 'extraction',

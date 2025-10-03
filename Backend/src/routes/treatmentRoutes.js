@@ -85,6 +85,64 @@ router.get("/getTreatmentsByUserNhi", async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+//get treatment by userId
+router.get('/getTreatmentsByToothNumber/:userId/:toothNumber', async (req, res) => {
+    try {
+        const { userId, toothNumber } = req.params;
+        console.log('=== API Call Debug ===');
+        console.log('userId:', userId);
+        console.log('toothNumber:', toothNumber);
+        console.log('toothNumber type:', typeof toothNumber);
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({ message: 'Invalid userId format' });
+        }
+
+        const treatments = await Treatment.find({
+            userId: userId,
+            toothNumber: parseInt(toothNumber)
+        });
+        console.log('Found treatments:', treatments.length);
+        console.log('Treatments data:', treatments);
+        // 按时间分类
+        const now = new Date();
+        const historical = treatments.filter(t => t.completed || new Date(t.date) < now);
+        const future = treatments.filter(t => !t.completed && new Date(t.date) >= now);
+
+        return res.json({ historical, future });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: e.message });
+    }
+});
+// 获取特定牙齿的治疗记录 - 通过NHI
+router.get('/getTreatmentsByToothNumberNhi/:nhi/:toothNumber', async (req, res) => {
+    try {
+        const { nhi, toothNumber } = req.params;
+        const cleanNhi = nhi.toString().trim().replace(/['"]/g, '');
+
+        // 验证用户存在
+        const user = await User.findOne({ nhi: cleanNhi });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found by NHI', nhi: cleanNhi });
+        }
+
+        const treatments = await Treatment.find({
+            nhi: cleanNhi,
+            toothNumber: toothNumber
+        });
+
+        // 按时间分类
+        const now = new Date();
+        const historical = treatments.filter(t => t.completed || new Date(t.date) < now);
+        const future = treatments.filter(t => !t.completed && new Date(t.date) >= now);
+
+        return res.json({ historical, future });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: e.message });
+    }
+});
+
 // 创建治疗记录
 router.post("/createTreatment", async (req, res) => {
     try {

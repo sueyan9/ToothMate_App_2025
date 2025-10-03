@@ -58,7 +58,7 @@ const DentalChartScreen = () => {
     useEffect(() => {
         if (!userId || !res) return;
         console.log('WebView URL =>', url);
-        // Alert.alert('WebView URL', url); // 需要时再打开
+        // Alert.alert('WebView URL', url);
     }, [userId, res, url]);
 
     // pick most recent treatment from an array of { date, type, notes }

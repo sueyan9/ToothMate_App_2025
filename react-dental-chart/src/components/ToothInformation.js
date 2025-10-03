@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 
-export default function ToothInformation({ toothNumber }) {
-  const [isOpen, setIsOpen] = useState(true);
-  const [toothInfo, setToothInfo] = useState(null);
+export default function ToothInformation({ toothInfo }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [treatments, setTreatments] = useState([]);
+  const [futureTreatments, setFutureTreatments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
   const [userNhi, setUserNhi] = useState(null);
 
   const latestTreatmentType = (arr = []) => {
     if (!Array.isArray(arr) || arr.length === 0) return null;
     if (typeof arr[0] === 'string') return arr[0];
-    return [...arr].sort((a, b) => new Date(b?.date || 0) - new Date(a?.date || 0))[0]?.type ?? null;
+    return [...arr]
+        .sort((a, b) => new Date(b?.date || 0) - new Date(a?.date || 0))[0]?.type ?? null;
   };
+
   const onToggle = () => setIsOpen(!isOpen);
 
-  // ① Web: URL 传参
+  // ① Web: URL parameters
   useEffect(() => {
     try {
       const sp = new URLSearchParams(window.location.search);
@@ -24,7 +29,7 @@ export default function ToothInformation({ toothNumber }) {
     } catch {}
   }, []);
 
-  // ② RN: WebView bridge 注入
+  // ② RN: WebView bridge injection
   useEffect(() => {
     const handler = (evt) => {
       try {
@@ -39,92 +44,124 @@ export default function ToothInformation({ toothNumber }) {
     return () => window.removeEventListener('message', handler);
   }, []);
 
-  // ③ 仅调用后端；没有 userId/userNhi 就不渲染
+  // ③ Call backend API to get treatment records
   useEffect(() => {
     let cancelled = false;
-    if (!toothNumber) return;
+    if (!toothInfo?.toothNumber) return;
 
-    const mapTreatment = (t) => ({
-      date: t.treatmentDate || t.plannedFor || t.date || '',
-      type: t.treatmentType || t.type || '',
-      notes: t.treatmentDetails || t.notes || '',
-    });
-
-    const load = async () => {
+    const loadTreatments = async () => {
       try {
-        // 优先 userId 接口；否则用 userNhi（兼容旧后端）
-        let url = null;
-        if (userId) {
-          url = `/treatment/getTreatmentsByToothNumber/${encodeURIComponent(userId)}/${encodeURIComponent(toothNumber)}`;
-        } else if (userNhi) {
-          url = `/treatment/getTreatmentsByToothNumberNhi/${encodeURIComponent(userNhi)}/${encodeURIComponent(toothNumber)}`;
-        } else {
+        setIsLoading(true);
+        setError(null);
+        console.log('Loading treatments for tooth:', toothInfo.toothNumber);
+        console.log('UserId:', userId);
+        console.log('UserNhi:', userNhi);
+
+        // If no user info, don't show treatment records
+        if (!userId && !userNhi) {
+          if (!cancelled) {
+            setTreatments([]);
+            setFutureTreatments([]);
+            setIsLoading(false);
+          }
           return;
         }
 
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const arr = await resp.json(); // 期望为数组
+        // 使用环境变量中的API地址
+        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
-        const completed = (arr || [])
-            .filter(x => (x.status || '').toLowerCase() === 'completed')
-            .map(mapTreatment);
-        const planned = (arr || [])
-            .filter(x => (x.status || '').toLowerCase() !== 'completed')
-            .map(mapTreatment);
-
-        if (!cancelled) {
-          setToothInfo({
-            name: `Tooth ${toothNumber}`,
-            treatments: completed,
-            futuretreatments: planned,
-          });
+        // Call backend API to get treatment records
+        let url = null;
+        if (userId) {
+          url = `${API_BASE_URL}/getTreatmentsByToothNumber/${encodeURIComponent(userId)}/${encodeURIComponent(toothInfo.toothNumber)}`;
+        } else if (userNhi) {
+          url = `${API_BASE_URL}/getTreatmentsByToothNumberNhi/${encodeURIComponent(userNhi)}/${encodeURIComponent(toothInfo.toothNumber)}`;
         }
-      } catch (e) {
-        console.error('Failed to load tooth treatments:', e);
+
+        console.log('API Base URL:', API_BASE_URL);
+        console.log('Fetching treatments from:', url);
+
+        const response = await fetch(url);
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('API Response:', data);
+
+        // Map treatment record format
+        const mapTreatment = (t) => ({
+          date: t.date || '',
+          type: t.treatmentType || '',
+          notes: t.notes || '',
+          completed: t.completed || false
+        });
+
+        // Process API returned data { historical: [], future: [] }
+        const treatmentsData = (data.historical || []).map(mapTreatment);
+        const futureTreatmentsData = (data.future || []).map(mapTreatment);
+
+        console.log('Mapped treatments:', treatmentsData);
+        console.log('Mapped future treatments:', futureTreatmentsData);
+
         if (!cancelled) {
-          // 后端失败时也不要用 mock，给出空态
-          setToothInfo({
-            name: `Tooth ${toothNumber}`,
-            treatments: [],
-            futuretreatments: [],
-          });
+          setTreatments(treatmentsData);
+          setFutureTreatments(futureTreatmentsData);
+          setIsLoading(false);
+        }
+
+      } catch (error) {
+        console.error('Failed to load treatments:', error);
+        if (!cancelled) {
+          setError(`Failed to load treatments: ${error.message}`);
+          setTreatments([]);
+          setFutureTreatments([]);
+          setIsLoading(false);
         }
       }
     };
 
-    load();
+    loadTreatments();
     return () => { cancelled = true; };
-  }, [toothNumber, userId, userNhi]);
+  }, [toothInfo?.toothNumber, userId, userNhi]);
 
-  // 打开单牙面板时通知 RN（保留）
+  // 👉 When the individual tooth panel opens, notify React Native
   useEffect(() => {
     if (!isOpen || !toothInfo || !window.ReactNativeWebView) return;
     window.ReactNativeWebView.postMessage(JSON.stringify({
       type: 'TOOTH_SELECTED',
       payload: {
-        toothNumber,
+        toothNumber: toothInfo.toothNumber,
         toothName: toothInfo.name,
-        treatments: toothInfo.treatments ?? [],
-        treatment: latestTreatmentType(toothInfo.treatments),
+        treatments: treatments,
+        treatment: latestTreatmentType(treatments),
       }
     }));
-  }, [isOpen, toothInfo, toothNumber]);
+  }, [isOpen, toothInfo, treatments]);
 
   useEffect(() => {
-    const handleClickOutside = () => { if (isOpen) setIsOpen(false); };
+    const handleClickOutside = () => {
+      if (isOpen) setIsOpen(false);
+    };
     document.addEventListener('click', handleClickOutside);
-    return () => { document.removeEventListener('click', handleClickOutside); };
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
   }, [isOpen]);
 
-  const handlePanelClick = (e) => { e.stopPropagation(); };
+  const handlePanelClick = (e) => {
+    e.stopPropagation();
+  };
 
   const handleViewEducation = () => {
     if (window.ReactNativeWebView) {
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'VIEW_EDUCATION',
-        toothName: toothInfo?.name,
-        treatments: toothInfo?.treatments ?? []
+        toothName: toothInfo.name,
+        treatments: treatments
       }));
     }
   };
@@ -133,49 +170,116 @@ export default function ToothInformation({ toothNumber }) {
     if (window.ReactNativeWebView) {
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'VIEW_APPOINTMENTS',
-        toothName: toothInfo?.name,
-        treatments: toothInfo?.treatments ?? []
+        toothName: toothInfo.name,
+        treatments: treatments
       }));
     }
   };
 
-  // 没有 userId/userNhi 前或还未取回数据时不渲染内容
-  if (!userId && !userNhi) return null;
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    try {
+      return new Date(dateString).toLocaleDateString('en-US');
+    } catch {
+      return dateString;
+    }
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+        <div className="tooth-info">
+          <div className="tooth-info-header">
+            Loading treatments...
+          </div>
+        </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+        <div className="tooth-info">
+          <div className="tooth-info-header">
+            Error loading treatments
+          </div>
+          <div className="tooth-info-content" style={{ color: 'red' }}>
+            {error}
+          </div>
+        </div>
+    );
+  }
+
   if (!toothInfo) return null;
 
   return (
       <div className={`tooth-info ${isOpen ? 'active' : ''}`} onClick={onToggle}>
-        <div
-            onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }}
-            className="tooth-info-header"
-        >
-          {isOpen ? `↓ ${toothInfo.name} (#${toothNumber})` : `↑ ${toothInfo.name}`}
+        <div onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }} className="tooth-info-header">
+          {isOpen ? `↓ ${toothInfo.name} (#${toothInfo.toothNumber})` : `↑ ${toothInfo.name}`}
         </div>
 
         {isOpen && (
             <div onClick={handlePanelClick}>
               <div className="tooth-info-content">
+                {/* Basic Tooth Information */}
+                <div className="tooth-basic-info">
+                  <h4>Basic Tooth Information</h4>
+                  <div className="tooth-basic-info-container">
+                    <div className="tooth-info-item">
+                      <strong className="tooth-info-label">Position:</strong>
+                      <span className="tooth-info-value">{toothInfo.position}</span>
+                    </div>
+                    <div className="tooth-info-item">
+                      <strong className="tooth-info-label">Type:</strong>
+                      <span className="tooth-info-value">{toothInfo.type}</span>
+                    </div>
+                  </div>
+                </div>
+
                 <div>
                   <strong>Previous Work Done</strong>
-                  {toothInfo.treatments.length > 0 ? (
+                  {treatments.length > 0 ? (
                       <>
                         <ul className="treatment-list">
-                          {toothInfo.treatments.map((treatment, index) => (
+                          {treatments.map((treatment, index) => (
                               <li key={index} className="treatment-item">
-                                <div>{treatment.date}</div>
-                                <div>{treatment.type}</div>
-                                <div>{treatment.notes}</div>
+                                <div><strong>Date:</strong> {formatDate(treatment.date)}</div>
+                                <div><strong>Treatment Type:</strong> {treatment.type}</div>
+                                {treatment.notes && <div><strong>Notes:</strong> {treatment.notes}</div>}
                               </li>
                           ))}
                         </ul>
+
                         <button
-                            style={{ padding: '10px 20px', background: '#4CAF50', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '10px' }}
+                            style={{
+                              padding: '10px 20px',
+                              background: '#4CAF50',
+                              color: '#fff',
+                              border: 'none',
+                              borderRadius: '5px',
+                              cursor: 'pointer',
+                              marginTop: '10px'
+                            }}
                             onClick={handleViewEducation}
                         >
                           Learn More
                         </button>
+
                         <button
-                            style={{ padding: '10px 20px', background: '#2196F3', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '10px', marginLeft: '10px' }}
+                            style={{
+                              padding: '10px 20px',
+                              background: '#2196F3',
+                              color: '#fff',
+                              border: 'none',
+                              borderRadius: '5px',
+                              cursor: 'pointer',
+                              marginTop: '10px',
+                              marginLeft: '10px'
+                            }}
                             onClick={handleViewAppointments}
                         >
                           View Appointments
@@ -190,13 +294,13 @@ export default function ToothInformation({ toothNumber }) {
 
                 <div>
                   <strong>Planned Work To Do</strong>
-                  {toothInfo.futuretreatments.length > 0 ? (
+                  {futureTreatments.length > 0 ? (
                       <ul className="treatment-list">
-                        {toothInfo.futuretreatments.map((treatment, index) => (
+                        {futureTreatments.map((treatment, index) => (
                             <li key={index} className="treatment-item">
-                              <div>{treatment.date}</div>
-                              <div>{treatment.type}</div>
-                              <div>{treatment.notes}</div>
+                              <div><strong>Date:</strong> {formatDate(treatment.date)}</div>
+                              <div><strong>Treatment Type:</strong> {treatment.type}</div>
+                              {treatment.notes && <div><strong>Notes:</strong> {treatment.notes}</div>}
                             </li>
                         ))}
                       </ul>
