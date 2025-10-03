@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // import all screens
+import Contact from './src/components/ContactButton';
 import LanguageSelector from './src/components/LanguageSelector';
 import AccountScreen from './src/screens/AccountScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
@@ -165,12 +166,6 @@ const MainFlow = () => (
                 headerTitleAlign: 'left',
                 headerTransparent: !isViewingIndividualContent,
             } : {}),
-        // headerShown: true,
-        // headerLeft: () => <HeaderLogo/>,
-        // headerTitle: '',
-        // headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
-        // headerTitleAlign: 'left',
-        // headerTransparent: !isViewingIndividualContent,
         tabBarActiveTintColor: '#875B51',
         tabBarInactiveTintColor: '#333333',
         tabBarStyle: {
@@ -193,6 +188,7 @@ const MainFlow = () => (
             component={HomeScreen}
             options={{
                 title: 'Home',
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
             }}
         />
@@ -201,6 +197,7 @@ const MainFlow = () => (
             component={EducationStack}
             options={{
                 title: 'Library',
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
             }}
         />
@@ -209,6 +206,7 @@ const MainFlow = () => (
             component={DentalChartScreen}
             options={{
                 title: 'Dental Chart',
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
             }}
         />
@@ -219,6 +217,7 @@ const MainFlow = () => (
             options={{
                 title: 'Bookings',
                 headerTransparent: false,
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
         />

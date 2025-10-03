@@ -67,12 +67,12 @@ const profilePictures = [
 ];
 //Collapsible components
 const Collapsible = ({
-                       title,
-                       icon = 'chevron-forward',
-                       count = 0,
-                       defaultOpen = false,
-                       children,
-                     }) => {
+    title,
+    icon = 'chevron-forward',
+    count = 0,
+    defaultOpen = false,
+    children,
+  }) => {
   const [open, setOpen] = useState(defaultOpen);
   return (
       <View style={styles.infoCard}>
@@ -898,6 +898,8 @@ const UserAccountScreen = ({ navigation }) => {
     const referralDocs = pdfItems.filter(p => p.category === 'referral');
 
     console.log('[ACC] accDocs:', accDocs);
+
+    
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
