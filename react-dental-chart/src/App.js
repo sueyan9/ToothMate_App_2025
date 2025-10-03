@@ -267,7 +267,7 @@ export default function App() {
   const [showMenu, setShowMenu] = useState(false);
   const [selectedTreatment, setSelectedTreatment] = useState([]);
   const [mode, setMode] = useState(null); // 'parent' | 'child'
-  const [activeTimePeriod, setActiveTimePeriod] = useState('historical'); // 'historical' | 'future'
+  const [activeTimePeriod, setActiveTimePeriod] = useState('historical');
 
   const [treatmentsByPeriod, setTreatmentsByPeriod] = useState({ historical: [], future: [] });
   const [eruptionLevels, setEruptionLevels] = useState({});
@@ -331,6 +331,7 @@ export default function App() {
   }, [activeTimePeriod, treatmentsByPeriod]);
 
   const handleSelect = (key, autoSelectedTreatments = null) => {
+    console.log('handleSelect called with:', key, autoSelectedTreatments);
     if (key === 'auto') {
       setSelectedTreatment(autoSelectedTreatments || []);
       return;
@@ -341,7 +342,19 @@ export default function App() {
     } else if (key === 'none') {
       setSelectedTreatment([]);
     } else {
-      setSelectedTreatment((prev) => prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]);
+      // 单个治疗类型切换
+      setSelectedTreatment((prev) => {
+        console.log('Toggling treatment:', key, 'Current:', prev);
+        if (prev.includes(key)) {
+          const newSelection = prev.filter((k) => k !== key);
+          console.log('Removed, new selection:', newSelection);
+          return newSelection;
+        } else {
+          const newSelection = [...prev, key];
+          console.log('Added, new selection:', newSelection);
+          return newSelection;
+        }
+      });
     }
   };
 

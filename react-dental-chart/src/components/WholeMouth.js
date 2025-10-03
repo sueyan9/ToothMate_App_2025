@@ -35,7 +35,7 @@ const toothMaterials = {
     veneer: new THREE.MeshStandardMaterial({ color: '#7B00FF', roughness: 0.1, metalness: 0.1 }),
     sealant: new THREE.MeshStandardMaterial({ color: '#FF0099', roughness: 0.1, metalness: 0.1 }),
     missing: new THREE.MeshStandardMaterial({ color: 'white', opacity: 0.0, transparent: true }),
-    normal: new THREE.MeshStandardMaterial({ color: '#5C5C5C', roughness: 0.1, metalness: 0.1 }),
+    normal: new THREE.MeshStandardMaterial({ color: '#5C5C5C', roughness: 0.8, metalness: 0.1 }),
 };
 
 const normalizeTreatmentType = (t) => {
@@ -86,13 +86,29 @@ const WholeMouthModel = ({
         const types = listByTooth(toothNumber)
             .map((t) => normalizeTreatmentType(t.treatmentType))
             .filter(Boolean);
-
+        console.log(`Tooth ${toothNumber}:`, {
+            types,
+            selectedTreatment,
+            hasExtraction: types.includes('extraction')
+        });
         if (!types.length) return toothMaterials.normal;
 
+        // 当没有选择任何治疗类型时（Clear All Treatments）
         if (!selectedTreatment || selectedTreatment.length === 0 || selectedTreatment[0] === 'none') {
-            return types.includes('extraction') ? toothMaterials.missing : (toothMaterials[types[0]] || toothMaterials.normal);
+            console.log(`Tooth ${toothNumber}: Clear all mode`);
+            // 如果牙齿有 extraction，显示为 missing（透明）
+            if (types.includes('extraction')) {
+                return toothMaterials.extraction;
+            }
+            // 其他情况显示为 normal
+            console.log(`Tooth ${toothNumber}: No extraction, returning normal material`);
+            return toothMaterials.normal;
         }
 
+        // 当选择 'all' 时，显示所有治疗类型的颜色
+        if (selectedTreatment.includes('all')) {
+            return types.includes('extraction') ? toothMaterials.missing : (toothMaterials[types[0]] || toothMaterials.normal);
+        }
         const match = types.find((k) => selectedTreatment.includes(k));
         if (!match) return toothMaterials.normal;
         return match === 'extraction' ? toothMaterials.missing : (toothMaterials[match] || toothMaterials.normal);
@@ -102,13 +118,6 @@ const WholeMouthModel = ({
         upper: [0, 0.36, -0.29],
         lower: [0, 0.36, -0.07],
     };
-
-    console.log('WholeMouthModel props:', {
-        selectedTreatment,
-        activeTimePeriod,
-        treatmentsByPeriod
-    });
-
     return (
         <group ref={group} {...props} dispose={null}>
             <mesh geometry={nodes.upper_jaw.geometry} material={materials.Gum} position={P.upper} rotation={[1.11, 0, 0]} scale={39.99} />

@@ -32,15 +32,12 @@ export default function FilterMenu({
     const arr = treatmentsByPeriod[timePeriod] || [];
 
     arr.forEach(t => {
-      console.log('Raw treatmentType:', t.treatmentType);
       const normalizedType = normalizeTreatmentType(t.treatmentType);
-      console.log('Normalized to:', normalizedType);
       if (normalizedType) {
         treatmentSet.add(normalizedType);
       }
     });
     const result = Array.from(treatmentSet);
-    console.log('Available treatments for', timePeriod, ':', result);
     return result;
   };
 
@@ -71,6 +68,7 @@ export default function FilterMenu({
   };
 
   const handleSelect = () => {
+    console.log('FilterMenu handleSelect called, selected.length:', selected.length);
     if (selected.length === 0) {
       onSelect('all');
     } else {
@@ -113,10 +111,6 @@ export default function FilterMenu({
 
   // 初始加载时自动选择 historical treatments
   useEffect(() => {
-    console.log('=== FilterMenu Debug ===');
-    console.log('treatmentsByPeriod:', treatmentsByPeriod);
-    console.log('activeTimePeriod:', activeTimePeriod);
-    console.log('selected:', selected);
     if (activeTimePeriod === 'historical' && treatmentsByPeriod?.historical?.length > 0) {
       const availableTreatments = getAvailableTreatments('historical');
       // Only select treatments that are available in the JSON data
@@ -145,58 +139,50 @@ export default function FilterMenu({
 
   const selectedTreatmentsInfo = getSelectedTreatmentsInfo();
 
-  // 调试信息
-  console.log('FilterMenu props:', {
-    selected,
-    activeTimePeriod,
-    treatmentsByPeriod,
-    availableTreatmentKeys
-  });
-
   return (
       <div className={`filter-menu ${isOpen ? 'active' : ''}`}>
         <div className="filter-title">Selected Treatments</div>
 
-        {/* 显示当前选中的治疗类型 */}
-        {selectedTreatmentsInfo.length > 0 && (
-            <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '8px',
-              marginBottom: '16px',
-              justifyContent: 'center',
-              padding: '8px',
-              backgroundColor: 'rgba(237, 223, 211, 0.3)',
-              borderRadius: '8px'
-            }}>
-              {selectedTreatmentsInfo.map(treatment => (
-                  <div
-                      key={treatment.key}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '4px 8px',
-                        backgroundColor: 'white',
-                        borderRadius: '12px',
-                        border: `2px solid ${treatment.colour}`,
-                        fontSize: '12px',
-                        fontWeight: 'bold'
-                      }}
-                  >
-                <span
-                    style={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      backgroundColor: treatment.colour,
-                      marginRight: '6px'
-                    }}
-                />
-                    {treatment.label}
-                  </div>
-              ))}
-            </div>
-        )}
+        {/*/!* 显示当前选中的治疗类型 *!/*/}
+        {/*{selectedTreatmentsInfo.length > 0 && (*/}
+        {/*    <div style={{*/}
+        {/*      display: 'flex',*/}
+        {/*      flexWrap: 'wrap',*/}
+        {/*      gap: '8px',*/}
+        {/*      marginBottom: '16px',*/}
+        {/*      justifyContent: 'center',*/}
+        {/*      padding: '8px',*/}
+        {/*      backgroundColor: 'rgba(237, 223, 211, 0.3)',*/}
+        {/*      borderRadius: '8px'*/}
+        {/*    }}>*/}
+        {/*      {selectedTreatmentsInfo.map(treatment => (*/}
+        {/*          <div*/}
+        {/*              key={treatment.key}*/}
+        {/*              style={{*/}
+        {/*                display: 'flex',*/}
+        {/*                alignItems: 'center',*/}
+        {/*                padding: '4px 8px',*/}
+        {/*                backgroundColor: 'white',*/}
+        {/*                borderRadius: '12px',*/}
+        {/*                border: `2px solid ${treatment.colour}`,*/}
+        {/*                fontSize: '12px',*/}
+        {/*                fontWeight: 'bold'*/}
+        {/*              }}*/}
+        {/*          >*/}
+        {/*        <span*/}
+        {/*            style={{*/}
+        {/*              width: '8px',*/}
+        {/*              height: '8px',*/}
+        {/*              borderRadius: '50%',*/}
+        {/*              backgroundColor: treatment.colour,*/}
+        {/*              marginRight: '6px'*/}
+        {/*            }}*/}
+        {/*        />*/}
+        {/*            {treatment.label}*/}
+        {/*          </div>*/}
+        {/*      ))}*/}
+        {/*    </div>*/}
+        {/*)}*/}
 
         <div style={{
           display: 'flex',
