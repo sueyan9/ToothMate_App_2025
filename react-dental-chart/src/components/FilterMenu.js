@@ -46,7 +46,7 @@ export default function FilterMenu({
 
   const normalizeTreatmentType = (treatmentType) => {
     const typeMap = {
-      'Root Canal': 'rootCanal',
+      // 'Root Canal': 'rootCanal',
       'Crown Placement': 'crown',
       'Filling': 'filling',
       'Extraction': 'extraction',
@@ -54,7 +54,8 @@ export default function FilterMenu({
       'Implant': 'implant',
       'Veneer': 'veneer',
       'Sealant': 'sealant',
-      'root_canal': 'rootCanal',
+      'root_canal': 'root_canal',
+      // 'rootCanal': 'rootCanal',
       'crown': 'crown',
       'filling': 'filling',
       'extraction': 'extraction',
@@ -82,13 +83,19 @@ export default function FilterMenu({
 
     if (timePeriod === 'historical' || timePeriod === 'future') {
       const availableTreatments = getAvailableTreatments(timePeriod);
+      // Only select treatments that are available in the JSON data
       const validTreatments = availableTreatments.filter(treatment =>
           TREATMENTS.some(t => t.key === treatment)
       );
+      console.log('Valid treatments for', timePeriod, ':', validTreatments);
       onSelect('auto', validTreatments);
+    } else {
+      // 如果选择 'all'，清空选择
+      onSelect('none');
     }
   };
 
+  // Get visual indicator of which treatments have data for current time period
   const getTreatmentItemStyle = (treatmentKey) => {
     if (!activeTimePeriod || activeTimePeriod === 'all') {
       return {};
@@ -99,9 +106,44 @@ export default function FilterMenu({
 
     return {
       opacity: hasData ? 1 : 0.3,
-      fontStyle: hasData ? 'normal' : 'italic'
+      fontStyle: hasData ? 'normal' : 'italic',
+      cursor: hasData ? 'pointer' : 'not-allowed'
     };
   };
+
+  // 初始加载时自动选择 historical treatments
+  useEffect(() => {
+    console.log('=== FilterMenu Debug ===');
+    console.log('treatmentsByPeriod:', treatmentsByPeriod);
+    console.log('activeTimePeriod:', activeTimePeriod);
+    console.log('selected:', selected);
+    if (activeTimePeriod === 'historical' && treatmentsByPeriod?.historical?.length > 0) {
+      const availableTreatments = getAvailableTreatments('historical');
+      // Only select treatments that are available in the JSON data
+      const validTreatments = availableTreatments.filter(treatment =>
+          TREATMENTS.some(t => t.key === treatment)
+      );
+
+      if (validTreatments.length > 0 && selected.length === 0) {
+        console.log('Initial load: historical treatments:', validTreatments);
+        onSelect('auto', validTreatments);
+      }
+    }
+  }, [activeTimePeriod, treatmentsByPeriod?.historical]);
+
+  // 获取当前选中的治疗类型信息
+  const getSelectedTreatmentsInfo = () => {
+    return selected.map(key => {
+      const treatment = TREATMENTS.find(t => t.key === key);
+      return treatment ? {
+        key: treatment.key,
+        label: treatment.label,
+        colour: treatment.colour
+      } : null;
+    }).filter(Boolean);
+  };
+
+  const selectedTreatmentsInfo = getSelectedTreatmentsInfo();
 
   // 调试信息
   console.log('FilterMenu props:', {
@@ -114,6 +156,47 @@ export default function FilterMenu({
   return (
       <div className={`filter-menu ${isOpen ? 'active' : ''}`}>
         <div className="filter-title">Selected Treatments</div>
+
+        {/* 显示当前选中的治疗类型 */}
+        {selectedTreatmentsInfo.length > 0 && (
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '8px',
+              marginBottom: '16px',
+              justifyContent: 'center',
+              padding: '8px',
+              backgroundColor: 'rgba(237, 223, 211, 0.3)',
+              borderRadius: '8px'
+            }}>
+              {selectedTreatmentsInfo.map(treatment => (
+                  <div
+                      key={treatment.key}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '4px 8px',
+                        backgroundColor: 'white',
+                        borderRadius: '12px',
+                        border: `2px solid ${treatment.colour}`,
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                      }}
+                  >
+                <span
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      backgroundColor: treatment.colour,
+                      marginRight: '6px'
+                    }}
+                />
+                    {treatment.label}
+                  </div>
+              ))}
+            </div>
+        )}
 
         <div style={{
           display: 'flex',

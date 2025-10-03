@@ -188,7 +188,7 @@ function normalizeTreatments(payload) {
 // 在 uniqueKeysFrom 函数之前添加这个函数
 function normalizeTreatmentType(treatmentType) {
   const typeMap = {
-    'Root Canal': 'rootCanal',
+
     'Crown Placement': 'crown',
     'Filling': 'filling',
     'Extraction': 'extraction',
@@ -196,7 +196,7 @@ function normalizeTreatmentType(treatmentType) {
     'Implant': 'implant',
     'Veneer': 'veneer',
     'Sealant': 'sealant',
-    'root_canal': 'rootCanal',
+    'root_canal': 'root_canal',
     'crown': 'crown',
     'filling': 'filling',
     'extraction': 'extraction',
@@ -204,7 +204,6 @@ function normalizeTreatmentType(treatmentType) {
     'implant': 'implant',
     'veneer': 'veneer',
     'sealant': 'sealant',
-    'rootCanal': 'rootCanal',
     'Cleaning': null,
     'Checkup': null
   };
