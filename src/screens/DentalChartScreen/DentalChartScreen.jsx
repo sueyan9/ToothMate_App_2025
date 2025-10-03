@@ -22,7 +22,6 @@ const DentalChartScreen = () => {
     const fetchUser = async () => {
       try {
         const userId = await AsyncStorage.getItem('id');
-        console.log('userId is 123:', userId);
         setUserId(userId);//key : save to state,webview can use it.
 
         const res = await axiosApi.get(`/isChild/${userId}`);
@@ -31,7 +30,6 @@ const DentalChartScreen = () => {
           if (res.data.isChild != null){
               setParent(false)
           }
-
       } 
       catch (error) {
         console.error('❌  Failed to fetch user:', error);
@@ -129,9 +127,6 @@ const DentalChartScreen = () => {
                return (
                    <View style={{ flex: 1 }}>
                        <SafeAreaView />
-                       <View style={{ position: 'absolute', top: 40, left: 0, right: 0, zIndex: 9999, padding: 8, backgroundColor: 'rgba(0,0,0,0.1)' }}>
-                           <Text numberOfLines={2} style={{ fontSize: 12 }}>{url}</Text>
-                       </View>
                        <WebView
                            ref={webViewRef}
                            source={{ uri: url }}
@@ -139,8 +134,7 @@ const DentalChartScreen = () => {
                            originWhitelist={['*']}
                            javaScriptEnabled
                            domStorageEnabled
-
-                           onLoadStart={(e) => console.log('[DC] WebView onLoadStart url =', e?.nativeEvent?.url)} // ✅ 看实际加载的地址
+                           onLoadStart={(e) => console.log('[DC] WebView onLoadStart url =', e?.nativeEvent?.url)}
                            onLoadEnd={() => {
                                console.log('[DC] WebView onLoadEnd');
                                if (webViewRef.current && userId) {
@@ -153,8 +147,10 @@ const DentalChartScreen = () => {
                                 `);
                                }
                            }}
-                           onError={(e) => console.error('[DC] WebView onError:', e.nativeEvent)}
-                           onHttpError={(e) => console.error('[DC] WebView onHttpError:', e.nativeEvent)}
+                           onError={(e) =>
+                               console.error('[DC] WebView onError:', e.nativeEvent)}
+                           onHttpError={(e) =>
+                               console.error('[DC] WebView onHttpError:', e.nativeEvent)}
                            onMessage={handleWebMessage}
                        />
 

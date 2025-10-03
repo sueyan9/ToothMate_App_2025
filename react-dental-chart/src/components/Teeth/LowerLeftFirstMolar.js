@@ -154,35 +154,16 @@ const LeftLowerFirstMolar = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Left_Lower_First_Molar.glb')
+
 export const LowerLeftFirstMolar = () => {
-  const [teethData, setTeethData] = useState([]);
-  const [treatmentsData, setTreatmentsData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const teethParam = urlParams.get('teeth');
-    const treatmentsParam = urlParams.get('treatments');
-
-    if (teethParam && treatmentsParam) {
-      try {
-        const teeth = JSON.parse(decodeURIComponent(teethParam));
-        const treatments = JSON.parse(decodeURIComponent(treatmentsParam));
-
-        setTeethData(teeth);
-        setTreatmentsData(treatments);
-        setIsLoading(false);
-
-      } catch (err) {
-        setIsLoading(false);
-      }
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
-  if (isLoading) {
-    return <div>Loading tooth data...</div>;
+  const toothInfo = {
+    toothNumber: 36,
+    name: "Left Lower First Molar",
+    position: "Lower Jaw Left Side",
+    type: "First Molar",
+    rootCount: 2,
+    canalCount: 3
   }
   return (
     <>
@@ -207,11 +188,7 @@ export const LowerLeftFirstMolar = () => {
 
       <div>Lower left first molar</div>
 
-      <ToothInformation
-          toothNumber={36}
-          allTeeth={teethData}
-          allTreatments={treatmentsData}
-      />
+      <ToothInformation toothInfo={toothInfo} />
 
     </>
   )

@@ -66,9 +66,12 @@ export default function ToothInformation({ toothInfo }) {
           }
           return;
         }
-
-        // 使用环境变量中的API地址
-        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+        const getApiBaseUrl = () => {
+          const { protocol, hostname } = window.location;
+          // backend port
+          return `${protocol}//${hostname}:3000`;
+        };
+        const API_BASE_URL = getApiBaseUrl();
 
         // Call backend API to get treatment records
         let url = null;
@@ -77,13 +80,7 @@ export default function ToothInformation({ toothInfo }) {
         } else if (userNhi) {
           url = `${API_BASE_URL}/getTreatmentsByToothNumberNhi/${encodeURIComponent(userNhi)}/${encodeURIComponent(toothInfo.toothNumber)}`;
         }
-
-        console.log('API Base URL:', API_BASE_URL);
-        console.log('Fetching treatments from:', url);
-
         const response = await fetch(url);
-        console.log('Response status:', response.status);
-
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
@@ -103,8 +100,6 @@ export default function ToothInformation({ toothInfo }) {
         const treatmentsData = (data.historical || []).map(mapTreatment);
         const futureTreatmentsData = (data.future || []).map(mapTreatment);
 
-        console.log('Mapped treatments:', treatmentsData);
-        console.log('Mapped future treatments:', futureTreatmentsData);
 
         if (!cancelled) {
           setTreatments(treatmentsData);
@@ -113,7 +108,7 @@ export default function ToothInformation({ toothInfo }) {
         }
 
       } catch (error) {
-        console.error('Failed to load treatments:', error);
+
         if (!cancelled) {
           setError(`Failed to load treatments: ${error.message}`);
           setTreatments([]);
@@ -127,7 +122,7 @@ export default function ToothInformation({ toothInfo }) {
     return () => { cancelled = true; };
   }, [toothInfo?.toothNumber, userId, userNhi]);
 
-  // 👉 When the individual tooth panel opens, notify React Native
+  //  When the individual tooth panel opens, notify React Native
   useEffect(() => {
     if (!isOpen || !toothInfo || !window.ReactNativeWebView) return;
     window.ReactNativeWebView.postMessage(JSON.stringify({
@@ -210,7 +205,6 @@ export default function ToothInformation({ toothInfo }) {
         </div>
     );
   }
-
   if (!toothInfo) return null;
 
   return (
@@ -225,22 +219,7 @@ export default function ToothInformation({ toothInfo }) {
         {isOpen && (
             <div onClick={handlePanelClick}>
               <div className="tooth-info-content">
-                {/* Basic Tooth Information */}
-                <div className="tooth-basic-info">
-                  <h4>Basic Tooth Information</h4>
-                  <div className="tooth-basic-info-container">
-                    <div className="tooth-info-item">
-                      <strong className="tooth-info-label">Position:</strong>
-                      <span className="tooth-info-value">{toothInfo.position}</span>
-                    </div>
-                    <div className="tooth-info-item">
-                      <strong className="tooth-info-label">Type:</strong>
-                      <span className="tooth-info-value">{toothInfo.type}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
+              <div>
                   <strong>Previous Work Done</strong>
                   {treatments.length > 0 ? (
                       <>

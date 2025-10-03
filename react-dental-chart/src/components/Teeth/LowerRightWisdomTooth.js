@@ -167,7 +167,7 @@ export const LowerRightWisdomTooth = () => {
     position: "Lower Jaw Right Side",
     type: "Wisdom Tooth",
     rootCount: 2,
-    canalCount: 2
+    canalCount: 3
   };
 
   return (

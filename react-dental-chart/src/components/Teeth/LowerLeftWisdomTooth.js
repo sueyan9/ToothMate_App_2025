@@ -153,37 +153,21 @@ const LeftLowerWisdom = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Left_Lower_Wisdom.glb')
+
 export const LowerLeftWisdomTooth = () => {
-  const [teethData, setTeethData] = useState([]);
-  const [treatmentsData, setTreatmentsData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // 删除所有 useState 和 useEffect 代码
 
-  useEffect(() => {
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const teethParam = urlParams.get('teeth');
-    const treatmentsParam = urlParams.get('treatments');
-
-    if (teethParam && treatmentsParam) {
-      try {
-        const teeth = JSON.parse(decodeURIComponent(teethParam));
-        const treatments = JSON.parse(decodeURIComponent(treatmentsParam));
-
-        setTeethData(teeth);
-        setTreatmentsData(treatments);
-        setIsLoading(false);
-
-      } catch (err) {
-        setIsLoading(false);
-      }
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
-  if (isLoading) {
-    return <div>Loading tooth data...</div>;
+  // 添加牙齿基本信息
+  const toothInfo = {
+    toothNumber: 38,
+    name: "Left Lower Wisdom Tooth",
+    position: "Lower Jaw Left Side",
+    type: "Third Molar",
+    rootCount: 2,
+    canalCount: 3
   }
+
   return (
     <>
     <div
@@ -203,11 +187,7 @@ export const LowerLeftWisdomTooth = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation
-          toothNumber={38}
-          allTeeth={teethData}
-          allTreatments={treatmentsData}
-      />
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }

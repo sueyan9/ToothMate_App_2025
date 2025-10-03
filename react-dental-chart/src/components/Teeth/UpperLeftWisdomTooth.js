@@ -155,37 +155,18 @@ const UpperLeftWisdom = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Left_Upper_Wisdom.glb')
+
 export const UpperLeftWisdomTooth = () => {
-  const [teethData, setTeethData] = useState([]);
-  const [treatmentsData, setTreatmentsData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const teethParam = urlParams.get('teeth');
-    const treatmentsParam = urlParams.get('treatments');
-
-    if (teethParam && treatmentsParam) {
-      try {
-        const teeth = JSON.parse(decodeURIComponent(teethParam));
-        const treatments = JSON.parse(decodeURIComponent(treatmentsParam));
-
-        setTeethData(teeth);
-        setTreatmentsData(treatments);
-        setIsLoading(false);
-
-      } catch (err) {
-        setIsLoading(false);
-      }
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
-  if (isLoading) {
-    return <div>Loading tooth data...</div>;
+  const toothInfo = {
+    toothNumber: 28,
+    name: "Left Upper Wisdom Tooth",
+    position: "Upper Jaw Left Side",
+    type: "Third Molar",
+    rootCount: 3,
+    canalCount: 3
   }
+
   return (
     <>
     <div
@@ -205,11 +186,7 @@ export const UpperLeftWisdomTooth = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation
-          toothNumber={28}
-          allTeeth={teethData}
-          allTreatments={treatmentsData}
-      />
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }

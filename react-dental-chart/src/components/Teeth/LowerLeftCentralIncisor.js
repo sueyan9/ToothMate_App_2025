@@ -151,39 +151,17 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
     </group>
   )
 }
-
+useGLTF.preload('/assets/Left_Lower_Central_Incisor.glb')
 export const LowerLeftCentralIncisor = () => {
-  const [teethData, setTeethData] = useState([]);
-  const [treatmentsData, setTreatmentsData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-
-    // get the data from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const teethParam = urlParams.get('teeth');
-    const treatmentsParam = urlParams.get('treatments');
-
-    if (teethParam && treatmentsParam) {
-      try {
-        const teeth = JSON.parse(decodeURIComponent(teethParam));
-        const treatments = JSON.parse(decodeURIComponent(treatmentsParam));
-
-        setTeethData(teeth);
-        setTreatmentsData(treatments);
-        setIsLoading(false);
-
-      } catch (err) {
-        setIsLoading(false);
-      }
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
-  if (isLoading) {
-    return <div>Loading tooth data...</div>;
+  // 定义这颗牙齿的基本信息
+  const toothInfo = {
+    toothNumber: 31,
+    name: "Left Lower Central Incisor",
+    position: "Lower Jaw Left Side",
+    type: "Central Incisor",
+    rootCount: 1,
+    canalCount: 1
   }
-
   return (
     <>
     <div
@@ -203,11 +181,7 @@ export const LowerLeftCentralIncisor = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation
-          toothNumber={31}
-          allTeeth={teethData}
-          allTreatments={treatmentsData}
-      />
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }
