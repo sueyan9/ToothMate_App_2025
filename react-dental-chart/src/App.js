@@ -268,7 +268,7 @@ export default function App() {
   const [selectedTreatment, setSelectedTreatment] = useState([]);
   const [mode, setMode] = useState(null); // 'parent' | 'child'
   const [activeTimePeriod, setActiveTimePeriod] = useState('historical');
-
+  const [isLoading, setIsLoading] = useState(false);
   const [treatmentsByPeriod, setTreatmentsByPeriod] = useState({ historical: [], future: [] });
   const [eruptionLevels, setEruptionLevels] = useState({});
   const [loading, setLoading] = useState(false);
@@ -276,6 +276,7 @@ export default function App() {
   const latestUserRef = useRef(null);
 
   const pull = useCallback(async (uid) => {
+    if (isLoading) return;
     setLoading(true);
     setError('');
     latestUserRef.current = uid;
