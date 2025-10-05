@@ -6,7 +6,7 @@ export default StyleSheet.create({
         height: 40,
         borderRadius: 50,
         marginRight: 24,
-        backgroundColor: '#516287',
+        backgroundColor: '#875B51',
         justifyContent: 'center'
     },
     phone: {

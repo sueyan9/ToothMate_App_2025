@@ -30,9 +30,10 @@ const NZ_TZ = 'Pacific/Auckland';
 
 const ClinicScreen = ({navigation, route}) => {
     const {
-        state: {details, clinic},
+        state: {details, clinic, childDetails},
         getUser,
-        getDentalClinic
+        getDentalClinic,
+        getChild
     } = useContext(UserContext);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +45,7 @@ const ClinicScreen = ({navigation, route}) => {
                 try {
                     await getUser();
                     await getDentalClinic();
+                    await getChild();
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                 } finally {
@@ -64,6 +66,8 @@ const ClinicScreen = ({navigation, route}) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [clinicId, setClinicId] = useState(null);
     const [clinicInfo, setClinicInfo] = useState(null);
+    const [selectedPatient, setSelectedPatient] = useState(null);
+    const [showPatientSheet, setShowPatientSheet] = useState(false);
     const [showDentistSheet, setShowDentistSheet] = useState(false);
     const [showPurposeSheet, setShowPurposeSheet] = useState(false);
 
@@ -203,6 +207,7 @@ const ClinicScreen = ({navigation, route}) => {
     const loadAppointments = async () => {
         if (!nhi) return;
         let mounted = true;
+
         setLoading(true);
         try {
             const urlGet = `/Appointments/${nhi}`;
@@ -210,19 +215,19 @@ const ClinicScreen = ({navigation, route}) => {
             const res = await axiosApi.get(`Appointments/${nhi}`, {
                 params: {limit: 400}
             });
-            console.log('Appointments response:', res?.data);
+            //console.log('Appointments response:', res?.data);
 
             const appointments = Array.isArray(res.data)
                 ? res.data
                 : (res.data && Array.isArray(res.data.items) ? res.data.items : []);
-            console.log("aa", appointments)
+            //console.log("aa", appointments)
             // Collect unique clinic IDs from appointments
             const clinicIds = [
                 ...new Set(
                     appointments.map(a => (typeof a.clinic === 'object' ? a.clinic.id : a.clinic))
                 ),
             ].filter(Boolean);
-            console.log("bb", clinicIds)
+            //console.log("bb", clinicIds)
 
             // Fetch clinic details by IDs
             let clinicsMap = {};
@@ -239,7 +244,7 @@ const ClinicScreen = ({navigation, route}) => {
                     console.warn('Fetch clinics failed:', e?.message);
                 }
             }
-            console.log("cc", clinicsMap)
+            //console.log("cc", clinicsMap)
             // Normalize appointments shape
             const normalized = appointments.map(a => {
                 const clinicId = typeof a.clinic === 'object' ? a.clinic.id : a.clinic;
@@ -250,7 +255,7 @@ const ClinicScreen = ({navigation, route}) => {
                     clinic: clinicsMap[clinicId] || (typeof a.clinic === 'object' ? a.clinic : null),
                 };
             });
-            console.log("dd", normalized)
+            //console.log("dd", normalized)
 
             if (mounted) setAppointments(normalized);
 
@@ -273,6 +278,10 @@ const ClinicScreen = ({navigation, route}) => {
 
         if (!newAppt.purpose) {
             Alert.alert('Validation Error', 'Purpose is required.');
+            return;
+        }
+        if (!selectedPatient) {
+            Alert.alert('Validation Error', 'Please select a patient.');
             return;
         }
         if (!clinicId) {
@@ -317,7 +326,7 @@ const ClinicScreen = ({navigation, route}) => {
             const endWithOffset   = endNZ.format('YYYY-MM-DDTHH:mm:ssZ');
 
             const appointmentData = {
-                nhi,
+                nhi: selectedPatient.nhi,
                 purpose: newAppt.purpose,
                 dentist: {name: selectedDentistName},
                 notes: newAppt.notes || '',
@@ -331,8 +340,10 @@ const ClinicScreen = ({navigation, route}) => {
             const response = await axiosApi.get(`/Appointments/${encodeURIComponent(nhi)}`, {
                 params: { limit: 400 }
             });
+
             if (response.status === 201 || response.status === 200) {
                 Alert.alert('Success', 'Appointment added successfully.');
+                console.warn("Appointment created!!");
 
                 setLastAppointmentTime(Date.now());
                 setCooldownRemaining(COOLDOWN_MINUTES * 60);
@@ -375,6 +386,8 @@ const ClinicScreen = ({navigation, route}) => {
             purpose: '',
             notes: ''
         });
+
+        setSelectedPatient(null);
     }
 
     const apptDateKey = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('YYYY-MM-DD') : '');
@@ -408,6 +421,28 @@ const ClinicScreen = ({navigation, route}) => {
         setSelectedDate(day.dateString);
     }
     const formatDate = (d) => (d ? dayjs.tz(d, NZ_TZ).format('D MMMM YYYY') : '');
+
+    const patientOptions = useMemo(() => {
+        const options = [{
+            id: details._id,
+            nhi: details.nhi,
+            name: `${details.firstname} ${details.lastname}`,
+            isParent: true
+        }];
+        
+        if (childDetails && childDetails.length > 0) {
+            childDetails.forEach(child => {
+                options.push({
+                    id: child._id,
+                    nhi: child.nhi,
+                    name: `${child.firstname} ${child.lastname}`,
+                    isParent: false
+                });
+            });
+        }
+        
+        return options;
+    }, [details, childDetails]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -636,9 +671,9 @@ const ClinicScreen = ({navigation, route}) => {
                         </View>
                         {/* Start Time */}
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Start Time:</Text>
+                            <Text style={styles.label}>Appointment Time:</Text>
                             <TouchableOpacity onPress={() => setShowStartTimePicker(true)} style={styles.input}>
-                                <Text>{dayjs(newAppt.startTime).format('h:mm A')}</Text>
+                                <Text>{dayjs(newAppt.startTime).format('h:mm A')} - {dayjs(newAppt.endTime).format('h:mm A')}</Text>
                             </TouchableOpacity>
                             {showStartTimePicker && (() => {
                                 const isToday = dayjs(newAppt.startDate).tz(NZ_TZ).isSame(nzNow(), 'day');
@@ -680,13 +715,6 @@ const ClinicScreen = ({navigation, route}) => {
                                     />
                                 );
                             })()}
-                        </View>
-                        {/* End Time (auto) */}
-                        <View style={styles.formGroup}>
-                            <Text style={styles.label}>End Time (auto):</Text>
-                            <View style={styles.input}>
-                                <Text>{dayjs(newAppt.endTime).format('h:mm A')}</Text>
-                            </View>
                         </View>
                         {/* Dentist */}
                         <View style={styles.formGroup}>
@@ -766,6 +794,99 @@ const ClinicScreen = ({navigation, route}) => {
                                     >
                                         {DENTIST_NAMES.map((n) => (
                                             <Picker.Item key={n} label={n} value={n}/>
+                                        ))}
+                                    </Picker>
+                                </View>
+                            )}
+                        </View>
+
+                        {/* Patient Selection */}
+                        <View style={styles.formGroup}>
+                            <Text style={styles.label}>Patient:</Text>
+
+                            {Platform.OS === 'ios' ? (
+                                <>
+                                    <TouchableOpacity
+                                        style={styles.input}
+                                        onPress={() => setShowPatientSheet(true)}
+                                        activeOpacity={0.7}
+                                    >
+                                        <Text>{selectedPatient?.name || 'Select patient'}</Text>
+                                    </TouchableOpacity>
+
+                                    <Modal
+                                        visible={showPatientSheet}
+                                        transparent
+                                        animationType="fade"
+                                        onRequestClose={() => setShowPatientSheet(false)}
+                                    >
+                                        <Pressable
+                                            style={{
+                                                flex: 1,
+                                                backgroundColor: 'rgba(0,0,0,0.25)',
+                                                justifyContent: 'center',
+                                                padding: 24,
+                                            }}
+                                            onPress={() => setShowPatientSheet(false)}
+                                        >
+                                            <Pressable
+                                                onPress={(e) => e.stopPropagation()}
+                                                style={{
+                                                    backgroundColor: '#fff',
+                                                    borderRadius: 12,
+                                                    paddingVertical: 8,
+                                                    maxHeight: 280,
+                                                    overflow: 'hidden',
+                                                    shadowColor: '#000',
+                                                    shadowOpacity: 0.15,
+                                                    shadowRadius: 12,
+                                                    elevation: 4,
+                                                }}
+                                            >
+                                                <ScrollView
+                                                    contentContainerStyle={{paddingVertical: 4}}
+                                                    showsVerticalScrollIndicator={false}
+                                                >
+                                                    {patientOptions.map((patient) => (
+                                                        <TouchableOpacity
+                                                            key={patient.id}
+                                                            onPress={() => {
+                                                                setSelectedPatient(patient);
+                                                                setShowPatientSheet(false);
+                                                            }}
+                                                            style={{
+                                                                paddingVertical: 12,
+                                                                paddingHorizontal: 16,
+                                                                backgroundColor: patient.id === selectedPatient?.id ? '#f1f5f9' : 'transparent',
+                                                            }}
+                                                        >
+                                                            <Text style={{fontSize: 16}}>
+                                                                {patient.name} {patient.isParent ? '(You)' : '(Child)'}
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                </ScrollView>
+                                            </Pressable>
+                                        </Pressable>
+                                    </Modal>
+                                </>
+                            ) : (
+                                <View style={[styles.input, {paddingHorizontal: 0}]}>
+                                    <Picker
+                                        mode="dropdown"
+                                        selectedValue={selectedPatient?.id}
+                                        onValueChange={(val) => {
+                                            const patient = patientOptions.find(p => p.id === val);
+                                            setSelectedPatient(patient);
+                                        }}
+                                    >
+                                        <Picker.Item label="Select patient..." value={null} />
+                                        {patientOptions.map((patient) => (
+                                            <Picker.Item 
+                                                key={patient.id} 
+                                                label={`${patient.name} ${patient.isParent ? '(You)' : '(Child)'}`} 
+                                                value={patient.id} 
+                                            />
                                         ))}
                                     </Picker>
                                 </View>
@@ -898,6 +1019,14 @@ const ClinicScreen = ({navigation, route}) => {
                         purpose: '',
                         notes: '',
                     });
+
+                    setSelectedPatient({
+                        id: details._id,
+                        nhi: details.nhi,
+                        name: `${details.firstname} ${details.lastname}`,
+                        isParent: true
+                    });
+
                     setShowAddModal(true);
                 }}
             >

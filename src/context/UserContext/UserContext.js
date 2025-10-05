@@ -9,6 +9,8 @@ const UserReducer = (state, action) => {
   switch (type) {
     case 'get_user':
       return { ...state, details: payload };
+      case 'get_child':
+      return { ...state, childDetails: payload };
     case 'get_user_appointment':
       return { ...state, appointments: payload };
     case 'get_clinic':
@@ -74,6 +76,44 @@ const getUser = dispatch => {
       dispatch({ type: 'get_user', payload: userDataWithHardcodedFields });
     } catch (error) {
       console.error('Error fetching user data:', error);
+    }
+  };
+};
+
+const getChild = dispatch => {
+  return async () => {
+    const id = await AsyncStorage.getItem('id');
+    try {
+      // First, get the parent user's data which should contain children array
+      const parentResponse = await axiosApi.get(`/user/${id}`);
+      const childrenIds = parentResponse.data.children; // Assuming the field is called 'children'
+      
+      if (!childrenIds || childrenIds.length === 0) {
+        dispatch({ type: 'get_child', payload: [] });
+        return;
+      }
+      
+      // Fetch all children's data
+      const childrenPromises = childrenIds.map(childId => 
+        axiosApi.get(`/user/${childId}`)
+      );
+      
+      const childrenResponses = await Promise.all(childrenPromises);
+      
+      // Extract the data from each response and add hardcoded fields
+      const childrenData = await Promise.all(
+        childrenResponses.map(async (response) => ({
+          ...response.data,
+          address: await getStoredField(`userAddress_${response.data._id}`) || '',
+          emergencyContactName: await getStoredField(`emergencyContactName_${response.data._id}`) || '',
+          emergencyContactPhone: await getStoredField(`emergencyContactPhone_${response.data._id}`) || ''
+        }))
+      );
+      
+      dispatch({ type: 'get_child', payload: childrenData });
+    } catch (error) {
+      console.error('Error fetching children data:', error);
+      dispatch({ type: 'get_child', payload: [] });
     }
   };
 };
@@ -298,6 +338,7 @@ export const { Provider, Context } = createDataContext(
       getNhiAndAppointments,
       getDentalClinic,
       getUser,
+      getChild,
       checkCanDisconnect,
       disconnectChild,
       getAllImages,
@@ -311,6 +352,7 @@ export const { Provider, Context } = createDataContext(
       appointments: [],
       clinic: null,
       details: {},
+      childDetails: [],
       canDisconnect: null,
       images: [],
       selectedProfilePicture: null,
