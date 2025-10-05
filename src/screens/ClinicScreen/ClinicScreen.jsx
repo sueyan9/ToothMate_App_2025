@@ -328,9 +328,9 @@ const ClinicScreen = ({navigation, route}) => {
             };
             const urlPost = '/Appointments';
             logReq('POST appointments', urlPost, appointmentData);
-            const response = await axiosApi.get(`/Appointments/${encodeURIComponent(nhi)}`, {
-                params: { limit: 400 }
-            });
+            const response = await axiosApi.post('/Appointments', appointmentData);
+
+            
             if (response.status === 201 || response.status === 200) {
                 Alert.alert('Success', 'Appointment added successfully.');
 
