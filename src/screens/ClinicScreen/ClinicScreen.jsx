@@ -423,6 +423,7 @@ const ClinicScreen = ({navigation, route}) => {
             logReq('POST appointments', urlPost, appointmentData);
             const response = await axiosApi.post('/Appointments', appointmentData);
 
+            
             if (response.status === 201 || response.status === 200) {
                 Alert.alert('Success', 'Appointment added successfully.');
                 console.warn("Appointment created!!");
