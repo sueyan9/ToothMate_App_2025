@@ -269,7 +269,7 @@ const SignupScreen = props => {
             />
             {codeQ && (
               <Text style={{ color: '#656B69', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
-                  This signup code is emailed to you when you ask your dental clinic to join the ToothMate app.
+                  This signup code is emailed or texted to you when you ask your dental clinic to join the ToothMate app.
               </Text>
             )}
             {signupCodeStatus === 'valid' && patientInfo && (

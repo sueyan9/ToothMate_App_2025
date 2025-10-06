@@ -474,6 +474,7 @@ const ClinicScreen = ({navigation, route}) => {
     }
 
     const apptDateKey = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('YYYY-MM-DD') : '');
+    const dateLabel = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('DD/MM') : '');
     const timeLabel = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('h:mm A') : '--');
 // Marked dates for calendar
     const markedDates = useMemo(() => {
@@ -582,24 +583,24 @@ const ClinicScreen = ({navigation, route}) => {
 
                                         <View style={styles.cardContent}>
                                             <View style={styles.appointmentInfo}>
-                                                <Text style={styles.timeText}>{timeLabel(a.startAt)}</Text>
+                                                <View style={{display: 'flex', flexDirection: 'row'}}>
+                                                <Text style={styles.nameText}>{a.patientInfo?.name}</Text>
+                                                <Text style={styles.timeText}>{timeLabel(a.startAt)} | {dateLabel(a.startAt)}</Text>
+                                                </View>
                                                 <Text
                                                     style={styles.locationText}>{a.clinic?.name || a.clinic?.location}</Text>
                                                 <Text style={styles.dentistText}>{a.dentist?.name}</Text>
                                             </View>
-                                            <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51"/>
                                         </View>
                                         <View style={{display: 'flex', flexDirection: 'row'}}>
                                             <View style={styles.typeTag}>
-                                                <Text style={styles.typeText}>{a.purpose || a.notes}</Text>
+                                                <Text style={styles.typeText}>{a.purpose}</Text>
                                             </View>
                                             <View style={[styles.confirmedTag, a.confirmed ? styles.confirmed : styles.unconfirmed]}>
                                                 <Text style={a.confirmed ? styles.confirmedText : styles.unconfirmedText}>{a.confirmed ? "Confirmed" : "Unconfirmed"}</Text>
                                             </View>
-                                        </View>
-                                        <View style={styles.typeTag}>
-                                                <Text style={styles.typeText}>Patient: {a.patientInfo?.name || `${details.firstname} ${details.lastname}`}</Text>
-                                        </View>
+                                            <MaterialIcons style={{marginRight: 0, marginLeft: 'auto'}} name="keyboard-arrow-right" size={30} color="#875B51"/>
+                                        </View>                                        
                                     </TouchableOpacity>
                                 ))
                             ) : (
@@ -709,7 +710,7 @@ const ClinicScreen = ({navigation, route}) => {
                     <ScrollView contentContainerStyle={styles.modalContent}>
                         {/* Date */}
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Date:</Text>
+                            <Text style={styles.label}>Date:<Text style={{color: 'red',}}>*</Text></Text>
                             <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
                                 <Text>{dayjs(newAppt.startDate).format('YYYY-MM-DD')}</Text>
                             </TouchableOpacity>
@@ -766,7 +767,7 @@ const ClinicScreen = ({navigation, route}) => {
                         </View>
                         {/* Start Time */}
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Appointment Time:</Text>
+                            <Text style={styles.label}>Appointment Time:<Text style={{color: 'red'}}>*</Text></Text>
                             <TouchableOpacity onPress={() => setShowStartTimePicker(true)} style={styles.input}>
                                 <Text>{dayjs(newAppt.startTime).format('h:mm A')} - {dayjs(newAppt.endTime).format('h:mm A')}</Text>
                             </TouchableOpacity>
@@ -813,7 +814,7 @@ const ClinicScreen = ({navigation, route}) => {
                         </View>
                         {/* Dentist */}
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Dentist:</Text>
+                            <Text style={styles.label}>Dentist:<Text style={{color: 'red'}}>*</Text></Text>
 
                             {/* iOS: custom lightweight “dropdown” (Modal + list) to avoid tall wheel picker */}
                             {Platform.OS === 'ios' ? (
@@ -897,7 +898,7 @@ const ClinicScreen = ({navigation, route}) => {
 
                         {/* Patient Selection */}
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Patient:</Text>
+                            <Text style={styles.label}>Patient:<Text style={{color: 'red'}}>*</Text></Text>
 
                             {Platform.OS === 'ios' ? (
                                 <>
@@ -990,7 +991,7 @@ const ClinicScreen = ({navigation, route}) => {
 
                         {/* Purpose */}
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Purpose:</Text>
+                            <Text style={styles.label}>Purpose:<Text style={{color: 'red'}}>*</Text></Text>
 
                             {Platform.OS === 'ios' ? (
                                 <>
