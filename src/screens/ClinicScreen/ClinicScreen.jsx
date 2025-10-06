@@ -160,7 +160,7 @@ const ClinicScreen = ({navigation, route}) => {
     // Load appointments when NHI changes
     useEffect(() => {
         if (nhi) loadAppointments();
-    }, [nhi]);
+    }, [nhi, childDetails?.length]);
 
     // Fetch the user's clinic (one clinic per user)
     useEffect(() => {
@@ -210,24 +210,40 @@ const ClinicScreen = ({navigation, route}) => {
 
         setLoading(true);
         try {
-            const urlGet = `/Appointments/${nhi}`;
-            logReq('GET appointments', urlGet, {params: {limit: 400}});
-            const res = await axiosApi.get(`Appointments/${nhi}`, {
-                params: {limit: 400}
-            });
-            //console.log('Appointments response:', res?.data);
 
-            const appointments = Array.isArray(res.data)
-                ? res.data
-                : (res.data && Array.isArray(res.data.items) ? res.data.items : []);
-            //console.log("aa", appointments)
+            const nhiList = [nhi];
+            if (childDetails && childDetails.length > 0) {
+                childDetails.forEach(child => {
+                    if (child.nhi) nhiList.push(child.nhi);
+                });
+            }
+
+            // Fetch appointments for all NHIs
+            const appointmentPromises = nhiList.map(nhiValue => 
+                axiosApi.get(`Appointments/${nhiValue}`, { params: { limit: 400 } })
+                    .catch(err => {
+                        console.warn(`Failed to fetch appointments for NHI ${nhiValue}:`, err?.message);
+                        return { data: [] };
+                    })
+            );
+
+            const responses = await Promise.all(appointmentPromises);
+            
+            // Combine all appointments
+            let allAppointments = [];
+            responses.forEach(res => {
+                const appts = Array.isArray(res.data)
+                    ? res.data
+                    : (res.data && Array.isArray(res.data.items) ? res.data.items : []);
+                allAppointments = [...allAppointments, ...appts];
+            });
+
             // Collect unique clinic IDs from appointments
             const clinicIds = [
                 ...new Set(
-                    appointments.map(a => (typeof a.clinic === 'object' ? a.clinic.id : a.clinic))
+                    allAppointments.map(a => (typeof a.clinic === 'object' ? a.clinic.id : a.clinic))
                 ),
             ].filter(Boolean);
-            //console.log("bb", clinicIds)
 
             // Fetch clinic details by IDs
             let clinicsMap = {};
@@ -244,20 +260,88 @@ const ClinicScreen = ({navigation, route}) => {
                     console.warn('Fetch clinics failed:', e?.message);
                 }
             }
-            //console.log("cc", clinicsMap)
-            // Normalize appointments shape
-            const normalized = appointments.map(a => {
+
+            // Normalize appointments shape and add patient info
+            const normalized = allAppointments.map(a => {
                 const clinicId = typeof a.clinic === 'object' ? a.clinic.id : a.clinic;
+                
+                // Find which patient this appointment belongs to
+                let patientInfo = null;
+                if (a.nhi === nhi) {
+                    patientInfo = {
+                        name: `${details.firstname} ${details.lastname}`,
+                        isParent: true
+                    };
+                } else if (childDetails && childDetails.length > 0) {
+                    const child = childDetails.find(c => c.nhi === a.nhi);
+                    if (child) {
+                        patientInfo = {
+                            name: `${child.firstname} ${child.lastname}`,
+                            isParent: false
+                        };
+                    }
+                }
+
                 return {
                     ...a,
                     startAt: a.startAt || a.date,
                     endAt: a.endAt || dayjs(a.date).add(30, 'minute').toISOString(),
                     clinic: clinicsMap[clinicId] || (typeof a.clinic === 'object' ? a.clinic : null),
+                    patientInfo: patientInfo
                 };
             });
-            //console.log("dd", normalized)
 
             if (mounted) setAppointments(normalized);
+
+
+            // const urlGet = `/Appointments/${nhi}`;
+            // logReq('GET appointments', urlGet, {params: {limit: 400}});
+            // const res = await axiosApi.get(`Appointments/${nhi}`, {
+            //     params: {limit: 400}
+            // });
+            // //console.log('Appointments response:', res?.data);
+
+            // const appointments = Array.isArray(res.data)
+            //     ? res.data
+            //     : (res.data && Array.isArray(res.data.items) ? res.data.items : []);
+            // //console.log("aa", appointments)
+            // // Collect unique clinic IDs from appointments
+            // const clinicIds = [
+            //     ...new Set(
+            //         appointments.map(a => (typeof a.clinic === 'object' ? a.clinic.id : a.clinic))
+            //     ),
+            // ].filter(Boolean);
+            // //console.log("bb", clinicIds)
+
+            // // Fetch clinic details by IDs
+            // let clinicsMap = {};
+            // if (clinicIds.length > 0) {
+            //     try {
+            //         const clinicsRes = await axiosApi.get(`/getDentalClinics`, {
+            //             params: {ids: clinicIds.join(',')}
+            //         });
+            //         clinicsMap = (clinicsRes.data || []).reduce((map, c) => {
+            //             map[c._id] = c;
+            //             return map;
+            //         }, {});
+            //     } catch (e) {
+            //         console.warn('Fetch clinics failed:', e?.message);
+            //     }
+            // }
+            // //console.log("cc", clinicsMap)
+            // // Normalize appointments shape
+            // const normalized = appointments.map(a => {
+            //     const clinicId = typeof a.clinic === 'object' ? a.clinic.id : a.clinic;
+            //     return {
+            //         ...a,
+            //         startAt: a.startAt || a.date,
+            //         endAt: a.endAt || dayjs(a.date).add(30, 'minute').toISOString(),
+            //         clinic: clinicsMap[clinicId] || (typeof a.clinic === 'object' ? a.clinic : null),
+            //     };
+            // });
+            // //console.log("dd", normalized)
+
+            // if (mounted) setAppointments(normalized);
 
         } catch (e) {
             console.warn('Load appointments failed:', e?.message);
@@ -337,9 +421,7 @@ const ClinicScreen = ({navigation, route}) => {
             };
             const urlPost = '/Appointments';
             logReq('POST appointments', urlPost, appointmentData);
-            const response = await axiosApi.get(`/Appointments/${encodeURIComponent(nhi)}`, {
-                params: { limit: 400 }
-            });
+            const response = await axiosApi.post('/Appointments', appointmentData);
 
             if (response.status === 201 || response.status === 200) {
                 Alert.alert('Success', 'Appointment added successfully.');
@@ -515,7 +597,7 @@ const ClinicScreen = ({navigation, route}) => {
                                             </View>
                                         </View>
                                         <View style={styles.typeTag}>
-                                                <Text style={styles.typeText}>Patient: {details.firstname} {details.lastname}</Text>
+                                                <Text style={styles.typeText}>Patient: {a.patientInfo?.name || `${details.firstname} ${details.lastname}`}</Text>
                                         </View>
                                     </TouchableOpacity>
                                 ))
@@ -591,6 +673,12 @@ const ClinicScreen = ({navigation, route}) => {
                                     <Text style={styles.modalDetailLabel}>Type:</Text>
                                     <Text style={styles.modalDetailValue}>{selectedAppointment.purpose}</Text>
                                 </View>
+                                <View style={styles.modalDetailRow}>
+                                    <Text style={styles.modalDetailLabel}>Patient:</Text>
+                                    <Text style={styles.modalDetailValue}>
+                                        {selectedAppointment.patientInfo?.name || `${details.firstname} ${details.lastname}`}
+                                    </Text>
+                                </View>
                                 <View style={styles.modalDetailCancel}>
                                     <Text style={styles.modalDetailValueCancel}>If you wish to cancel this appointment,</Text>
                                     <Text style={styles.modalDetailValueCancel}>please call {selectedAppointment.clinic?.phone}</Text>
@@ -628,10 +716,16 @@ const ClinicScreen = ({navigation, route}) => {
                                 <DateTimePicker
                                     value={newAppt.startDate}
                                     mode="date"
-                                    display="default"
+                                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                                     minimumDate={nzNow().startOf('day').toDate()}//passed time unavilable
                                     onChange={(event, date) => {
                                         setShowDatePicker(false);
+            
+                                        // Handle dismissal or cancellation
+                                        if (event.type === 'dismissed' || !date || !(date instanceof Date)) {
+                                            return;
+                                        }
+
                                         if (!date || !(date instanceof Date)) return;
 
                                         const selectedDateNZ = dayjs(date).tz(NZ_TZ);
