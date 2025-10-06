@@ -40,7 +40,6 @@ import { Provider as UserProvider } from './src/context/UserContext/UserContext'
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
-import { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
@@ -268,10 +267,10 @@ const AppNavigator = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                initialRouteName="ResolveAuth"
+                initialRouteName="SplashScreen"
                 screenOptions={{ headerShown: false }}
             >
-
+                <Stack.Screen name="SplashScreen" component={SplashScreen}/>
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
 
                 {/* Login flow  */}
@@ -311,18 +310,6 @@ const AppNavigator = () => {
 
 // Wrap the app with all providers
 export default function App() {
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000); // 2 seconds delay
-    }, []);
-
-    if (isLoading) {
-        return <SplashScreen />;
-    }
-
     return (
         <AuthProvider>
             <ClinicProvider>

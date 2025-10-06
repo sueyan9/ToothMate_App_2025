@@ -122,8 +122,9 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            
-            <MaterialCommunityIcons name="logout" size={32} color={'#333333'} style={styles.logout} onPress={handleSignOut}/>
+
+            {/*remove later*/}
+            <MaterialCommunityIcons name='home' size={24} onPress={() => navigation.navigate('SplashScreen')} style={{marginTop: 150, marginLeft: 40, position: 'absolute', zIndex: 1000}}/>
 
             <View style={styles.helloContainer}>
                 <View style={styles.profileContainer}>
