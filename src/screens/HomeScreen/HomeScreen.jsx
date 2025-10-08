@@ -1,4 +1,3 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -171,9 +170,6 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-
-            {/*remove later*/}
-            <MaterialCommunityIcons name='home' size={24} onPress={() => navigation.navigate('SplashScreen')} style={{marginTop: 150, marginLeft: 40, position: 'absolute', zIndex: 1000}}/>
 
             <View style={styles.helloContainer}>
                 <View style={styles.profileContainer}>
