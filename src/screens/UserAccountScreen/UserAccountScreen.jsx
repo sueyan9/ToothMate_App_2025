@@ -1035,7 +1035,7 @@ const UserAccountScreen = ({ navigation }) => {
           {/* Insurance infoamtion card */}
           <View style={styles.infoCard}>
               <View style={styles.cardHeader}>
-              <Ionicons name="Insurance-outline" size={24} color="#516287" />
+              <Ionicons name="heart-half-outline" size={24} color="#516287" />
               <Text style={styles.cardTitle}>{t('Insurance Infomation')}</Text>
               </View>
 
