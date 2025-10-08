@@ -1,8 +1,15 @@
+import { useEffect, useState } from "react";
 import { TREATMENTS } from './Treatment';
-import teethData from './Util/toothData.json';
 
-export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSelect, activeTimePeriod }) {
-
+export default function FilterMenu({
+                                     selected,
+                                     onSelect,
+                                     isOpen,
+                                     activeTimePeriod,
+                                     onTimePeriodSelect,
+                                     treatmentsByPeriod,
+                                     availableTreatmentKeys
+                                   }) {
   const getFilterStyle = (filterType) => ({
     backgroundColor: activeTimePeriod === filterType ? '#EDDFD3' : 'transparent',
     color: '#333333',
@@ -19,31 +26,24 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
     outline: 'none',
   });
 
-  // Function to get unique treatments from JSON data for a specific time period
+  // 获取可用的治疗类型
   const getAvailableTreatments = (timePeriod) => {
     const treatmentSet = new Set();
+    const arr = treatmentsByPeriod[timePeriod] || [];
 
-    Object.values(teethData.teeth).forEach(tooth => {
-      const treatmentArray = timePeriod === 'historical'
-        ? tooth.treatments
-        : tooth.futuretreatments;
-
-      treatmentArray.forEach(treatment => {
-        // Normalize treatment types to match TREATMENTS keys
-        const normalizedType = normalizeTreatmentType(treatment.type);
-        if (normalizedType) {
-          treatmentSet.add(normalizedType);
-        }
-      });
+    arr.forEach(t => {
+      const normalizedType = normalizeTreatmentType(t.treatmentType);
+      if (normalizedType) {
+        treatmentSet.add(normalizedType);
+      }
     });
-
-    return Array.from(treatmentSet);
+    const result = Array.from(treatmentSet);
+    return result;
   };
 
-  // Function to normalize treatment type strings to match TREATMENTS keys
   const normalizeTreatmentType = (treatmentType) => {
     const typeMap = {
-      'Root Canal': 'rootCanal',
+      // 'Root Canal': 'rootCanal',
       'Crown Placement': 'crown',
       'Filling': 'filling',
       'Extraction': 'extraction',
@@ -51,39 +51,44 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
       'Implant': 'implant',
       'Veneer': 'veneer',
       'Sealant': 'sealant',
-      // Skip these as they don't affect tooth appearance
+      'root_canal': 'root_canal',
+      'crown': 'crown',
+      'filling': 'filling',
+      'extraction': 'extraction',
+      'bridge': 'bridge',
+      'implant': 'implant',
+      'veneer': 'veneer',
+      'sealant': 'sealant',
+      // no change
       'Cleaning': null,
       'Checkup': null
     };
-    return typeMap[treatmentType] || treatmentType.toLowerCase();
+    return typeMap[treatmentType] || treatmentType?.toLowerCase();
   };
 
   const handleSelect = () => {
+    console.log('FilterMenu handleSelect called, selected.length:', selected.length);
     if (selected.length === 0) {
       onSelect('all');
     } else {
       onSelect('none');
     }
-  }
+  };
 
-  // Handle time period selection with auto-filter selection
   const handleTimePeriodSelect = (timePeriod) => {
     onTimePeriodSelect(timePeriod);
 
-    // Only auto-select for historical/future, not for 'all'
     if (timePeriod === 'historical' || timePeriod === 'future') {
-      // Auto-select treatments available in the JSON data for this time period
       const availableTreatments = getAvailableTreatments(timePeriod);
-
       // Only select treatments that are available in the JSON data
       const validTreatments = availableTreatments.filter(treatment =>
-        TREATMENTS.some(t => t.key === treatment)
+          TREATMENTS.some(t => t.key === treatment)
       );
-
-      // Auto-select these treatments
+      console.log('Valid treatments for', timePeriod, ':', validTreatments);
       onSelect('auto', validTreatments);
+    } else {
+      onSelect('none');
     }
-    // For 'all' mode, don't auto-select - let user choose manually
   };
 
   // Get visual indicator of which treatments have data for current time period
@@ -97,114 +102,131 @@ export default function FilterMenu({ selected, onSelect, isOpen, onTimePeriodSel
 
     return {
       opacity: hasData ? 1 : 0.3,
-      fontStyle: hasData ? 'normal' : 'italic'
+      fontStyle: hasData ? 'normal' : 'italic',
+      cursor: hasData ? 'pointer' : 'not-allowed'
     };
   };
 
+  // 初始加载时自动选择 historical treatments
+  useEffect(() => {
+    if (activeTimePeriod === 'historical' && treatmentsByPeriod?.historical?.length > 0) {
+      const availableTreatments = getAvailableTreatments('historical');
+      // Only select treatments that are available in the JSON data
+      const validTreatments = availableTreatments.filter(treatment =>
+          TREATMENTS.some(t => t.key === treatment)
+      );
+
+      if (validTreatments.length > 0 && selected.length === 0) {
+        console.log('Initial load: historical treatments:', validTreatments);
+        onSelect('auto', validTreatments);
+      }
+    }
+  }, [activeTimePeriod, treatmentsByPeriod?.historical]);
+
+  // 获取当前选中的治疗类型信息
+  const getSelectedTreatmentsInfo = () => {
+    return selected.map(key => {
+      const treatment = TREATMENTS.find(t => t.key === key);
+      return treatment ? {
+        key: treatment.key,
+        label: treatment.label,
+        colour: treatment.colour
+      } : null;
+    }).filter(Boolean);
+  };
+
+  const selectedTreatmentsInfo = getSelectedTreatmentsInfo();
+
   return (
-    <div className={`filter-menu ${isOpen ? 'active' : ''}`}>
-      <div className="filter-title">Selected Treatments</div>
+      <div className={`filter-menu ${isOpen ? 'active' : ''}`}>
+        <div className="filter-title">Selected Treatments</div>
 
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        overflowX: 'auto', // Allows horizontal scrolling
-        whiteSpace: 'nowrap', // Prevents buttons from wrapping
-        paddingBottom: 8 ,// Adds space for the scrollbar
-        justifyContent: 'center'
-      }}>
-        <div className="time-period-filters">
-        {/* <button
-          style={getFilterStyle('all')}
-          onClick={() => handleTimePeriodSelect('all')}
-          testid="filter-all"
-        >
-          All
-        </button> */}
-        <button
-          style={getFilterStyle('historical')}
-          onClick={() => handleTimePeriodSelect('historical')}
-          testid="filter-historical"
-        >
-          My Mouth
-        </button>
-        <button
-          style={getFilterStyle('future')}
-          onClick={() => handleTimePeriodSelect('future')}
-          testid="filter-future"
-        >
-          Planned Work
-        </button>
-      </div>
-      </div>
-
-      <div className="treatment-filters">
-        <div className="filter-grid">
-      {TREATMENTS.map(item => {
-        const isSelected = selected.includes(item.key);
-        const itemStyle = getTreatmentItemStyle(item.key);
-
-        return (
-          <div
-            key={item.key}
-            className="filter-item"
-            onClick={() => onSelect(item.key)}
-            style={itemStyle}
-          >
-            <span style={{
-              display: 'flex',
-              width: 14,
-              height: 14,
-              borderRadius: '50%',
-              backgroundColor: item.colour,
-              marginRight: 8,
-              boxSizing: 'border-box',
-              opacity: itemStyle.opacity || 1,
-              border: isSelected ? '7px solid rgba(255, 255, 255, 0.4)' : '2px solid transparent',
-              position: 'relative',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }} >
-            {isSelected && (
-              <span style={{
-                color: '#333333',
-                fontSize: '10px',
-                fontWeight: 'bold',
-                lineHeight: '1'
-              }}>
-                X
-              </span>
-            )}
-            </span>
-            <span className="filter-label" style={{
-              color: isSelected ? '#333' : '#656B69',
-              ...itemStyle
-            }}>
-              {item.label}
-            </span>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          overflowX: 'auto',
+          whiteSpace: 'nowrap',
+          paddingBottom: 8,
+          justifyContent: 'center'
+        }}>
+          <div className="time-period-filters">
+            <button
+                style={getFilterStyle('historical')}
+                onClick={() => handleTimePeriodSelect('historical')}
+                testid="filter-historical"
+            >
+              My Mouth
+            </button>
+            <button
+                style={getFilterStyle('future')}
+                onClick={() => handleTimePeriodSelect('future')}
+                testid="filter-future"
+            >
+              Planned Work
+            </button>
           </div>
-        );
-      })}
+        </div>
+
+        <div className="treatment-filters">
+          <div className="filter-grid">
+            {TREATMENTS.map(item => {
+              const isSelected = selected.includes(item.key);
+              const itemStyle = getTreatmentItemStyle(item.key);
+
+              return (
+                  <div
+                      key={item.key}
+                      className="filter-item"
+                      onClick={() => onSelect(item.key)}
+                      style={itemStyle}
+                  >
+                    <span style={{
+                      display: 'flex',
+                      width: 14,
+                      height: 14,
+                      borderRadius: '50%',
+                      backgroundColor: item.colour,
+                      marginRight: 8,
+                      boxSizing: 'border-box',
+                      opacity: itemStyle.opacity || 1,
+                      border: isSelected ? '7px solid rgba(255, 255, 255, 0.4)' : '2px solid transparent',
+                      position: 'relative',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      {isSelected && (
+                          <span style={{
+                            color: '#333333',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                            lineHeight: '1'
+                          }}>
+                            X
+                          </span>
+                      )}
+                    </span>
+                    <span className="filter-label" style={{
+                      color: isSelected ? '#333' : '#656B69',
+                      ...itemStyle
+                    }}>
+                      {item.label}
+                    </span>
+                  </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="action-buttons">
+          <div className="filter-button">
+            <button
+                className={`selection-button ${selected.length === 0 ? 'active' : ''}`}
+                onClick={handleSelect}
+            >
+              {selected.length !== 0 ? 'Clear All Treatments' : 'Show all Treatments'}
+            </button>
+          </div>
         </div>
       </div>
-
-
-      <div className="action-buttons">
-      {/* <div className="filter-button" onClick={handleSelect}>
-        <span className="filter-label" style={{ color: '#333' }}>
-          {selected.length !== 0 ? 'Clear All Treatments' : 'Show all Treatments'}
-        </span>
-      </div> */}
-      <div className="filter-button">
-        <button
-          className={`selection-button ${selected.length === 0 ? 'active' : ''}`}
-          onClick={handleSelect}
-        >
-          {selected.length !== 0 ? 'Clear All Treatments' : 'Show all Treatments'}
-        </button>
-      </div>
-    </div>
-    </div>
-
   );
 }

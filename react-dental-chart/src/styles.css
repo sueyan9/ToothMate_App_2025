@@ -24,7 +24,49 @@ p {
   color: #656B69;
   width: 200px;
 }
+.tooth-basic-info {
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 5px;
+}
 
+.tooth-basic-info h4 {
+  margin: 0 0 12px 0;
+  color: #666;
+  font-size: 16px;
+  text-align: center;
+}
+
+.tooth-info-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+  justify-content: center;
+}
+
+.tooth-info-item:last-child {
+  border-bottom: none;
+}
+
+.tooth-info-label {
+  color: #666;
+  min-width: 80px;
+  text-align: center;
+}
+
+.tooth-info-value {
+  color: #666;
+  margin-left: 8px;
+  text-align: center;
+}
+
+.tooth-basic-info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+}
 .tooth-info {
 
   position: fixed;
@@ -215,8 +257,8 @@ canvas {
   padding: 8px 12px;
   border-radius: 8px;
   transition: background-color 0.2s;
-  width: 100%; /* 占满网格单元格 */
-  justify-content: center; /* 左对齐内容 */
+  width: 100%;
+  justify-content: center;
 }
 .filter-label {
   font-size: 14px;
@@ -244,7 +286,7 @@ canvas {
 .filter-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2px 2px; /* 行间距16px，列间距20px */
+  gap: 2px 2px;
   justify-items: start;
   align-items: center;
   max-width: 100%;
@@ -254,10 +296,10 @@ canvas {
 /* button display grid  */
 .action-buttons {
   display: flex;
-  gap: 16px; /* 减少按钮间距 */
+  gap: 16px;
   justify-content: center;
   align-items: center;
-  margin-top: 0px; /* 减少顶部边距 */
+  margin-top: 0px;
   padding: 0 20px;
   margin-bottom: 16px;
 }

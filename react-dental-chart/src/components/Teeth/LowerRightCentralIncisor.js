@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect,useState, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -153,7 +153,19 @@ const RightLowerCentralIncisor = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Right_Lower_Central_Incisor.glb')
+
 export const LowerRightCentralIncisor = () => {
+
+  const toothInfo = {
+    toothNumber: 41,
+    name: "Right Lower Central Incisor",
+    position: "Lower Jaw Right Side",
+    type: "Central Incisor",
+    rootCount: 1,
+    canalCount: 1
+  }
+
   return (
     <>
     <div
@@ -181,7 +193,7 @@ export const LowerRightCentralIncisor = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation toothNumber={41} />
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }

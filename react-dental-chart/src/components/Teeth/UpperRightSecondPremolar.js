@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef ,useState} from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -155,7 +155,18 @@ const RightUpperSecondPremolar = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Right_Upper_Second_Premolar.glb')
+
 export const UpperRightSecondPremolar = () => {
+
+  const toothInfo = {
+    toothNumber: 15,
+    name: "Right Upper Second Premolar",
+    position: "Upper Jaw Right Side",
+    type: "Second Premolar",
+    rootCount: 1,
+    canalCount: 1
+  }
   return (
     <>
     <div
@@ -183,7 +194,8 @@ export const UpperRightSecondPremolar = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation toothNumber={15} />
+      <ToothInformation toothInfo={toothInfo} />
+
     </>
   )
 }

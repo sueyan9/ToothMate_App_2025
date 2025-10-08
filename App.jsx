@@ -238,6 +238,92 @@ const MainFlow = () => {
         </Tab.Navigator>
     );
 };
+        const isContentPage = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' && currentNestedRoute?.params?.id && !currentNestedRoute?.params?.selectedFilter;
+        const isProfileInner =
+            currentTab.name === 'Profile' &&
+            ['images', 'allimages', 'invoice'].includes(currentNestedRoute?.name);
+        return {
+            headerShown: !isProfileInner,
+            ...( !isProfileInner ? {
+                headerLeft: () => <HeaderLogo />,
+                headerTitle: 'ToothMate',
+                headerStyle: {
+                    backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
+                    borderBottomWidth: 0,
+                    elevation: 0,
+                    shadowOpacity: 0,
+                },
+                headerTitleAlign: 'left',
+                headerTransparent: !isViewingIndividualContent,
+            } : {}),
+        // headerShown: true,
+        // headerLeft: () => <HeaderLogo/>,
+        // headerTitle: '',
+        // headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
+        // headerTitleAlign: 'left',
+        // headerTransparent: !isViewingIndividualContent,
+        tabBarActiveTintColor: '#875B51',
+        tabBarInactiveTintColor: '#333333',
+        tabBarStyle: {
+            backgroundColor: '#FFFDF6',
+            borderTopWidth: 0,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            height: 68,
+            position: 'absolute',
+            elevation: 5,
+            shadowColor: '#333333',
+            shadowOffset: {width: 0, height: -3},
+            shadowOpacity: 0.1,
+            shadowRadius: 5,
+        }
+    };
+    }}>
+        <Tab.Screen
+            name="AccountFlow"
+            component={HomeScreen}
+            options={{
+                title: 'Home',
+                tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
+            }}
+        />
+        <Tab.Screen
+            name="Education"
+            component={EducationStack}
+            options={{
+                title: 'Library',
+                tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
+            }}
+        />
+        <Tab.Screen
+            name="DentalChart"
+            component={DentalChartScreen}
+            options={{
+                title: 'Dental Chart',
+                tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
+            }}
+        />
+        <Tab.Screen
+            // NEED TO REFACTOR TO APPOINTMENTS :)
+            name="Bookings"
+            component={BookingStack}
+            options={{
+                title: 'Bookings',
+                headerTransparent: false,
+                tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
+            }}
+        />
+        <Tab.Screen
+            name="Profile"
+            component={ProfileStack}
+            options={{
+                title: 'Profile',
+                headerRight: () => <LanguageSelector/>,
+                tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
+            }}
+        />
+    </Tab.Navigator>
+);
 
 // Child flow with bottom tab navigation
 const ChildFlow = () => {
@@ -293,9 +379,9 @@ const AppNavigator = () => {
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
-                            <Stack.Screen name="Signup" component={SignupScreen} />
+                            <Stack.Screen name="Signin" component={SigninScreen} options={{ headerShown: false }}/>
+                            <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
-                            <Stack.Screen name="Signin" component={SigninScreen} />
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}

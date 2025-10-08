@@ -164,9 +164,7 @@ const HomeScreen = () => {
                             <Text style={styles.dateCircleText}>22</Text>
                             </View>
                             <TouchableOpacity onPress={() => navigation.navigate('Bookings')}>
-                                <Text style={styles.appointmentText}>{t('22nd May at Dental Clinic')}&ensp;
-                                    <MaterialCommunityIcons name="export" size={20} style={styles.logout} onPress={() => navigation.navigate('Bookings')}/>
-                                </Text>
+                                <Text style={styles.appointmentText}>{t('22nd May at Dental Clinic')}</Text>
                             </TouchableOpacity>
                     </View>
                     <Text style={styles.noteText}>{t('Note from Dentist:')}{'\n'}{t('Bring retainer!')}</Text>
@@ -178,8 +176,7 @@ const HomeScreen = () => {
                     <Text style={styles.basicText}>{t('Next Oral Checkup Due:')}</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Bookings')}>
                     <Text style={styles.checkupText}>Feb 2026</Text>
-                    <Text style={styles.bookNowText}>Book Now&nbsp;
-                        <MaterialCommunityIcons name="export" size={20} style={styles.logout} onPress={() => navigation.navigate('Bookings')}/></Text>
+                    <Text style={styles.bookNowText}>Book Now</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.updateBox}>

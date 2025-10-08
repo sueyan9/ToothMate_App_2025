@@ -1,32 +1,35 @@
 import { WEB_DENTAL_CHART_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View, Text, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 import axiosApi from "../../api/axios";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const DentalChartScreen = () => {
   const webViewRef = useRef(null);
   const navigation = useNavigation();
   const route = useRoute();
+
   const showWeb = route.params?.showWeb ?? true; // default: show webview
   const [parent, setParent] = useState(true); // Determines whether the user is a parent (default is true)
   const [res, setRes] = useState(null); // Stores the response from the isChild API
   const [selection, setSelection] = useState(null); // { toothId, toothName, treatment }
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const userId = await AsyncStorage.getItem('id');
-        console.log('userId is:', userId);
+        setUserId(userId);//key : save to state,webview can use it.
 
         const res = await axiosApi.get(`/isChild/${userId}`);
         
-        setRes(res.data); {
-          if (res.data.isChild != null) setParent(false) // If the user is a child, update state
-        }
-
+        setRes(res.data);
+          if (res.data.isChild != null){
+              setParent(false)
+          }
       } 
       catch (error) {
         console.error('❌  Failed to fetch user:', error);
@@ -38,96 +41,121 @@ const DentalChartScreen = () => {
  // the native button can show without WebView
    useEffect(() => {
      const p = route.params?.selectedTooth;
-     if (p?.treatment) {
-       setSelection({
-         toothId: p.toothId ?? null,
-         toothName: p.toothName ?? null,
-          treatment: p.treatment ?? null,
-       });
-     }
- }, [route.params?.selectedTooth]);
+       if (p?.treatment) {
+           setSelection({
+               toothId: p.toothId ?? null,
+               toothName: p.toothName ?? null,
+               treatment: p.treatment ?? null,
+           });
+       }
+   }, [route.params?.selectedTooth]);
 
-  // pick most recent treatment from an array of { date, type, notes }
-  const getMostRecentTreatmentType = (arr = []) => {
-    if (!Array.isArray(arr) || arr.length === 0) return null;
-    if (typeof arr[0] === 'string') return arr[0]; // handle ['Filling', ...]
-    return [...arr].sort((a,b)=>new Date(b?.date||0)-new Date(a?.date||0))[0]?.type ?? null;
-  };
-  
-  const handleWebMessage = useCallback((event) => {
-    try {
-      const data = JSON.parse(event?.nativeEvent?.data ?? '{}');
+    const base = String(WEB_DENTAL_CHART_URL || '').replace(/\/+$/, '');
+    if (!base) console.warn('[DC] WEB_DENTAL_CHART_URL is empty! Did @env load?');
+    const url = `${base}/?parent=${parent ? 'true' : 'false'}${userId ? `&userId=${encodeURIComponent(userId)}` : ''}`;
+    useEffect(() => {
+        if (!userId || !res) return;
+        console.log('WebView URL =>', url);
+        // Alert.alert('WebView URL', url);
+    }, [userId, res, url]);
 
-      // From ToothInformation.handleViewEducation (web button):
-      if (data?.type === 'VIEW_EDUCATION') {
-        const treatmentType = getMostRecentTreatmentType(data?.treatments);
-        navigation.navigate('Education', {
-          screen: 'content',
-          params: {
-          treatment: treatmentType,
-          toothName: data?.toothName,
-          selectedFilter: 'All'
-          }
-        });
-        return;
-      }
+    // pick most recent treatment from an array of { date, type, notes }
+               const getMostRecentTreatmentType = (arr = []) => {
+                   if (!Array.isArray(arr) || arr.length === 0) return null;
+                   if (typeof arr[0] === 'string') return arr[0]; // handle ['Filling', ...]
+                   return [...arr].sort((a,b)=>new Date(b?.date||0)-new Date(a?.date||0))[0]?.type ?? null;
+               };
 
-      // From ToothInformation.handleViewAppointments (web button):
-      if (data?.type === 'VIEW_APPOINTMENTS') {
-        navigation.navigate('Bookings', { screen: 'clinic' });
-        return;
-      }
+               const handleWebMessage = useCallback((event) => {
+                   try {
+                       const data = JSON.parse(event?.nativeEvent?.data ?? '{}');
 
-      if (data?.type === 'TOOTH_SELECTED' && data?.payload) {
-        const { toothNumber, toothName, treatments, treatment } = data.payload;
-        const latest = treatment ?? getMostRecentTreatmentType(treatments);
-        setSelection({
-          toothId: toothNumber ?? null,
-          toothName: toothName ?? null,
-          treatment: latest ?? null,
-        });
-        return;
-      }
-    } catch {
+                       // From ToothInformation.handleViewEducation (web button):
+                       if (data?.type === 'VIEW_EDUCATION') {
+                           const treatmentType = getMostRecentTreatmentType(data?.treatments);
+                           navigation.navigate('Education', {
+                               screen: 'content',
+                               params: {
+                                   treatment: treatmentType,
+                                   toothName: data?.toothName,
+                                   selectedFilter: 'All'
+                               }
+                           });
+                           return;
+                       }
 
-    }
-  }, [navigation]);
+                       // From ToothInformation.handleViewAppointments (web button):
+                       if (data?.type === 'VIEW_APPOINTMENTS') {
+                           navigation.navigate('Bookings', { screen: 'clinic' });
+                           return;
+                       }
 
-  const openEducation = useCallback(() => {
-    if (!selection?.treatment) return;
-    navigation.navigate('Education', {
-      treatment: selection.treatment,
-      toothId: selection.toothId,
-      toothName: selection.toothName,
-    });
-  }, [navigation, selection]);
+                       if (data?.type === 'TOOTH_SELECTED' && data?.payload) {
+                           const { toothNumber, toothName, treatments, treatment } = data.payload;
+                           const latest = treatment ?? getMostRecentTreatmentType(treatments);
+                           setSelection({
+                               toothId: toothNumber ?? null,
+                               toothName: toothName ?? null,
+                               treatment: latest ?? null,
+                           });
+                           return;
+                       }
+                   } catch {
 
-  // Show loading indicator while waiting for user data
-  if (!res) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+                   }
+               }, [navigation]);
 
-  // Construct WebView URL with user type as a query parameter
-  //const url = `https://tooth-mate-app-2025.vercel.app/?parent=${parent}`;
-  const url = `${WEB_DENTAL_CHART_URL}/?parent=${parent}`;
+               const openEducation = useCallback(() => {
+                   if (!selection?.treatment) return;
+                   navigation.navigate('Education', {
+                       treatment: selection.treatment,
+                       toothId: selection.toothId,
+                       toothName: selection.toothName,
+                   });
+               }, [navigation, selection]);
 
-  return (
-    <View style={{ flex: 1 }}>
-      <WebView
-        ref={webViewRef}
-        source={{ uri: url }}
-        style={{ flex: 1 }}
-        originWhitelist={['*']}
-        javaScriptEnabled
-        domStorageEnabled
-        onMessage={handleWebMessage}
-      />
-    </View>
-  );
+               // Show loading indicator while waiting for user data
+
+               if (!res || !userId) {
+                   return (
+                       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                           <ActivityIndicator size="large" />
+                       </View>
+                   );
+               }
+
+               return (
+                   <View style={{ flex: 1 }}>
+                       <SafeAreaView />
+                       <WebView
+                           ref={webViewRef}
+                           source={{ uri: url }}
+                           style={{ flex: 1 }}
+                           originWhitelist={['*']}
+                           javaScriptEnabled
+                           domStorageEnabled
+                           onLoadStart={(e) => console.log('[DC] WebView onLoadStart url =', e?.nativeEvent?.url)}
+                           onLoadEnd={() => {
+                               console.log('[DC] WebView onLoadEnd');
+                               if (webViewRef.current && userId) {
+                                   const payload = JSON.stringify({ type: 'setUserId', userId });
+                                   webViewRef.current.injectJavaScript(`
+                                  try {
+                                    window.dispatchEvent(new MessageEvent('message', { data: ${JSON.stringify(payload)} }));
+                                  } catch (e) {}
+                                  true;
+                                `);
+                               }
+                           }}
+                           onError={(e) =>
+                               console.error('[DC] WebView onError:', e.nativeEvent)}
+                           onHttpError={(e) =>
+                               console.error('[DC] WebView onHttpError:', e.nativeEvent)}
+                           onMessage={handleWebMessage}
+                       />
+
+                   </View>
+               );
 };
 
 

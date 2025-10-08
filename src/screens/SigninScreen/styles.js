@@ -3,13 +3,16 @@ import { Dimensions, Platform, StyleSheet } from 'react-native';
 export default StyleSheet.create({
   buttonContainer: {
     borderRadius: 20,
-    width: '90%',
-    marginLeft: '5%',
-    marginTop: -120,
+    width: '85%',
+    marginLeft: '7.5%',
   },
   button: {
-    paddingVertical: 10,
-    backgroundColor: '#F0F0F0',
+    marginTop: 16,
+    paddingVertical: 8,
+    backgroundColor: '#EDDFD3',
+    borderRadius: 20,
+    borderWidth: 2.5,
+    borderColor: '#875B51',
   },
   inputStyle: {
     paddingVertical: 8,
@@ -24,15 +27,24 @@ export default StyleSheet.create({
   inputContainer: {
     borderWidth: 1,
     borderRadius: 20,
-    width: '80%',
-    marginLeft: '10%',
     borderColor: '#dedede',
-    paddingLeft: 13,
-    backgroundColor: '#f8f8ff',
+    width: '95%',
+    paddingLeft: 15,
+    backgroundColor: '#f7f7f7',
+    marginLeft: '2.25%',
   },
   labelStyles: {
-    marginLeft: '15%',
-    color: 'black',
+    fontSize: 14,
+    marginLeft: 18,
+    color: '#333333',
+    marginBottom: 3,
+    marginTop: 2,
+  },
+  alreadyHaveAccountStyle: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    color: '#333333',
+    textAlign: 'center',
   },
   containerHeading: {
     alignSelf: 'center',
@@ -46,6 +58,14 @@ export default StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: '#E9F1F8',
+  },
+  icon: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: '15%',
+    aspectRatio: 1, // adjust this based on your logo's ratio (width/height)
+    resizeMode: 'contain',
   },
   errorMessage: {
     fontSize: 16,
@@ -55,11 +75,11 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   link: {
-    color: 'black',
+    color: '#875B51',
+    fontWeight: 'bold',
     flexDirection: 'row',
     justifyContent: 'center',
-    fontWeight: 'bold',
-    marginTop: '2%',
+    marginTop: 16,
   },
   activityIndicatorViewStyle: {
     flex: 1,
@@ -69,10 +89,7 @@ export default StyleSheet.create({
   },
   titleTextStyle: {
     fontSize: 50,
-    marginTop: '15%',
-    marginBottom: '10%',
     alignSelf: 'center',
-    fontFamily: 'Righteous_400Regular',
   },
   imageBackgroundStyle: {
     paddingTop: '20%',
@@ -80,7 +97,7 @@ export default StyleSheet.create({
     width: Dimensions.get('window').width,
   },
   signinButtonTitleStyle: {
-    color: '#000',
+    color: '#333333',
     fontWeight: 'bold',
   },
 });

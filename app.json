@@ -32,12 +32,19 @@
         "android.permission.VIBRATE",
         "com.android.vending.BILLING"
       ]
+      },
+      "package": "com.toothmate.app"
     },
     "androidNavigationBar": {
       "visible": "immersive"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "fbc51f51-79b4-44a2-8c84-72b5909ec884"
+      }
     },
     "notification": {
       "icon": "./assets/tooth_icon.png",

@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect,useState, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -153,7 +153,21 @@ const LeftLowerWisdom = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Left_Lower_Wisdom.glb')
+
 export const LowerLeftWisdomTooth = () => {
+  // 删除所有 useState 和 useEffect 代码
+
+  // 添加牙齿基本信息
+  const toothInfo = {
+    toothNumber: 38,
+    name: "Left Lower Wisdom Tooth",
+    position: "Lower Jaw Left Side",
+    type: "Third Molar",
+    rootCount: 2,
+    canalCount: 3
+  }
+
   return (
     <>
     <div
@@ -181,7 +195,7 @@ export const LowerLeftWisdomTooth = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation toothNumber={38} />
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }

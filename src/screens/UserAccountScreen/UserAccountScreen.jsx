@@ -1,4 +1,3 @@
-
 const tryInferName = (url) => {
     try {
         const u = new URL(url);
@@ -897,7 +896,6 @@ const UserAccountScreen = ({ navigation }) => {
     const invoiceDocs = pdfItems.filter(p => !p.category || p.category === 'invoice');
     const referralDocs = pdfItems.filter(p => p.category === 'referral');
 
-    console.log('[ACC] accDocs:', accDocs);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>

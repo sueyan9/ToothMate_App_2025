@@ -5,13 +5,16 @@ require("./models/Clinic");
 require("./models/Appointment");
 require("./models/ImgModel");
 require("./models/PdfModel");
+require("./models/Treatment");
+require("./models/Tooth");
 const express = require("express");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const educationRoutes = require("./routes/educationRoutes");
 const clinicRoutes = require("./routes/clinicRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
-
+const treatmentRoutes = require("./routes/treatmentRoutes");
+const toothRoutes = require("./routes/toothRoutes");
 const requireAuth = require("./middlewares/requireAuth");
 
 const app = express();
@@ -63,6 +66,27 @@ app.use(authRoutes);
 app.use(educationRoutes);
 app.use(clinicRoutes);
 app.use(appointmentRoutes);
+app.use(treatmentRoutes);
+app.use(toothRoutes);
+//list routers
+function listRoutes(app){
+    const routes = [];
+    app._router.stack.forEach(m=>{
+        if (m.route) {
+            const methods = Object.keys(m.route?.methods || {}).join(',');
+            routes.push(`${methods.toUpperCase()} ${m.route?.path}`);
+        } else if (m.name === 'router' && m.handle?.stack) {
+            m.handle.stack.forEach(s=>{
+                const route = s.route;
+                if (route) {
+                    const methods = Object.keys(route.methods || {}).join(',');
+                    routes.push(`${methods.toUpperCase()} ${route.path}`);
+                }
+            });
+        }
+    });
+    console.log('[ROUTES]', routes);
+}
 listRoutes(app);
 // check link health
 app.get('/health', (req, res) => {

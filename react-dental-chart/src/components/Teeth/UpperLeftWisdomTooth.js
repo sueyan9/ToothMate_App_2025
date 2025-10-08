@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef ,useState} from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -155,7 +155,18 @@ const UpperLeftWisdom = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Left_Upper_Wisdom.glb')
+
 export const UpperLeftWisdomTooth = () => {
+  const toothInfo = {
+    toothNumber: 28,
+    name: "Left Upper Wisdom Tooth",
+    position: "Upper Jaw Left Side",
+    type: "Third Molar",
+    rootCount: 3,
+    canalCount: 3
+  }
+
   return (
     <>
     <div
@@ -183,7 +194,7 @@ export const UpperLeftWisdomTooth = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation toothNumber={28} />
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }
