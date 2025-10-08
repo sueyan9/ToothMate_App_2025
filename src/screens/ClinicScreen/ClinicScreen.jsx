@@ -265,7 +265,7 @@ const ClinicScreen = ({navigation, route}) => {
 
         if (cooldownRemaining > 0) {
         Alert.alert(
-            'Please Wait', 
+            'Please Wait',
             `You can create another appointment in ${Math.ceil(cooldownRemaining / 60)} minute(s) and ${cooldownRemaining % 60} second(s).`
         );
         return;

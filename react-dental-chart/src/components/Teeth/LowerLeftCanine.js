@@ -61,8 +61,18 @@ const LeftLowerCanine = ({ ...props }) => {
 };
 
 useGLTF.preload('/assets/Left_Lower_Canine.glb');
+
 export const LowerLeftCanine = () => {
-    const toothNumber = 33;
+    // Define basic information for this tooth
+    const toothInfo = {
+        toothNumber: 33,
+        name: "Left Lower Canine",
+        position: "Lower Jaw Left Side",
+        type: "Canine",
+        rootCount: 1,
+        canalCount: 1
+    };
+
     return (
         <>
             <div
@@ -73,18 +83,8 @@ export const LowerLeftCanine = () => {
                     position: 'relative',
                 }}
             >
-                {/* Back button header */}
-                <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
-                    <img
-                        src="../assets/back_arrow.png"
-                        alt="Back"
-                        onClick={() => (window.location.href = '/')}
-                        className="back-button"
-                    />
-                </div>
-
-                {/* Main 3D canvas */}
-                <Canvas style={{ width: '100%', height: '80%' }}>
+                {/* Main 3D canvas - takes up the entire screen */}
+                <Canvas style={{ width: '100%', height: '100%' }}>
                     <CameraController />
                     <ambientLight intensity={0.7} />
                     <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
@@ -92,33 +92,10 @@ export const LowerLeftCanine = () => {
                         <LeftLowerCanine />
                     </Suspense>
                 </Canvas>
-
-                {/* Mini mouth preview window */}
-                <div
-                    style={{
-                        position: 'absolute',
-                        right: -10,
-                        top: '10vh',
-                        width: 120,
-                        height: 120,
-                        background: 'rgba(240, 248, 255, 0)',
-                        borderRadius: 10,
-                        boxShadow:'none', //'0 2px 6px rgba(0,0,0,0.1)',
-                        padding: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backdropFilter: 'blur(2px)',
-                        zIndex: 1000,
-                        pointerEvents: 'none',
-                    }}
-                >
-                    <MiniMouth targetToothNumber={toothNumber} />
-                </div>
             </div>
 
-            {/* Display detailed tooth information */}
-            <ToothInformation toothNumber={toothNumber} />
+            {/* Pass the complete tooth information object */}
+            <ToothInformation toothInfo={toothInfo} />
         </>
     );
 };

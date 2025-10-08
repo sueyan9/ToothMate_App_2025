@@ -187,26 +187,26 @@ const signin =
       password,
       patientId
     });
-    
+
     console.log("Registration completion success:", response.data);
-    
+
     // Store token and ID in AsyncStorage
     await AsyncStorage.setItem('token', response.data.token);
     await AsyncStorage.setItem('id', response.data.id);
-    
+
     // Update state with signin
     dispatch({
       type: 'signin',
-      payload: { 
-        token: response.data.token, 
-        id: response.data.id 
+      payload: {
+        token: response.data.token,
+        id: response.data.id
       },
     });
-    
+
     // Navigate to main app
     console.log("Navigating to mainFlow after registration completion");
     navigate('mainFlow', { screen: 'AccountFlow' });
-    
+
   } catch (err) {
     console.error("Registration completion failed:", err.response?.data || err.message);
     dispatch({

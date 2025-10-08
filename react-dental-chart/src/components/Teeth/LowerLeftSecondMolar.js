@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -157,7 +157,17 @@ const LeftLowerSecondMolar = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Left_Lower_Second_Molar.glb')
+
 export const LowerLeftSecondMolar = () => {
+  const toothInfo = {
+    toothNumber: 37,
+    name: "Left Lower Second Molar",
+    position: "Lower Jaw Left Side",
+    type: "Second Molar",
+    rootCount: 2,
+    canalCount: 3
+  }
   return (
     <>
     <div
@@ -177,7 +187,8 @@ export const LowerLeftSecondMolar = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation toothNumber={37} />
+
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }
