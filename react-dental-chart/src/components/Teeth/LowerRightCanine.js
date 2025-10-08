@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useState, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -30,7 +30,6 @@ const RightLowerCanine = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Canine002_1.geometry}
           material={materials['1']}
-          material-color={'lightblue'}
         />
         <mesh geometry={nodes.Human_Teeth_Lower_Canine002_4.geometry} material={materials['2']} />
         <mesh geometry={nodes.Human_Teeth_Lower_Canine002_5.geometry} material={materials['3']} />
@@ -66,7 +65,21 @@ const RightLowerCanine = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Right_Lower_Canine.glb')
+
 export const LowerRightCanine = () => {
+  // 删除所有 useState 和 useEffect 代码
+
+  // 添加牙齿基本信息
+  const toothInfo = {
+    toothNumber: 43,
+    name: "Right Lower Canine",
+    position: "Lower Jaw Right Side",
+    type: "Canine",
+    rootCount: 1,
+    canalCount: 1
+  }
+
   return (
     <>
     <div
@@ -86,7 +99,7 @@ export const LowerRightCanine = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation toothNumber={43} />
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }

@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -55,82 +55,66 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_6.geometry}
           material={materials['6']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_7.geometry}
           material={materials['7']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_8.geometry}
           material={materials['8']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_9.geometry}
           material={materials['9']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_10.geometry}
           material={materials['10']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_11.geometry}
           material={materials['11']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_12.geometry}
           material={materials['12']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_13.geometry}
           material={materials['13']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_14.geometry}
           material={materials['14']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_15.geometry}
           material={materials['15']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_16.geometry}
           material={materials['16']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_17.geometry}
           material={materials['17']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_18.geometry}
           material={materials['18']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_19.geometry}
           material={materials['19']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_20.geometry}
           material={materials['20']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_21.geometry}
           material={materials['21']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_22.geometry}
@@ -139,32 +123,26 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_23.geometry}
           material={materials['23']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_24.geometry}
           material={materials['24']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_25.geometry}
           material={materials['25']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_26.geometry}
           material={materials['26']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_27.geometry}
           material={materials['27']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_28.geometry}
           material={materials['28']}
-
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_29.geometry}
@@ -173,14 +151,21 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_30.geometry}
           material={materials['30']}
-          material-color={'lightblue'}
         />
       </group>
     </group>
   )
 }
-
+useGLTF.preload('/assets/Left_Lower_Central_Incisor.glb')
 export const LowerLeftCentralIncisor = () => {
+  const toothInfo = {
+    toothNumber: 31,
+    name: "Left Lower Central Incisor",
+    position: "Lower Jaw Left Side",
+    type: "Central Incisor",
+    rootCount: 1,
+    canalCount: 1
+  }
   return (
     <>
     <div
@@ -200,7 +185,7 @@ export const LowerLeftCentralIncisor = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation toothNumber={31} />
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }

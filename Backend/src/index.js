@@ -5,6 +5,8 @@ require("./models/Clinic");
 require("./models/Appointment");
 require("./models/ImgModel");
 require("./models/PdfModel");
+require("./models/Treatment");
+require("./models/Tooth");
 const express = require("express");
 const mongoose = require("mongoose");
 
@@ -12,7 +14,8 @@ const authRoutes = require("./routes/authRoutes");
 const educationRoutes = require("./routes/educationRoutes");
 const clinicRoutes = require("./routes/clinicRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
-
+const treatmentRoutes = require("./routes/treatmentRoutes");
+const toothRoutes = require("./routes/toothRoutes");
 const requireAuth = require("./middlewares/requireAuth");
 // --- App & middlewares ---
 const app = express();
@@ -48,6 +51,8 @@ app.use(authRoutes);
 app.use(educationRoutes);
 app.use(clinicRoutes);
 app.use(appointmentRoutes);
+app.use(treatmentRoutes);
+app.use(toothRoutes);
 //list routers
 function listRoutes(app){
     const routes = [];

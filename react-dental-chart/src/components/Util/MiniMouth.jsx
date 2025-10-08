@@ -1,7 +1,8 @@
 import { Canvas } from '@react-three/fiber'
-import { Suspense, useEffect, useMemo } from 'react'
+import { Suspense, useEffect, useMemo, useRef } from 'react'
 import { Bounds } from '@react-three/drei'
 import { useGLTF } from '@react-three/drei'
+import * as THREE from 'three'
 
 const WHOLE_MOUTH_GLB = `${process.env.PUBLIC_URL}/assets/adult_whole_mouth.glb`
 
@@ -61,63 +62,89 @@ export default function MiniMouth({ targetToothNumber }) {
 
 function WholeMouthMiniModel({ targetToothNumber }) {
     const { scene } = useGLTF(WHOLE_MOUTH_GLB)
+    const sceneRef = useRef()
 
-    // Highlight and dim material presets
-    const highlight = useMemo(() => ({ color: '#ff9900', emissive: '#ff9900', emissiveIntensity: 0.6 }), [])
-    const dim = useMemo(() => ({ emissive: '#000000', emissiveIntensity: 0 }), [])
+    // Create highlight material only
+    const highlightMaterial = useMemo(() => {
+        const material = new THREE.MeshStandardMaterial({
+            color: '#ff9900',
+            emissive: '#ff9900',
+            emissiveIntensity: 0.6
+        })
+        return material
+    }, [])
+
+    // Store original materials for restoration
+    const originalMaterials = useRef(new Map())
 
     useEffect(() => {
-        // Reset all meshes’ emissive properties before applying new highlight
-        scene.traverse((o) => {
-            if (o.isMesh && o.material) {
-                const m = o.material.clone?.() || o.material
-                if ('emissive' in m) {
-                    m.emissive?.set?.(dim.emissive)
-                    m.emissiveIntensity = dim.emissiveIntensity
-                }
-                o.material = m
+        if (!scene || !sceneRef.current) return
+
+        // First, store all original materials if not already stored
+        scene.traverse((object) => {
+            if (object.isMesh && object.material && !originalMaterials.current.has(object.uuid)) {
+                originalMaterials.current.set(object.uuid, object.material)
             }
         })
 
-        // Find the target tooth node from the mapping
-        const nodeName = FDI_TO_NODE[targetToothNumber]
-        if (!nodeName) {
-            console.warn('FDI mapping missing for', targetToothNumber)
-            return
-        }
-
-        // 1) Try exact node name first
-        let target = scene.getObjectByName(nodeName)
-
-        // 2) Fallback: try regex matching tooth number from mesh name
-        if (!target) {
-            const fdiNum = String(targetToothNumber)
-            scene.traverse((o) => {
-                if (!target && o.isMesh && /\d+/.test(o.name || '')) {
-                    const numFromName = (o.name.match(/\d+/) || [])[0]
-                    if (numFromName === fdiNum) target = o
+        // Reset all meshes to their original materials (no dim material)
+        scene.traverse((object) => {
+            if (object.isMesh && object.material) {
+                const originalMaterial = originalMaterials.current.get(object.uuid)
+                if (originalMaterial) {
+                    // Reset to original material instead of dim material
+                    object.material = originalMaterial
                 }
-            })
-        }
-
-        if (!target || !target.isMesh) {
-            console.warn('Target tooth mesh not found for', targetToothNumber, 'nodeName:', nodeName)
-            return
-        }
-
-        // Apply highlight: clone material and update color/emissive
-        const mat = target.material?.clone?.() || target.material
-        if (mat) {
-            mat.color?.set?.(highlight.color)
-            if ('emissive' in mat) {
-                mat.emissive?.set?.(highlight.emissive)
-                mat.emissiveIntensity = highlight.emissiveIntensity
             }
-            target.material = mat
-        }
-    }, [scene, targetToothNumber, highlight, dim])
+        })
 
-    return <primitive object={scene} />
+        // Find and highlight target tooth
+        if (targetToothNumber) {
+            const nodeName = FDI_TO_NODE[targetToothNumber]
+            let targetMesh = null
+
+            // Method 1: Try exact node name match
+            if (nodeName) {
+                targetMesh = scene.getObjectByName(nodeName)
+            }
+
+            // Method 2: Try regex matching tooth number from mesh name
+            if (!targetMesh) {
+                const fdiNum = String(targetToothNumber)
+                scene.traverse((object) => {
+                    if (!targetMesh && object.isMesh && object.name) {
+                        // Check if the object name contains the FDI number
+                        if (object.name.includes(fdiNum)) {
+                            targetMesh = object
+                        }
+                        // Also try regex matching
+                        const numMatch = object.name.match(/\d+/)
+                        if (numMatch && numMatch[0] === fdiNum) {
+                            targetMesh = object
+                        }
+                    }
+                })
+            }
+
+            if (!targetMesh) {
+                console.warn(`Could not find tooth mesh for FDI number ${targetToothNumber}`)
+                // Log available mesh names for debugging
+                const meshNames = []
+                scene.traverse((object) => {
+                    if (object.isMesh) {
+                        meshNames.push(object.name)
+                    }
+                })
+                console.log('Available mesh names:', meshNames)
+            } else {
+                // Apply highlight material to target tooth
+                targetMesh.material = highlightMaterial.clone()
+                console.log(`Highlighted tooth ${targetToothNumber} (${nodeName || 'unknown'})`)
+            }
+        }
+    }, [scene, targetToothNumber, highlightMaterial])
+
+    return <primitive ref={sceneRef} object={scene} />
 }
 
 useGLTF.preload(WHOLE_MOUTH_GLB)

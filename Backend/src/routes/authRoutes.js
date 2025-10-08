@@ -1,4 +1,3 @@
-//File to handle authentication
 const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -266,6 +265,7 @@ router.get("/getUserClinic/:id", (req, res) => {
 router.get("/user/:id", (req, res) => {
   const id = req.params.id;
 
+  console.log("get user from app", id);
   const user = User.findOne({ _id: id })
     .then((user) => res.json(user))
     .catch((err) => res.status(404).json({ error: "No email found" }));
