@@ -1,4 +1,5 @@
 import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
+import { VarelaRound_400Regular } from '@expo-google-fonts/varela-round';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useContext, useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -12,7 +13,7 @@ const EducationScreen = ({ navigation }) => {
     
     const [fontsLoaded] = useFonts({
         Righteous_400Regular,
-        Varela_400Regular,
+        VarelaRound_400Regular,
     });
 
     // State to force re-render on language change

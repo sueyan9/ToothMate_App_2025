@@ -16,7 +16,7 @@ export default StyleSheet.create({
   },
   titleText: {
     fontSize: 25,
-    fontFamily: 'Varela_400Regular',
+    fontFamily: 'VarelaRound_400Regular',
     color: '#2C3E50',
     textAlign: 'center',
     marginBottom: 6,
@@ -30,7 +30,7 @@ export default StyleSheet.create({
     fontSize: 16,
     color: '#7F8C8D',
     textAlign: 'center',
-    fontFamily: 'Varela_400Regular',
+    fontFamily: 'VarelaRound_400Regular',
   },
   star: {
     position: 'absolute',
@@ -193,7 +193,7 @@ export default StyleSheet.create({
     fontSize: 12,
     color: '#7F8C8D',
     textAlign: 'center',
-    fontFamily: 'Varela_400Regular',
+    fontFamily: 'VarelaRound_400Regular',
     marginBottom: 4,
     lineHeight: 14,
   },

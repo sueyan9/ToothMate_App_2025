@@ -1,3 +1,5 @@
+import { Righteous_400Regular } from '@expo-google-fonts/righteous';
+import { useFonts, VarelaRound_400Regular } from '@expo-google-fonts/varela-round';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -46,7 +48,7 @@ import { Provider as UserProvider } from './src/context/UserContext/UserContext'
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
-import { Image, View } from 'react-native';
+import { ActivityIndicator, Image, View } from 'react-native';
 import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
@@ -64,6 +66,7 @@ const HeaderLogo = () => (
         style={{width: 100, height: 35, resizeMode: 'contain'}}/>
     </View>
 );
+
 
 // Account flow navigation - FIXED: Using UserAccountScreen instead of missing AccountScreen
 const AccountStack = () => (
@@ -382,8 +385,23 @@ const AppNavigator = () => {
     );
 };
 
-// Wrap the app with all providers
+// Wrap the app with all providers - MOVED useFonts HERE!
 export default function App() {
+    // ADDED: Load fonts inside the component
+    const [fontsLoaded] = useFonts({
+        Righteous_400Regular,
+        VarelaRound_400Regular,
+    });
+
+    // Show loading screen while fonts load
+    if (!fontsLoaded) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#875B51" />
+            </View>
+        );
+    }
+
     return (
         <AuthProvider>
             <ClinicProvider>
@@ -392,7 +410,7 @@ export default function App() {
                         <UserProvider>
                             <TranslationProvider>
                                 <ProgressProvider>
-                                <AppNavigator />
+                                    <AppNavigator />
                                 </ProgressProvider>
                             </TranslationProvider>
                         </UserProvider>
