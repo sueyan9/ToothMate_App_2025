@@ -60,7 +60,7 @@ const HomeScreen = () => {
     ]
 
     const getRandomQuote = () => {
-        const randomQuote = Math.floor(Math.random() * 15) + 1;
+        const randomQuote = Math.floor(Math.random() * 14) + 1;
 
         return quotes[randomQuote];
     }
