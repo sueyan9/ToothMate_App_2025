@@ -49,6 +49,7 @@ import {
 } from '../../api/appointments';
 import axiosApi from '../../api/axios';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
+import { Context as ClinicContext } from '../../context/ClinicContext/ClinicContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
@@ -186,6 +187,7 @@ const UserAccountScreen = ({ navigation }) => {
     'Please enter a clinic code.',
     'Please enter a valid clinic code.',
     'Invalid clinic code',
+    'No clinics found matching',
     'Please enter a valid email address',
     'Email already exists',
     'Error validating email',
@@ -210,6 +212,7 @@ const UserAccountScreen = ({ navigation }) => {
     updateClinic
   } = useContext(UserContext);
   const { signout } = useContext(AuthContext);
+  const { state: clinicState, getAllClinics } = useContext(ClinicContext);
   const [isLoading, setIsLoading] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -455,38 +458,23 @@ const UserAccountScreen = ({ navigation }) => {
     checkEmail();
   }, [formData.email, details.email]);
 
-  // Live clinic code validation effect
+
+
+  // Load clinics when clinic modal opens
   useEffect(() => {
-    const checkClinicCode = async () => {
-      if (clinicCode.trim() === '') {
-        setClinicInfo(null);
-        setClinicCodeStatus(null);
-        return;
-      }
+    if (showClinicModal) {
+      getAllClinics();
+    }
+  }, [showClinicModal]);
 
-        try {
-            const response = await axiosApi.get(`/checkClinicCode/${clinicCode.trim()}`);
-            if (response.data.valid) {
-                setClinicInfo(response.data);
-
-                // Check if the entered clinic code is the same as the current clinic
-                if (clinic && clinic.code === clinicCode.trim()) {
-                    setClinicCodeStatus('same-clinic');
-                } else {
-                    setClinicCodeStatus('valid');
-                }
-            } else {
-                setClinicInfo(null);
-                setClinicCodeStatus('invalid');
-            }
-        } catch (err) {
-            setClinicInfo(null);
-            setClinicCodeStatus('invalid');
-        }
-    };
-
-      checkClinicCode();
-  }, [clinicCode, clinic]);
+  // Filter clinics based on clinic code input (same logic as LocationFinder)
+  const searchedAndFilteredClinics = (clinicState || []).filter(item => {
+    if (clinicCode === '') return false; // Don't show anything when empty
+    
+    const searchLower = clinicCode.toLowerCase();
+    // Only search by clinic code (not name/address like LocationFinder)
+    return (item.code && item.code.toLowerCase().includes(searchLower));
+  });
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Not specified';
@@ -529,27 +517,7 @@ const UserAccountScreen = ({ navigation }) => {
     }
   };
 
-  // Helper function to get clinic code input style based on validation status
-    const getClinicCodeInputStyle = () => {
-        if (clinicCodeStatus === 'valid') {
-            return [styles.textInput, styles.validInput];
-        } else if (clinicCodeStatus === 'invalid') {
-            return [styles.textInput, styles.invalidInput];
-        } else if (clinicCodeStatus === 'same-clinic') {
-            return [styles.textInput, styles.warningInput];
-        }
-        return styles.textInput;
-    };
 
-  // Helper function to get clinic code error message
-    const getClinicCodeErrorMessage = () => {
-        if (clinicCodeStatus === 'invalid') {
-            return t('Invalid clinic code');
-        } else if (clinicCodeStatus === 'same-clinic') {
-            return t('You are already registered with this clinic');
-        }
-        return null;
-    };
   // Helper functions for password validation
   const getPasswordValidationErrors = (password) => {
     const errors = [];
@@ -684,6 +652,17 @@ const UserAccountScreen = ({ navigation }) => {
     setShowClinicModal(true);
   };
 
+  const handleSelectClinic = (selectedClinic) => {
+    setClinicCode(selectedClinic.code);
+    setClinicInfo(selectedClinic);
+    // Determine clinic status
+    if (clinic && clinic.code === selectedClinic.code) {
+      setClinicCodeStatus('same-clinic');
+    } else {
+      setClinicCodeStatus('valid');
+    }
+  };
+
   const handleChangePassword = () => {
     setPasswordData({
       currentPassword: '',
@@ -794,13 +773,26 @@ const UserAccountScreen = ({ navigation }) => {
       return;
     }
     
-    if (clinicCodeStatus !== 'valid') {
+    // Find the clinic in the loaded clinics
+    const selectedClinic = clinicState?.find(c => 
+      c.code && c.code.toLowerCase() === clinicCode.trim().toLowerCase()
+    );
+    
+    if (!selectedClinic) {
       Alert.alert(t('Error'), t('Please enter a valid clinic code.'));
       return;
     }
     
+    // Check if it's the same clinic as current
+    if (clinic && clinic.code === selectedClinic.code) {
+      Alert.alert(t('Error'), t('You are already registered with this clinic'));
+      return;
+    }
+    
+    // Set clinic info and proceed
+    setClinicInfo(selectedClinic);
+    setClinicCodeStatus('valid');
     setShowClinicModal(false);
-    setShowClinicConfirmModal(true);
     setShowClinicConfirmModal(true);
   };
 
@@ -1579,15 +1571,51 @@ const UserAccountScreen = ({ navigation }) => {
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('Clinic Code')}</Text>
                 <TextInput
-                  style={getClinicCodeInputStyle()}
+                  style={styles.textInput}
                   value={clinicCode}
                   onChangeText={setClinicCode}
                   placeholder={t('Enter clinic code')}
                   autoCapitalize="characters"
                 />
-                {getClinicCodeErrorMessage() && (
-                  <Text style={styles.errorText}>{getClinicCodeErrorMessage()}</Text>
+                
+                {/* Filtered Clinics List */}
+                {clinicCode.trim().length > 0 && (
+                  <View style={styles.clinicsListContainer}>
+                    <Text style={{padding: 8, fontSize: 12, color: '#666'}}>
+                      Found {searchedAndFilteredClinics.length} clinics
+                    </Text>
+                    {searchedAndFilteredClinics.length > 0 ? (
+                      <ScrollView 
+                        style={styles.clinicsList} 
+                        nestedScrollEnabled={true}
+                        showsVerticalScrollIndicator={false}
+                      >
+                        {searchedAndFilteredClinics.map((clinic) => (
+                          <TouchableOpacity
+                            key={clinic._id || clinic.id}
+                            style={styles.clinicListItem}
+                            onPress={() => handleSelectClinic(clinic)}
+                          >
+                            <View style={styles.clinicListContent}>
+                              <Text style={styles.clinicListCode}>{clinic.code}</Text>
+                              <Text style={styles.clinicListName}>{clinic.name}</Text>
+                              {clinic.address && (
+                                <Text style={styles.clinicListAddress}>{clinic.address}</Text>
+                              )}
+                            </View>
+                          </TouchableOpacity>
+                        ))}
+                      </ScrollView>
+                    ) : (
+                      <View style={styles.noResultsContainer}>
+                        <Text style={styles.noResultsText}>
+                          {t('No clinics found matching')} "{clinicCode}"
+                        </Text>
+                      </View>
+                    )}
+                  </View>
                 )}
+                
                 {clinicCodeStatus === 'valid' && clinicInfo && (
                   <View style={styles.clinicInfoContainer}>
                     <Text style={styles.successText}>✓ {t('Valid clinic code')}</Text>

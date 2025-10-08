@@ -447,6 +447,61 @@ export default StyleSheet.create({
     marginTop: 4,
   },
   
+  // Clinic search list styles
+  clinicsListContainer: {
+    marginTop: 8,
+    maxHeight: 200,
+    minHeight: 80,
+    borderWidth: 2,
+    borderColor: '#516287',
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    padding: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  clinicsList: {
+    maxHeight: 200,
+  },
+  clinicListItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+    minHeight: 60,
+  },
+  clinicListContent: {
+    flex: 1,
+  },
+  clinicListCode: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#516287',
+    marginBottom: 4,
+  },
+  clinicListName: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#333333',
+    marginBottom: 2,
+  },
+  clinicListAddress: {
+    fontSize: 12,
+    color: '#666666',
+  },
+  noResultsContainer: {
+    padding: 16,
+    alignItems: 'center',
+  },
+  noResultsText: {
+    fontSize: 14,
+    color: '#666666',
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+  
   // Success modal styles
   successModalContent: {
     backgroundColor: '#FFFDF6',
