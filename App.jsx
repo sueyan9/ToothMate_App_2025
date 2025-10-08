@@ -150,10 +150,10 @@ const MainFlow = () => (
             currentTab.name === 'Profile' &&
             ['images', 'allimages', 'invoice'].includes(currentNestedRoute?.name);
         return {
-            headerShown: !isProfileInner,   // 在二级页时关掉 Tab header
+            headerShown: !isProfileInner,
             ...( !isProfileInner ? {
                 headerLeft: () => <HeaderLogo />,
-                headerTitle: '',
+                headerTitle: 'ToothMate',
                 headerStyle: {
                     backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
                     borderBottomWidth: 0,
@@ -277,9 +277,9 @@ const AppNavigator = () => {
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
-                            <Stack.Screen name="Signup" component={SignupScreen} />
+                            <Stack.Screen name="Signin" component={SigninScreen} options={{ headerShown: false }}/>
+                            <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
-                            <Stack.Screen name="Signin" component={SigninScreen} />
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}

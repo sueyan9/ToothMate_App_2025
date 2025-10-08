@@ -1,4 +1,3 @@
-
 const tryInferName = (url) => {
     try {
         const u = new URL(url);
@@ -32,9 +31,10 @@ const formatDocWhen = (doc) => {
 };
 import { Ionicons } from '@expo/vector-icons';
 //import { useFocusEffect } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   Alert,
+  FlatList,
   Image,
   Modal,
   SafeAreaView,
@@ -42,19 +42,16 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-    FlatList
+  View
 } from 'react-native';
+import {
+  fetchAssetsForAppointment,
+} from '../../api/appointments';
 import axiosApi from '../../api/axios';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
-import {
-    fetchAssetsForAppointment,
-
-} from '../../api/appointments';
-import * as WebBrowser from 'expo-web-browser';
 // Import profile pictures
 const profilePictures = [
   require('../../../assets/profile pictures/p0.png'),
@@ -899,7 +896,6 @@ const UserAccountScreen = ({ navigation }) => {
     const invoiceDocs = pdfItems.filter(p => !p.category || p.category === 'invoice');
     const referralDocs = pdfItems.filter(p => p.category === 'referral');
 
-    console.log('[ACC] accDocs:', accDocs);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -1055,7 +1051,7 @@ const UserAccountScreen = ({ navigation }) => {
               onPress={handleChangeClinic}
             >
               <Ionicons name="business-outline" size={20} color="#516287" />
-              <Text style={styles.actionButtonText}>{t('Change Clinic')}</Text>
+              <Text style={styles.actionButtonText}>{t('Request Clinic Change')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
             
@@ -1158,7 +1154,7 @@ const UserAccountScreen = ({ navigation }) => {
 
           {/* My Documents (Invoices ) */}
           <Collapsible
-              title={t('My Documents')}
+              title={t('My Invoices')}
               icon="document-text-outline"
               count={invoiceDocs.length}
               defaultOpen={false}
@@ -1192,7 +1188,7 @@ const UserAccountScreen = ({ navigation }) => {
 
           {/* ACC Documents */}
           <Collapsible
-              title="ACC Documents"
+              title="My ACC Documents"
               icon="shield-checkmark-outline"
               count={accDocs.length}
               defaultOpen={false}
@@ -1225,7 +1221,7 @@ const UserAccountScreen = ({ navigation }) => {
           </Collapsible>
           {/* ReferralDocs */}
           <Collapsible
-              title={t('Referrals')}
+              title={t('My Referrals')}
               icon="send-outline"
               count={referralDocs.length}
               defaultOpen={false}
@@ -1570,7 +1566,7 @@ const UserAccountScreen = ({ navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.updateModalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t('Change Clinic')}</Text>
+              <Text style={styles.modalTitle}>{t('Request Clinic Change')}</Text>
               <TouchableOpacity 
                 style={styles.closeButton}
                 onPress={handleClinicCancel}
@@ -1637,9 +1633,9 @@ const UserAccountScreen = ({ navigation }) => {
           <View style={styles.confirmModalContent}>
             <View style={styles.confirmHeader}>
               <Ionicons name="business-outline" size={48} color="#516287" />
-              <Text style={styles.confirmTitle}>{t('Confirm Clinic Change')}</Text>
+              <Text style={styles.confirmTitle}>{t('Confirm Clinic Request')}</Text>
               <Text style={styles.confirmMessage}>
-                {t('Are you sure you want to change your clinic to:')}
+                {t('Are you sure you want to request a clinic change to:')}
               </Text>
               {clinicInfo && (
                 <View style={styles.clinicConfirmInfo}>
@@ -1745,7 +1741,7 @@ const UserAccountScreen = ({ navigation }) => {
                 style={styles.successImage}
                 resizeMode="contain"
               />
-              <Text style={styles.successTitle}>{t('Your Clinic Request has been Accepted!')}</Text>
+              <Text style={styles.successTitle}>{t('Your Clinic Request has been Sent!')}</Text>
             </View>
 
             <TouchableOpacity 

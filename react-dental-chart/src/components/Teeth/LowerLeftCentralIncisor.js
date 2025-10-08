@@ -30,22 +30,27 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_1.geometry}
           material={materials['1']}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_2.geometry}
           material={materials['2']}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_3.geometry}
           material={materials['3']}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_4.geometry}
           material={materials['4']}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_5.geometry}
           material={materials['5']}
+          material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_6.geometry}
@@ -153,7 +158,6 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
 }
 useGLTF.preload('/assets/Left_Lower_Central_Incisor.glb')
 export const LowerLeftCentralIncisor = () => {
-  // 定义这颗牙齿的基本信息
   const toothInfo = {
     toothNumber: 31,
     name: "Left Lower Central Incisor",

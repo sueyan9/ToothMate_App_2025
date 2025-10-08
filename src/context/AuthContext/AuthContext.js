@@ -1,11 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import createDataContext from '../createDataContext';
 import axiosApi from '../../api/axios';
 import { navigate } from '../../navigationRef';
-
-let pendingMessage = null;
-let messageRetryCount = 0;
-const MAX_RETRIES = 10;
+import createDataContext from '../createDataContext';
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -40,12 +36,7 @@ const user = dispatch => async () => {
     const token = await AsyncStorage.getItem('token');
     const response = await axiosApi.post('/user', { token });
     dispatch({ type: 'user', payload: response.data.user });
-  } catch (err) {console.error('获取用户信息失败:', err);
-    dispatch({
-      type: 'add_error',
-      payload: 'Failed to get user information',
-    });
-  }
+  } catch (err) {}
 };
 
 const tryLocalSignin = dispatch => async () => {
@@ -166,30 +157,66 @@ const signupchild =
   };
 
 const signin =
-    dispatch =>
-        async ({ email, password }) => {
-          try {
-            console.log('🚀 AuthContext: signin 函数开始执行');
+  dispatch =>
+  async ({ emailOrNhi, password }) => {
+    try {
+      const response = await axiosApi.post('/signin', { emailOrNhi, password });
 
-            const response = await axiosApi.post('/signin', { email, password });
-            const { token, id, user } = response.data;
+      await AsyncStorage.setItem('token', response.data.token);
+      await AsyncStorage.setItem('id', response.data.id);
+      dispatch({
+        type: 'signin',
+        payload: { token: response.data.token, id: response.data.id },
+      });
+      // navigate('AccountFlow');
+      navigate('mainFlow', { screen: 'AccountFlow' });
+    } catch (err) {
+      dispatch({
+        type: 'add_error',
+        payload: 'Invalid Login Details',
+      });
+    }
+  };
 
-            await AsyncStorage.setItem('token', response.data.token);
-            await AsyncStorage.setItem('id', response.data.id);
+  const completeRegistration = dispatch => async ({ signupCode, nhi, email, password, patientId }) => {
+  try {
+    const response = await axiosApi.post('/completeRegistration', {
+      signupCode,
+      nhi,
+      email,
+      password,
+      patientId
+    });
 
-            dispatch({
-              type: 'signin',
-              payload: { token: response.data.token, id: response.data.id },
-            });
-            navigate('mainFlow', { screen: 'AccountFlow' });
-          } catch (err) {
-            console.error('🚀 登录失败:', err);
-            dispatch({
-              type: 'add_error',
-              payload: 'Invalid Login Details',
-            });
-          }
-        };
+    console.log("Registration completion success:", response.data);
+
+    // Store token and ID in AsyncStorage
+    await AsyncStorage.setItem('token', response.data.token);
+    await AsyncStorage.setItem('id', response.data.id);
+
+    // Update state with signin
+    dispatch({
+      type: 'signin',
+      payload: {
+        token: response.data.token,
+        id: response.data.id
+      },
+    });
+
+    // Navigate to main app
+    console.log("Navigating to mainFlow after registration completion");
+    navigate('mainFlow', { screen: 'AccountFlow' });
+
+  } catch (err) {
+    console.error("Registration completion failed:", err.response?.data || err.message);
+    dispatch({
+      type: 'add_error',
+      payload: err.response?.data?.error || 'Registration completion failed',
+    });
+    // Re-throw the error so the component can handle it
+    throw err;
+  }
+};
 
 const updateUser = dispatch => {
   return async ({ firstname, lastname, email, mobile, dob }) => {
@@ -286,6 +313,7 @@ export const { Provider, Context } = createDataContext(
     updateUser,
     updateUserClinic,
     changePassword,
+    completeRegistration,
   },
   { token: null, errorMessage: '', id: null },
 );

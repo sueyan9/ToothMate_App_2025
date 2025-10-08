@@ -1,7 +1,7 @@
 import { useGLTF } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import React, { Suspense, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom'; // 添加这行
+import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import '../styles.css';
@@ -96,16 +96,16 @@ const WholeMouthModel = ({
         // Clear All Treatments
         if (!selectedTreatment || selectedTreatment.length === 0 || selectedTreatment[0] === 'none') {
             console.log(`Tooth ${toothNumber}: Clear all mode`);
-            // 如果牙齿有 extraction，显示为 missing（透明）
+            //  extraction，shows as missing（transparent）
             if (types.includes('extraction')) {
                 return toothMaterials.extraction;
             }
-            // 其他情况显示为 normal
+            // the rest normal
             console.log(`Tooth ${toothNumber}: No extraction, returning normal material`);
             return toothMaterials.normal;
         }
 
-        // 当选择 'all' 时，显示所有治疗类型的颜色
+        //  'all' ==all the color
         if (selectedTreatment.includes('all')) {
             return types.includes('extraction') ? toothMaterials.missing : (toothMaterials[types[0]] || toothMaterials.normal);
         }
@@ -405,11 +405,11 @@ export default function WholeMouth({
         const userId = urlParams.get('userId');
 
         if (userId) {
-            // 使用React Router导航，保持userId参数
+            // React Router，keep the "userId" parameter
             navigate(`/${toothComponent}?userId=${encodeURIComponent(userId)}`);
         } else {
             console.error('No userId found for navigation');
-            // 如果没有userId，仍然导航但不带参数
+            // without userId，
             navigate(`/${toothComponent}`);
         }
     };
