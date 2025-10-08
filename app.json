@@ -23,13 +23,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.toothmate.app"
     },
     "androidNavigationBar": {
       "visible": "immersive"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "fbc51f51-79b4-44a2-8c84-72b5909ec884"
+      }
     }
   }
 }

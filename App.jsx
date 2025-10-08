@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // import all screens
+import Contact from './src/components/ContactButton';
 import LanguageSelector from './src/components/LanguageSelector';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 import AppointmentScreen from './src/screens/AppointmentScreen';
@@ -17,6 +18,7 @@ import GameScreen from './src/screens/GameScreen/GameScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
+import LocationFinder from './src/screens/LocationFinder';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import SelectClinicScreen from './src/screens/SelectClinicScreen';
@@ -44,7 +46,6 @@ import { Provider as UserProvider } from './src/context/UserContext/UserContext'
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
-import { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
 import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
@@ -73,6 +74,7 @@ const AccountStack = () => (
         <Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />
         <Stack.Screen name="Password" component={PasswordChangeScreen} />
         <Stack.Screen name="UserAccount" component={UserAccountScreen} />
+
     </Stack.Navigator>
 );
 
@@ -85,18 +87,39 @@ const EducationStack = () => (
     </Stack.Navigator>
 );
 
-// Clinic flow navigation
-const ClinicStack = () => (
+// Booking flow navigation
+const BookingStack = () => (
     <Stack.Navigator initialRouteName="clinic">
         <Stack.Screen name="clinic" component={ClinicScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="chart"  component={DentalChartScreen} options={{ title: '' }} />
         <Stack.Screen name="appointment" component={AppointmentScreen} options={{ title: '' }}/>
-        <Stack.Screen name="invoice" component={InvoiceScreen} options={{ title: '' }}/>
-        <Stack.Screen name="images" component={ImagesScreen} options={{ title: '' }}/>
-        <Stack.Screen name="allimages" component={AllImagesScreen} options={{ title: '' }}/>
+
     </Stack.Navigator>
 );
-
+// Profile flow navigation
+const ProfileStack = () => (
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="UserAccount"
+    >
+        <Stack.Screen name="UserAccount" component={UserAccountScreen}
+                      options={{ headerBackTitle: ' ', headerBackTitleVisible: false }}
+        />
+        <Stack.Screen name="images" component={ImagesScreen}
+                      options={{
+                          headerShown: true,
+                          title: 'X-ray Images',
+                          headerBackTitleVisible: false,
+                          headerBackTitle: ' ',
+                          headerTintColor: '#000',
+                      }} />
+        <Stack.Screen name="imagesList" component={AllImagesScreen}/>
+        <Stack.Screen name="invoice" component={InvoiceScreen}
+                      options={({ route }) => ({
+                          headerShown: true,
+                          title: route?.params?.title || 'Invoice',
+                      })}
+        />
+    </Stack.Navigator>
+);
 // Child clinic flow
 const ChildClinicStack = () => (
     <Stack.Navigator initialRouteName="Chart">
@@ -145,14 +168,23 @@ const MainFlow = () => (
         currentNestedRoute?.params?.isModal === true;
 
         const isContentPage = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' && currentNestedRoute?.params?.id && !currentNestedRoute?.params?.selectedFilter;
-
+        const isProfileInner =
+            currentTab.name === 'Profile' &&
+            ['images', 'allimages', 'invoice'].includes(currentNestedRoute?.name);
         return {
-        headerShown: true,
-        headerLeft: () => <HeaderLogo/>,
-        headerTitle: '',
-        headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
-        headerTitleAlign: 'left',
-        headerTransparent: !isViewingIndividualContent,
+            headerShown: !isProfileInner,
+            ...( !isProfileInner ? {
+                headerLeft: () => <HeaderLogo />,
+                headerTitle: 'ToothMate',
+                headerStyle: {
+                    backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
+                    borderBottomWidth: 0,
+                    elevation: 0,
+                    shadowOpacity: 0,
+                },
+                headerTitleAlign: 'left',
+                headerTransparent: !isViewingIndividualContent,
+            } : {}),
         tabBarActiveTintColor: '#875B51',
         tabBarInactiveTintColor: '#333333',
         tabBarStyle: {
@@ -168,13 +200,14 @@ const MainFlow = () => (
             shadowOpacity: 0.1,
             shadowRadius: 5,
         }
-    }
+    };
     }}>
         <Tab.Screen
             name="AccountFlow"
             component={HomeScreen}
             options={{
                 title: 'Home',
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
             }}
         />
@@ -183,6 +216,7 @@ const MainFlow = () => (
             component={EducationStack}
             options={{
                 title: 'Library',
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
             }}
         />
@@ -190,23 +224,25 @@ const MainFlow = () => (
             name="Chart"
             component={DentalChartScreen}
             options={{
-                title: 'Dental Chart',
+                title: 'My Mouth',
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
             }}
         />
         <Tab.Screen
             // NEED TO REFACTOR TO APPOINTMENTS :)
             name="Bookings"
-            component={ClinicStack}
+            component={BookingStack}
             options={{
                 title: 'Bookings',
                 headerTransparent: false,
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
         />
         <Tab.Screen
             name="Profile"
-            component={UserAccountScreen}
+            component={ProfileStack}
             options={{
                 title: 'Profile',
                 headerRight: () => <LanguageSelector/>,
@@ -306,16 +342,18 @@ const AppNavigator = () => {
                 initialRouteName="ResolveAuth"
                 screenOptions={{ headerShown: false }}
             >
-
+                
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
+                <Stack.Screen name="SplashScreen" component={SplashScreen}/>
+
 
                 {/* Login flow  */}
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
-                            <Stack.Screen name="Signup" component={SignupScreen} />
+                            <Stack.Screen name="Signin" component={SigninScreen} options={{ headerShown: false }}/>
+                            <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
-                            <Stack.Screen name="Signin" component={SigninScreen} />
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>
                     )}
@@ -324,6 +362,8 @@ const AppNavigator = () => {
                 {/* main flow */}
                 <Stack.Screen name="mainFlow" component={MainFlow} />
                 
+                {/* LocationFinder - accessible from HomeScreen */}
+                <Stack.Screen name="LocationFinder" component={LocationFinder} options={{ headerShown: false }} />
 
                 {/* child flow */}
                 <Stack.Screen name="childFlow" component={ChildFlow} />
@@ -344,18 +384,6 @@ const AppNavigator = () => {
 
 // Wrap the app with all providers
 export default function App() {
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000); // 2 seconds delay
-    }, []);
-
-    if (isLoading) {
-        return <SplashScreen />;
-    }
-
     return (
         <AuthProvider>
             <ClinicProvider>

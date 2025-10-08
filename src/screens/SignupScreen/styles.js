@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#E9F1F8',
   },
   dateStyle: {
     fontSize: 18,
@@ -26,6 +26,7 @@ export default StyleSheet.create({
     borderColor: '#dedede',
     width: '95%',
     paddingLeft: 15,
+    marginBottom: 0,
     backgroundColor: '#f7f7f7',
     marginLeft: '2.25%',
   },
@@ -35,12 +36,12 @@ export default StyleSheet.create({
   labelStyle: {
     fontSize: 14,
     marginLeft: 18,
-    color: 'black',
+    color: '#333333',
     marginBottom: 3,
     marginTop: 2,
   },
   link: {
-    color: '#fff',
+    color: '#875B51',
     fontWeight: 'bold',
     flexDirection: 'row',
     justifyContent: 'center',
@@ -52,7 +53,7 @@ export default StyleSheet.create({
   clinicTextStyle: {
     marginLeft: 20,
     fontSize: 14,
-    color: 'black',
+    color: '#333333',
     fontWeight: 'bold',
   },
   buttonContainer: {
@@ -61,8 +62,11 @@ export default StyleSheet.create({
     marginLeft: '5%',
   },
   button: {
-    paddingVertical: 10,
-    backgroundColor: '#F0F0F0',
+    paddingVertical: 8,
+    backgroundColor: '#EDDFD3',
+    borderRadius: 20,
+    borderWidth: 2.5,
+    borderColor: '#875B51'
   },
   header: {
     color: '#2B510C',
@@ -73,7 +77,7 @@ export default StyleSheet.create({
     marginTop: 40,
   },
   buttonText: {
-    color: '#000',
+    color: '#333333',
     fontWeight: 'bold',
   },
   errorMessage: {
@@ -90,11 +94,16 @@ export default StyleSheet.create({
     justifyContent: 'space-around',
     padding: 10,
   },
+  icon: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: '15%',
+    aspectRatio: 1, // adjust this based on your logo's ratio (width/height)
+    resizeMode: 'contain',
+  },
   titleTextStyle: {
     fontSize: 50,
-    marginTop: '15%',
     alignSelf: 'center',
-    fontFamily: 'Righteous_400Regular',
   },
   androidModalViewStyle: {
     width: '90%',
@@ -103,7 +112,7 @@ export default StyleSheet.create({
   alreadyHaveAccountStyle: {
     fontWeight: 'bold',
     fontSize: 15,
-    color: 'black',
+    color: '#333333',
     textAlign: 'center',
   },
 });

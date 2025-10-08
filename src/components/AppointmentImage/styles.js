@@ -2,9 +2,8 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   imgStyle: {
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    width: 400,
+    width: '100%',
     height: 300,
+    borderRadius: 8,
   },
 });

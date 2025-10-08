@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef,useState } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -153,7 +153,17 @@ const RightLowerLateralIncisor = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Right_Lower_Lateral_Incisor.glb')
+
 export const LowerRightLateralIncisor = () => {
+  const toothInfo = {
+    toothNumber: 42,
+    name: "Right Lower Lateral Incisor",
+    position: "Lower Jaw Right Side",
+    type: "Lateral Incisor",
+    rootCount: 1,
+    canalCount: 1
+  }
   return (
     <>
     <div
@@ -173,7 +183,7 @@ export const LowerRightLateralIncisor = () => {
         </Suspense>
       </Canvas>
       </div>
-      <ToothInformation toothNumber={42} />
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }
