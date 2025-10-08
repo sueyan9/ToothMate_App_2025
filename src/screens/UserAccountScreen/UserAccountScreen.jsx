@@ -45,7 +45,7 @@ import {
   View
 } from 'react-native';
 import {
-  fetchAssetsForAppointment,
+  fetchAssetsForAppointment
 } from '../../api/appointments';
 import axiosApi from '../../api/axios';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
@@ -1029,6 +1029,30 @@ const UserAccountScreen = ({ navigation }) => {
               </View>
             )}
           </View>
+
+          {/* Insurance infoamtion card */}
+          <View style={styles.infoCard}>
+              <View style={styles.cardHeader}>
+              <Ionicons name="Insurance-outline" size={24} color="#516287" />
+              <Text style={styles.cardTitle}>{t('Insurance Infomation')}</Text>
+              </View>
+
+              <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('Insurance Provider')}</Text>
+              <Text style={styles.infoValue}>
+                {details.insurance || t('Not specified')}
+              </Text>
+            </View>
+            
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('Insurance Number')}</Text>
+              <Text style={styles.infoValue}>
+                {details.insurance_number || t('Not specified')}
+              </Text>
+            </View>
+
+          </View>
+
 
           {/* Account Actions Card */}
           <View style={styles.infoCard}>
