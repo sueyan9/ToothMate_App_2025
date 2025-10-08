@@ -2,6 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { Alert, Animated, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useProgress } from '../../context/ProgressContext/ProgressContext';
 
 const { width, height } = Dimensions.get('window');
 
@@ -13,6 +14,7 @@ const CavityMonstersScreen = ({ navigation }) => {
   const [lives, setLives] = useState(3);
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [collectedItems, setCollectedItems] = useState([]);
+  const { addPoints } = useProgress(); // Use progress context
   
   const [pulseAnim] = useState(new Animated.Value(1));
   const [playerAnim] = useState(new Animated.Value(0));
@@ -60,7 +62,7 @@ const CavityMonstersScreen = ({ navigation }) => {
       [0, 2, 1, 0, 2, 1, 0, 2],
       [0, 1, 1, 0, 3, 1, 0, 0],
       [0, 1, 1, 0, 1, 0, 0, 0],
-      [0, 1, 1, 4, 0, 0, 1, 0],
+      [0, 1, 1, 0, 0, 0, 1, 0],
       [0, 0, 4, 0, 1, 1, 1, 0],
       [2, 3, 0, 1, 1, 0, 0, 0],
       [1, 3, 1, 1, 1, 0, 1, 1],
@@ -74,7 +76,7 @@ const CavityMonstersScreen = ({ navigation }) => {
       [0, 0, 0, 1, 0, 0, 0, 0],
       [0, 1, 1, 2, 0, 1, 3, 0],
       [0, 0, 0, 1, 0, 0, 1, 4],
-      [2, 1, 0, 0, 0, 1, 0, 5]
+      [2, 1, 0, 0, 0, 1, 5, 0]
     ]
   };
 
@@ -151,6 +153,7 @@ const CavityMonstersScreen = ({ navigation }) => {
         if (!collectedItems.includes(`${x}-${y}`)) {
           setCollectedItems(prev => [...prev, `${x}-${y}`]);
           setScore(prev => prev + 10);
+          addPoints(10); // Add to global points
           Alert.alert('🪥 Power-up!', 'You found a magic toothbrush! +10 points!');
         }
         break;
@@ -179,11 +182,15 @@ const CavityMonstersScreen = ({ navigation }) => {
               onPress: () => {
                 setCurrentLevel(2);
                 setPlayerPosition({ x: 0, y: 0 });
-                setScore(prev => prev + 50);
+                const levelBonus = 50;
+                setScore(prev => prev + levelBonus);
+                addPoints(levelBonus); // Add level completion bonus
               }
             }
           ]);
         } else {
+          const victoryBonus = 100;
+          addPoints(victoryBonus); // Add victory bonus
           setGameState('victory');
           Alert.alert('🏆 Victory!', 'You defeated all the cavity monsters!');
         }
@@ -193,7 +200,9 @@ const CavityMonstersScreen = ({ navigation }) => {
 
   const handleQuizAnswer = (selectedOption) => {
     if (selectedOption === currentQuiz.correct) {
-      setScore(prev => prev + 20);
+      const quizPoints = 20;
+      setScore(prev => prev + quizPoints);
+      addPoints(quizPoints); // Add quiz points to global progress
       Alert.alert('✅ Correct!', currentQuiz.explanation, [
         {
           text: 'Continue',
@@ -350,7 +359,7 @@ const CavityMonstersScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.retryButton} onPress={startGame}>
               <Text style={styles.retryButtonText}>Play Again</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuButton} onPress={() => setGameState('menu')}>
+            <TouchableOpacity style={styles.menuButton} onPress={() => navigation.goBack()}>
               <Text style={styles.menuButtonText}>Main Menu</Text>
             </TouchableOpacity>
           </View>
@@ -378,7 +387,10 @@ const CavityMonstersScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.retryButton} onPress={startGame}>
               <Text style={styles.retryButtonText}>Try Again</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuButton} onPress={() => setGameState('menu')}>
+            <TouchableOpacity
+              style={styles.menuButton}
+              onPress={() => navigation.goBack()}
+            >
               <Text style={styles.menuButtonText}>Main Menu</Text>
             </TouchableOpacity>
           </View>
@@ -531,7 +543,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statText: {
-    color: 'black',
+    color: 'white',
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -713,7 +725,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   finalStats: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: 'rgba(88, 47, 0, 0.53)',
     borderRadius: 16,
     padding: 20,
     marginBottom: 30,

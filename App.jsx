@@ -38,6 +38,7 @@ import { Provider as AppointmentProvider } from './src/context/AppointmentContex
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
 import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
+import { ProgressProvider } from './src/context/ProgressContext/ProgressContext';
 import { Provider as TranslationProvider } from './src/context/TranslationContext/TranslationContext';
 import { Provider as UserProvider } from './src/context/UserContext/UserContext';
 import { navigationRef } from './src/navigationRef';
@@ -362,7 +363,9 @@ export default function App() {
                     <AppointmentProvider>
                         <UserProvider>
                             <TranslationProvider>
+                                <ProgressProvider>
                                 <AppNavigator />
+                                </ProgressProvider>
                             </TranslationProvider>
                         </UserProvider>
                     </AppointmentProvider>

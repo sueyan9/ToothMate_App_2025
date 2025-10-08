@@ -156,15 +156,6 @@ const LearnTeethScreen = ({ navigation }) => {
             ))}
           </View>
 
-          <TouchableOpacity 
-            style={styles.quizButton}
-            onPress={() => {
-              navigation.navigate('QuizAdventure', { topic: selectedTopic.id });
-            }}
-          >
-            <MaterialIcons name="quiz" size={24} color="white" />
-            <Text style={styles.quizButtonText}>Test Your Knowledge!</Text>
-          </TouchableOpacity>
         </Animated.ScrollView>
       </View>
     );

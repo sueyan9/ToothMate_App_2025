@@ -2,11 +2,12 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Animated, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useProgress } from '../../context/ProgressContext/ProgressContext';
 
 const ToothHeroScreen = ({ navigation }) => {
   const [completedMissions, setCompletedMissions] = useState(new Set());
-  const [heroPoints, setHeroPoints] = useState(0);
   const [heroLevel, setHeroLevel] = useState(1);
+  const { addPoints, pointsEarned: totalPoints } = useProgress(); // Use progress context
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const missions = [
@@ -95,9 +96,9 @@ const ToothHeroScreen = ({ navigation }) => {
 
   useEffect(() => {
     // Calculate hero level based on points
-    const currentBadge = badges.reverse().find(badge => heroPoints >= badge.points) || badges[0];
+    const currentBadge = [...badges].reverse().find(badge => totalPoints >= badge.points) || badges[0];
     setHeroLevel(currentBadge.level);
-  }, [heroPoints]);
+  }, [totalPoints]);
 
   const handleMissionComplete = (mission) => {
     Alert.alert(
@@ -108,7 +109,7 @@ const ToothHeroScreen = ({ navigation }) => {
           text: 'Awesome!',
           onPress: () => {
             setCompletedMissions(prev => new Set([...prev, mission.id]));
-            setHeroPoints(prev => prev + mission.points);
+            addPoints(mission.points); // Add points to global progress
           }
         }
       ]
@@ -116,7 +117,7 @@ const ToothHeroScreen = ({ navigation }) => {
   };
 
   const getCurrentBadge = () => {
-    return badges.reverse().find(badge => heroPoints >= badge.points) || badges[0];
+    return [...badges].reverse().find(badge => totalPoints >= badge.points) || badges[0];
   };
 
   const getNextBadge = () => {
@@ -128,7 +129,7 @@ const ToothHeroScreen = ({ navigation }) => {
     const nextBadge = getNextBadge();
     if (!nextBadge) return 100;
     const currentBadge = getCurrentBadge();
-    const progress = ((heroPoints - currentBadge.points) / (nextBadge.points - currentBadge.points)) * 100;
+    const progress = ((totalPoints - currentBadge.points) / (nextBadge.points - currentBadge.points)) * 100;
     return Math.min(progress, 100);
   };
 
@@ -197,7 +198,7 @@ const ToothHeroScreen = ({ navigation }) => {
             {currentBadge.emoji}
           </Animated.Text>
           <Text style={styles.badgeTitle}>{currentBadge.title}</Text>
-          <Text style={styles.heroPoints}>{heroPoints} Hero Points</Text>
+          <Text style={styles.heroPoints}>{totalPoints} Hero Points</Text>
         </View>
 
         {nextBadge && (
@@ -211,7 +212,7 @@ const ToothHeroScreen = ({ navigation }) => {
               />
             </View>
             <Text style={styles.nextBadgeText}>
-              Need {nextBadge.points - heroPoints} more points
+              Need {nextBadge.points - totalPoints} more points
             </Text>
           </View>
         )}
@@ -283,8 +284,8 @@ const ToothHeroScreen = ({ navigation }) => {
         <View style={styles.achievementSection}>
           <Text style={styles.sectionTitle}>Hero Badges 🏆</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {badges.reverse().map((badge) => {
-              const isUnlocked = heroPoints >= badge.points;
+            {[...badges].reverse().map((badge) => {
+              const isUnlocked = totalPoints >= badge.points;
               
               return (
                 <View

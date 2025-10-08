@@ -2,13 +2,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Animated, Text, TouchableOpacity, View } from 'react-native';
-// import { Audio } from 'expo-av'; // Uncomment when you add audio files
+import { useProgress } from '../../context/ProgressContext/ProgressContext';
 import styles from './styles';
 
 const BrushingTimerScreen = ({ navigation }) => {
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
   const [isActive, setIsActive] = useState(false);
   const [sound, setSound] = useState();
+  const { addBrushingSession, brushedToday } = useProgress(); // Use progress context
   
   // Animation values
   const danceAnimation = useRef(new Animated.Value(0)).current;
@@ -181,9 +182,14 @@ const BrushingTimerScreen = ({ navigation }) => {
   };
 
   const showCompletionAlert = () => {
+    // Add brushing session to progress
+    addBrushingSession();
+    
+    const brushCount = brushedToday + 1; // +1 because the context hasn't updated yet
+    
     Alert.alert(
       '🎉 Great Job!',
-      'You\'ve brushed your teeth for 2 minutes! Your teeth are sparkling clean! 🦷✨',
+      `You've brushed your teeth for 2 minutes! Your teeth are sparkling clean! 🦷✨\n\nBrushing sessions today: ${brushCount}/2${brushCount === 2 ? '\n🏆 Daily goal completed!' : ''}`,
       [
         {
           text: 'Brush Again',
@@ -238,6 +244,7 @@ const BrushingTimerScreen = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Brushing Timer</Text>
       </View>
+
 
       {/* Dancing Tooth Animation */}
       <View style={styles.animationContainer}>

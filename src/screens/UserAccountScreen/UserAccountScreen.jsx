@@ -1,10 +1,14 @@
+// UserAccountScreen.js
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // ADDED: for parental code + active profile tracking
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   Text,
@@ -60,6 +64,16 @@ const UserAccountScreen = ({ navigation }) => {
     'Update Your Details',
     'Change Clinic',
     'Change Your Password',
+    'Set Parental Control Code',
+    'Change Parental Control Code',
+    'Enter 4-digit parental control code',
+    'Confirm Code',
+    'Set Code',
+    'Success',
+    'Parental control code saved successfully!',
+    'Error',
+    'Codes do not match.',
+    'Code must be 4 digits.',
     'Disconnect From Parent',
     'Sign Out',
     'Not specified',
@@ -162,6 +176,12 @@ const {
     confirmPassword: ''
   });
 
+  // ADDED: parental control code state
+  const [isParentalCodeSet, setIsParentalCodeSet] = useState(false);
+  const [showParentalModal, setShowParentalModal] = useState(false);
+  const [parentalCode, setParentalCode] = useState('');
+  const [confirmParentalCode, setConfirmParentalCode] = useState('');
+
   // Instagram-style profiles for switching
   const [profiles] = useState([
     {
@@ -194,6 +214,15 @@ const {
     if (currentLanguage !== 'en') {
       translateAndCache(textsToTranslate);
     }
+    // ADDED: check existing parental code on language change/first mount
+    (async () => {
+      try {
+        const code = await AsyncStorage.getItem('profileSwitchCode');
+        setIsParentalCodeSet(!!code);
+      } catch (e) {
+        console.error('Error reading parental code from storage:', e);
+      }
+    })();
   }, [currentLanguage]);
 
   useFocusEffect(
@@ -624,7 +653,7 @@ const {
     setShowClinicSuccessModal(false);
   };
 
-const handleChangeProfilePicture = () => {
+  const handleChangeProfilePicture = () => {
     setShowProfileModal(true);
   };
 
@@ -632,7 +661,7 @@ const handleChangeProfilePicture = () => {
     setShowProfileSwitchModal(true);
   };
 
- const handleProfilePictureSelect = (pictureIndex) => {
+  const handleProfilePictureSelect = (pictureIndex) => {
     setProfilePicture(pictureIndex);
     setShowProfileModal(false);
     console.log(`Profile picture ${pictureIndex + 1} selected`);
@@ -662,6 +691,22 @@ const handleChangeProfilePicture = () => {
             
             // Update the current account in context
             await setCurrentAccount(profileId, selectedProfile);
+
+            // ADDED: store active child profile meta so ChildAccount can show correct name & picture
+            try {
+              await AsyncStorage.setItem('activeProfileId', profileId);
+              await AsyncStorage.setItem('activeProfileName', selectedProfile?.name || '');
+              await AsyncStorage.setItem('activeProfileUsername', selectedProfile?.username || '');
+              await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedProfile?.profilePicture ?? -1));
+              await AsyncStorage.setItem('currentAccountType', 'child');
+              // Ensure parentId is available for returning
+              const currentId = await AsyncStorage.getItem('id');
+              if (currentId) {
+                await AsyncStorage.setItem('parentId', currentId);
+              }
+            } catch (e) {
+              console.error('Error saving active child profile to storage:', e);
+            }
             
             // Navigate to child flow for Sarah and Adam
             if (profileId === 'sarah' || profileId === 'adam') {
@@ -697,6 +742,45 @@ const handleChangeProfilePicture = () => {
         },
       ]
     );
+  };
+
+  // ADDED: parental code handlers
+  const handleSetParentalControlCode = async () => {
+    try {
+      const code = await AsyncStorage.getItem('profileSwitchCode');
+      setIsParentalCodeSet(!!code);
+    } catch (e) {
+      console.error('Error reading parental code:', e);
+    }
+    setParentalCode('');
+    setConfirmParentalCode('');
+    setShowParentalModal(true);
+  };
+
+  const handleParentalCodeCancel = () => {
+    setShowParentalModal(false);
+    setParentalCode('');
+    setConfirmParentalCode('');
+  };
+
+  const handleParentalCodeSave = async () => {
+    if (!/^\d{4}$/.test(parentalCode) || !/^\d{4}$/.test(confirmParentalCode)) {
+      Alert.alert(t('Error'), t('Code must be 4 digits.'));
+      return;
+    }
+    if (parentalCode !== confirmParentalCode) {
+      Alert.alert(t('Error'), t('Codes do not match.'));
+      return;
+    }
+    try {
+      await AsyncStorage.setItem('profileSwitchCode', parentalCode);
+      setIsParentalCodeSet(true);
+      setShowParentalModal(false);
+      Alert.alert(t('Success'), t('Parental control code saved successfully!'));
+    } catch (e) {
+      console.error('Error saving parental code:', e);
+      Alert.alert(t('Error'), 'Unable to save parental code.');
+    }
   };
 
   if (isLoading) {
@@ -746,6 +830,7 @@ const handleChangeProfilePicture = () => {
             style={styles.changeProfileButton}
             onPress={handleSwitchProfiles}
           >
+            <Ionicons name="swap-horizontal-outline" size={16} color="#516287" />
             <Text style={styles.switchProfileText}>{t('Switch Profile')}</Text>
           </TouchableOpacity>
         </View>
@@ -868,6 +953,19 @@ const handleChangeProfilePicture = () => {
               <Text style={styles.actionButtonText}>{t('Change Your Password')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
+
+            {/* ADDED: Set / Change Parental Control Code */}
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={handleSetParentalControlCode}
+            >
+              <Ionicons name="key-outline" size={20} color="#516287" />
+              <Text style={styles.actionButtonText}>
+                {isParentalCodeSet ? t('Change Parental Control Code') : t('Set Parental Control Code')}
+              </Text>
+              <Ionicons name="chevron-forward" size={20} color="#516287" />
+            </TouchableOpacity>
+
             {canDisconnect && (
               <TouchableOpacity
                 style={[styles.actionButton, styles.disconnectButton]}
@@ -1401,6 +1499,89 @@ const handleChangeProfilePicture = () => {
           </View>
         </View>
       </Modal>
+
+      {/* ADDED: Parental Control Code Modal */}
+<Modal
+  animationType="slide"
+  transparent={true}
+  visible={showParentalModal}
+  onRequestClose={handleParentalCodeCancel}
+>
+  <View style={styles.modalOverlay}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+    >
+      <View style={styles.accessCodeModalContent}>
+        <View style={styles.modalHeader}>
+          <Text style={styles.modalTitle}>
+            {isParentalCodeSet
+              ? t('Change Parental Control Code')
+              : t('Set Parental Control Code')}
+          </Text>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={handleParentalCodeCancel}
+          >
+            <Ionicons name="close" size={24} color="#333333" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.accessCodeContent}>
+          <Ionicons name="key-outline" size={48} color="#516287" />
+          <Text style={styles.accessCodeMessage}>
+            {t('Enter 4-digit parental control code')}
+          </Text>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>{t('Set Code')}</Text>
+            <TextInput
+              style={styles.textInput}
+              value={parentalCode}
+              onChangeText={setParentalCode}
+              placeholder="****"
+              keyboardType="number-pad"
+              secureTextEntry={true}
+              maxLength={4}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>
+              {t('Confirm Code')}
+            </Text>
+            <TextInput
+              style={styles.textInput}
+              value={confirmParentalCode}
+              onChangeText={setConfirmParentalCode}
+              placeholder="****"
+              keyboardType="number-pad"
+              secureTextEntry={true}
+              maxLength={4}
+            />
+          </View>
+        </View>
+
+        <View style={styles.modalButtonContainer}>
+          <TouchableOpacity
+            style={[styles.modalButton, styles.cancelButton]}
+            onPress={handleParentalCodeCancel}
+          >
+            <Text style={styles.cancelButtonText}>{t('Cancel')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.modalButton, styles.submitButton]}
+            onPress={handleParentalCodeSave}
+          >
+            <Text style={styles.submitButtonText}>{t('Submit')}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
+  </View>
+</Modal>
+
+
     </SafeAreaView>
   );
 };

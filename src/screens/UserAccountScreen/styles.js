@@ -669,4 +669,39 @@ export default StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
+  // Add to the bottom of styles.js
+  accessCodeModalContent: {
+    backgroundColor: '#FFFDF6',
+    borderRadius: 16,
+    padding: 20,
+    width: '90%',
+    maxHeight: '85%',
+    justifyContent: 'flex-start',
+  },
+
+  accessCodeContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+
+  accessCodeMessage: {
+    fontSize: 16,
+    color: '#333333',
+    textAlign: 'center',
+    marginTop: 12,
+    marginBottom: 24,
+    lineHeight: 22,
+  },
+
+  // Ensure modal buttons never get covered by keyboard
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#EDDFD3',
+    paddingBottom: Platform.OS === 'ios' ? 34 : 20, // ⬅️ added keyboard-safe padding
+  },
+
 });

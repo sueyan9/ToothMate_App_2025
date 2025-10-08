@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useContext, useEffect, useState } from 'react';
 import { Animated, Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Context } from '../../context/EducationContext/EducationContext';
+import { useProgress } from '../../context/ProgressContext/ProgressContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import styles from './styles';
 
@@ -13,6 +14,7 @@ const { width } = Dimensions.get('window');
 const ChildEducationScreen = ({ navigation }) => {
     const { state } = useContext(Context);
     const { t, translateAndCache, currentLanguage } = useTranslation();
+    const { brushedToday, pointsEarned, streakDays } = useProgress(); // Use progress context
     
     const [fontsLoaded] = useFonts({
         Righteous_400Regular,
@@ -243,17 +245,17 @@ const ChildEducationScreen = ({ navigation }) => {
                         <View style={styles.progressCard}>
                             <Text style={styles.progressEmoji}>🪥</Text>
                             <Text style={styles.progressLabel}>Brushed Today</Text>
-                            <Text style={styles.progressValue}>2/2</Text>
+                            <Text style={styles.progressValue}>{brushedToday}/2</Text>
                         </View>
                         <View style={styles.progressCard}>
                             <Text style={styles.progressEmoji}>⭐</Text>
                             <Text style={styles.progressLabel}>Points Earned</Text>
-                            <Text style={styles.progressValue}>250</Text>
+                            <Text style={styles.progressValue}>{pointsEarned}</Text>
                         </View>
                         <View style={styles.progressCard}>
                             <Text style={styles.progressEmoji}>🏆</Text>
                             <Text style={styles.progressLabel}>Streak Days</Text>
-                            <Text style={styles.progressValue}>7</Text>
+                            <Text style={styles.progressValue}>{streakDays}</Text>
                         </View>
                     </View>
                 </View>
