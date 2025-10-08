@@ -225,7 +225,7 @@ const SignupScreen = props => {
                 labelStyle={styles.labelStyle}
             />
             {nhiQ && (
-              <Text style={{ color: '#656B69', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
+              <Text style={{ color: '#656B69', marginBottom: 16, marginTop: -16, marginHorizontal: 24, textAlign: 'justify' }}>
                   Your NHI number is on your prescriptions, lab results, or ask your GP/healthcare provider.
               </Text>
             )}
@@ -268,7 +268,7 @@ const SignupScreen = props => {
                 labelStyle={styles.labelStyle}
             />
             {codeQ && (
-              <Text style={{ color: '#656B69', marginLeft: 24, marginBottom: 16, marginTop: -16 }}>
+              <Text style={{ color: '#656B69', marginBottom: 16, marginTop: -16, marginHorizontal: 24, textAlign: 'justify' }}>
                   This signup code is emailed or texted to you when you ask your dental clinic to join the ToothMate app.
               </Text>
             )}

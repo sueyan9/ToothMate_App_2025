@@ -325,6 +325,41 @@ const styles = StyleSheet.create({
         color: '#333',
         flex: 1,
     },
+    pickerOverlay: {
+        position: 'absolute',
+        top: '15%', // Positions it right below the input
+        left: 0,
+        right: 0,
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+        zIndex: 1000,
+        elevation: 5, // Android shadow
+        shadowColor: '#000', // iOS shadow
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    pickerBackdrop: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: 500,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999, // Higher than modal backdrop
+    },
+    purposeText: {
+      color: 'black'
+    },
+    noPurposeText: {
+      color: '#666'
+    },
     modalDetailValueCancel: {
         fontSize: 12,
         color: 'red',
@@ -354,6 +389,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
         marginTop: 20,
+        zIndex: 1002
     },
     submitButtonDisabled: {
         backgroundColor: '#ccc',

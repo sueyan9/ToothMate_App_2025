@@ -139,6 +139,23 @@ const ClinicScreen = ({navigation, route}) => {
         return d;
     };
 
+    useEffect(() => {
+        if (route?.params?.openModal) {
+            console.log('Opening modal from route params');
+            setShowAddModal(true);
+            if (route.params.date) {
+            setNewAppt({
+                startDate: route.params.date,
+                startTime: roundTo30(new Date()),
+                endTime: addMinutes(roundTo30(new Date()), SLOT_MINUTES),
+                purpose: 'Check-Up',
+                notes: '',
+            })
+            navigation.setParams({ openModal: undefined, date: undefined });
+        }
+    }
+}, [route?.params?.openModal, route?.params?.date]);
+
     const [selectedDentistName, setSelectedDentistName] = useState(DENTIST_NAMES[0]);//default select the first one
 
     //appointment form state
@@ -355,7 +372,7 @@ const ClinicScreen = ({navigation, route}) => {
         if (cooldownRemaining > 0) {
         Alert.alert(
             'Please Wait', 
-            `You can create another appointment in ${Math.ceil(cooldownRemaining / 60)} minute(s) and ${cooldownRemaining % 60} second(s).`
+            `You can request another appointment in ${Math.ceil(cooldownRemaining / 60)} minute(s) and ${cooldownRemaining % 60} second(s).`
         );
         return;
         }
@@ -425,7 +442,7 @@ const ClinicScreen = ({navigation, route}) => {
 
             
             if (response.status === 201 || response.status === 200) {
-                Alert.alert('Success', 'Appointment added successfully.');
+                Alert.alert('Success', 'Appointment requested successfully! Note all appointments are unconfirmed until confirmed by the clinic.');
                 console.warn("Appointment created!!");
 
                 setLastAppointmentTime(Date.now());
@@ -697,13 +714,13 @@ const ClinicScreen = ({navigation, route}) => {
                 visible={showAddModal}
                 transparent
                 animationType="slide"
-                onRequestClose={() => setShowAddModal(false)}>
+                onRequestClose={() => {setShowAddModal(false), setShowDatePicker(false), setShowStartTimePicker(false)}}>
                 {/* translucent backdrop, tap to close */}
-                <Pressable style={styles.modalBackdrop} onPress={() => setShowAddModal(false)}/>
+                <Pressable style={styles.modalBackdrop} onPress={() => {setShowAddModal(false), setShowDatePicker(false), setShowStartTimePicker(false)}}/>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalHeader}>
-                        <Text style={styles.modalTitle}>Add New Appointment</Text>
-                        <TouchableOpacity style={styles.modalCloseButton} onPress={() => setShowAddModal(false)}>
+                        <Text style={styles.modalTitle}>Request New Appointment</Text>
+                        <TouchableOpacity style={styles.modalCloseButton} onPress={() => {setShowAddModal(false), setShowDatePicker(false), setShowStartTimePicker(false)}}>
                             <Text style={styles.modalCloseText}>Close</Text>
                         </TouchableOpacity>
                     </View>
@@ -711,14 +728,17 @@ const ClinicScreen = ({navigation, route}) => {
                         {/* Date */}
                         <View style={styles.formGroup}>
                             <Text style={styles.label}>Date:<Text style={{color: 'red',}}>*</Text></Text>
-                            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
+                            <TouchableOpacity onPress={() => {setShowDatePicker(true), setShowStartTimePicker(false)}} style={styles.input}>
                                 <Text>{dayjs(newAppt.startDate).format('YYYY-MM-DD')}</Text>
                             </TouchableOpacity>
                             {showDatePicker && (
+                                <Pressable style={styles.pickerBackdrop} onPress={() => setShowDatePicker(false)}>
+                                <View style={styles.pickerOverlay}>
                                 <DateTimePicker
                                     value={newAppt.startDate}
                                     mode="date"
                                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                    themeVariant="light"
                                     minimumDate={nzNow().startOf('day').toDate()}//passed time unavilable
                                     onChange={(event, date) => {
                                         setShowDatePicker(false);
@@ -763,12 +783,14 @@ const ClinicScreen = ({navigation, route}) => {
                                         });
                                     }}
                                 />
+                                </View>
+                                </Pressable>
                             )}
                         </View>
                         {/* Start Time */}
                         <View style={styles.formGroup}>
                             <Text style={styles.label}>Appointment Time:<Text style={{color: 'red'}}>*</Text></Text>
-                            <TouchableOpacity onPress={() => setShowStartTimePicker(true)} style={styles.input}>
+                            <TouchableOpacity onPress={() => {setShowStartTimePicker(true), setShowDatePicker(false)}} style={styles.input}>
                                 <Text>{dayjs(newAppt.startTime).format('h:mm A')} - {dayjs(newAppt.endTime).format('h:mm A')}</Text>
                             </TouchableOpacity>
                             {showStartTimePicker && (() => {
@@ -779,10 +801,13 @@ const ClinicScreen = ({navigation, route}) => {
                                 const maxTime = dayjs(newAppt.startDate).hour(16).minute(30).second(0).millisecond(0).toDate();
 
                                 return (
+                                    <Pressable style={styles.pickerBackdrop} onPress={() => setShowStartTimePicker(false)}>
+                                    <View style={styles.pickerOverlay}>
                                     <DateTimePicker
                                         value={newAppt.startTime}
                                         mode="time"
-                                        display="spinner"       // iOS respects min/max better with spinner
+                                        display="spinner"   
+                                        themeVariant="light"    // iOS respects min/max better with spinner
                                         minuteInterval={30}     // effective on iOS; Android still has fallback logic
                                         minimumDate={minTime}   // show only >= 09:00 (or >= next valid slot for today)
                                         maximumDate={maxTime}   // lastest 16:30
@@ -809,6 +834,8 @@ const ClinicScreen = ({navigation, route}) => {
                                             });
                                         }}
                                     />
+                                    </View>
+                                    </Pressable>
                                 );
                             })()}
                         </View>
@@ -1001,7 +1028,7 @@ const ClinicScreen = ({navigation, route}) => {
                                         onPress={() => setShowPurposeSheet(true)}
                                         activeOpacity={0.7}
                                     >
-                                        <Text>{newAppt.purpose || 'Select purpose'}</Text>
+                                        <Text style={newAppt.purpose ? styles.purposeText : styles.noPurposeText}>{newAppt.purpose || 'Select purpose'}</Text>
                                     </TouchableOpacity>
 
                                     {/* lightweight dropdown modal  */}
@@ -1083,7 +1110,7 @@ const ClinicScreen = ({navigation, route}) => {
                             {isSubmitting ? (
                                 <ActivityIndicator color="#fff"/>
                             ) : (
-                                <Text style={styles.submitButtonText}>Submit</Text>
+                                <Text style={styles.submitButtonText}>Submit Request</Text>
                             )}
                         </TouchableOpacity>
                     </ScrollView>

@@ -204,7 +204,7 @@ const MainFlow = () => (
             name="DentalChart"
             component={DentalChartScreen}
             options={{
-                title: 'Dental Chart',
+                title: 'My Mouth',
                 headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
             }}
@@ -267,11 +267,13 @@ const AppNavigator = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                initialRouteName="SplashScreen"
+                initialRouteName="ResolveAuth"
                 screenOptions={{ headerShown: false }}
             >
-                <Stack.Screen name="SplashScreen" component={SplashScreen}/>
+                
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
+                <Stack.Screen name="SplashScreen" component={SplashScreen}/>
+
 
                 {/* Login flow  */}
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
