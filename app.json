@@ -31,8 +31,7 @@
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.VIBRATE",
         "com.android.vending.BILLING"
-      ]
-      },
+      ],
       "package": "com.toothmate.app"
     },
     "androidNavigationBar": {
