@@ -211,7 +211,7 @@ const ClinicScreen = ({navigation, route}) => {
             const urlPost = '/Appointments';
 
             logReq('POST appointments', urlPost, appointmentData);
-            const response = await axiosApi.get(`/Appointments/${encodeURIComponent(nhi)}`, {
+            const response = await axiosApi.post(`/Appointments/${encodeURIComponent(nhi)}`, {
                 params: { limit: 400 }
             });
             if (response.status === 201 || response.status === 200) {

@@ -46,9 +46,7 @@ function useUserId() {
   const parseFromUrl = React.useCallback(() => {
     try {
       // 1) search: ?userId= / ?userid= / ?uid=
-      console.log('[web] href=', window.location.href);
       const qs = new URLSearchParams(window.location.search || "");
-      console.log('[web] search=', window.location.search, 'userId=', qs.get('userId'));
       const fromQuery =
           qs.get("userId") || qs.get("userid") || qs.get("uid");
       if (fromQuery) return String(fromQuery);

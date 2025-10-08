@@ -93,7 +93,7 @@ const WholeMouthModel = ({
         });
         if (!types.length) return toothMaterials.normal;
 
-        // 当没有选择任何治疗类型时（Clear All Treatments）
+        // Clear All Treatments
         if (!selectedTreatment || selectedTreatment.length === 0 || selectedTreatment[0] === 'none') {
             console.log(`Tooth ${toothNumber}: Clear all mode`);
             // 如果牙齿有 extraction，显示为 missing（透明）
@@ -426,7 +426,7 @@ export default function WholeMouth({
                         activeTimePeriod={activeTimePeriod}
                         treatmentsByPeriod={treatmentsByPeriod}
                         eruptionLevels={eruptionLevels}
-                        onToothClick={handleToothClick} // 传递点击处理函数
+                        onToothClick={handleToothClick}
                     />
                 </Suspense>
             </Canvas>
