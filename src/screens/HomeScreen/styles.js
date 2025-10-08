@@ -25,8 +25,8 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         alignSelf: 'left',
-        marginTop: 96,
-        marginBottom: 28,
+        marginTop: 108,
+        marginBottom: 16,
     },
     updateContainer: {
         flexDirection: 'row',
