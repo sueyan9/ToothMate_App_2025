@@ -1616,7 +1616,7 @@ const UserAccountScreen = ({ navigation }) => {
                   </View>
                 )}
                 
-                {clinicCodeStatus === 'valid' && clinicInfo && (
+                {clinicCodeStatus === 'valid' && clinicInfo && clinicCode.trim().length > 0 && (
                   <View style={styles.clinicInfoContainer}>
                     <Text style={styles.successText}>✓ {t('Valid clinic code')}</Text>
                     <Text style={styles.clinicInfoTitle}>{clinicInfo.name}</Text>
