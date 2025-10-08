@@ -1,4 +1,3 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Modal, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
@@ -49,13 +48,8 @@ const LanguageSelector = () => {
           setModalVisible(true);
         }}
       >
-        <MaterialCommunityIcons 
-          name="translate" 
-          size={24} 
-          color="#333333" 
-        />
         <Text style={styles.languageButtonText}>
-          {getLanguageFlag(getCurrentLanguageDisplay())}
+          🌐 {getLanguageFlag(getCurrentLanguageDisplay())}
         </Text>
       </TouchableOpacity>
 

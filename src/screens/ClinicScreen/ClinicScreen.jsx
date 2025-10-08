@@ -32,9 +32,10 @@ const NZ_TZ = 'Pacific/Auckland';
 
 const ClinicScreen = ({navigation, route}) => {
     const {
-        state: {details, clinic},
+        state: {details, clinic, childDetails},
         getUser,
-        getDentalClinic
+        getDentalClinic,
+        getChild
     } = useContext(UserContext);
     
     const { 
@@ -52,6 +53,7 @@ const ClinicScreen = ({navigation, route}) => {
                 try {
                     await getUser();
                     await getDentalClinic();
+                    await getChild();
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                 } finally {
@@ -72,6 +74,8 @@ const ClinicScreen = ({navigation, route}) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [clinicId, setClinicId] = useState(null);
     const [clinicInfo, setClinicInfo] = useState(null);
+    const [selectedPatient, setSelectedPatient] = useState(null);
+    const [showPatientSheet, setShowPatientSheet] = useState(false);
     const [showDentistSheet, setShowDentistSheet] = useState(false);
     const [showPurposeSheet, setShowPurposeSheet] = useState(false);
 
@@ -143,6 +147,23 @@ const ClinicScreen = ({navigation, route}) => {
         return d;
     };
 
+    useEffect(() => {
+        if (route?.params?.openModal) {
+            console.log('Opening modal from route params');
+            setShowAddModal(true);
+            if (route.params.date) {
+            setNewAppt({
+                startDate: route.params.date,
+                startTime: roundTo30(new Date()),
+                endTime: addMinutes(roundTo30(new Date()), SLOT_MINUTES),
+                purpose: 'Check-Up',
+                notes: '',
+            })
+            navigation.setParams({ openModal: undefined, date: undefined });
+        }
+    }
+}, [route?.params?.openModal, route?.params?.date]);
+
     const [selectedDentistName, setSelectedDentistName] = useState(DENTIST_NAMES[0]);//default select the first one
 
     //appointment form state
@@ -167,7 +188,7 @@ const ClinicScreen = ({navigation, route}) => {
     // Load appointments when NHI changes
     useEffect(() => {
         if (nhi) loadAppointments();
-    }, [nhi]);
+    }, [nhi, childDetails?.length]);
 
     // Fetch the user's clinic (one clinic per user)
     useEffect(() => {
@@ -214,26 +235,43 @@ const ClinicScreen = ({navigation, route}) => {
     const loadAppointments = async () => {
         if (!nhi) return;
         let mounted = true;
+
         setLoading(true);
         try {
-            const urlGet = `/Appointments/${nhi}`;
-            logReq('GET appointments', urlGet, {params: {limit: 400}});
-            const res = await axiosApi.get(`Appointments/${nhi}`, {
-                params: {limit: 400}
-            });
-            console.log('Appointments response:', res?.data);
 
-            const appointments = Array.isArray(res.data)
-                ? res.data
-                : (res.data && Array.isArray(res.data.items) ? res.data.items : []);
-            console.log("aa", appointments)
+            const nhiList = [nhi];
+            if (childDetails && childDetails.length > 0) {
+                childDetails.forEach(child => {
+                    if (child.nhi) nhiList.push(child.nhi);
+                });
+            }
+
+            // Fetch appointments for all NHIs
+            const appointmentPromises = nhiList.map(nhiValue => 
+                axiosApi.get(`Appointments/${nhiValue}`, { params: { limit: 400 } })
+                    .catch(err => {
+                        console.warn(`Failed to fetch appointments for NHI ${nhiValue}:`, err?.message);
+                        return { data: [] };
+                    })
+            );
+
+            const responses = await Promise.all(appointmentPromises);
+            
+            // Combine all appointments
+            let allAppointments = [];
+            responses.forEach(res => {
+                const appts = Array.isArray(res.data)
+                    ? res.data
+                    : (res.data && Array.isArray(res.data.items) ? res.data.items : []);
+                allAppointments = [...allAppointments, ...appts];
+            });
+
             // Collect unique clinic IDs from appointments
             const clinicIds = [
                 ...new Set(
-                    appointments.map(a => (typeof a.clinic === 'object' ? a.clinic.id : a.clinic))
+                    allAppointments.map(a => (typeof a.clinic === 'object' ? a.clinic.id : a.clinic))
                 ),
             ].filter(Boolean);
-            console.log("bb", clinicIds)
 
             // Fetch clinic details by IDs
             let clinicsMap = {};
@@ -250,20 +288,88 @@ const ClinicScreen = ({navigation, route}) => {
                     console.warn('Fetch clinics failed:', e?.message);
                 }
             }
-            console.log("cc", clinicsMap)
-            // Normalize appointments shape
-            const normalized = appointments.map(a => {
+
+            // Normalize appointments shape and add patient info
+            const normalized = allAppointments.map(a => {
                 const clinicId = typeof a.clinic === 'object' ? a.clinic.id : a.clinic;
+                
+                // Find which patient this appointment belongs to
+                let patientInfo = null;
+                if (a.nhi === nhi) {
+                    patientInfo = {
+                        name: `${details.firstname} ${details.lastname}`,
+                        isParent: true
+                    };
+                } else if (childDetails && childDetails.length > 0) {
+                    const child = childDetails.find(c => c.nhi === a.nhi);
+                    if (child) {
+                        patientInfo = {
+                            name: `${child.firstname} ${child.lastname}`,
+                            isParent: false
+                        };
+                    }
+                }
+
                 return {
                     ...a,
                     startAt: a.startAt || a.date,
                     endAt: a.endAt || dayjs(a.date).add(30, 'minute').toISOString(),
                     clinic: clinicsMap[clinicId] || (typeof a.clinic === 'object' ? a.clinic : null),
+                    patientInfo: patientInfo
                 };
             });
-            console.log("dd", normalized)
 
             if (mounted) setAppointments(normalized);
+
+
+            // const urlGet = `/Appointments/${nhi}`;
+            // logReq('GET appointments', urlGet, {params: {limit: 400}});
+            // const res = await axiosApi.get(`Appointments/${nhi}`, {
+            //     params: {limit: 400}
+            // });
+            // //console.log('Appointments response:', res?.data);
+
+            // const appointments = Array.isArray(res.data)
+            //     ? res.data
+            //     : (res.data && Array.isArray(res.data.items) ? res.data.items : []);
+            // //console.log("aa", appointments)
+            // // Collect unique clinic IDs from appointments
+            // const clinicIds = [
+            //     ...new Set(
+            //         appointments.map(a => (typeof a.clinic === 'object' ? a.clinic.id : a.clinic))
+            //     ),
+            // ].filter(Boolean);
+            // //console.log("bb", clinicIds)
+
+            // // Fetch clinic details by IDs
+            // let clinicsMap = {};
+            // if (clinicIds.length > 0) {
+            //     try {
+            //         const clinicsRes = await axiosApi.get(`/getDentalClinics`, {
+            //             params: {ids: clinicIds.join(',')}
+            //         });
+            //         clinicsMap = (clinicsRes.data || []).reduce((map, c) => {
+            //             map[c._id] = c;
+            //             return map;
+            //         }, {});
+            //     } catch (e) {
+            //         console.warn('Fetch clinics failed:', e?.message);
+            //     }
+            // }
+            // //console.log("cc", clinicsMap)
+            // // Normalize appointments shape
+            // const normalized = appointments.map(a => {
+            //     const clinicId = typeof a.clinic === 'object' ? a.clinic.id : a.clinic;
+            //     return {
+            //         ...a,
+            //         startAt: a.startAt || a.date,
+            //         endAt: a.endAt || dayjs(a.date).add(30, 'minute').toISOString(),
+            //         clinic: clinicsMap[clinicId] || (typeof a.clinic === 'object' ? a.clinic : null),
+            //     };
+            // });
+            // //console.log("dd", normalized)
+
+            // if (mounted) setAppointments(normalized);
 
         } catch (e) {
             console.warn('Load appointments failed:', e?.message);
@@ -276,14 +382,18 @@ const ClinicScreen = ({navigation, route}) => {
 
         if (cooldownRemaining > 0) {
         Alert.alert(
-            'Please Wait',
-            `You can create another appointment in ${Math.ceil(cooldownRemaining / 60)} minute(s) and ${cooldownRemaining % 60} second(s).`
+            'Please Wait', 
+            `You can request another appointment in ${Math.ceil(cooldownRemaining / 60)} minute(s) and ${cooldownRemaining % 60} second(s).`
         );
         return;
         }
 
         if (!newAppt.purpose) {
             Alert.alert('Validation Error', 'Purpose is required.');
+            return;
+        }
+        if (!selectedPatient) {
+            Alert.alert('Validation Error', 'Please select a patient.');
             return;
         }
         if (!clinicId) {
@@ -328,7 +438,7 @@ const ClinicScreen = ({navigation, route}) => {
             const endWithOffset   = endNZ.format('YYYY-MM-DDTHH:mm:ssZ');
 
             const appointmentData = {
-                nhi,
+                nhi: selectedPatient.nhi,
                 purpose: newAppt.purpose,
                 dentist: {name: selectedDentistName},
                 notes: newAppt.notes || '',
@@ -341,8 +451,10 @@ const ClinicScreen = ({navigation, route}) => {
             logReq('POST appointments', urlPost, appointmentData);
             const response = await axiosApi.post('/Appointments', appointmentData);
 
+            
             if (response.status === 201 || response.status === 200) {
-                Alert.alert('Success', 'Appointment added successfully.');
+                Alert.alert('Success', 'Appointment requested successfully! Note all appointments are unconfirmed until confirmed by the clinic.');
+                console.warn("Appointment created!!");
                 
                 // Schedule notification reminder for the appointment
                 try {
@@ -429,10 +541,13 @@ const ClinicScreen = ({navigation, route}) => {
             purpose: '',
             notes: ''
         });
+
+        setSelectedPatient(null);
         setSetReminder(true);
     }
 
     const apptDateKey = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('YYYY-MM-DD') : '');
+    const dateLabel = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('DD/MM') : '');
     const timeLabel = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('h:mm A') : '--');
 // Marked dates for calendar
     const markedDates = useMemo(() => {
@@ -463,6 +578,28 @@ const ClinicScreen = ({navigation, route}) => {
         setSelectedDate(day.dateString);
     }
     const formatDate = (d) => (d ? dayjs.tz(d, NZ_TZ).format('D MMMM YYYY') : '');
+
+    const patientOptions = useMemo(() => {
+        const options = [{
+            id: details._id,
+            nhi: details.nhi,
+            name: `${details.firstname} ${details.lastname}`,
+            isParent: true
+        }];
+        
+        if (childDetails && childDetails.length > 0) {
+            childDetails.forEach(child => {
+                options.push({
+                    id: child._id,
+                    nhi: child.nhi,
+                    name: `${child.firstname} ${child.lastname}`,
+                    isParent: false
+                });
+            });
+        }
+        
+        return options;
+    }, [details, childDetails]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -519,24 +656,24 @@ const ClinicScreen = ({navigation, route}) => {
 
                                         <View style={styles.cardContent}>
                                             <View style={styles.appointmentInfo}>
-                                                <Text style={styles.timeText}>{timeLabel(a.startAt)}</Text>
+                                                <View style={{display: 'flex', flexDirection: 'row'}}>
+                                                <Text style={styles.nameText}>{a.patientInfo?.name}</Text>
+                                                <Text style={styles.timeText}>{timeLabel(a.startAt)} | {dateLabel(a.startAt)}</Text>
+                                                </View>
                                                 <Text
                                                     style={styles.locationText}>{a.clinic?.name || a.clinic?.location}</Text>
                                                 <Text style={styles.dentistText}>{a.dentist?.name}</Text>
                                             </View>
-                                            <MaterialIcons name="keyboard-arrow-right" size={30} color="#875B51"/>
                                         </View>
                                         <View style={{display: 'flex', flexDirection: 'row'}}>
                                             <View style={styles.typeTag}>
-                                                <Text style={styles.typeText}>{a.purpose || a.notes}</Text>
+                                                <Text style={styles.typeText}>{a.purpose}</Text>
                                             </View>
                                             <View style={[styles.confirmedTag, a.confirmed ? styles.confirmed : styles.unconfirmed]}>
                                                 <Text style={a.confirmed ? styles.confirmedText : styles.unconfirmedText}>{a.confirmed ? "Confirmed" : "Unconfirmed"}</Text>
                                             </View>
-                                        </View>
-                                        <View style={styles.typeTag}>
-                                                <Text style={styles.typeText}>Patient: {details.firstname} {details.lastname}</Text>
-                                        </View>
+                                            <MaterialIcons style={{marginRight: 0, marginLeft: 'auto'}} name="keyboard-arrow-right" size={30} color="#875B51"/>
+                                        </View>                                        
                                     </TouchableOpacity>
                                 ))
                             ) : (
@@ -611,6 +748,12 @@ const ClinicScreen = ({navigation, route}) => {
                                     <Text style={styles.modalDetailLabel}>Type:</Text>
                                     <Text style={styles.modalDetailValue}>{selectedAppointment.purpose}</Text>
                                 </View>
+                                <View style={styles.modalDetailRow}>
+                                    <Text style={styles.modalDetailLabel}>Patient:</Text>
+                                    <Text style={styles.modalDetailValue}>
+                                        {selectedAppointment.patientInfo?.name || `${details.firstname} ${details.lastname}`}
+                                    </Text>
+                                </View>
                                 <View style={styles.modalDetailCancel}>
                                     <Text style={styles.modalDetailValueCancel}>If you wish to cancel this appointment,</Text>
                                     <Text style={styles.modalDetailValueCancel}>please call {selectedAppointment.clinic?.phone}</Text>
@@ -627,31 +770,40 @@ const ClinicScreen = ({navigation, route}) => {
                 visible={showAddModal}
                 transparent
                 animationType="slide"
-                onRequestClose={() => setShowAddModal(false)}>
+                onRequestClose={() => {setShowAddModal(false), setShowDatePicker(false), setShowStartTimePicker(false)}}>
                 {/* translucent backdrop, tap to close */}
-                <Pressable style={styles.modalBackdrop} onPress={() => setShowAddModal(false)}/>
+                <Pressable style={styles.modalBackdrop} onPress={() => {setShowAddModal(false), setShowDatePicker(false), setShowStartTimePicker(false)}}/>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalHeader}>
-                        <Text style={styles.modalTitle}>Add New Appointment</Text>
-                        <TouchableOpacity style={styles.modalCloseButton} onPress={() => setShowAddModal(false)}>
+                        <Text style={styles.modalTitle}>Request New Appointment</Text>
+                        <TouchableOpacity style={styles.modalCloseButton} onPress={() => {setShowAddModal(false), setShowDatePicker(false), setShowStartTimePicker(false)}}>
                             <Text style={styles.modalCloseText}>Close</Text>
                         </TouchableOpacity>
                     </View>
                     <ScrollView contentContainerStyle={styles.modalContent}>
                         {/* Date */}
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Date:</Text>
-                            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
+                            <Text style={styles.label}>Date:<Text style={{color: 'red',}}>*</Text></Text>
+                            <TouchableOpacity onPress={() => {setShowDatePicker(true), setShowStartTimePicker(false)}} style={styles.input}>
                                 <Text>{dayjs(newAppt.startDate).format('YYYY-MM-DD')}</Text>
                             </TouchableOpacity>
                             {showDatePicker && (
+                                <Pressable style={styles.pickerBackdrop} onPress={() => setShowDatePicker(false)}>
+                                <View style={styles.pickerOverlay}>
                                 <DateTimePicker
                                     value={newAppt.startDate}
                                     mode="date"
-                                    display="default"
+                                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                    themeVariant="light"
                                     minimumDate={nzNow().startOf('day').toDate()}//passed time unavilable
                                     onChange={(event, date) => {
                                         setShowDatePicker(false);
+            
+                                        // Handle dismissal or cancellation
+                                        if (event.type === 'dismissed' || !date || !(date instanceof Date)) {
+                                            return;
+                                        }
+
                                         if (!date || !(date instanceof Date)) return;
 
                                         const selectedDateNZ = dayjs(date).tz(NZ_TZ);
@@ -687,13 +839,15 @@ const ClinicScreen = ({navigation, route}) => {
                                         });
                                     }}
                                 />
+                                </View>
+                                </Pressable>
                             )}
                         </View>
                         {/* Start Time */}
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Start Time:</Text>
-                            <TouchableOpacity onPress={() => setShowStartTimePicker(true)} style={styles.input}>
-                                <Text>{dayjs(newAppt.startTime).format('h:mm A')}</Text>
+                            <Text style={styles.label}>Appointment Time:<Text style={{color: 'red'}}>*</Text></Text>
+                            <TouchableOpacity onPress={() => {setShowStartTimePicker(true), setShowDatePicker(false)}} style={styles.input}>
+                                <Text>{dayjs(newAppt.startTime).format('h:mm A')} - {dayjs(newAppt.endTime).format('h:mm A')}</Text>
                             </TouchableOpacity>
                             {showStartTimePicker && (() => {
                                 const isToday = dayjs(newAppt.startDate).tz(NZ_TZ).isSame(nzNow(), 'day');
@@ -703,10 +857,13 @@ const ClinicScreen = ({navigation, route}) => {
                                 const maxTime = dayjs(newAppt.startDate).hour(16).minute(30).second(0).millisecond(0).toDate();
 
                                 return (
+                                    <Pressable style={styles.pickerBackdrop} onPress={() => setShowStartTimePicker(false)}>
+                                    <View style={styles.pickerOverlay}>
                                     <DateTimePicker
                                         value={newAppt.startTime}
                                         mode="time"
-                                        display="spinner"       // iOS respects min/max better with spinner
+                                        display="spinner"   
+                                        themeVariant="light"    // iOS respects min/max better with spinner
                                         minuteInterval={30}     // effective on iOS; Android still has fallback logic
                                         minimumDate={minTime}   // show only >= 09:00 (or >= next valid slot for today)
                                         maximumDate={maxTime}   // lastest 16:30
@@ -733,19 +890,14 @@ const ClinicScreen = ({navigation, route}) => {
                                             });
                                         }}
                                     />
+                                    </View>
+                                    </Pressable>
                                 );
                             })()}
                         </View>
-                        {/* End Time (auto) */}
-                        <View style={styles.formGroup}>
-                            <Text style={styles.label}>End Time (auto):</Text>
-                            <View style={styles.input}>
-                                <Text>{dayjs(newAppt.endTime).format('h:mm A')}</Text>
-                            </View>
-                        </View>
                         {/* Dentist */}
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Dentist:</Text>
+                            <Text style={styles.label}>Dentist:<Text style={{color: 'red'}}>*</Text></Text>
 
                             {/* iOS: custom lightweight “dropdown” (Modal + list) to avoid tall wheel picker */}
                             {Platform.OS === 'ios' ? (
@@ -827,9 +979,102 @@ const ClinicScreen = ({navigation, route}) => {
                             )}
                         </View>
 
+                        {/* Patient Selection */}
+                        <View style={styles.formGroup}>
+                            <Text style={styles.label}>Patient:<Text style={{color: 'red'}}>*</Text></Text>
+
+                            {Platform.OS === 'ios' ? (
+                                <>
+                                    <TouchableOpacity
+                                        style={styles.input}
+                                        onPress={() => setShowPatientSheet(true)}
+                                        activeOpacity={0.7}
+                                    >
+                                        <Text>{selectedPatient?.name || 'Select patient'}</Text>
+                                    </TouchableOpacity>
+
+                                    <Modal
+                                        visible={showPatientSheet}
+                                        transparent
+                                        animationType="fade"
+                                        onRequestClose={() => setShowPatientSheet(false)}
+                                    >
+                                        <Pressable
+                                            style={{
+                                                flex: 1,
+                                                backgroundColor: 'rgba(0,0,0,0.25)',
+                                                justifyContent: 'center',
+                                                padding: 24,
+                                            }}
+                                            onPress={() => setShowPatientSheet(false)}
+                                        >
+                                            <Pressable
+                                                onPress={(e) => e.stopPropagation()}
+                                                style={{
+                                                    backgroundColor: '#fff',
+                                                    borderRadius: 12,
+                                                    paddingVertical: 8,
+                                                    maxHeight: 280,
+                                                    overflow: 'hidden',
+                                                    shadowColor: '#000',
+                                                    shadowOpacity: 0.15,
+                                                    shadowRadius: 12,
+                                                    elevation: 4,
+                                                }}
+                                            >
+                                                <ScrollView
+                                                    contentContainerStyle={{paddingVertical: 4}}
+                                                    showsVerticalScrollIndicator={false}
+                                                >
+                                                    {patientOptions.map((patient) => (
+                                                        <TouchableOpacity
+                                                            key={patient.id}
+                                                            onPress={() => {
+                                                                setSelectedPatient(patient);
+                                                                setShowPatientSheet(false);
+                                                            }}
+                                                            style={{
+                                                                paddingVertical: 12,
+                                                                paddingHorizontal: 16,
+                                                                backgroundColor: patient.id === selectedPatient?.id ? '#f1f5f9' : 'transparent',
+                                                            }}
+                                                        >
+                                                            <Text style={{fontSize: 16}}>
+                                                                {patient.name} {patient.isParent ? '(You)' : '(Child)'}
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                </ScrollView>
+                                            </Pressable>
+                                        </Pressable>
+                                    </Modal>
+                                </>
+                            ) : (
+                                <View style={[styles.input, {paddingHorizontal: 0}]}>
+                                    <Picker
+                                        mode="dropdown"
+                                        selectedValue={selectedPatient?.id}
+                                        onValueChange={(val) => {
+                                            const patient = patientOptions.find(p => p.id === val);
+                                            setSelectedPatient(patient);
+                                        }}
+                                    >
+                                        <Picker.Item label="Select patient..." value={null} />
+                                        {patientOptions.map((patient) => (
+                                            <Picker.Item 
+                                                key={patient.id} 
+                                                label={`${patient.name} ${patient.isParent ? '(You)' : '(Child)'}`} 
+                                                value={patient.id} 
+                                            />
+                                        ))}
+                                    </Picker>
+                                </View>
+                            )}
+                        </View>
+
                         {/* Purpose */}
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Purpose:</Text>
+                            <Text style={styles.label}>Purpose:<Text style={{color: 'red'}}>*</Text></Text>
 
                             {Platform.OS === 'ios' ? (
                                 <>
@@ -839,7 +1084,7 @@ const ClinicScreen = ({navigation, route}) => {
                                         onPress={() => setShowPurposeSheet(true)}
                                         activeOpacity={0.7}
                                     >
-                                        <Text>{newAppt.purpose || 'Select purpose'}</Text>
+                                        <Text style={newAppt.purpose ? styles.purposeText : styles.noPurposeText}>{newAppt.purpose || 'Select purpose'}</Text>
                                     </TouchableOpacity>
 
                                     {/* lightweight dropdown modal  */}
@@ -941,7 +1186,7 @@ const ClinicScreen = ({navigation, route}) => {
                             {isSubmitting ? (
                                 <ActivityIndicator color="#fff"/>
                             ) : (
-                                <Text style={styles.submitButtonText}>Submit</Text>
+                                <Text style={styles.submitButtonText}>Submit Request</Text>
                             )}
                         </TouchableOpacity>
                     </ScrollView>
@@ -973,6 +1218,14 @@ const ClinicScreen = ({navigation, route}) => {
                         purpose: '',
                         notes: '',
                     });
+
+                    setSelectedPatient({
+                        id: details._id,
+                        nhi: details.nhi,
+                        name: `${details.firstname} ${details.lastname}`,
+                        isParent: true
+                    });
+
                     setShowAddModal(true);
                 }}
             >

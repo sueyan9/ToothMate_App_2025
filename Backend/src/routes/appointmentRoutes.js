@@ -37,6 +37,58 @@ router.get('/Appointments', async (_req, res) => {
   try {
     const items = await Appointment.find().sort({ startAt: -1 }).limit(200);
     res.json(items);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// get the next appointment by NHI
+router.get('/Appointments/next', async (req, res) => {
+  try {
+    const { nhis } = req.query;
+    
+    if (!nhis) {
+      return res.status(400).json({ error: 'nhis query parameter is required' });
+    }
+    
+    // Split comma-separated NHIs and normalize to uppercase
+    const nhiArray = nhis.split(',').map(n => String(n).trim().toUpperCase()).filter(Boolean);
+    
+    if (nhiArray.length === 0) {
+      return res.status(400).json({ error: 'at least one valid NHI is required' });
+    }
+    
+    const filter = { 
+      nhi: { $in: nhiArray }, // Match any of the provided NHIs
+      startAt: { $gte: new Date() } // Only appointments from now onwards
+    };
+    
+    console.log('[GET next appointment for multiple NHIs] filter =', filter);
+
+    const appointment = await Appointment.findOne(filter)
+      .sort({ startAt: 1 }) // Sort by earliest first
+      .populate('clinic')
+      .lean();
+    
+    res.json(appointment); // Will be null if no upcoming appointments
+  } catch (e) {
+    console.error('GET /Appointments/next failed:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// GET /Appointment/:nhi  query by NHI
+router.get('/Appointments/:nhi', async (req, res) => {
+  try {
+    const { nhi } = req.params;
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
+    const skip = parseInt(req.query.skip, 10) || 0;
+    const filter = { nhi: String(nhi || '').toUpperCase() };
+    console.log('[GET by NHI] filter =', filter, 'skip=', skip, 'limit=', limit);
+
+    const [items, total] = await Promise.all([
+      Appointment.find(filter).sort({ startAt: 1, date: 1 }).skip(skip).limit(limit).lean(),
+      Appointment.countDocuments(filter),
+    ]);
+    res.json({ items, total, skip, limit });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

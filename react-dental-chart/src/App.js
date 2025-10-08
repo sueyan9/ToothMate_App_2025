@@ -150,7 +150,7 @@ const API_BASE_URL =
     (typeof window !== 'undefined' && window.API_BASE_URL) ||
     (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
     (typeof process !== 'undefined' && process.env && (process.env.REACT_APP_API_BASE_URL || process.env.API_BASE_URL)) ||
-    'http://192.168.1.166:3000';
+    'http://172.20.10.2:3000';
 
 function normalizeTreatments(payload) {
   console.log('Normalizing payload:', payload);

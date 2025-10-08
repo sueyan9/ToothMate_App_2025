@@ -64,7 +64,7 @@ export default StyleSheet.create({
   
   // Information Section
   infoSection: {
-    marginBottom: 32,
+    marginBottom: 0,
   },
   infoCard: {
     backgroundColor: '#FFFDF6',

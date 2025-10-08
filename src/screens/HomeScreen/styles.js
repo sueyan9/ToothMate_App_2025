@@ -32,8 +32,8 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         alignSelf: 'left',
-        marginTop: 96,
-        marginBottom: 28,
+        marginTop: 108,
+        marginBottom: 16,
     },
     updateContainer: {
         flexDirection: 'row',
@@ -77,7 +77,7 @@ export default StyleSheet.create({
         marginTop: 16,
     },
     bookNowText: {
-        fontSize: 20,
+        fontSize: 16,
         color: '#875B51',
         textDecorationLine: 'underline',
         marginTop: 16,
@@ -95,7 +95,8 @@ export default StyleSheet.create({
     mouthImage: {
         height: 80,
         width: '100%',
-        marginBottom: 20,
+        marginBottom: 8,
+        marginTop: -8,
         alignSelf: 'center',
     },
     logout: {

@@ -19,7 +19,6 @@ export default StyleSheet.create({
     elevation: 3,
   },
   languageButtonText: {
-    marginLeft: 6,
     fontSize: 16,
   },
   modalContainer: {
