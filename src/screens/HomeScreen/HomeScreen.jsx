@@ -193,7 +193,7 @@ const HomeScreen = () => {
             <View style={styles.updateContainer}>
                 <View style={styles.updateBox}>
                     <Text style={styles.basicText}>{t('Your Next Appointment:')}</Text>
-                    {nextAppointment && (
+                    {nextAppointment !== null && (
                         <>
                     <View style={{flexDirection: 'row', alignItems:'center', marginTop: 16, marginBottom: 8}}>
                         <View style={styles.dateCircle}>
@@ -210,10 +210,10 @@ const HomeScreen = () => {
                     )}
                     </>
                     )}
-                    {!nextAppointment && (
-                    <View style={{flexDirection: 'row', alignItems:'center', marginTop: 16,}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Bookings')}>
-                            <Text style={styles.appointmentText}>No upcoming bookings.</Text>
+                    {nextAppointment === null && (
+                    <View style={{flexDirection: 'row', alignItems:'center', marginTop: 0,}}>
+                        <TouchableOpacity>
+                            <Text style={styles.noteText}>No upcoming bookings.</Text>
                         </TouchableOpacity>
                     </View>
                     )}
