@@ -464,7 +464,7 @@ export default StyleSheet.create({
     elevation: 3,
   },
   clinicsList: {
-    maxHeight: 200,
+    maxHeight: 85,
   },
   clinicListItem: {
     padding: 12,
