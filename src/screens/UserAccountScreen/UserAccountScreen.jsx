@@ -693,6 +693,10 @@ const UserAccountScreen = ({ navigation }) => {
     setShowPasswordModal(true);
   };
 
+  const handleNotificationSettings = () => {
+    navigation.navigate('NotificationSettings');
+  };
+
   const handlePasswordSubmit = () => {
     // Validate password fields
     if (passwordData.currentPassword.trim() === '') {
@@ -1061,6 +1065,15 @@ const UserAccountScreen = ({ navigation }) => {
             >
               <Ionicons name="lock-closed-outline" size={20} color="#516287" />
               <Text style={styles.actionButtonText}>{t('Change Your Password')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#516287" />
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.actionButton}
+              onPress={handleNotificationSettings}
+            >
+              <Ionicons name="notifications-outline" size={20} color="#516287" />
+              <Text style={styles.actionButtonText}>{t('Notification Settings')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
 
