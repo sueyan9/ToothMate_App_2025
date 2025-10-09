@@ -292,16 +292,8 @@ const ChildFlow = () => {
             screenOptions={{ headerShown: false }}
         >
             <Tab.Screen
-                name="AccountFlow"
-                component={ChildAccountStack}
-                options={{
-                    title: t('Home'),
-                    tabBarIcon: ({color, size}) => <Entypo name="home" size={size} color={color} />
-                }}
-            />
-            <Tab.Screen
                 name="Education"
-                component={EducationStack}
+                component={ChildEducationStack}
                 options={{
                     title: t('Library'),
                     tabBarIcon: ({color, size}) => <Entypo name="open-book" size={size} color={color} />
@@ -313,6 +305,14 @@ const ChildFlow = () => {
                 options={{
                     title: t('Clinic'),
                     tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="toothbrush-paste" size={size} color={color} />
+                }}
+            />
+            <Tab.Screen
+                name="AccountFlow"
+                component={ChildAccountStack}
+                options={{
+                    title: t('Home'),
+                    tabBarIcon: ({color, size}) => <Entypo name="home" size={size} color={color} />
                 }}
             />
         </Tab.Navigator>
