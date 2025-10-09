@@ -156,23 +156,7 @@ const ProfileStack = () => {
             key={`profile-${currentLanguage}`}
             initialRouteName="UserAccount"
         >
-            <Stack.Screen 
-                name="UserAccount" 
-                component={UserAccountScreen} 
-                options={{ 
-                    title: t('Profile'),
-                    headerRight: () => <LanguageSelector/>,
-                    headerStyle: {
-                        backgroundColor: '#E9F1F8',
-                    },
-                    headerTitleStyle: {
-                        color: '#333333',
-                    },
-                    headerRightContainerStyle: {
-                        paddingRight: 16,
-                    }
-                }}
-            />
+            <Stack.Screen name="UserAccount" component={UserAccountScreen} options={{headerShown: false}}/>
             <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="ViewScheduledNotifications" component={ViewScheduledNotificationsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Password" component={PasswordChangeScreen} options={{ headerShown: false }} />
@@ -275,7 +259,8 @@ const MainFlow = () => {
                 name="Profile"
                 component={ProfileStack}
                 options={{
-                    headerShown: false,
+                    title: t('Profile'),
+                    headerRight: () => <LanguageSelector/>,
                     tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
                 }}
             />
