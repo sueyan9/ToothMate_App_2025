@@ -101,7 +101,7 @@ const Collapsible = ({
   );
 };
 
-const UserAccountScreen = ({ navigation }) => {
+const UserAccountScreen = ({ navigation, route }) => {
   // Translation hook
   const { t, translateAndCache, currentLanguage } = useTranslation();
   
@@ -478,6 +478,24 @@ const UserAccountScreen = ({ navigation }) => {
       }
     }, [shouldReopenClinicModal])
   );
+
+  // Handle navigation parameters from LocationFinder
+  useEffect(() => {
+    if (route?.params?.selectedClinic && route?.params?.openClinicModal) {
+      const selectedClinic = route.params.selectedClinic;
+      
+      // Set clinic code and info
+      setClinicCode(selectedClinic.code || '');
+      setClinicInfo(selectedClinic);
+      setClinicCodeStatus('valid');
+      
+      // Open the clinic modal
+      setShowClinicModal(true);
+      
+      // Clear navigation parameters to prevent re-triggering
+      navigation.setParams({ selectedClinic: null, openClinicModal: false });
+    }
+  }, [route?.params?.selectedClinic, route?.params?.openClinicModal]);
 
   // Filter clinics based on clinic code input (same logic as LocationFinder)
   const searchedAndFilteredClinics = (clinicState || []).filter(item => {
