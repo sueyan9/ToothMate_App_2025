@@ -153,6 +153,7 @@ const API_BASE_URL =
     (typeof process !== 'undefined' && process.env && (process.env.REACT_APP_API_BASE_URL || process.env.API_BASE_URL)) ||
     'https://toothmate-app-2025.onrender.com';
 
+
 function normalizeTreatments(payload) {
   console.log('Normalizing payload:', payload);
 
