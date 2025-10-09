@@ -277,6 +277,17 @@ export default StyleSheet.create({
     color: '#333333',
     marginBottom: 8,
   },
+  labelWithLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  linkText: {
+    fontSize: 14,
+    color: '#516287',
+    fontWeight: '400',
+  },
   textInput: {
     borderWidth: 1,
     borderColor: '#EDDFD3',

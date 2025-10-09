@@ -265,19 +265,31 @@ const changePassword = dispatch => {
 };
 
 const updateClinic = dispatch => {
-  return async (clinicId) => {
+  return async (clinicId, privacyConsent = null) => {
     try {
       const id = await AsyncStorage.getItem('id');
       
-      const response = await axiosApi.put(`/updateUserClinic/${id}`, {
+      const requestBody = {
         clinic: clinicId
-      });
+      };
+      
+      // Include privacy consent if provided
+      if (privacyConsent !== null) {
+        requestBody.privacyConsent = privacyConsent;
+      }
+      
+      console.log('UpdateClinic - User ID:', id, 'Clinic ID:', clinicId, 'Request body:', requestBody);
+      
+      const response = await axiosApi.put(`/updateUserClinic/${id}`, requestBody);
+      console.log('UpdateClinic - Response:', response.data);
       
       if (response.data.error === "") {
         // Refresh clinic data after successful update
         const userClinic = await axiosApi.get(`/getUserClinic/${id}`);
+        console.log('UpdateClinic - User clinic data:', userClinic.data);
         const clinicID = userClinic.data.clinic;
         const clinicResponse = await axiosApi.get(`/getDentalClinic/${clinicID}`);
+        console.log('UpdateClinic - New clinic data:', clinicResponse.data);
         dispatch({ type: 'get_clinic', payload: clinicResponse.data.clinic });
         
         return { success: true };

@@ -30,8 +30,8 @@ const formatDocWhen = (doc) => {
     });
 };
 import { Ionicons } from '@expo/vector-icons';
-//import { useFocusEffect } from '@react-navigation/native';
-import { useContext, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -161,6 +161,7 @@ const UserAccountScreen = ({ navigation }) => {
     'Clinic Code',
     'Enter clinic code',
     'Valid clinic code',
+    'view all clinics',
     'Confirm Clinic Change',
     'Are you sure you want to change your clinic to:',
     'Confirm Change',
@@ -227,6 +228,7 @@ const UserAccountScreen = ({ navigation }) => {
   const [clinicInfo, setClinicInfo] = useState(null);
   const [clinicCode, setClinicCode] = useState('');
   const [privacyConsent, setPrivacyConsent] = useState(null);
+  const [shouldReopenClinicModal, setShouldReopenClinicModal] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     address: '',
@@ -466,6 +468,16 @@ const UserAccountScreen = ({ navigation }) => {
       getAllClinics();
     }
   }, [showClinicModal]);
+
+  // Reopen clinic modal when returning from LocationFinder
+  useFocusEffect(
+    React.useCallback(() => {
+      if (shouldReopenClinicModal) {
+        setShowClinicModal(true);
+        setShouldReopenClinicModal(false);
+      }
+    }, [shouldReopenClinicModal])
+  );
 
   // Filter clinics based on clinic code input (same logic as LocationFinder)
   const searchedAndFilteredClinics = (clinicState || []).filter(item => {
@@ -796,18 +808,40 @@ const UserAccountScreen = ({ navigation }) => {
     setShowClinicConfirmModal(true);
   };
 
+  const handleClinicCodeChange = (text) => {
+    setClinicCode(text);
+    // Clear validation states when user types new text
+    if (clinicCodeStatus === 'valid' || clinicCodeStatus === 'same-clinic') {
+      setClinicCodeStatus(null);
+      setClinicInfo(null);
+    }
+  };
+
+  const handleViewAllClinics = () => {
+    // Close the current modal, set flag to reopen it when returning, and navigate to LocationFinder
+    setShowClinicModal(false);
+    setShouldReopenClinicModal(true);
+    navigation.navigate('LocationFinder');
+  };
+
   const handleClinicCancel = () => {
     setShowClinicModal(false);
     setClinicCode('');
     setClinicInfo(null);
     setClinicCodeStatus(null);
+    setPrivacyConsent(null);
+    setShouldReopenClinicModal(false);
   };
 
   const handleClinicConfirmSave = async () => {
     setShowClinicConfirmModal(false);
     
     try {
-      const result = await updateClinic(clinicInfo.id);
+      // Use _id if id is not available (MongoDB typically uses _id)
+      const clinicId = clinicInfo.id || clinicInfo._id;
+      console.log('Updating clinic with ID:', clinicId, 'Full clinic info:', clinicInfo, 'Privacy consent:', privacyConsent);
+      const result = await updateClinic(clinicId, privacyConsent);
+      console.log('Update clinic result:', result);
       
       if (result.success) {
         setShowClinicSuccessModal(true);
@@ -815,6 +849,11 @@ const UserAccountScreen = ({ navigation }) => {
         setClinicCode('');
         setClinicInfo(null);
         setClinicCodeStatus(null);
+        setPrivacyConsent(null);
+        
+        // Refresh user data to show updated clinic
+        await getUser();
+        await getDentalClinic();
       } else {
         Alert.alert(
           'Error',
@@ -823,6 +862,7 @@ const UserAccountScreen = ({ navigation }) => {
         );
       }
     } catch (error) {
+      console.error('Error updating clinic:', error);
       Alert.alert(
         'Error',
         'An unexpected error occurred. Please try again.',
@@ -837,6 +877,7 @@ const UserAccountScreen = ({ navigation }) => {
     setClinicCode('');
     setClinicInfo(null);
     setClinicCodeStatus(null);
+    setPrivacyConsent(null);
   };
 
   const handleClinicSuccessClose = () => {
@@ -1569,11 +1610,16 @@ const UserAccountScreen = ({ navigation }) => {
             
             <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>{t('Clinic Code')}</Text>
+                <View style={styles.labelWithLink}>
+                  <Text style={styles.inputLabel}>{t('Clinic Code')}</Text>
+                  <TouchableOpacity onPress={handleViewAllClinics}>
+                    <Text style={styles.linkText}>({t('view all clinics')})</Text>
+                  </TouchableOpacity>
+                </View>
                 <TextInput
                   style={styles.textInput}
                   value={clinicCode}
-                  onChangeText={setClinicCode}
+                  onChangeText={handleClinicCodeChange}
                   placeholder={t('Enter clinic code')}
                   autoCapitalize="characters"
                 />
