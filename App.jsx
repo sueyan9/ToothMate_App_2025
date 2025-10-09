@@ -2,7 +2,6 @@ import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
 
 // import all screens
@@ -45,7 +44,6 @@ import { Provider as UserProvider } from './src/context/UserContext/UserContext'
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
-import { Image, View } from 'react-native';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
@@ -155,6 +153,7 @@ const ProfileStack = () => {
 };
 
 //  Main flow with bottom tab navigation
+//  Main flow with bottom tab navigation
 const MainFlow = () => {
     const { t, currentLanguage } = useTranslation();
     
@@ -162,129 +161,57 @@ const MainFlow = () => {
         <Tab.Navigator 
             key={`main-${currentLanguage}`}
             screenOptions={({ route, navigation }) => {
-            const state = navigation.getState();
-            const currentTab = state.routes[state.index];
-            const nestedState = currentTab.state;
-            const currentNestedRoute = nestedState?.routes?.[nestedState.index];
+                const state = navigation.getState();
+                const currentTab = state.routes[state.index];
+                const nestedState = currentTab.state;
+                const currentNestedRoute = nestedState?.routes?.[nestedState.index];
 
-            const isViewingIndividualContent = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' &&
-            currentNestedRoute?.params?.isModal === true;
+                const isViewingIndividualContent = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' &&
+                currentNestedRoute?.params?.isModal === true;
 
-        const isContentPage = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' && currentNestedRoute?.params?.id && !currentNestedRoute?.params?.selectedFilter;
-        const isProfileInner =
-            currentTab.name === 'Profile' &&
-            ['images', 'allimages', 'invoice'].includes(currentNestedRoute?.name);
-        return {
-            headerShown: !isProfileInner,
-            ...( !isProfileInner ? {
-                headerLeft: () => <HeaderLogo />,
-                headerTitle: 'ToothMate',
-                headerStyle: {
-                    backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
-                    borderBottomWidth: 0,
-                    elevation: 0,
-                    shadowOpacity: 0,
-                },
-                headerTitleAlign: 'left',
-                headerTransparent: !isViewingIndividualContent,
-            } : {}),
-        tabBarActiveTintColor: '#875B51',
-        tabBarInactiveTintColor: '#333333',
-        tabBarStyle: {
-            backgroundColor: '#FFFDF6',
-            borderTopWidth: 0,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            height: 68,
-            position: 'absolute',
-            elevation: 5,
-            shadowColor: '#333333',
-            shadowOffset: {width: 0, height: -3},
-            shadowOpacity: 0.1,
-            shadowRadius: 5,
-        }
-    };
-    }}>
-        <Tab.Screen
-            name="AccountFlow"
-            component={HomeScreen}
-            options={{
-                title: 'Home',
-                headerRight: () => <Contact/>,
-                tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
+                const isContentPage = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' && currentNestedRoute?.params?.id && !currentNestedRoute?.params?.selectedFilter;
+                const isProfileInner =
+                    currentTab.name === 'Profile' &&
+                    ['images', 'allimages', 'invoice'].includes(currentNestedRoute?.name);
+                
+                return {
+                    headerShown: !isProfileInner,
+                    ...( !isProfileInner ? {
+                        headerLeft: () => <HeaderLogo />,
+                        headerTitle: 'ToothMate',
+                        headerStyle: {
+                            backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
+                            borderBottomWidth: 0,
+                            elevation: 0,
+                            shadowOpacity: 0,
+                        },
+                        headerTitleAlign: 'left',
+                        headerTransparent: !isViewingIndividualContent,
+                    } : {}),
+                    tabBarActiveTintColor: '#875B51',
+                    tabBarInactiveTintColor: '#333333',
+                    tabBarStyle: {
+                        backgroundColor: '#FFFDF6',
+                        borderTopWidth: 0,
+                        borderTopLeftRadius: 20,
+                        borderTopRightRadius: 20,
+                        height: 68,
+                        position: 'absolute',
+                        elevation: 5,
+                        shadowColor: '#333333',
+                        shadowOffset: {width: 0, height: -3},
+                        shadowOpacity: 0.1,
+                        shadowRadius: 5,
+                    }
+                };
             }}
-        />
-        <Tab.Screen
-            name="Education"
-            component={EducationStack}
-            options={{
-                title: 'Library',
-                headerRight: () => <Contact/>,
-                tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
-            }}
-        />
-        <Tab.Screen
-            name="DentalChart"
-            component={DentalChartScreen}
-            options={{
-                title: 'My Mouth',
-                headerRight: () => <Contact/>,
-                tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
-            }}
-        />
-        <Tab.Screen
-            // NEED TO REFACTOR TO APPOINTMENTS :)
-            name="Bookings"
-            component={BookingStack}
-            options={{
-                title: 'Bookings',
-                headerTransparent: false,
-                headerRight: () => <Contact/>,
-                tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
-            }}
-        />
-        <Tab.Screen
-            name="Profile"
-            component={ProfileStack}
-            options={{
-                title: 'Profile',
-                headerRight: () => <LanguageSelector/>,
-                tabBarIcon: ({color, size}) => (<Icon name="profile" color={color} size={size}/>)
-            }}
-        />
-    </Tab.Navigator>
-);
-            const isContentPage = currentTab.name === 'Education' && currentNestedRoute?.name === 'content' && currentNestedRoute?.params?.id && !currentNestedRoute?.params?.selectedFilter;
-
-            return {
-            headerShown: true,
-            headerLeft: () => <HeaderLogo/>,
-            headerTitle: '',
-            headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
-            headerTitleAlign: 'left',
-            headerTransparent: !isViewingIndividualContent,
-            tabBarActiveTintColor: '#875B51',
-            tabBarInactiveTintColor: '#333333',
-            tabBarStyle: {
-                backgroundColor: '#FFFDF6',
-                borderTopWidth: 0,
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                height: 68,
-                position: 'absolute',
-                elevation: 5,
-                shadowColor: '#333333',
-                shadowOffset: {width: 0, height: -3},
-                shadowOpacity: 0.1,
-                shadowRadius: 5,
-            }
-        }
-        }}>
+        >
             <Tab.Screen
                 name="AccountFlow"
                 component={HomeScreen}
                 options={{
                     title: t('Home'),
+                    headerRight: () => <Contact/>,
                     tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
                 }}
             />
@@ -293,6 +220,7 @@ const MainFlow = () => {
                 component={EducationStack}
                 options={{
                     title: t('Library'),
+                    headerRight: () => <Contact/>,
                     tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
                 }}
             />
@@ -301,6 +229,7 @@ const MainFlow = () => {
                 component={DentalChartScreen}
                 options={{
                     title: t('Dental Chart'),
+                    headerRight: () => <Contact/>,
                     tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
                 }}
             />
@@ -310,6 +239,7 @@ const MainFlow = () => {
                 options={{
                     title: t('Bookings'),
                     headerTransparent: false,
+                    headerRight: () => <Contact/>,
                     tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
                 }}
             />
@@ -324,7 +254,6 @@ const MainFlow = () => {
         </Tab.Navigator>
     );
 };
-
 // Child flow with bottom tab navigation
 const ChildFlow = () => {
     const { t, currentLanguage } = useTranslation();
