@@ -44,16 +44,15 @@ import { Provider as AppointmentProvider } from './src/context/AppointmentContex
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
 import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
-import { ProgressProvider } from './src/context/ProgressContext/ProgressContext';
 import { Provider as NotificationProvider } from './src/context/NotificationContext/NotificationContext';
+import { ProgressProvider } from './src/context/ProgressContext/ProgressContext';
 import { Provider as TranslationProvider } from './src/context/TranslationContext/TranslationContext';
 import { useTranslation } from './src/context/TranslationContext/useTranslation';
 import { Provider as UserProvider } from './src/context/UserContext/UserContext';
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
-import { ActivityIndicator, Image, View } from 'react-native';
-import GameIcon from './assets/game_icon.png';
+import { ActivityIndicator } from 'react-native';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
