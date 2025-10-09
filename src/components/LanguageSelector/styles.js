@@ -21,7 +21,6 @@ export default StyleSheet.create({
     zIndex: 2000,
   },
   languageButtonText: {
-    marginLeft: 6,
     fontSize: 16,
   },
   modalContainer: {

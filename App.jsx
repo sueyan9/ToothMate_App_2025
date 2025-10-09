@@ -1,14 +1,16 @@
-import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Righteous_400Regular } from '@expo-google-fonts/righteous';
+import { useFonts, VarelaRound_400Regular } from '@expo-google-fonts/varela-round';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // import all screens
+import Contact from './src/components/ContactButton';
 import LanguageSelector from './src/components/LanguageSelector';
-import AccountScreen from './src/screens/AccountScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 import AppointmentScreen from './src/screens/AppointmentScreen';
 import ChildAccountScreen from './src/screens/ChildAccountScreen';
+import ChildEducationScreen from './src/screens/ChildEducationScreen/ChildEducationScreen';
 import ClinicScreen from './src/screens/ClinicScreen';
 import DentalChartScreen from './src/screens/DentalChartScreen';
 import DisconnectChildScreen from './src/screens/DisconnectChildScreen';
@@ -29,18 +31,25 @@ import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
 
+// Import new game screens
+import BrushingTimerScreen from './src/screens/BrushingTimerScreen/BrushingTimerScreen';
+import LearnTeethScreen from './src/screens/LearnTeethScreen/LearnTeethScreen';
+import ToothHeroScreen from './src/screens/ToothHeroScreen/ToothHeroScreen';
+import ToothMazeAdventure from './src/screens/ToothMazeAdventure/ToothMazeAdventure';
+
 // import all Provider
 import { Provider as AppointmentProvider } from './src/context/AppointmentContext/AppointmentContext';
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
 import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
+import { ProgressProvider } from './src/context/ProgressContext/ProgressContext';
 import { Provider as TranslationProvider } from './src/context/TranslationContext/TranslationContext';
 import { Provider as UserProvider } from './src/context/UserContext/UserContext';
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
-import { useEffect, useState } from 'react';
-import { Image, View } from 'react-native';
+import { ActivityIndicator, Image, View } from 'react-native';
+import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
@@ -58,10 +67,11 @@ const HeaderLogo = () => (
     </View>
 );
 
-// Account flow navigation
+
+// Account flow navigation - FIXED: Using UserAccountScreen instead of missing AccountScreen
 const AccountStack = () => (
     <Stack.Navigator initialRouteName="Account">
-        <Stack.Screen name="Account" component={AccountScreen} />
+        <Stack.Screen name="Account" component={UserAccountScreen} />
         <Stack.Screen name="User" component={UserScreen} />
         <Stack.Screen name="DisconnectChild" component={DisconnectChildScreen} />
         <Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />
@@ -84,7 +94,7 @@ const EducationStack = () => (
 const BookingStack = () => (
     <Stack.Navigator initialRouteName="clinic">
         <Stack.Screen name="clinic" component={ClinicScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="chart"  component={DentalChartScreen}options={{ title: '' }} />
+        <Stack.Screen name="chart"  component={DentalChartScreen} options={{ title: '' }} />
         <Stack.Screen name="appointment" component={AppointmentScreen} options={{ title: '' }}/>
 
     </Stack.Navigator>
@@ -115,10 +125,25 @@ const ProfileStack = () => (
 );
 // Child clinic flow
 const ChildClinicStack = () => (
-    <Stack.Navigator initialRouteName="list">
-        <Stack.Screen name="list" component={ClinicScreen} options={{ title: '' }}/>
-        <Stack.Screen name="chart" component={DentalChartScreen} options={{ title: '' }}/>
-        <Stack.Screen name="content" component={AppointmentScreen} options={{ title: '' }}/>
+    <Stack.Navigator initialRouteName="Chart">
+        <Stack.Screen name="Chart" component={DentalChartScreen} options={{ title: '' }}/>
+        <Stack.Screen name="Education" component={ChildEducationScreen} options={{ title: '' }}/>
+        <Stack.Screen name="Profile" component={UserAccountScreen} options={{ title: '' }}/>
+    </Stack.Navigator>
+);
+
+// Child education flow - UPDATED: Now includes all the new game screens
+const ChildEducationStack = () => (
+    <Stack.Navigator initialRouteName="Library">
+        <Stack.Screen name="Library" component={ChildEducationScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="content" component={EducationContentScreen} options={{ headerShown: false}}/>
+        <Stack.Screen name="game" component={GameScreen} options={{ headerShown: false }} />
+        
+        {/* New Game Screens */}
+        <Stack.Screen name="BrushingTimer" component={BrushingTimerScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LearnTeeth" component={LearnTeethScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ToothHero" component={ToothHeroScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ToothMazeAdventure" component={ToothMazeAdventure} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
 
@@ -163,12 +188,6 @@ const MainFlow = () => (
                 headerTitleAlign: 'left',
                 headerTransparent: !isViewingIndividualContent,
             } : {}),
-        // headerShown: true,
-        // headerLeft: () => <HeaderLogo/>,
-        // headerTitle: '',
-        // headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
-        // headerTitleAlign: 'left',
-        // headerTransparent: !isViewingIndividualContent,
         tabBarActiveTintColor: '#875B51',
         tabBarInactiveTintColor: '#333333',
         tabBarStyle: {
@@ -191,6 +210,7 @@ const MainFlow = () => (
             component={HomeScreen}
             options={{
                 title: 'Home',
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<Icon name="home" color={color} size={size}/>)
             }}
         />
@@ -199,14 +219,16 @@ const MainFlow = () => (
             component={EducationStack}
             options={{
                 title: 'Library',
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<Icon name="education" color={color} size={size}/>)
             }}
         />
         <Tab.Screen
-            name="DentalChart"
+            name="Chart"
             component={DentalChartScreen}
             options={{
-                title: 'Dental Chart',
+                title: 'My Mouth',
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<ToothIcon color={color} size={size}/>)
             }}
         />
@@ -217,6 +239,7 @@ const MainFlow = () => (
             options={{
                 title: 'Bookings',
                 headerTransparent: false,
+                headerRight: () => <Contact/>,
                 tabBarIcon: ({color, size}) => (<Icon name="calendar" color={color} size={size}/>)
             }}
         />
@@ -232,34 +255,86 @@ const MainFlow = () => (
     </Tab.Navigator>
 );
 
-// Child flow with bottom tab navigation
+// Child flow with bottom tab navigation - UPDATED: Now properly handles game screen navigation
 const ChildFlow = () => (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
-        <Tab.Screen
-            name="AccountFlow"
-            component={ChildAccountStack}
-            options={{
-                title: 'Home',
-                tabBarIcon: ({color, size}) => <Entypo name="home" size={size} color={color} />
-            }}
-        />
-        <Tab.Screen
-            name="Education"
-            component={EducationStack}
-            options={{
-                title: 'Library',
-                tabBarIcon: ({color, size}) => <Entypo name="open-book" size={size} color={color} />
-            }}
-        />
-        <Tab.Screen
-            name="Clinic"
-            component={ChildClinicStack}
-            options={{
-                title: 'Clinic',
-                tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="toothbrush-paste" size={size} color={color} />
-            }}
-        />
-    </Tab.Navigator>
+  <Tab.Navigator 
+    screenOptions={({ route, navigation }) => {
+        const state = navigation.getState();
+        const currentTab = state.routes[state.index];
+        const nestedState = currentTab.state;
+        const currentNestedRoute = nestedState?.routes?.[nestedState.index];
+
+        const isViewingIndividualContent = currentTab.name === 'ChildEducation' && currentNestedRoute?.name === 'content' &&
+        currentNestedRoute?.params?.isModal === true;
+
+        // Hide tab bar for game screens
+        const isGameScreen = currentTab.name === 'ChildEducation' && 
+        ['BrushingTimer', 'LearnTeeth', 'ToothHero', 'ToothMazeAdventure'].includes(currentNestedRoute?.name);
+
+        return {
+        headerShown: !isGameScreen, // Hide header for game screens
+        headerLeft: () => <HeaderLogo/>,
+        headerTitle: '',
+        headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
+        headerTitleAlign: 'left',
+        headerTransparent: !isViewingIndividualContent,
+        tabBarActiveTintColor: '#875B51',
+        tabBarInactiveTintColor: '#333333',
+        tabBarStyle: {
+            backgroundColor: '#FFFDF6',
+            borderTopWidth: 0,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            height: 68,
+            position: 'absolute',
+            elevation: 5,
+            shadowColor: '#333333',
+            shadowOffset: {width: 0, height: -3},
+            shadowOpacity: 0.1,
+            shadowRadius: 5,
+            display: isGameScreen ? 'none' : 'flex', // Hide tab bar for game screens
+        }
+    }
+    }}
+  >
+    <Tab.Screen
+      name="ChildEducation"
+      component={ChildEducationStack}
+      options={{
+        title: 'Fun Zone',
+        tabBarIcon: ({ color, size }) => (
+          <Image 
+  source={GameIcon} 
+  style={{ width: size, height: size, tintColor: color }} 
+/>
+
+        ),
+      }}
+    />
+
+    <Tab.Screen
+      name="DentalChart"
+      component={DentalChartScreen}
+      options={{
+        title: 'Dental Chart',
+        tabBarIcon: ({ color, size }) => (
+          <ToothIcon color={color} size={size} />
+        ),
+      }}
+    />
+
+    <Tab.Screen
+      name="Account"
+      component={ChildAccountScreen}
+      options={{
+        title: 'Profile',
+        headerRight: () => <LanguageSelector />,
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="profile" color={color} size={size} />
+        ),
+      }}
+    />
+  </Tab.Navigator>
 );
 
 // Main app navigator
@@ -270,8 +345,10 @@ const AppNavigator = () => {
                 initialRouteName="ResolveAuth"
                 screenOptions={{ headerShown: false }}
             >
-
+                
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
+                <Stack.Screen name="SplashScreen" component={SplashScreen}/>
+
 
                 {/* Login flow  */}
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
@@ -308,18 +385,21 @@ const AppNavigator = () => {
     );
 };
 
-// Wrap the app with all providers
+// Wrap the app with all providers - MOVED useFonts HERE!
 export default function App() {
-    const [isLoading, setIsLoading] = useState(true);
+    // ADDED: Load fonts inside the component
+    const [fontsLoaded] = useFonts({
+        Righteous_400Regular,
+        VarelaRound_400Regular,
+    });
 
-    useEffect(() => {
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000); // 2 seconds delay
-    }, []);
-
-    if (isLoading) {
-        return <SplashScreen />;
+    // Show loading screen while fonts load
+    if (!fontsLoaded) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#875B51" />
+            </View>
+        );
     }
 
     return (
@@ -329,7 +409,9 @@ export default function App() {
                     <AppointmentProvider>
                         <UserProvider>
                             <TranslationProvider>
-                                <AppNavigator />
+                                <ProgressProvider>
+                                    <AppNavigator />
+                                </ProgressProvider>
                             </TranslationProvider>
                         </UserProvider>
                     </AppointmentProvider>

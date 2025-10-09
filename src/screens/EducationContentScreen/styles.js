@@ -300,6 +300,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingBottom: 95,
   },
   navButton: {
     flexDirection: 'row',

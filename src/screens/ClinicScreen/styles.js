@@ -60,7 +60,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   timeText: {
-    fontSize: 18,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 4,
+    textAlign: 'right',
+    marginRight: 0,
+    marginLeft: 'auto'
+  },
+  nameText: {
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#333333',
     marginBottom: 4,
@@ -193,12 +202,6 @@ const styles = StyleSheet.create({
     appointmentInfo: {
         flex: 1,
     },
-    timeText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333333',
-        marginBottom: 4,
-    },
     locationText: {
         fontSize: 14,
         color: '#666666',
@@ -259,15 +262,11 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         position: 'absolute',
-        left: 0,
-        right: 0,
-        top: '10%',
-        transform: [{ translateX:0 }],
+        left: '50%',
+        top: '50%',
+        transform: [{ translateY: '-50%'}, {translateX: '-50%' }],
         backgroundColor: '#fff',
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-        borderBottomRightRadius: 16,
-        borderBottomLeftRadius: 16,
+        borderRadius: 16,
         padding: 16,
         elevation: 5,
         shadowColor: '#000',
@@ -322,8 +321,44 @@ const styles = StyleSheet.create({
     },
     modalDetailValue: {
         fontSize: 14,
+        fontWeight: 'bold',
         color: '#333',
         flex: 1,
+    },
+    pickerOverlay: {
+        position: 'absolute',
+        top: '15%', // Positions it right below the input
+        left: 0,
+        right: 0,
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+        zIndex: 1000,
+        elevation: 5, // Android shadow
+        shadowColor: '#000', // iOS shadow
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    pickerBackdrop: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: 500,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999, // Higher than modal backdrop
+    },
+    purposeText: {
+      color: 'black'
+    },
+    noPurposeText: {
+      color: '#666'
     },
     modalDetailValueCancel: {
         fontSize: 12,
@@ -354,6 +389,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
         marginTop: 20,
+        zIndex: 1002
     },
     submitButtonDisabled: {
         backgroundColor: '#ccc',
