@@ -94,7 +94,7 @@ export default StyleSheet.create({
     },
     mouthImage: {
         height: 80,
-        width: '100%',
+        width: '90%',
         marginBottom: 8,
         marginTop: -8,
         alignSelf: 'center',

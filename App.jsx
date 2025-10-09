@@ -280,7 +280,7 @@ const ChildFlow = () => {
                 name="Education"
                 component={ChildEducationStack}
                 options={{
-                    title: t('Library'),
+                    title: t('Fun Zone'),
                     tabBarIcon: ({color, size}) => <Entypo name="open-book" size={size} color={color} />
                 }}
             />
