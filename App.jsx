@@ -1,11 +1,9 @@
 import { Righteous_400Regular } from '@expo-google-fonts/righteous';
 import { useFonts, VarelaRound_400Regular } from '@expo-google-fonts/varela-round';
-import { Entypo } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, View } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 // import all screens
@@ -268,41 +266,86 @@ const MainFlow = () => {
     );
 };
 // Child flow with bottom tab navigation
-const ChildFlow = () => {
-    const { t, currentLanguage } = useTranslation();
-    
-    return (
-        <Tab.Navigator 
-            key={`child-${currentLanguage}`}
-            screenOptions={{ headerShown: false }}
-        >
-            <Tab.Screen
-                name="Education"
-                component={ChildEducationStack}
-                options={{
-                    title: t('Fun Zone'),
-                    tabBarIcon: ({color, size}) => <Entypo name="open-book" size={size} color={color} />
-                }}
-            />
-            <Tab.Screen
-                name="Clinic"
-                component={ChildClinicStack}
-                options={{
-                    title: t('Clinic'),
-                    tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="toothbrush-paste" size={size} color={color} />
-                }}
-            />
-            <Tab.Screen
-                name="AccountFlow"
-                component={ChildAccountStack}
-                options={{
-                    title: t('Home'),
-                    tabBarIcon: ({color, size}) => <Entypo name="home" size={size} color={color} />
-                }}
-            />
-        </Tab.Navigator>
-    );
-};
+const ChildFlow = () => (
+    <Tab.Navigator 
+        screenOptions={({ route, navigation }) => {
+            const state = navigation.getState();
+            const currentTab = state.routes[state.index];
+            const nestedState = currentTab.state;
+            const currentNestedRoute = nestedState?.routes?.[nestedState.index];
+
+            const isViewingIndividualContent = currentTab.name === 'ChildEducation' && currentNestedRoute?.name === 'content' &&
+            currentNestedRoute?.params?.isModal === true;
+
+            // Hide tab bar for game screens
+            const isGameScreen = currentTab.name === 'ChildEducation' && 
+            ['BrushingTimer', 'LearnTeeth', 'ToothHero', 'ToothMazeAdventure'].includes(currentNestedRoute?.name);
+
+            return {
+            headerShown: !isGameScreen, // Hide header for game screens
+            headerLeft: () => <HeaderLogo/>,
+            headerTitle: '',
+            headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
+            headerTitleAlign: 'left',
+            headerTransparent: !isViewingIndividualContent,
+            tabBarActiveTintColor: '#875B51',
+            tabBarInactiveTintColor: '#333333',
+            tabBarStyle: {
+                backgroundColor: '#FFFDF6',
+                borderTopWidth: 0,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                height: 68,
+                position: 'absolute',
+                elevation: 5,
+                shadowColor: '#333333',
+                shadowOffset: {width: 0, height: -3},
+                shadowOpacity: 0.1,
+                shadowRadius: 5,
+                display: isGameScreen ? 'none' : 'flex', // Hide tab bar for game screens
+            }
+        }
+        }}
+    >
+        <Tab.Screen
+        name="ChildEducation"
+        component={ChildEducationStack}
+        options={{
+            title: 'Fun Zone',
+            tabBarIcon: ({ color, size }) => (
+            <Image 
+    source={GameIcon} 
+    style={{ width: size, height: size, tintColor: color }} 
+    />
+
+            ),
+        }}
+        />
+
+        <Tab.Screen
+        name="DentalChart"
+        component={DentalChartScreen}
+        options={{
+            title: 'Dental Chart',
+            tabBarIcon: ({ color, size }) => (
+            <ToothIcon color={color} size={size} />
+            ),
+        }}
+        />
+
+        <Tab.Screen
+        name="Account"
+        component={ChildAccountScreen}
+        options={{
+            title: 'Profile',
+            headerRight: () => <LanguageSelector />,
+            tabBarIcon: ({ color, size }) => (
+            <Icon name="profile" color={color} size={size} />
+            ),
+        }}
+        />
+    </Tab.Navigator>
+);
 
 // Main app navigator
 const AppNavigator = () => {
