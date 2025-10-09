@@ -48,8 +48,18 @@ const LocationFinder = ({ route }) => {
     const clearSearch = () => setSearchText('');
 
     const handleClinicPress = (clinic) => {
-        // You can add navigation to clinic details or other actions here
+        // Navigate to nested UserAccount screen within Profile tab
         console.log('Selected clinic:', clinic);
+        navigation.navigate('mainFlow', {
+            screen: 'Profile',
+            params: {
+                screen: 'UserAccount',
+                params: {
+                    selectedClinic: clinic,
+                    openClinicModal: true
+                }
+            }
+        });
     };
 
     if (!dataLoaded) {
