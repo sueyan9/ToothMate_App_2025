@@ -1,4 +1,5 @@
-import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Righteous_400Regular } from '@expo-google-fonts/righteous';
+import { useFonts, VarelaRound_400Regular } from '@expo-google-fonts/varela-round';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -7,10 +8,10 @@ import { Image, View } from 'react-native';
 // import all screens
 import Contact from './src/components/ContactButton';
 import LanguageSelector from './src/components/LanguageSelector';
-import AccountScreen from './src/screens/AccountScreen';
 import AllImagesScreen from './src/screens/AllImagesScreen';
 import AppointmentScreen from './src/screens/AppointmentScreen';
 import ChildAccountScreen from './src/screens/ChildAccountScreen';
+import ChildEducationScreen from './src/screens/ChildEducationScreen/ChildEducationScreen';
 import ClinicScreen from './src/screens/ClinicScreen';
 import DentalChartScreen from './src/screens/DentalChartScreen';
 import DisconnectChildScreen from './src/screens/DisconnectChildScreen';
@@ -30,6 +31,12 @@ import SignupScreen from './src/screens/SignupScreen';
 import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
+
+// Import new game screens
+import BrushingTimerScreen from './src/screens/BrushingTimerScreen/BrushingTimerScreen';
+import LearnTeethScreen from './src/screens/LearnTeethScreen/LearnTeethScreen';
+import ToothHeroScreen from './src/screens/ToothHeroScreen/ToothHeroScreen';
+import ToothMazeAdventure from './src/screens/ToothMazeAdventure/ToothMazeAdventure';
 import ViewScheduledNotificationsScreen from './src/screens/ViewScheduledNotificationsScreen';
 
 // import all Provider
@@ -37,6 +44,7 @@ import { Provider as AppointmentProvider } from './src/context/AppointmentContex
 import { Provider as AuthProvider } from './src/context/AuthContext/AuthContext';
 import { Provider as ClinicProvider } from './src/context/ClinicContext/ClinicContext';
 import { Provider as EducationProvider } from './src/context/EducationContext/EducationContext';
+import { ProgressProvider } from './src/context/ProgressContext/ProgressContext';
 import { Provider as NotificationProvider } from './src/context/NotificationContext/NotificationContext';
 import { Provider as TranslationProvider } from './src/context/TranslationContext/TranslationContext';
 import { useTranslation } from './src/context/TranslationContext/useTranslation';
@@ -44,6 +52,8 @@ import { Provider as UserProvider } from './src/context/UserContext/UserContext'
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
+import { ActivityIndicator, Image, View } from 'react-native';
+import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
@@ -61,10 +71,11 @@ const HeaderLogo = () => (
     </View>
 );
 
-// Account flow navigation
+
+// Account flow navigation - FIXED: Using UserAccountScreen instead of missing AccountScreen
 const AccountStack = () => (
     <Stack.Navigator initialRouteName="Account">
-        <Stack.Screen name="Account" component={AccountScreen} />
+        <Stack.Screen name="Account" component={UserAccountScreen} />
         <Stack.Screen name="User" component={UserScreen} />
         <Stack.Screen name="DisconnectChild" component={DisconnectChildScreen} />
         <Stack.Screen name="UpdateClinic" component={UpdateClinicScreen} />
@@ -98,10 +109,25 @@ const ClinicStack = () => (
 
 // Child clinic flow
 const ChildClinicStack = () => (
-    <Stack.Navigator initialRouteName="list">
-        <Stack.Screen name="list" component={ClinicScreen} options={{ title: '' }}/>
-        <Stack.Screen name="chart" component={DentalChartScreen} options={{ title: '' }}/>
-        <Stack.Screen name="content" component={AppointmentScreen} options={{ title: '' }}/>
+    <Stack.Navigator initialRouteName="Chart">
+        <Stack.Screen name="Chart" component={DentalChartScreen} options={{ title: '' }}/>
+        <Stack.Screen name="Education" component={ChildEducationScreen} options={{ title: '' }}/>
+        <Stack.Screen name="Profile" component={UserAccountScreen} options={{ title: '' }}/>
+    </Stack.Navigator>
+);
+
+// Child education flow - UPDATED: Now includes all the new game screens
+const ChildEducationStack = () => (
+    <Stack.Navigator initialRouteName="Library">
+        <Stack.Screen name="Library" component={ChildEducationScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="content" component={EducationContentScreen} options={{ headerShown: false}}/>
+        <Stack.Screen name="game" component={GameScreen} options={{ headerShown: false }} />
+        
+        {/* New Game Screens */}
+        <Stack.Screen name="BrushingTimer" component={BrushingTimerScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LearnTeeth" component={LearnTeethScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ToothHero" component={ToothHeroScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ToothMazeAdventure" component={ToothMazeAdventure} options={{ headerShown: false }} />
     </Stack.Navigator>
 );
 
@@ -339,8 +365,23 @@ const AppNavigator = () => {
     );
 };
 
-// Wrap the app with all providers
+// Wrap the app with all providers - MOVED useFonts HERE!
 export default function App() {
+    // ADDED: Load fonts inside the component
+    const [fontsLoaded] = useFonts({
+        Righteous_400Regular,
+        VarelaRound_400Regular,
+    });
+
+    // Show loading screen while fonts load
+    if (!fontsLoaded) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#875B51" />
+            </View>
+        );
+    }
+
     return (
         <AuthProvider>
             <ClinicProvider>
@@ -349,7 +390,9 @@ export default function App() {
                         <UserProvider>
                             <NotificationProvider>
                                 <TranslationProvider>
-                                    <AppNavigator />
+                                <ProgressProvider>
+                                        <AppNavigator />
+                                </ProgressProvider>
                                 </TranslationProvider>
                             </NotificationProvider>
                         </UserProvider>
