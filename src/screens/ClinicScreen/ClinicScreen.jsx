@@ -1172,8 +1172,8 @@ const ClinicScreen = ({navigation, route}) => {
                                     <Switch
                                         value={setReminder}
                                         onValueChange={setSetReminder}
-                                        trackColor={{ false: '#ddd', true: '#78d0f5' }}
-                                        thumbColor={setReminder ? '#0066cc' : '#f4f3f4'}
+                                        trackColor={{ false: '#ddd', true: '#EDDFD3' }}
+                                        thumbColor={setReminder ? '#875B51' : '#f4f3f4'}
                                     />
                                 </View>
                             </View>
