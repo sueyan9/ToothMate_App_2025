@@ -1,9 +1,11 @@
 import { Righteous_400Regular } from '@expo-google-fonts/righteous';
 import { useFonts, VarelaRound_400Regular } from '@expo-google-fonts/varela-round';
+import { Entypo } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, View } from 'react-native';
+
 
 // import all screens
 import Contact from './src/components/ContactButton';
