@@ -73,6 +73,11 @@ const ChildAccountScreen = ({ navigation }) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showAccessCodeModal, setShowAccessCodeModal] = useState(false);
   const [accessCode, setAccessCode] = useState('');
+  
+  // ADDED: State to hold the active child profile information
+  const [activeProfileName, setActiveProfileName] = useState('');
+  const [activeProfileUsername, setActiveProfileUsername] = useState('');
+  const [activeProfilePictureIndex, setActiveProfilePictureIndex] = useState(null);
 
   useEffect(() => {
     setRefreshKey(prev => prev + 1);
@@ -86,6 +91,17 @@ const ChildAccountScreen = ({ navigation }) => {
       const fetchUserData = async () => {
         setIsLoading(true);
         try {
+          // ADDED: Load the active child profile information from AsyncStorage
+          const profileName = await AsyncStorage.getItem('activeProfileName');
+          const profileUsername = await AsyncStorage.getItem('activeProfileUsername');
+          const profilePictureIndex = await AsyncStorage.getItem('activeProfilePictureIndex');
+          
+          if (profileName) setActiveProfileName(profileName);
+          if (profileUsername) setActiveProfileUsername(profileUsername);
+          if (profilePictureIndex && profilePictureIndex !== '-1') {
+            setActiveProfilePictureIndex(parseInt(profilePictureIndex));
+          }
+
           await getUser();
           await getDentalClinic();
         } catch (error) {
@@ -116,12 +132,30 @@ const ChildAccountScreen = ({ navigation }) => {
     return first + last;
   };
 
+  // UPDATED: Use active profile picture index if available
+  const getDisplayProfilePicture = () => {
+    if (activeProfilePictureIndex !== null && activeProfilePictureIndex >= 0) {
+      return activeProfilePictureIndex;
+    }
+    return selectedProfilePicture;
+  };
+
   const handleChangeProfilePicture = () => {
     setShowProfileModal(true);
   };
 
-  const handleProfilePictureSelect = (pictureIndex) => {
+  // UPDATED: Save the profile picture for the active child profile
+  const handleProfilePictureSelect = async (pictureIndex) => {
     setProfilePicture(pictureIndex);
+    setActiveProfilePictureIndex(pictureIndex);
+    
+    // Save to AsyncStorage so it persists
+    try {
+      await AsyncStorage.setItem('activeProfilePictureIndex', String(pictureIndex));
+    } catch (error) {
+      console.error('Error saving profile picture:', error);
+    }
+    
     setShowProfileModal(false);
   };
 
@@ -140,6 +174,13 @@ const ChildAccountScreen = ({ navigation }) => {
           await AsyncStorage.setItem('id', parentId);
           await AsyncStorage.removeItem('parentId');
           await AsyncStorage.setItem('currentAccountType', 'parent');
+          
+          // ADDED: Clear active profile information
+          await AsyncStorage.removeItem('activeProfileId');
+          await AsyncStorage.removeItem('activeProfileName');
+          await AsyncStorage.removeItem('activeProfileUsername');
+          await AsyncStorage.removeItem('activeProfilePictureIndex');
+          
           navigation.reset({
             index: 0,
             routes: [{ name: 'mainFlow' }],
@@ -176,6 +217,13 @@ const ChildAccountScreen = ({ navigation }) => {
           await AsyncStorage.setItem('id', parentId);
           await AsyncStorage.removeItem('parentId');
           await AsyncStorage.setItem('currentAccountType', 'parent');
+          
+          // ADDED: Clear active profile information
+          await AsyncStorage.removeItem('activeProfileId');
+          await AsyncStorage.removeItem('activeProfileName');
+          await AsyncStorage.removeItem('activeProfileUsername');
+          await AsyncStorage.removeItem('activeProfilePictureIndex');
+          
           navigation.reset({
             index: 0,
             routes: [{ name: 'mainFlow' }],
@@ -210,6 +258,8 @@ const ChildAccountScreen = ({ navigation }) => {
     );
   }
 
+  const displayProfilePicture = getDisplayProfilePicture();
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -221,9 +271,9 @@ const ChildAccountScreen = ({ navigation }) => {
         {/* Profile Picture Section */}
         <View style={styles.profilePictureContainer}>
           <View style={styles.profilePicture}>
-            {selectedProfilePicture !== null ? (
+            {displayProfilePicture !== null ? (
               <Image
-                source={profilePictures[selectedProfilePicture]}
+                source={profilePictures[displayProfilePicture]}
                 style={styles.profileImage}
               />
             ) : (
@@ -232,11 +282,16 @@ const ChildAccountScreen = ({ navigation }) => {
               </Text>
             )}
           </View>
+          {/* UPDATED: Show active profile name if available, otherwise fallback to details */}
           <Text style={styles.profileName}>
-            {details.firstname && details.lastname
+            {activeProfileName || (details.firstname && details.lastname
               ? `${details.firstname} ${details.lastname}`
-              : 'User Name'}
+              : 'User Name')}
           </Text>
+          {/* ADDED: Show username/email if available */}
+          {activeProfileUsername && (
+            <Text style={styles.profileUsername}>{activeProfileUsername}</Text>
+          )}
           <TouchableOpacity
             style={styles.changeProfileButton}
             onPress={handleChangeProfilePicture}
@@ -343,12 +398,12 @@ const ChildAccountScreen = ({ navigation }) => {
                   key={index}
                   style={[
                     styles.profileOption,
-                    selectedProfilePicture === index && styles.selectedProfileOption
+                    displayProfilePicture === index && styles.selectedProfileOption
                   ]}
                   onPress={() => handleProfilePictureSelect(index)}
                 >
                   <Image source={picture} style={styles.profileOptionImage} />
-                  {selectedProfilePicture === index && (
+                  {displayProfilePicture === index && (
                     <View style={styles.selectedOverlay}>
                       <Ionicons name="checkmark-circle" size={24} color="#516287" />
                     </View>
@@ -361,66 +416,65 @@ const ChildAccountScreen = ({ navigation }) => {
       </Modal>
 
       {/* Access Code Modal */}
-<Modal
-  animationType="fade"
-  transparent={true}
-  visible={showAccessCodeModal}
-  onRequestClose={() => setShowAccessCodeModal(false)}
->
-  <View style={styles.modalOverlay}>
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-    >
-      <View style={styles.accessCodeModalContent}>
-        <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>{t('Enter Access Code')}</Text>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => setShowAccessCodeModal(false)}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showAccessCodeModal}
+        onRequestClose={() => setShowAccessCodeModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
           >
-            <Ionicons name="close" size={24} color="#333333" />
-          </TouchableOpacity>
-        </View>
+            <View style={styles.accessCodeModalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>{t('Enter Access Code')}</Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setShowAccessCodeModal(false)}
+                >
+                  <Ionicons name="close" size={24} color="#333333" />
+                </TouchableOpacity>
+              </View>
 
-        <View style={styles.accessCodeContent}>
-          <Ionicons name="lock-closed-outline" size={48} color="#516287" />
-          <Text style={styles.accessCodeMessage}>
-            {t('Enter the access code to switch profiles')}
-          </Text>
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>{t('Access Code')}</Text>
-            <TextInput
-              style={styles.textInput}
-              value={accessCode}
-              onChangeText={setAccessCode}
-              placeholder="****"
-              secureTextEntry={true}
-              keyboardType="number-pad"
-              maxLength={4}
-            />
-          </View>
-        </View>
+              <View style={styles.accessCodeContent}>
+                <Ionicons name="lock-closed-outline" size={48} color="#516287" />
+                <Text style={styles.accessCodeMessage}>
+                  {t('Enter the access code to switch profiles')}
+                </Text>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>{t('Access Code')}</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    value={accessCode}
+                    onChangeText={setAccessCode}
+                    placeholder="****"
+                    secureTextEntry={true}
+                    keyboardType="number-pad"
+                    maxLength={4}
+                  />
+                </View>
+              </View>
 
-        <View style={styles.modalButtonContainer}>
-          <TouchableOpacity
-            style={[styles.modalButton, styles.cancelButton]}
-            onPress={() => setShowAccessCodeModal(false)}
-          >
-            <Text style={styles.cancelButtonText}>{t('Cancel')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.modalButton, styles.submitButton]}
-            onPress={handleAccessCodeSubmit}
-          >
-            <Text style={styles.submitButtonText}>{t('Submit')}</Text>
-          </TouchableOpacity>
+              <View style={styles.modalButtonContainer}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setShowAccessCodeModal(false)}
+                >
+                  <Text style={styles.cancelButtonText}>{t('Cancel')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.submitButton]}
+                  onPress={handleAccessCodeSubmit}
+                >
+                  <Text style={styles.submitButtonText}>{t('Submit')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
         </View>
-      </View>
-    </KeyboardAvoidingView>
-  </View>
-</Modal>
-
+      </Modal>
     </SafeAreaView>
   );
 };
