@@ -67,13 +67,51 @@ export default function ToothInformation({ toothInfo }) {
           return;
         }
         const getApiBaseUrl = () => {
-          const { protocol, hostname } = window.location;
-          // backend port
-          return `${protocol}//${hostname}:3000`;
-        };
-        const API_BASE_URL = getApiBaseUrl();
+          // 1. 优先从环境变量读取
+          if (typeof process !== 'undefined' && process.env?.REACT_APP_API_BASE_URL) {
+            console.log('Using environment REACT_APP_API_BASE_URL:', process.env.REACT_APP_API_BASE_URL);
+            return process.env.REACT_APP_API_BASE_URL;
+          }
+          if (typeof process !== 'undefined' && process.env?.API_BASE_URL) {
+            console.log('Using environment API_BASE_URL:', process.env.API_BASE_URL);
+            return process.env.API_BASE_URL;
+          }
 
-        // Call backend API to get treatment records
+          // 2. 从 window 对象读取
+          if (typeof window !== 'undefined' && window.API_BASE_URL) {
+            console.log('Using window API_BASE_URL:', window.API_BASE_URL);
+            return window.API_BASE_URL;
+          }
+
+          // 3. 动态环境检测（作为后备方案）
+          const { protocol, hostname } = window.location;
+
+          // 检查是否为 Vercel 环境
+          if (hostname.includes('vercel.app')) {
+            console.log('Detected Vercel environment, using Render backend');
+            return 'https://toothmate-app-2025.onrender.com';
+          }
+
+          // 检查是否为 Render 环境
+          if (hostname.includes('render.com') || hostname.includes('onrender.com')) {
+            console.log('Detected cloud environment, using same hostname');
+            return `${protocol}//${hostname}`;
+          }
+
+          // 本地开发环境
+          if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            console.log('Detected local environment, using port 3000');
+            return `${protocol}//${hostname}:3000`;
+          }
+
+          console.log('Using default Render backend');
+          return 'https://toothmate-app-2025.onrender.com';
+        };
+
+        const API_BASE_URL = getApiBaseUrl();
+        console.log('Final API_BASE_URL:', API_BASE_URL);
+
+          // Call backend API to get treatment records
         let url = null;
         if (userId) {
           url = `${API_BASE_URL}/getTreatmentsByToothNumber/${encodeURIComponent(userId)}/${encodeURIComponent(toothInfo.toothNumber)}`;
