@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     reminderContainer: {
-        backgroundColor: '#f8f9fa',
+        backgroundColor: '#ffffffff',
         borderRadius: 8,
         padding: 12,
         borderWidth: 1,

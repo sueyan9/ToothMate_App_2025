@@ -3,6 +3,9 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#E9F1F8',
+    marginTop: 48,
+    paddingBottom: 68
   },
   loadingContainer: {
     flex: 1,
@@ -25,7 +28,8 @@ export default StyleSheet.create({
     borderBottomColor: '#e0e0e0',
   },
   backButton: {
-    padding: 8,
+    paddingLeft: 24,
+    paddingVertical: 16
   },
   headerTitle: {
     fontSize: 18,
@@ -40,10 +44,11 @@ export default StyleSheet.create({
     paddingHorizontal: 16,
   },
   section: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: '#FFFDF6',
     borderRadius: 12,
     padding: 16,
     marginTop: 16,
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -56,13 +61,22 @@ export default StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#333333',
+  },
+  titleRow: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#EDDFD3',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 8,
+    paddingBottom: 8,
     marginBottom: 16,
   },
   permissionItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingLeft: 8,
   },
   permissionInfo: {
     flex: 1,
@@ -70,7 +84,7 @@ export default StyleSheet.create({
   permissionLabel: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#000',
+    color: '#333333',
   },
   permissionStatus: {
     fontSize: 14,
@@ -98,6 +112,7 @@ export default StyleSheet.create({
   settingInfo: {
     flex: 1,
     marginRight: 16,
+    paddingLeft: 8
   },
   settingLabel: {
     fontSize: 16,
@@ -114,13 +129,14 @@ export default StyleSheet.create({
     marginTop: 8,
     paddingLeft: 16,
     borderLeftWidth: 2,
-    borderLeftColor: '#78d0f5',
+    borderLeftColor: '#516287',
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,
     borderBottomWidth: 1,
+    paddingLeft: 8,
     borderBottomColor: '#f0f0f0',
   },
   actionButtonText: {
@@ -140,13 +156,20 @@ export default StyleSheet.create({
     color: '#666',
     lineHeight: 20,
     marginBottom: 12,
+    paddingTop: 4,
+    paddingLeft: 4,
+    marginRight: 8,
+    textAlign: 'justify'
   },
   warningText: {
     fontSize: 14,
     color: '#FF9800',
     lineHeight: 20,
-    marginBottom: 12,
+    marginBottom: 4,
     fontWeight: '500',
+    paddingLeft: 4,
+    marginRight: 8,
+    textAlign: 'justify'
   },
   updatingOverlay: {
     position: 'absolute',
