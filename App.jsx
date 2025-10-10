@@ -54,6 +54,7 @@ import { navigationRef } from './src/navigationRef';
 
 //splash screen
 import { ActivityIndicator } from 'react-native';
+import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
