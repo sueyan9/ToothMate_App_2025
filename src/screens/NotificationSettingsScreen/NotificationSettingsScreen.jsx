@@ -126,7 +126,7 @@ const NotificationSettingsScreen = () => {
       <View style={styles.container}>
         <SafeAreaView style={styles.container}>
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0066cc" />
+            <ActivityIndicator size="large" color="#516287" />
             <Text style={styles.loadingText}>Loading notification settings...</Text>
           </View>
         </SafeAreaView>

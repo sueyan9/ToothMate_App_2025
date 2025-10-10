@@ -1,19 +1,18 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Animated,
   RefreshControl,
   SafeAreaView,
   ScrollView,
   Switch,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
+import Collapsible from 'react-native-collapsible';
 import { Context as NotificationContext } from '../../context/NotificationContext/NotificationContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import styles from './styles';
@@ -33,61 +32,21 @@ const ViewScheduledNotificationsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Animation values
-  const titleFadeAnim = useState(new Animated.Value(0))[0];
-  const titleScaleAnim = useState(new Animated.Value(0.8))[0];
-  const titleRotateAnim = useState(new Animated.Value(0))[0];
+  const [collapsedSections, setCollapsedSections] = useState({});
+  const savedCollapsedState = useRef({});
+
+  useEffect(() => {
+    if (Object.keys(savedCollapsedState.current).length > 0) {
+      setCollapsedSections(savedCollapsedState.current);
+    }
+  }, [scheduledNotifications.length]);
+
 
   useEffect(() => {
     loadNotifications();
     // Test bell colors to verify the logic works
     testBellColors();
-    
-    // Start title animations
-    startTitleAnimations();
   }, []);
-
-  const startTitleAnimations = () => {
-    // Parallel animations for a cool entrance effect
-    Animated.parallel([
-      Animated.timing(titleFadeAnim, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }),
-      Animated.spring(titleScaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 3,
-        useNativeDriver: true,
-      }),
-      Animated.timing(titleRotateAnim, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      // Start pulse animation after entrance
-      startPulseAnimation();
-    });
-  };
-
-  const startPulseAnimation = () => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(titleScaleAnim, {
-          toValue: 1.05,
-          duration: 1500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(titleScaleAnim, {
-          toValue: 1,
-          duration: 1500,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  };
 
   const loadNotifications = async () => {
     setIsLoading(true);
@@ -96,6 +55,7 @@ const ViewScheduledNotificationsScreen = () => {
     } catch (error) {
       console.error('Error loading notifications:', error);
     } finally {
+      setCollapsedSections(savedCollapsedState.current);
       setIsLoading(false);
     }
   };
@@ -103,6 +63,7 @@ const ViewScheduledNotificationsScreen = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     await loadNotifications();
+    setCollapsedSections(savedCollapsedState.current);
     setRefreshing(false);
   };
 
@@ -130,6 +91,9 @@ const ViewScheduledNotificationsScreen = () => {
 
   const handleReminderToggle = async (appointment, reminderType, isEnabled) => {
     const { appointmentDate, appointmentTime, clinicName, reminders } = appointment;
+
+    const currentCollapsedState = { ...collapsedSections };
+    savedCollapsedState.current = currentCollapsedState;
     
     if (isEnabled) {
       // User wants to enable this reminder type - schedule it
@@ -143,6 +107,7 @@ const ViewScheduledNotificationsScreen = () => {
       
       if (result.success) {
         await loadNotifications(); // Refresh the list
+        setCollapsedSections(currentCollapsedState);
       } else {
         Alert.alert('Error', `Failed to schedule ${reminderType} reminder: ${result.message || result.error}`);
       }
@@ -152,7 +117,9 @@ const ViewScheduledNotificationsScreen = () => {
       if (reminder) {
         const result = await cancelNotification(reminder.identifier);
         if (result.success) {
+          setCollapsedSections(currentCollapsedState);
           await loadNotifications(); // Refresh the list
+          setCollapsedSections(currentCollapsedState);
         } else {
           Alert.alert('Error', `Failed to cancel ${reminderType} reminder`);
         }
@@ -368,6 +335,17 @@ const ViewScheduledNotificationsScreen = () => {
   const appointmentReminders = scheduledNotifications?.filter(n => 
     n.content?.data?.type === 'appointment_reminder'
   ) || [];
+
+  const toggleSection = (key) => {
+    setCollapsedSections(prev => {
+      const newState = {
+        ...prev,
+        [key]: !prev[key]
+      };
+      savedCollapsedState.current = newState;
+      return newState;
+    });
+  };
   
   const groupedAppointments = groupAppointmentsByDetails(appointmentReminders);
   
@@ -382,28 +360,27 @@ const ViewScheduledNotificationsScreen = () => {
 
   if (isLoading) {
     return (
-      <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container}>
+      <View style={styles.container}>
         <SafeAreaView style={styles.container}>
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0066cc" />
+            <ActivityIndicator size="large" color="#516287" />
             <Text style={styles.loadingText}>Loading scheduled notifications...</Text>
           </View>
         </SafeAreaView>
-      </LinearGradient>
+      </View>
     );
   }
 
   return (
-    <LinearGradient colors={['#78d0f5', 'white', '#78d0f5']} style={styles.container}>
+    <View style={styles.container}>
       <SafeAreaView style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <MaterialIcons name="arrow-back" size={24} color="#000" />
+            <MaterialIcons name="arrow-back" size={24} color="#875B51" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Scheduled Notifications</Text>
           <TouchableOpacity onPress={onRefresh} style={styles.refreshButton}>
-            <MaterialIcons name="refresh" size={24} color="#000" />
+            <MaterialIcons name="refresh" size={24} color="#875B51" />
           </TouchableOpacity>
         </View>
 
@@ -417,7 +394,7 @@ const ViewScheduledNotificationsScreen = () => {
         >
           {scheduledNotifications?.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <MaterialIcons name="notifications-off" size={64} color="#ccc" />
+              <MaterialIcons name="notifications-off" size={48} color="#516287" />
               <Text style={styles.emptyTitle}>No Scheduled Notifications</Text>
               <Text style={styles.emptySubtitle}>
                 Schedule appointment reminders or enable daily tips to see notifications here.
@@ -434,95 +411,74 @@ const ViewScheduledNotificationsScreen = () => {
               {/* Appointment Reminders */}
               {groupedAppointments.length > 0 && (
                 <View style={styles.section}>
-                  <Animated.Text 
-                    style={[
-                      styles.appointmentsMainTitle,
-                      {
-                        opacity: titleFadeAnim,
-                        transform: [
-                          { scale: titleScaleAnim },
-                          { 
-                            rotate: titleRotateAnim.interpolate({
-                              inputRange: [0, 1],
-                              outputRange: ['0deg', '360deg'],
-                            })
-                          }
-                        ]
-                      }
-                    ]}
-                  >
-                    🦷 Appointments ({groupedAppointments.length}) 🦷
-                  </Animated.Text>
+                  <Text style={styles.titleText}>Scheduled Appointment Notifications: {groupedAppointments.length}</Text>
                   {groupedAppointments.map((appointment, index) => {
                     const { appointmentDate, appointmentTime, clinicName, reminders } = appointment;
+                    const sectionKey = `${appointmentDate}-${appointmentTime}-${clinicName}-${index}`;
                     
                     return (
-                      <View key={`${appointmentDate}-${appointmentTime}-${clinicName}-${index}`} style={styles.appointmentCard}>
+                      <View key={sectionKey} style={styles.appointmentCard}>
                         <View style={styles.appointmentHeader}>
+                          <MaterialIcons name='calendar-month' size={24} color='#516287'/>
                           <Text style={styles.appointmentTitle}>
-                            APPOINTMENT REMINDER
+                            {appointmentDate} | {appointmentTime}
                           </Text>
+                          
                         </View>
-                        
-                        <View style={styles.appointmentInfo}>
-                          <Text style={styles.appointmentSubtitle}>
-                            Book For: Dental Checkup
-                          </Text>
-                          <Text style={styles.appointmentSubtitle}>
-                            Date & Time: {appointmentDate} at {appointmentTime}
-                          </Text>
-                          <Text style={styles.appointmentClinic}>
-                            Location: {clinicName}
+                        <View style={styles.appointmentHeader}>
+                          <MaterialIcons name='local-hospital' size={24} color='#516287'/>
+                          <Text style={styles.appointmentTitle}>
+                            Go to Appointment
                           </Text>
                         </View>
                         
                         {/* Reminder Controls */}
-                        <View style={styles.reminderControls}>
-                          <Text style={styles.reminderControlsTitle}>Status: REMINDERS</Text>
+                        <TouchableOpacity onPress={() => toggleSection(sectionKey)} style={styles.appointmentHeader}>
+                          <MaterialIcons name='settings' size={24} color='#516287'/>
+                          <Text style={styles.reminderControlsTitle}>Reminder Settings:</Text>
+                          <MaterialIcons 
+                            name={!collapsedSections[sectionKey] ? 'expand-more' : 'expand-less'} 
+                            size={24} 
+                            color='#516287'
+                          />
+                          </TouchableOpacity>
+                        <Collapsible collapsed={!collapsedSections[sectionKey]} defaultOpen={false}>
                           
                           {/* 24 Hour Reminder */}
+                          <Text style={styles.notificationTitle}>Remind At:</Text>
                           <View style={styles.reminderRow}>
-                            <Text style={styles.reminderLabel}>24 Hours: </Text>
-                            <Text style={[styles.statusText, { color: reminders['24h'] ? '#00ff99' : '#ff4444' }]}>
-                              {reminders['24h'] ? 'ON' : 'OFF'}
-                            </Text>
+                            <Text style={styles.reminderLabel}>24 Hours Before: </Text>
                             <Switch
                               value={!!reminders['24h']}
                               onValueChange={(value) => handleReminderToggle(appointment, '24h', value)}
-                              trackColor={{ false: '#333', true: '#00ff99' }}
-                              thumbColor={reminders['24h'] ? '#fff' : '#666'}
+                              trackColor={{ false: '#ddd', true: '#EDDFD3' }}
+                              thumbColor={reminders['24h'] ? '#875B51' : '#f4f3f4'}
                             />
                           </View>
                           
                           {/* 1 Hour Reminder */}
                           <View style={styles.reminderRow}>
                             <Text style={styles.reminderLabel}>1 Hour: </Text>
-                            <Text style={[styles.statusText, { color: reminders['1h'] ? '#00ff99' : '#ff4444' }]}>
-                              {reminders['1h'] ? 'ON' : 'OFF'}
-                            </Text>
                             <Switch
                               value={!!reminders['1h']}
                               onValueChange={(value) => handleReminderToggle(appointment, '1h', value)}
-                              trackColor={{ false: '#333', true: '#00ff99' }}
-                              thumbColor={reminders['1h'] ? '#fff' : '#666'}
+                              trackColor={{ false: '#ddd', true: '#EDDFD3' }}
+                              thumbColor={reminders['1h'] ? '#875B51' : '#f4f3f4'}
                             />
                           </View>
                           
                           {/* 15 Minute Reminder */}
                           <View style={styles.reminderRow}>
                             <Text style={styles.reminderLabel}>15 Min: </Text>
-                            <Text style={[styles.statusText, { color: reminders['15m'] ? '#00ff99' : '#ff4444' }]}>
-                              {reminders['15m'] ? 'ON' : 'OFF'}
-                            </Text>
                             <Switch
                               value={!!reminders['15m']}
                               onValueChange={(value) => handleReminderToggle(appointment, '15m', value)}
-                              trackColor={{ false: '#333', true: '#00ff99' }}
-                              thumbColor={reminders['15m'] ? '#fff' : '#666'}
+                              trackColor={{ false: '#ddd', true: '#EDDFD3' }}
+                              thumbColor={reminders['15m'] ? '#875B51' : '#f4f3f4'}
                             />
                           </View>
+                          </Collapsible>
                         </View>
-                      </View>
                     );
                   })}
                 </View>
@@ -619,7 +575,7 @@ const ViewScheduledNotificationsScreen = () => {
           )}
         </ScrollView>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 };
 

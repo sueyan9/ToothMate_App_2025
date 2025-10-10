@@ -1,8 +1,11 @@
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#E9F1F8',
+    marginTop: 48,
+    paddingBottom: 68
   },
   loadingContainer: {
     flex: 1,
@@ -22,19 +25,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
   },
   backButton: {
     padding: 5,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
   refreshButton: {
     padding: 5,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
   headerTitle: {
     fontSize: 18,
@@ -51,16 +47,16 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   emptyContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 60,
-    paddingHorizontal: 40,
+    display: 'flex',
+    top: '60%',
+    paddingHorizontal: 8
   },
   emptyTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#666',
+    color: '#333333',
     marginTop: 20,
     textAlign: 'center',
   },
@@ -72,14 +68,17 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   settingsButton: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#EDDFD3',
+    borderColor: '#875B51',
+    borderRadius: 20,
+    borderWidth: 2.5,
     paddingHorizontal: 24,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderRadius: 25,
     marginTop: 30,
   },
   settingsButtonText: {
-    color: 'white',
+    color: '#333333',
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
@@ -151,7 +150,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   notificationTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 4,
@@ -187,68 +186,46 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
-  // Smaller appointment cards with app theme colors
   appointmentCard: {
-    backgroundColor: '#78d0f5', // App's teal/blue theme color
-    padding: 12,
-    marginBottom: 12,
-    marginHorizontal: 8,
-    borderWidth: 2,
-    borderColor: '#0066cc',
-    borderRadius: 8,
+    backgroundColor: '#FFFDF6',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 8,
-  },
-  appointmentCardInner: {
-    // Remove the inner card styling for simpler design
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   appointmentHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#fff',
-    paddingBottom: 6,
-    marginBottom: 8,
+    borderBottomColor: '#EDDFD3',
+    gap: 8
   },
   appointmentTitle: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 6,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    color: '#333333',
   },
   appointmentSubtitle: {
     fontSize: 12,
-    color: '#fff',
+    color: '#333',
     marginBottom: 4,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-  },
-  appointmentInfo: {
-    marginBottom: 8,
-  },
-  appointmentClinic: {
-    fontSize: 11,
-    color: '#fff',
-    marginBottom: 6,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
   },
   statusText: {
-    color: '#fff',
+    color: '#333',
     fontWeight: 'bold',
     fontSize: 12,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-  },
-  reminderControls: {
-    marginTop: 6,
   },
   reminderControlsTitle: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
     marginBottom: 6,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
   },
   reminderRow: {
     flexDirection: 'row',
@@ -258,9 +235,8 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   reminderLabel: {
-    fontSize: 11,
-    color: '#fff',
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    fontSize: 14,
+    color: '#333',
     flex: 1,
   },
   activeReminders: {
@@ -292,6 +268,13 @@ const styles = StyleSheet.create({
     color: '#888',
     fontStyle: 'italic',
   },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'center',
+    marginBottom: 16
+  }
 });
 
 export default styles;
