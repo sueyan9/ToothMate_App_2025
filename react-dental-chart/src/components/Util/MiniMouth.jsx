@@ -137,6 +137,7 @@ function WholeMouthMiniModel({ targetToothNumber }) {
             } else {
                 // Apply highlight material to target tooth
                 targetMesh.material = highlightMaterial.clone()
+                previousToothRef.current = targetMesh
                 console.log(`Highlighted tooth ${targetToothNumber} (${nodeName || 'unknown'})`)
             }
         }
