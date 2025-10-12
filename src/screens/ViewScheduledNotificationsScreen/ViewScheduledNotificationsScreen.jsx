@@ -43,7 +43,7 @@ const ViewScheduledNotificationsScreen = () => {
 
 
   useEffect(() => {
-    loadNotifications();
+    //loadNotifications();
     // Test bell colors to verify the logic works
     testBellColors();
   }, []);
@@ -90,7 +90,7 @@ const ViewScheduledNotificationsScreen = () => {
   };
 
   const handleReminderToggle = async (appointment, reminderType, isEnabled) => {
-    const { appointmentDate, appointmentTime, clinicName, reminders } = appointment;
+    const { appointmentDate, appointmentTime, clinicName, reminders, patientInfo } = appointment;
 
     const currentCollapsedState = { ...collapsedSections };
     savedCollapsedState.current = currentCollapsedState;
@@ -102,12 +102,11 @@ const ViewScheduledNotificationsScreen = () => {
         appointmentTime,
         clinicName,
         reminderType,
-        `${appointmentDate}-${appointmentTime}-${clinicName}`
+        `${appointmentDate}-${appointmentTime}-${clinicName}`,
+        patientInfo
       );
       
       if (result.success) {
-        await loadNotifications(); // Refresh the list
-        setCollapsedSections(currentCollapsedState);
       } else {
         Alert.alert('Error', `Failed to schedule ${reminderType} reminder: ${result.message || result.error}`);
       }
@@ -117,9 +116,7 @@ const ViewScheduledNotificationsScreen = () => {
       if (reminder) {
         const result = await cancelNotification(reminder.identifier);
         if (result.success) {
-          setCollapsedSections(currentCollapsedState);
-          await loadNotifications(); // Refresh the list
-          setCollapsedSections(currentCollapsedState);
+          //await loadNotifications(); // Refresh the list
         } else {
           Alert.alert('Error', `Failed to cancel ${reminderType} reminder`);
         }
@@ -317,6 +314,7 @@ const ViewScheduledNotificationsScreen = () => {
           appointmentDate: data.appointmentDate,
           appointmentTime: data.appointmentTime,
           clinicName: data.clinicName,
+          patientInfo: data.patientInfo,
           reminders: {
             '24h': null,
             '1h': null, 
@@ -326,6 +324,8 @@ const ViewScheduledNotificationsScreen = () => {
       }
       
       groups[key].reminders[data.reminderType] = notification;
+      console.log('Notification data:', data);
+      console.log('PatientInfo value:', data.patientInfo, 'Type:', typeof data.patientInfo);
     });
     
     return Object.values(groups);
@@ -413,23 +413,18 @@ const ViewScheduledNotificationsScreen = () => {
                 <View style={styles.section}>
                   <Text style={styles.titleText}>Scheduled Appointment Notifications: {groupedAppointments.length}</Text>
                   {groupedAppointments.map((appointment, index) => {
-                    const { appointmentDate, appointmentTime, clinicName, reminders } = appointment;
+                    const { appointmentDate, appointmentTime, clinicName, reminders, patientInfo } = appointment;
                     const sectionKey = `${appointmentDate}-${appointmentTime}-${clinicName}-${index}`;
                     
                     return (
                       <View key={sectionKey} style={styles.appointmentCard}>
-                        <View style={styles.appointmentHeader}>
-                          <MaterialIcons name='calendar-month' size={24} color='#516287'/>
-                          <Text style={styles.appointmentTitle}>
-                            {appointmentDate} | {appointmentTime}
-                          </Text>
-                          
-                        </View>
+                        <View style={styles.separator}>
                         <View style={styles.appointmentHeader}>
                           <MaterialIcons name='local-hospital' size={24} color='#516287'/>
-                          <Text style={styles.appointmentTitle}>
-                            Go to Appointment
-                          </Text>
+                          <Text style={styles.nameText}>{patientInfo}</Text>
+                          <Text style={styles.timeText}>{appointmentDate} | {appointmentTime}</Text>
+                        </View>
+                          <Text style={styles.locationText}>{clinicName}</Text>
                         </View>
                         
                         {/* Reminder Controls */}
@@ -440,6 +435,7 @@ const ViewScheduledNotificationsScreen = () => {
                             name={!collapsedSections[sectionKey] ? 'expand-more' : 'expand-less'} 
                             size={24} 
                             color='#516287'
+                            style={styles.expandButton}
                           />
                           </TouchableOpacity>
                         <Collapsible collapsed={!collapsedSections[sectionKey]} defaultOpen={false}>

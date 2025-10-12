@@ -213,10 +213,10 @@ class NotificationService {
   }
 
   // Schedule appointment reminder
-  async scheduleAppointmentReminder(appointmentDate, appointmentTime, clinicName, appointmentId = null, userSettings = null) {
+  async scheduleAppointmentReminder(appointmentDate, appointmentTime, clinicName, appointmentId = null, patientInfo, userSettings = null) {
     try {
       console.log('🔔 Starting appointment reminder scheduling...');
-      console.log('📅 Appointment details:', { appointmentDate, appointmentTime, clinicName, appointmentId });
+      console.log('📅 Appointment details:', { appointmentDate, appointmentTime, clinicName, appointmentId, patientInfo });
       console.log('⚙️  User settings:', userSettings);
       
       const appointmentDateTime = new Date(appointmentDate + ' ' + appointmentTime);
@@ -247,6 +247,7 @@ class NotificationService {
             appointmentTime, 
             clinicName, 
             appointmentId,
+            patientInfo,
             reminderType: '24h'
           },
           { trigger: reminderDate24h }
@@ -273,6 +274,7 @@ class NotificationService {
             appointmentTime, 
             clinicName, 
             appointmentId,
+            patientInfo,
             reminderType: '1h'
           },
           { trigger: reminderDate1h }
@@ -299,6 +301,7 @@ class NotificationService {
             appointmentTime, 
             clinicName, 
             appointmentId,
+            patientInfo,
             reminderType: '15m'
           },
           { trigger: reminderDate15m }
@@ -321,10 +324,10 @@ class NotificationService {
   }
 
   // Schedule a specific reminder type for an appointment
-  async scheduleSpecificAppointmentReminder(appointmentDate, appointmentTime, clinicName, reminderType, appointmentId = null) {
+  async scheduleSpecificAppointmentReminder(appointmentDate, appointmentTime, clinicName, reminderType, appointmentId = null, patientInfo) {
     try {
       console.log(`🔔 Scheduling specific ${reminderType} reminder for appointment...`);
-      console.log('📅 Appointment details:', { appointmentDate, appointmentTime, clinicName, appointmentId });
+      console.log('📅 Appointment details:', { appointmentDate, appointmentTime, clinicName, appointmentId, patientInfo });
       
       const appointmentDateTime = new Date(appointmentDate + ' ' + appointmentTime);
       const now = new Date();
@@ -376,6 +379,7 @@ class NotificationService {
           appointmentTime, 
           clinicName, 
           appointmentId,
+          patientInfo,
           reminderType
         },
         { trigger: reminderDate }
@@ -453,6 +457,7 @@ class NotificationService {
               appointmentDate: notificationData.appointmentDate,
               appointmentTime: notificationData.appointmentTime,
               clinicName: notificationData.clinicName,
+              patientInfo: notificationData.patientInfo,
               reminderType: notificationData.reminderType,
               scheduledFor: notification.trigger?.date || notification.trigger
             });

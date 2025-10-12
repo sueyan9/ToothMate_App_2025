@@ -12,6 +12,13 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'center',
+    marginBottom: 16
+  },
   loadingText: {
     marginTop: 16,
     fontSize: 16,

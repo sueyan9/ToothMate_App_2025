@@ -131,7 +131,7 @@ const updateNotificationSettings = (dispatch) => {
 
 // Schedule appointment reminder
 const scheduleAppointmentReminder = (dispatch) => {
-  return async (appointmentDate, appointmentTime, clinicName, appointmentId = null) => {
+  return async (appointmentDate, appointmentTime, clinicName, appointmentId = null, patientInfo) => {
     try {
       // Get settings from AsyncStorage with proper defaults
       const state = await AsyncStorage.getItem('notificationSettings');
@@ -157,6 +157,7 @@ const scheduleAppointmentReminder = (dispatch) => {
         appointmentTime,
         clinicName,
         appointmentId,
+        patientInfo,
         settings // Pass user settings to the service
       );
       
@@ -250,14 +251,15 @@ const getScheduledNotifications = (dispatch) => {
 
 // Schedule specific appointment reminder
 const scheduleSpecificAppointmentReminder = (dispatch) => {
-  return async (appointmentDate, appointmentTime, clinicName, reminderType, appointmentId = null) => {
+  return async (appointmentDate, appointmentTime, clinicName, reminderType, appointmentId = null, patientInfo) => {
     try {
       const result = await notificationService.scheduleSpecificAppointmentReminder(
         appointmentDate,
         appointmentTime,
         clinicName,
         reminderType,
-        appointmentId
+        appointmentId,
+        patientInfo,
       );
       
       if (result.success) {

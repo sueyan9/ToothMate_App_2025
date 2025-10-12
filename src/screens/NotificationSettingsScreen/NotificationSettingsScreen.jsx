@@ -143,6 +143,8 @@ const NotificationSettingsScreen = () => {
           </TouchableOpacity>
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+
+          <Text style={styles.titleText}>Notification Settings </Text>
           {/* Permission Status */}
           <View style={styles.section}>
             <View style={styles.titleRow}>

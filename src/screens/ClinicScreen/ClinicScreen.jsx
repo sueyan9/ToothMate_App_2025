@@ -462,6 +462,8 @@ const ClinicScreen = ({navigation, route}) => {
                     const appointmentTime = dayjs(newAppt.startTime).format('HH:mm');
                     const clinicName = clinic?.name || 'your dental clinic';
                     const appointmentId = response.data?._id; // Get the appointment ID from response
+
+                    const patientInfo = selectedPatient.name || 'Unknown';
                     
                     // Only schedule reminders if user has enabled them
                     if (setReminder) {
@@ -469,7 +471,8 @@ const ClinicScreen = ({navigation, route}) => {
                             appointmentDate, 
                             appointmentTime, 
                             clinicName, 
-                            appointmentId
+                            appointmentId,
+                            patientInfo
                         );
                         
                         if (reminderResult.success) {
@@ -481,18 +484,14 @@ const ClinicScreen = ({navigation, route}) => {
                                 const reminderTypes = reminderResult.notifications?.map(n => n.type).join(', ');
                                 Alert.alert(
                                     'Success', 
-                                    `Appointment added successfully!\n\nReminders scheduled: ${reminderTypes}`,
+                                    `Appointment added successfully for ${patientInfo}!\n\nReminders scheduled: ${reminderTypes}`,
                                     [{ text: 'OK' }]
                                 );
-                            } else {
-                                Alert.alert('Success', 'Appointment added successfully.');
                             }
                         } else {
                             console.warn('Failed to schedule appointment reminder:', reminderResult.error);
                             Alert.alert('Success', 'Appointment added successfully.\n\nNote: Reminders could not be scheduled.');
                         }
-                    } else {
-                        Alert.alert('Success', 'Appointment added successfully.');
                     }
                 } catch (notificationError) {
                     console.warn('Failed to schedule appointment reminder:', notificationError);
@@ -660,8 +659,7 @@ const ClinicScreen = ({navigation, route}) => {
                                                 <Text style={styles.nameText}>{a.patientInfo?.name}</Text>
                                                 <Text style={styles.timeText}>{timeLabel(a.startAt)} | {dateLabel(a.startAt)}</Text>
                                                 </View>
-                                                <Text
-                                                    style={styles.locationText}>{a.clinic?.name || a.clinic?.location}</Text>
+                                                <Text style={styles.locationText}>{a.clinic?.name || a.clinic?.location}</Text>
                                                 <Text style={styles.dentistText}>{a.dentist?.name}</Text>
                                             </View>
                                         </View>

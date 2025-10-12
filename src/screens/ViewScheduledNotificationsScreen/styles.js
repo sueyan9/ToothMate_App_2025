@@ -200,16 +200,43 @@ const styles = StyleSheet.create({
   appointmentHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
-    paddingBottom: 12,
+    marginBottom: 8,
+    gap: 8
+  },
+  separator: {
     borderBottomWidth: 1,
     borderBottomColor: '#EDDFD3',
-    gap: 8
+    marginBottom: 16,
+    paddingBottom: 12,
+  },
+  locationText: {
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 2,
   },
   appointmentTitle: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#333333',
+    overflow: 'hidden',
+    marginRight: 32
+  },
+  nameText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333333',
+  },
+  timeText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'right',
+    marginRight: 0,
+    marginLeft: 'auto'
+  },
+  expandButton: {
+    marginRight: 0,
+    marginLeft: 'auto'
   },
   appointmentSubtitle: {
     fontSize: 12,
@@ -225,7 +252,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 6,
   },
   reminderRow: {
     flexDirection: 'row',
@@ -273,7 +299,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333333',
     textAlign: 'center',
-    marginBottom: 16
+    marginBottom: 32
   }
 });
 
