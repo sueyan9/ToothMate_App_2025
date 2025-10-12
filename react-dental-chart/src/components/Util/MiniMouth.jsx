@@ -62,7 +62,7 @@ export default function MiniMouth({ targetToothNumber }) {
 function WholeMouthMiniModel({ targetToothNumber }) {
     const { scene } = useGLTF(WHOLE_MOUTH_GLB)
     const sceneRef = useRef()
-    const prevToothRef = useRef(null)
+    const previousToothRef = useRef(null)
 
     // Create highlight material only
     const highlightMaterial = useMemo(() => {
