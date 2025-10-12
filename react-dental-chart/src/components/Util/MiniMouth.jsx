@@ -47,7 +47,7 @@ const FDI_TO_NODE = {
 
 export default function MiniMouth({ targetToothNumber }) {
     return (
-        <Canvas style={{ width: '100%', height: '100%' }} camera={{ fov: 35 }}>
+        <Canvas key={targetToothNumber} style={{ width: '100%', height: '100%' }} camera={{ fov: 35 }}>
             <ambientLight intensity={0.9} />
             <directionalLight position={[2, 3, 5]} intensity={1.1} />
             <Suspense fallback={null}>
