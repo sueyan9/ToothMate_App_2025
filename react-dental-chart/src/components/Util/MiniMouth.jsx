@@ -60,37 +60,22 @@ export default function MiniMouth({ targetToothNumber }) {
 }
 
 function WholeMouthMiniModel({ targetToothNumber }) {
-    const { scene } = useGLTF(WHOLE_MOUTH_GLB)
+    const { scene: originalScene } = useGLTF(WHOLE_MOUTH_GLB)
     const sceneRef = useRef()
-
-    // Store original materials ONCE on mount
-    const originalMaterials = useRef(new Map())
-    const materialsInitialized = useRef(false)
+    const clonedSceneRef = useRef(null)
 
     useEffect(() => {
+        // Clone the scene fresh each time
+        if (originalScene) {
+            clonedSceneRef.current = originalScene.clone(true)
+        }
+    }, [originalScene])
+
+    useEffect(() => {
+        const scene = clonedSceneRef.current
         if (!scene) return
 
-        // Initialize original materials map ONCE
-        if (!materialsInitialized.current) {
-            scene.traverse((object) => {
-                if (object.isMesh && object.material) {
-                    originalMaterials.current.set(object.uuid, object.material.clone())
-                }
-            })
-            materialsInitialized.current = true
-        }
-
-        // RESET ALL TEETH to original materials first
-        scene.traverse((object) => {
-            if (object.isMesh) {
-                const originalMaterial = originalMaterials.current.get(object.uuid)
-                if (originalMaterial) {
-                    object.material = originalMaterial.clone()
-                }
-            }
-        })
-
-        // Now highlight ONLY the target tooth
+        // Highlight the target tooth
         if (targetToothNumber) {
             const nodeName = FDI_TO_NODE[targetToothNumber]
             let targetMesh = null
@@ -123,9 +108,9 @@ function WholeMouthMiniModel({ targetToothNumber }) {
                 targetMesh.material = highlightMaterial
             }
         }
-    }, [scene, targetToothNumber])
+    }, [targetToothNumber])
 
-    return <primitive ref={sceneRef} object={scene} />
+    return clonedSceneRef.current ? <primitive ref={sceneRef} object={clonedSceneRef.current} /> : null
 }
 
 useGLTF.preload(WHOLE_MOUTH_GLB)
