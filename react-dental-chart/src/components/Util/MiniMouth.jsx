@@ -62,31 +62,26 @@ export default function MiniMouth({ targetToothNumber }) {
 function WholeMouthMiniModel({ targetToothNumber }) {
     const { scene: originalScene } = useGLTF(WHOLE_MOUTH_GLB)
     const sceneRef = useRef()
-    const clonedSceneRef = useRef(null)
+    const [clonedScene, setClonedScene] = React.useState(null)
 
     useEffect(() => {
-        // Clone the scene fresh each time
-        if (originalScene) {
-            clonedSceneRef.current = originalScene.clone(true)
-        }
-    }, [originalScene])
+        if (!originalScene) return
 
-    useEffect(() => {
-        const scene = clonedSceneRef.current
-        if (!scene) return
-
-        // Highlight the target tooth
+        // Clone the scene fresh
+        const newScene = originalScene.clone(true)
+        
+        // Highlight the target tooth in the cloned scene
         if (targetToothNumber) {
             const nodeName = FDI_TO_NODE[targetToothNumber]
             let targetMesh = null
 
             if (nodeName) {
-                targetMesh = scene.getObjectByName(nodeName)
+                targetMesh = newScene.getObjectByName(nodeName)
             }
 
             if (!targetMesh) {
                 const fdiNum = String(targetToothNumber)
-                scene.traverse((object) => {
+                newScene.traverse((object) => {
                     if (!targetMesh && object.isMesh && object.name) {
                         if (object.name.includes(fdiNum)) {
                             targetMesh = object
@@ -108,9 +103,11 @@ function WholeMouthMiniModel({ targetToothNumber }) {
                 targetMesh.material = highlightMaterial
             }
         }
-    }, [targetToothNumber])
 
-    return clonedSceneRef.current ? <primitive ref={sceneRef} object={clonedSceneRef.current} /> : null
+        setClonedScene(newScene)
+    }, [originalScene, targetToothNumber])
+
+    return clonedScene ? <primitive ref={sceneRef} object={clonedScene} /> : null
 }
 
 useGLTF.preload(WHOLE_MOUTH_GLB)
