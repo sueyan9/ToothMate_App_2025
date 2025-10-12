@@ -253,7 +253,7 @@ const BackButton = () => {
   return (
       <button
           onClick={() => navigate('/')}
-          style={{ position: 'fixed', top: '130px', left: '24px', zIndex: 1000, padding: '10px 15px', backgroundColor: '#E9F1F8', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
+          style={{ position: 'fixed', top: '32px', left: '24px', zIndex: 1000, padding: '10px 15px', backgroundColor: '#E9F1F8', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
           aria-label="Back"
       >
         <ArrowLeft size={24} color={'#333333'} />
@@ -272,7 +272,7 @@ const MouthWindow = () => {
     <div
     style={{
         position: 'absolute',
-        right: -20,
+        right: -40,
         top: '5vh',
         width: 100,
         height: 100,
