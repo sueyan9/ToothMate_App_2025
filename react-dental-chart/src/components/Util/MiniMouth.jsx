@@ -7,7 +7,7 @@ const WHOLE_MOUTH_GLB = `${process.env.PUBLIC_URL}/assets/adult_whole_mouth.glb`
 
 // FDI tooth number to GLTF node name mapping
 const FDI_TO_NODE = {
-    // LOWER LEFT (30s)
+    // LOWER LEFT (30s))
     31: 'lower_left_central_incisor',
     32: 'lower_left_lateral_incisor',
     33: 'lower_left_canine',
