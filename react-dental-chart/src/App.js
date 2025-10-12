@@ -36,6 +36,7 @@ import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
 
 // ====================== Component Imports ======================
 import FilterMenu from './components/FilterMenu';
+import MiniMouth from './components/Util/MiniMouth';
 import WholeMouth from './components/WholeMouth';
 import WholeMouthKid from './components/WholeMouthKid';
 
@@ -251,12 +252,90 @@ const BackButton = () => {
   return (
       <button
           onClick={() => navigate('/')}
-          style={{ position: 'fixed', top: '130px', left: '24px', zIndex: 1000, padding: '10px 15px', backgroundColor: '#E9F1F8', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
+          style={{ position: 'fixed', top: '32px', left: '24px', zIndex: 1000, padding: '10px 15px', backgroundColor: '#E9F1F8', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
           aria-label="Back"
       >
         <ArrowLeft size={24} color={'#333333'} />
       </button>
   );
+};
+
+const getToothNumber = (path) => {
+  const toothName = path.split('/').pop();  
+
+  const toothMap = {
+    'upper-right-central-incisor': 11,
+    'upper-right-lateral-incisor': 12,
+    'upper-right-canine': 13,
+    'upper-right-first-premolar': 14,
+    'upper-right-second-premolar': 15,
+    'upper-right-first-molar': 16,
+    'upper-right-second-molar': 17,
+    'upper-right-third-molar': 18,
+    
+    // Upper left (quadrant 2)
+    'upper-left-central-incisor': 21,
+    'upper-left-lateral-incisor': 22,
+    'upper-left-canine': 23,
+    'upper-left-first-premolar': 24,
+    'upper-left-second-premolar': 25,
+    'upper-left-first-molar': 26,
+    'upper-left-second-molar': 27,
+    'upper-left-third-molar': 28,
+    
+    // Lower left (quadrant 3)
+    'lower-left-central-incisor': 31,
+    'lower-left-lateral-incisor': 32,
+    'lower-left-canine': 33,
+    'lower-left-first-premolar': 34,
+    'lower-left-second-premolar': 35,
+    'lower-left-first-molar': 36,
+    'lower-left-second-molar': 37,
+    'lower-left-third-molar': 38,
+    
+    // Lower right (quadrant 4)
+    'lower-right-central-incisor': 41,
+    'lower-right-lateral-incisor': 42,
+    'lower-right-canine': 43,
+    'lower-right-first-premolar': 44,
+    'lower-right-second-premolar': 45,
+    'lower-right-first-molar': 46,
+    'lower-right-second-molar': 47,
+    'lower-right-third-molar': 48,
+  };
+
+  return toothMap[toothName] || null; 
+};
+
+const MouthWindow = () => {
+  const location = useLocation();
+  const isToothPage = location.pathname !== '/';
+
+  if (!isToothPage) return null;
+
+  const toothNumber = getToothNumber(location.pathname);
+
+  return (
+    <div
+    style={{
+        position: 'absolute',
+        right: 0,
+        top: '5vh',
+        width: 100,
+        height: 100,
+        background: 'rgba(240, 248, 255, 0)',
+        borderRadius: 10,
+        boxShadow:'none', //'0 2px 6px rgba(0,0,0,0.1)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(2px)',
+        zIndex: 1000,
+        pointerEvents: 'none',
+    }}>
+      <MiniMouth key={toothNumber} targetToothNumber={toothNumber} />
+    </div>
+  )
 };
 
 export default function App() {
@@ -450,6 +529,7 @@ export default function App() {
               <Route path="/upper-right-lateral-incisor" element={<UpperRightLateralIncisor />} />
               <Route path="/upper-right-central-incisor" element={<UpperRightCentralIncisor />} />
             </Routes>
+            <MouthWindow/>
           </div>
         </Router>
       </div>

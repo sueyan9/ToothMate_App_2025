@@ -1,14 +1,13 @@
+import { Bounds, useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { Suspense, useEffect, useMemo, useRef } from 'react'
-import { Bounds } from '@react-three/drei'
-import { useGLTF } from '@react-three/drei'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 const WHOLE_MOUTH_GLB = `${process.env.PUBLIC_URL}/assets/adult_whole_mouth.glb`
 
 // FDI tooth number to GLTF node name mapping
 const FDI_TO_NODE = {
-    // LOWER LEFT (30s)
+    // LOWER LEFT (30s))
     31: 'lower_left_central_incisor',
     32: 'lower_left_lateral_incisor',
     33: 'lower_left_canine',
@@ -48,7 +47,7 @@ const FDI_TO_NODE = {
 
 export default function MiniMouth({ targetToothNumber }) {
     return (
-        <Canvas style={{ width: '100%', height: '100%' }} camera={{ fov: 35 }}>
+        <Canvas key={targetToothNumber} style={{ width: '100%', height: '100%' }} camera={{ fov: 35 }}>
             <ambientLight intensity={0.9} />
             <directionalLight position={[2, 3, 5]} intensity={1.1} />
             <Suspense fallback={null}>
@@ -61,63 +60,30 @@ export default function MiniMouth({ targetToothNumber }) {
 }
 
 function WholeMouthMiniModel({ targetToothNumber }) {
-    const { scene } = useGLTF(WHOLE_MOUTH_GLB)
+    const gltf = useGLTF(WHOLE_MOUTH_GLB)
+    const [scene, setScene] = useState(null)
     const sceneRef = useRef()
 
-    // Create highlight material only
-    const highlightMaterial = useMemo(() => {
-        const material = new THREE.MeshStandardMaterial({
-            color: '#ff9900',
-            emissive: '#ff9900',
-            emissiveIntensity: 0.6
-        })
-        return material
-    }, [])
-
-    // Store original materials for restoration
-    const originalMaterials = useRef(new Map())
-
     useEffect(() => {
-        if (!scene || !sceneRef.current) return
-
-        // First, store all original materials if not already stored
-        scene.traverse((object) => {
-            if (object.isMesh && object.material && !originalMaterials.current.has(object.uuid)) {
-                originalMaterials.current.set(object.uuid, object.material)
-            }
-        })
-
-        // Reset all meshes to their original materials (no dim material)
-        scene.traverse((object) => {
-            if (object.isMesh && object.material) {
-                const originalMaterial = originalMaterials.current.get(object.uuid)
-                if (originalMaterial) {
-                    // Reset to original material instead of dim material
-                    object.material = originalMaterial
-                }
-            }
-        })
-
-        // Find and highlight target tooth
+        // Always clone the scene to get a fresh copy with original materials
+        const clonedScene = gltf.scene.clone(true)
+        
+        // Highlight the target tooth
         if (targetToothNumber) {
             const nodeName = FDI_TO_NODE[targetToothNumber]
             let targetMesh = null
 
-            // Method 1: Try exact node name match
             if (nodeName) {
-                targetMesh = scene.getObjectByName(nodeName)
+                targetMesh = clonedScene.getObjectByName(nodeName)
             }
 
-            // Method 2: Try regex matching tooth number from mesh name
             if (!targetMesh) {
                 const fdiNum = String(targetToothNumber)
-                scene.traverse((object) => {
+                clonedScene.traverse((object) => {
                     if (!targetMesh && object.isMesh && object.name) {
-                        // Check if the object name contains the FDI number
                         if (object.name.includes(fdiNum)) {
                             targetMesh = object
                         }
-                        // Also try regex matching
                         const numMatch = object.name.match(/\d+/)
                         if (numMatch && numMatch[0] === fdiNum) {
                             targetMesh = object
@@ -126,25 +92,20 @@ function WholeMouthMiniModel({ targetToothNumber }) {
                 })
             }
 
-            if (!targetMesh) {
-                console.warn(`Could not find tooth mesh for FDI number ${targetToothNumber}`)
-                // Log available mesh names for debugging
-                const meshNames = []
-                scene.traverse((object) => {
-                    if (object.isMesh) {
-                        meshNames.push(object.name)
-                    }
+            if (targetMesh) {
+                const highlightMaterial = new THREE.MeshStandardMaterial({
+                    color: '#ff9900',
+                    emissive: '#ff9900',
+                    emissiveIntensity: 0.6
                 })
-                console.log('Available mesh names:', meshNames)
-            } else {
-                // Apply highlight material to target tooth
-                targetMesh.material = highlightMaterial.clone()
-                console.log(`Highlighted tooth ${targetToothNumber} (${nodeName || 'unknown'})`)
+                targetMesh.material = highlightMaterial
             }
         }
-    }, [scene, targetToothNumber, highlightMaterial])
 
-    return <primitive ref={sceneRef} object={scene} />
+        setScene(clonedScene)
+    }, [gltf.scene, targetToothNumber])
+
+    return scene ? <primitive ref={sceneRef} object={scene} /> : null
 }
 
 useGLTF.preload(WHOLE_MOUTH_GLB)
