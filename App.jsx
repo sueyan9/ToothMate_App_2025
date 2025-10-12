@@ -3,7 +3,7 @@ import { useFonts, VarelaRound_400Regular } from '@expo-google-fonts/varela-roun
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image, View } from 'react-native';
+import { Alert, Image, View } from 'react-native';
 
 
 // import all screens
@@ -53,6 +53,7 @@ import { Provider as UserProvider } from './src/context/UserContext/UserContext'
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
+import { usePreventScreenCapture } from 'expo-screen-capture';
 import { ActivityIndicator } from 'react-native';
 import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
@@ -398,6 +399,9 @@ const AppNavigator = () => {
 
 // Wrap the app with all providers - MOVED useFonts HERE!
 export default function App() {
+    //stops screenshots
+    usePreventScreenCapture();
+
     // ADDED: Load fonts inside the component
     const [fontsLoaded] = useFonts({
         Righteous_400Regular,
@@ -412,6 +416,11 @@ export default function App() {
             </View>
         );
     }
+
+    setTimeout(() => {
+        Alert.alert("Restricted Access");
+        return null;
+    }, 2000);
 
     return (
         <AuthProvider>
