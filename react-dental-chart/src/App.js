@@ -37,6 +37,7 @@ import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
 
 // ====================== Component Imports ======================
 import FilterMenu from './components/FilterMenu';
+import MiniMouth from './components/Util/MiniMouth';
 import WholeMouth from './components/WholeMouth';
 import WholeMouthKid from './components/WholeMouthKid';
 
@@ -260,6 +261,37 @@ const BackButton = () => {
   );
 };
 
+const MouthWindow = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isToothPage = location.pathname !== '/';
+
+  if (!isToothPage) return null;
+
+  return (
+    <div
+    style={{
+        position: 'absolute',
+        right: -20,
+        top: '5vh',
+        width: 120,
+        height: 120,
+        background: 'rgba(240, 248, 255, 0)',
+        borderRadius: 10,
+        boxShadow:'none', //'0 2px 6px rgba(0,0,0,0.1)',
+        padding: 2,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(2px)',
+        zIndex: 1000,
+        pointerEvents: 'none',
+    }}>
+      <MiniMouth targetToothNumber={33} />
+    </div>
+  )
+};
+
 export default function App() {
   const [userId] = useUserId();
 
@@ -451,6 +483,7 @@ export default function App() {
               <Route path="/upper-right-lateral-incisor" element={<UpperRightLateralIncisor />} />
               <Route path="/upper-right-central-incisor" element={<UpperRightCentralIncisor />} />
             </Routes>
+            <MouthWindow/>
           </div>
         </Router>
       </div>
