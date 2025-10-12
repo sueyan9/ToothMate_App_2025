@@ -218,8 +218,9 @@ const UserAccountScreen = ({ navigation }) => {
   ];
 
 const {
-    state: { details, clinic, canDisconnect, selectedProfilePicture, currentAccountType },
+    state: { details, childDetails, clinic, canDisconnect, selectedProfilePicture, currentAccountType },
     getUser,
+    getChild,
     getDentalClinic,
     checkCanDisconnect,
     setProfilePicture,
@@ -419,31 +420,6 @@ const {
   const [parentalCode, setParentalCode] = useState('');
   const [confirmParentalCode, setConfirmParentalCode] = useState('');
 
-  // Instagram-style profiles for switching
-  const [profiles] = useState([
-    {
-      id: 'current',
-      name: `${details.firstname && details.lastname ? `${details.firstname} ${details.lastname}` : 'Your Account'}`,
-      username: details.email || 'user@email.com',
-      profilePicture: selectedProfilePicture,
-      isCurrentUser: true
-    },
-    {
-      id: 'sarah',
-      name: 'Sarah M',
-      username: 'sarah.m@email.com',
-      profilePicture: 2,
-      isCurrentUser: false
-    },
-    {
-      id: 'adam',
-      name: 'Adam M', 
-      username: 'adam.m@email.com',
-      profilePicture: 5,
-      isCurrentUser: false
-    }
-  ]);
-
   useEffect(() => {
     // Force re-render when language changes
     setRefreshKey(prev => prev + 1);
@@ -469,6 +445,7 @@ const {
             setIsLoading(true);
             try {
                 await getUser();
+                await getChild();
                 await getDentalClinic();
                 await checkCanDisconnect();
             } catch (error) {
@@ -949,17 +926,22 @@ const {
   };
 
   // Instagram-style profile switching handler
-  const handleProfileSwitch = (profileId) => {
-    if (profileId === 'current') {
+  const handleProfileSwitch = (childId) => {
+    if (childId === 'current') {
       setShowProfileSwitchModal(false);
       return;
     }
     
-    const selectedProfile = profiles.find(p => p.id === profileId);
+    const selectedChild = childDetails.find(c => (c._id || c.id) === childId);
+
+    if (!selectedChild) {
+      Alert.alert('Error', 'Child account not found');
+      return;
+    }
     
     Alert.alert(
       'Switch Profile',
-      `Switch to ${selectedProfile?.name}?`,
+      `Switch to ${selectedChild.firstname} ${selectedChild.lastname}'s account?`,
       [
         {
           text: 'Cancel',
@@ -971,14 +953,14 @@ const {
             setShowProfileSwitchModal(false);
             
             // Update the current account in context
-            await setCurrentAccount(profileId, selectedProfile);
+            await setCurrentAccount(childId, selectedChild);
 
-            // ADDED: store active child profile meta so ChildAccount can show correct name & picture
+            // Store active child profile meta
             try {
-              await AsyncStorage.setItem('activeProfileId', profileId);
-              await AsyncStorage.setItem('activeProfileName', selectedProfile?.name || '');
-              await AsyncStorage.setItem('activeProfileUsername', selectedProfile?.username || '');
-              await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedProfile?.profilePicture ?? -1));
+              await AsyncStorage.setItem('activeProfileId', childId);
+              await AsyncStorage.setItem('activeProfileName', `${selectedChild.firstname} ${selectedChild.lastname}`);
+              await AsyncStorage.setItem('activeProfileUsername', selectedChild.email || selectedChild.nhi || '');
+              await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedChild.profilePicture ?? -1));
               await AsyncStorage.setItem('currentAccountType', 'child');
               // Ensure parentId is available for returning
               const currentId = await AsyncStorage.getItem('id');
@@ -989,14 +971,11 @@ const {
               console.error('Error saving active child profile to storage:', e);
             }
             
-            // Navigate to child flow for Sarah and Adam
-            if (profileId === 'sarah' || profileId === 'adam') {
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'childFlow' }],
-              });
-            }
-            // Current user is already in mainFlow, so no navigation needed
+            // Navigate to child flow
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'childFlow' }],
+            });
           }
         }
       ]
@@ -1584,26 +1563,42 @@ const {
 
             {/* Other Accounts Section */}
             <View style={styles.otherAccountsSection}>
-              {profiles.filter(profile => !profile.isCurrentUser).map((profile) => (
-                <TouchableOpacity
-                  key={profile.id}
+              {childDetails && childDetails.length > 0 ? (
+                childDetails.map((child) => (
+                  <TouchableOpacity
+                  key={child._id || child.id}
                   style={styles.accountRow}
-                  onPress={() => handleProfileSwitch(profile.id)}
+                  onPress={() => handleProfileSwitch(child._id || child.id)}
                 >
                   <View style={styles.accountInfo}>
                     <View style={styles.accountAvatar}>
-                      <Image 
-                        source={profilePictures[profile.profilePicture]} 
-                        style={styles.accountImage} 
-                      />
-                    </View>
-                    <View style={styles.accountText}>
-                      <Text style={styles.accountName}>{profile.name}</Text>
-                      <Text style={styles.accountUsername}>{profile.username}</Text>
-                    </View>
+                      {child.profilePicture !== null && child.profilePicture !== undefined ? (
+                        <Image 
+                          source={profilePictures[child.profilePicture]} 
+                          style={styles.accountImage} 
+                        />
+                      ) : (
+                      <Text style={styles.accountInitials}>
+                        {getInitials(child.firstname, child.lastname)}
+                      </Text> )}
                   </View>
-                </TouchableOpacity>
-              ))}
+                  <View style={styles.accountText}>
+                    <Text style={styles.accountName}>
+                      {child.firstname && child.lastname 
+                        ? `${child.firstname} ${child.lastname}` 
+                        : 'Child Account'}
+                    </Text>
+                    <Text style={styles.accountUsername}>
+                      {child.email || child.nhi || 'Child'}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+                ))) : (
+                  <View style={styles.noChildrenContainer}>
+                    <Text style={styles.noChildrenText}>No child accounts linked</Text>
+                  </View>
+                )}
             </View>
 
             {/* Add Account Section */}
