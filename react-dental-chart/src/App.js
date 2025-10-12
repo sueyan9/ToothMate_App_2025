@@ -272,7 +272,7 @@ const MouthWindow = () => {
     <div
     style={{
         position: 'absolute',
-        right: -40,
+        right: 0,
         top: '5vh',
         width: 100,
         height: 100,
