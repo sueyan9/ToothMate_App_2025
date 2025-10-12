@@ -1,7 +1,6 @@
+import { Bounds, useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo, useRef } from 'react'
-import { Bounds } from '@react-three/drei'
-import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 
 const WHOLE_MOUTH_GLB = `${process.env.PUBLIC_URL}/assets/adult_whole_mouth.glb`
@@ -63,6 +62,7 @@ export default function MiniMouth({ targetToothNumber }) {
 function WholeMouthMiniModel({ targetToothNumber }) {
     const { scene } = useGLTF(WHOLE_MOUTH_GLB)
     const sceneRef = useRef()
+    const prevToothRef = useRef(null)
 
     // Create highlight material only
     const highlightMaterial = useMemo(() => {
@@ -88,15 +88,13 @@ function WholeMouthMiniModel({ targetToothNumber }) {
         })
 
         // Reset all meshes to their original materials (no dim material)
-        scene.traverse((object) => {
-            if (object.isMesh && object.material) {
-                const originalMaterial = originalMaterials.current.get(object.uuid)
-                if (originalMaterial) {
-                    // Reset to original material instead of dim material
-                    object.material = originalMaterial
-                }
+        if (previousToothRef.current) {
+            const originalMaterial = originalMaterials.current.get(previousToothRef.current.uuid)
+            if (originalMaterial) {
+                previousToothRef.current.material = originalMaterial
             }
-        })
+            previousToothRef.current = null
+        }
 
         // Find and highlight target tooth
         if (targetToothNumber) {
