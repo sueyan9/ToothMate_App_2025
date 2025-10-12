@@ -314,6 +314,8 @@ const MouthWindow = () => {
 
   if (!isToothPage) return null;
 
+  const toothNumber = getToothNumber(location.pathname);
+
   return (
     <div
     style={{
@@ -332,7 +334,7 @@ const MouthWindow = () => {
         zIndex: 1000,
         pointerEvents: 'none',
     }}>
-      <MiniMouth targetToothNumber={getToothNumber(location.pathname)} />
+      <MiniMouth key={toothNumber} targetToothNumber={toothNumber} />
     </div>
   )
 };
