@@ -261,9 +261,55 @@ const BackButton = () => {
   );
 };
 
+const getToothNumber = (path) => {
+  const toothName = path.split('/').pop();  
+
+  const toothMap = {
+    'upper-right-central-incisor': 11,
+    'upper-right-lateral-incisor': 12,
+    'upper-right-canine': 13,
+    'upper-right-first-premolar': 14,
+    'upper-right-second-premolar': 15,
+    'upper-right-first-molar': 16,
+    'upper-right-second-molar': 17,
+    'upper-right-third-molar': 18,
+    
+    // Upper left (quadrant 2)
+    'upper-left-central-incisor': 21,
+    'upper-left-lateral-incisor': 22,
+    'upper-left-canine': 23,
+    'upper-left-first-premolar': 24,
+    'upper-left-second-premolar': 25,
+    'upper-left-first-molar': 26,
+    'upper-left-second-molar': 27,
+    'upper-left-third-molar': 28,
+    
+    // Lower left (quadrant 3)
+    'lower-left-central-incisor': 31,
+    'lower-left-lateral-incisor': 32,
+    'lower-left-canine': 33,
+    'lower-left-first-premolar': 34,
+    'lower-left-second-premolar': 35,
+    'lower-left-first-molar': 36,
+    'lower-left-second-molar': 37,
+    'lower-left-third-molar': 38,
+    
+    // Lower right (quadrant 4)
+    'lower-right-central-incisor': 41,
+    'lower-right-lateral-incisor': 42,
+    'lower-right-canine': 43,
+    'lower-right-first-premolar': 44,
+    'lower-right-second-premolar': 45,
+    'lower-right-first-molar': 46,
+    'lower-right-second-molar': 47,
+    'lower-right-third-molar': 48,
+  };
+
+  return toothMap[toothName] || null; 
+};
+
 const MouthWindow = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const isToothPage = location.pathname !== '/';
 
   if (!isToothPage) return null;
@@ -286,7 +332,7 @@ const MouthWindow = () => {
         zIndex: 1000,
         pointerEvents: 'none',
     }}>
-      <MiniMouth targetToothNumber={33} />
+      <MiniMouth targetToothNumber={getToothNumber(location.pathname)} />
     </div>
   )
 };
