@@ -62,53 +62,35 @@ export default function MiniMouth({ targetToothNumber }) {
 function WholeMouthMiniModel({ targetToothNumber }) {
     const { scene } = useGLTF(WHOLE_MOUTH_GLB)
     const sceneRef = useRef()
-    const previousToothNumberRef = useRef(null) // Store tooth NUMBER, not mesh reference
 
-    // Store original materials for restoration (only once, on first render)
+    // Store original materials ONCE on mount
     const originalMaterials = useRef(new Map())
+    const materialsInitialized = useRef(false)
 
     useEffect(() => {
         if (!scene) return
 
         // Initialize original materials map ONCE
-        if (originalMaterials.current.size === 0) {
+        if (!materialsInitialized.current) {
             scene.traverse((object) => {
                 if (object.isMesh && object.material) {
-                    // Store a clone of the original material
                     originalMaterials.current.set(object.uuid, object.material.clone())
                 }
             })
+            materialsInitialized.current = true
         }
 
-        // Reset the PREVIOUS tooth (if any) back to its original material
-        if (previousToothNumberRef.current !== null) {
-            const prevNodeName = FDI_TO_NODE[previousToothNumberRef.current]
-            let prevMesh = null
-            
-            if (prevNodeName) {
-                prevMesh = scene.getObjectByName(prevNodeName)
-            }
-            
-            if (!prevMesh) {
-                const prevFdiNum = String(previousToothNumberRef.current)
-                scene.traverse((object) => {
-                    if (!prevMesh && object.isMesh && object.name) {
-                        if (object.name.includes(prevFdiNum)) {
-                            prevMesh = object
-                        }
-                    }
-                })
-            }
-            
-            if (prevMesh) {
-                const originalMaterial = originalMaterials.current.get(prevMesh.uuid)
+        // RESET ALL TEETH to original materials first
+        scene.traverse((object) => {
+            if (object.isMesh) {
+                const originalMaterial = originalMaterials.current.get(object.uuid)
                 if (originalMaterial) {
-                    prevMesh.material = originalMaterial.clone()
+                    object.material = originalMaterial.clone()
                 }
             }
-        }
+        })
 
-        // Now highlight the NEW target tooth
+        // Now highlight ONLY the target tooth
         if (targetToothNumber) {
             const nodeName = FDI_TO_NODE[targetToothNumber]
             let targetMesh = null
@@ -139,10 +121,7 @@ function WholeMouthMiniModel({ targetToothNumber }) {
                     emissiveIntensity: 0.6
                 })
                 targetMesh.material = highlightMaterial
-                previousToothNumberRef.current = targetToothNumber // Store the tooth NUMBER
             }
-        } else {
-            previousToothNumberRef.current = null
         }
     }, [scene, targetToothNumber])
 
