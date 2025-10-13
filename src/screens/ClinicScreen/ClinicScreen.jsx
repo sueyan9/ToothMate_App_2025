@@ -736,7 +736,7 @@ const ClinicScreen = ({navigation, route}) => {
 
                 {/* Content area below calendar */}
                 <View style={styles.contentContainer}>
-                    <View style={{flexDirection: 'row', gap: 8, marginBottom: 8, marginTop: -8}}>
+                    <View style={{flexDirection: 'row', gap: 8, marginBottom: 8, marginTop: -8, flex: 1, justifyContent: 'space-evenly'}}>
                         <TouchableOpacity
                             style={[
                                 styles.filterButton,
