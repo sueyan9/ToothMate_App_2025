@@ -3,7 +3,7 @@ import { useFonts, VarelaRound_400Regular } from '@expo-google-fonts/varela-roun
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Alert, Image, View } from 'react-native';
+import { Image, View } from 'react-native';
 
 
 // import all screens
@@ -53,10 +53,13 @@ import { Provider as UserProvider } from './src/context/UserContext/UserContext'
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
+import { usePreventScreenCapture } from 'expo-screen-capture';
+import { useContext, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
 import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
+import { SessionContext, SessionProvider } from './src/context/SessionContext/SessionContext';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
 
 
@@ -167,6 +170,12 @@ const ProfileStack = () => {
 //  Main flow with bottom tab navigation
 const MainFlow = () => {
     const { t, currentLanguage } = useTranslation();
+    const { startSession } = useContext(SessionContext);
+    
+    useEffect(() => {
+        // Start session when user enters the main app
+        startSession();
+    }, []);
     
     return (
         <Tab.Navigator 
@@ -399,7 +408,7 @@ const AppNavigator = () => {
 // Wrap the app with all providers - MOVED useFonts HERE!
 export default function App() {
     //stops screenshots
-    //usePreventScreenCapture();
+    usePreventScreenCapture();
 
     // ADDED: Load fonts inside the component
     const [fontsLoaded] = useFonts({
@@ -416,12 +425,11 @@ export default function App() {
         );
     }
 
-    setTimeout(() => {
-        Alert.alert("Restricted Access");
-        return null;
-    }, 2000);
-
     return (
+        <SessionProvider onSessionExpired={() => {
+            navigationRef.navigate('loginFlow', { screen: 'Signup' });
+            console.log('Session expired - redirect to login');
+        }}>
         <AuthProvider>
             <ClinicProvider>
                 <EducationProvider>
@@ -439,5 +447,6 @@ export default function App() {
                 </EducationProvider>
             </ClinicProvider>
         </AuthProvider>
+        </SessionProvider>
     );
 }
