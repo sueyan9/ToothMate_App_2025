@@ -409,9 +409,9 @@ const styles = StyleSheet.create({
     reminderContainer: {
         backgroundColor: '#ffffffff',
         borderRadius: 8,
-        padding: 12,
+        padding: 8,
         borderWidth: 1,
-        borderColor: '#e9ecef',
+        borderColor: '#e1e1e1ff',
     },
     reminderRow: {
         flexDirection: 'row',
@@ -442,6 +442,25 @@ const styles = StyleSheet.create({
     reminderOptionText: {
         fontSize: 15,
         color: '#333',
+    },
+    filterButton: {
+      backgroundColor: 'transparent',
+      color: '#333333',
+      borderColor: '#516287',
+      borderWidth: 2.5,
+      padding: 8,
+      borderStyle: 'solid',
+      borderRadius: 20,
+      cursor: 'pointer',
+      marginRight: 10,
+      marginBottom: 0,
+      fontWeight: 'bold',
+      transition: 'all 0.3s ease-in-out',
+      outline: 'none',
+    },
+    filterButtonActive: {
+      backgroundColor: '#EDDFD3',
+      borderColor: '#875B51',
     },
 });
 
