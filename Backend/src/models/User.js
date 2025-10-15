@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
+  profile_picture: {
+    type: Number,
+    default: null
+  }
 });
 
 //Pre-save hook that automatically runs before we save a user

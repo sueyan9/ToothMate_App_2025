@@ -960,7 +960,7 @@ const {
               await AsyncStorage.setItem('activeProfileId', childId);
               await AsyncStorage.setItem('activeProfileName', `${selectedChild.firstname} ${selectedChild.lastname}`);
               await AsyncStorage.setItem('activeProfileUsername', selectedChild.email || selectedChild.nhi || '');
-              await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedChild.profilePicture ?? -1));
+              await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedChild.profile_picture ?? -1));
               await AsyncStorage.setItem('currentAccountType', 'child');
               // Ensure parentId is available for returning
               const currentId = await AsyncStorage.getItem('id');
@@ -1572,9 +1572,9 @@ const {
                 >
                   <View style={styles.accountInfo}>
                     <View style={styles.accountAvatar}>
-                      {child.profilePicture !== null && child.profilePicture !== undefined ? (
+                      {child.profile_picture !== null && child.profile_picture !== undefined ? (
                         <Image 
-                          source={profilePictures[child.profilePicture]} 
+                          source={profilePictures[child.profile_picture]} 
                           style={styles.accountImage} 
                         />
                       ) : (

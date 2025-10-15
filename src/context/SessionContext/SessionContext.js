@@ -10,8 +10,8 @@ dayjs.extend(tz);
 
 const SessionContext = createContext();
 
-const SESSION_DURATION = 1 * 60 * 1000; // 5 minutes in milliseconds
-const WARNING_TIME = 1 * 60 * 1000; // Show warning 1 minute before expiry
+const SESSION_DURATION = 10000 * 60 * 1000; // 5 minutes in milliseconds
+const WARNING_TIME = 100 * 60 * 1000; // Show warning 1 minute before expiry
 const SESSION_KEY = '@session_start_time';
 
 const sessionReducer = (state, action) => {

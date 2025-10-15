@@ -322,6 +322,32 @@ router.put("/changePassword/:id", async (req, res) => {
   }
 });
 
+// get saved profile picture
+router.put("/updateProfilePicture/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { profile_picture } = req.body;
+    
+    const user = await User.findByIdAndUpdate(
+      id,
+      { profile_picture },
+      { new: true }
+    );
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    res.json({ 
+      success: true, 
+      profile_picture: user.profile_picture 
+    });
+  } catch (error) {
+    console.error("Error updating profile picture:", error);
+    res.status(500).json({ error: "Failed to update profile picture" });
+  }
+});
+
 // Route to check if NHI already exists
 router.get("/checkNhi/:nhi", async (req, res) => {
   try {

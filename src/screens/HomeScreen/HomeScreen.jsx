@@ -108,8 +108,7 @@ const HomeScreen = () => {
         state: { details, selectedProfilePicture, childDetails }, 
         getUser, 
         getDentalClinic, 
-        checkCanDisconnect,
-        getProfilePicture
+        checkCanDisconnect
         } = useContext(UserContext);
 
         const {
@@ -127,7 +126,6 @@ const HomeScreen = () => {
                 await getUser();
                 await getDentalClinic();
                 await checkCanDisconnect();
-                await getProfilePicture();
 
                 if(details?.nhi) {
                     await getNextAppointment(details, childDetails);
@@ -209,7 +207,7 @@ const HomeScreen = () => {
                             <TouchableOpacity onPress={() => navigation.navigate('Bookings')}>
                                 <Text style={styles.appointmentText}>{new Date(nextAppointment.startAt).toLocaleDateString('en-NZ', {
                                     day: 'numeric', month: 'long'})} at {nextAppointment.clinic?.name || 'Dental Clinic'}</Text>
-                                    <Text style={styles.appointmentText}>For {getAppointmentName()}</Text>
+                                    <Text style={styles.appointmentTextName}>For {getAppointmentName()}</Text>
                             </TouchableOpacity>
                     </View>
                     {nextAppointment.notes && (

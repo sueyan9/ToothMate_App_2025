@@ -6,6 +6,9 @@ export default StyleSheet.create({
         color: '#333333',
         marginBottom: 16,
         marginLeft: 16,
+        flexWrap: 'wrap',
+        width: 260,
+        overflow: 'hidden'
     },
     container: {
         flex: 1,
@@ -65,6 +68,14 @@ export default StyleSheet.create({
         color: '#875B51',
         textDecorationLine: 'underline',
         fontWeight: 'bold',
+    },
+    appointmentTextName: {
+        color: '#875B51',
+        textDecorationLine: 'underline',
+        fontWeight: 'bold',
+        flexWrap: 'wrap',
+        width: 260,
+        overflow: 'hidden'
     },
     noteText: {
         marginTop: 16,

@@ -87,6 +87,11 @@ const getUser = dispatch => {
       };
 
       dispatch({ type: 'get_user', payload: userDataWithHardcodedFields });
+
+      // Set profile picture from backend data
+      if (response.data.profile_picture !== undefined && response.data.profile_picture !== null) {
+        dispatch({ type: 'set_profile_picture', payload: response.data.profile_picture });
+      }
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -198,26 +203,23 @@ const getAllImages = dispatch => {
 const setProfilePicture = dispatch => {
   return async (pictureIndex) => {
     try {
-      await AsyncStorage.setItem('selectedProfilePicture', pictureIndex.toString());
+      const id = await AsyncStorage.getItem('id');
+      
+      // Save to backend
+      await axiosApi.put(`/updateProfilePicture/${id}`, {
+        profile_picture: pictureIndex
+      });
+      
+      // Update local state
       dispatch({ type: 'set_profile_picture', payload: pictureIndex });
+      
+      return { success: true };
     } catch (error) {
       console.error("Error saving profile picture: ", error);
+      return { success: false, error: 'Failed to update profile picture' };
     }
   };
 };
-
-const getProfilePicture = dispatch => {
-  return async () => {
-    try {
-      const savedPicture = await AsyncStorage.getItem('selectedProfilePicture');
-      if (savedPicture !== null) {
-        dispatch({ type: 'set_profile_picture', payload: parseInt(savedPicture) });
-      }
-    } catch (error) {
-      console.error('Error loading profile picture: ', error);
-    }
-  }
-}
 
 // NEW: Profile switching functions
 const setCurrentAccount = dispatch => {
@@ -424,7 +426,6 @@ export const { Provider, Context } = createDataContext(
     disconnectChild,
     getAllImages,
     setProfilePicture,
-    getProfilePicture,
     updateUser,
     changePassword,
     updateClinic,
