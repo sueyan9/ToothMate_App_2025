@@ -209,6 +209,37 @@ export default function ToothInformation({ toothInfo }) {
     }
   };
 
+  function normalizeTreatmentType(treatmentType) {
+    const typeMap = {
+  
+      'Crown Placement': 'Crown',
+      'Filling': 'Filling',
+      'Extraction': 'Extraction',
+      'Bridge': 'Bridge',
+      'Implant': 'Implant',
+      'Veneer': 'Veneer',
+      'Sealant': 'Sealant',
+      'root_canal': 'Root Canal',
+      'crown': 'Crown',
+      'filling': 'Filling',
+      'extraction': 'Extraction',
+      'bridge': 'Bridge',
+      'implant': 'Implant',
+      'veneer': 'Veneer',
+      'sealant': 'Sealant',
+      'Cleaning': null,
+      'Checkup': null
+    };
+    return typeMap[treatmentType] || treatmentType?.toLowerCase();
+  }
+
+  const getAllTreatmentsDone = () => {
+    if (treatments.length === 0) return '';
+  
+    const uniqueTypes = [...new Set(treatments.map(treatment => normalizeTreatmentType(treatment.type)))];
+    return uniqueTypes.join(', ');
+  }
+
   // Loading state
   if (isLoading) {
     return (
@@ -261,6 +292,7 @@ export default function ToothInformation({ toothInfo }) {
       </button>
 
       <div className={`tooth-info ${isOpen ? 'active' : ''}`} onClick={onToggle}>
+        {!isOpen && (<div style={{color: '#666', marginBottom: '8px'}}>Work done on this tooth: {getAllTreatmentsDone() || 'None'}</div>)}
         <div onClick={(e) => {
           e.stopPropagation();
           setIsOpen(!isOpen);
@@ -277,7 +309,7 @@ export default function ToothInformation({ toothInfo }) {
                           {treatments.map((treatment, index) => (
                               <li key={index} className="treatment-item">
                                 <div><strong>Date:</strong> {formatDate(treatment.date)}</div>
-                                <div><strong>Treatment Type:</strong> {treatment.type}</div>
+                                <div><strong>Treatment Type:</strong> {normalizeTreatmentType(treatment.type)}</div>
                                 {treatment.notes && <div><strong>Notes:</strong> {treatment.notes}</div>}
                               </li>
                           ))}
