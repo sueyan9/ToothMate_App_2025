@@ -271,8 +271,8 @@ export default function ToothInformation({ toothInfo }) {
         <button
           style={{
             position: 'fixed',
-            right: '44px',
-            bottom: isOpen ? 'calc(100% - 420px)' : '140px',
+            right: '24px',
+            bottom: isOpen ? 'calc(100% - 400px)' : '160px',
             padding: '8px',
             height: '82px',
             width: '82px',
