@@ -32,6 +32,44 @@ const profilePictures = [
   require('../../../assets/profile pictures/p8.png'),
 ];
 
+// Collapsible component
+const Collapsible = ({
+    title,
+    icon = 'chevron-forward',
+    count,
+    defaultOpen = false,
+    children,
+  }) => {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+      <View style={styles.infoCard}>
+        <TouchableOpacity
+            onPress={() => setOpen(o => !o)}
+            style={[styles.cardHeader, { alignItems: 'center' }]}
+            accessibilityRole="button"
+            accessibilityLabel={`${title}, ${open ? 'collapse' : 'expand'}`}
+        >
+          <Ionicons name={icon} size={24} color="#516287" />
+          <Text style={styles.cardTitle}>{title}</Text>
+          <View style={{ flex: 1 }} />
+          {count !== undefined && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{count}</Text>
+            </View>
+          )}
+          <Ionicons
+              name={open ? 'chevron-up' : 'chevron-down'}
+              size={22}
+              color="#516287"
+              style={{ marginLeft: 4 }}
+          />
+        </TouchableOpacity>
+
+        {open ? <View style={{ marginTop: 8 }}>{children}</View> : null}
+      </View>
+  );
+};
+
 const ChildAccountScreen = ({ navigation }) => {
   const { t, translateAndCache, currentLanguage } = useTranslation();
   const [refreshKey, setRefreshKey] = useState(0);
@@ -310,11 +348,11 @@ const ChildAccountScreen = ({ navigation }) => {
         {/* Profile Information Cards */}
         <View style={styles.infoSection}>
           {/* Personal Information Card */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <Ionicons name="person-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>{t('Personal Information')}</Text>
-            </View>
+          <Collapsible
+            title={t('Personal Information')}
+            icon="person-outline"
+            defaultOpen={false}
+          >
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('First Name')}</Text>
               <Text style={styles.infoValue}>
@@ -333,14 +371,14 @@ const ChildAccountScreen = ({ navigation }) => {
                 {formatDate(details.dob)}
               </Text>
             </View>
-          </View>
+          </Collapsible>
 
           {/* Medical Information Card */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <Ionicons name="medical-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>{t('Medical Information')}</Text>
-            </View>
+          <Collapsible
+            title={t('Medical Information')}
+            icon="medical-outline"
+            defaultOpen={false}
+          >
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('NHI Number')}</Text>
               <Text style={styles.infoValue}>
@@ -369,7 +407,7 @@ const ChildAccountScreen = ({ navigation }) => {
                 </Text>
               </View>
             )}
-          </View>
+          </Collapsible>
         </View>
       </ScrollView>
 
