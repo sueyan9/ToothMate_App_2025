@@ -199,16 +199,6 @@ export default function ToothInformation({ toothInfo }) {
     }
   };
 
-  const handleViewAppointments = () => {
-    if (window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMessage(JSON.stringify({
-        type: 'VIEW_APPOINTMENTS',
-        toothName: toothInfo.name,
-        treatments: treatments
-      }));
-    }
-  };
-
   // Format date
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -246,6 +236,30 @@ export default function ToothInformation({ toothInfo }) {
   if (!toothInfo) return null;
 
   return (
+    <div style={{position: 'relative'}}>
+        <button
+          style={{
+            position: 'fixed',
+            right: '24px',
+            bottom: isOpen ? 'calc(100% - 420px)' : '140px',
+            padding: '8px',
+            height: '82px',
+            width: '82px',
+            background: '#516287',
+            color: '#fff',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            borderRadius: '60px',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'bottom 0.3s ease-in-out',
+            zIndex: 1001,
+          }}
+          onClick={handleViewEducation}
+      >
+        Learn {<br></br>} More
+      </button>
+
       <div className={`tooth-info ${isOpen ? 'active' : ''}`} onClick={onToggle}>
         <div onClick={(e) => {
           e.stopPropagation();
@@ -253,8 +267,6 @@ export default function ToothInformation({ toothInfo }) {
         }} className="tooth-info-header">
           {isOpen ? `↓ ${toothInfo.name} (#${toothInfo.toothNumber})` : `↑ ${toothInfo.name}`}
         </div>
-
-        {isOpen && (
             <div onClick={handlePanelClick}>
               <div className="tooth-info-content">
               <div>
@@ -270,37 +282,6 @@ export default function ToothInformation({ toothInfo }) {
                               </li>
                           ))}
                         </ul>
-
-                        <button
-                            style={{
-                              padding: '10px 20px',
-                              background: '#4CAF50',
-                              color: '#fff',
-                              border: 'none',
-                              borderRadius: '5px',
-                              cursor: 'pointer',
-                              marginTop: '10px'
-                            }}
-                            onClick={handleViewEducation}
-                        >
-                          Learn More
-                        </button>
-
-                        <button
-                            style={{
-                              padding: '10px 20px',
-                              background: '#2196F3',
-                              color: '#fff',
-                              border: 'none',
-                              borderRadius: '5px',
-                              cursor: 'pointer',
-                              marginTop: '10px',
-                              marginLeft: '10px'
-                            }}
-                            onClick={handleViewAppointments}
-                        >
-                          View Appointments
-                        </button>
                       </>
                   ) : (
                       <p>No previous treatments recorded for this tooth.</p>
@@ -328,7 +309,7 @@ export default function ToothInformation({ toothInfo }) {
 
               </div>
             </div>
-        )}
+      </div>
       </div>
   );
 }

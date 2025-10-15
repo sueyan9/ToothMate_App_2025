@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { TREATMENTS } from './Treatment';
 
 export default function FilterMenu({
-                                     selected,
-                                     onSelect,
-                                     isOpen,
-                                     activeTimePeriod,
-                                     onTimePeriodSelect,
-                                     treatmentsByPeriod,
-                                     availableTreatmentKeys
-                                   }) {
+    selected,
+    onSelect,
+    isOpen,
+    activeTimePeriod,
+    onTimePeriodSelect,
+    treatmentsByPeriod,
+    availableTreatmentKeys
+  }) {
   const getFilterStyle = (filterType) => ({
     backgroundColor: activeTimePeriod === filterType ? '#EDDFD3' : 'transparent',
     color: '#333333',
