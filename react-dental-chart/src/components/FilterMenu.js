@@ -139,6 +139,7 @@ export default function FilterMenu({
 
   return (
       <div className={`filter-menu ${isOpen ? 'active' : ''}`}>
+        <p style={{marginTop: '-18px', marginBottom: '-2px', color: '#888', fontSize: '12px'}}>Drag the mouth to move around and click on a tooth for more information.</p>
         <div className="filter-title">Selected Treatments</div>
 
         <div style={{
