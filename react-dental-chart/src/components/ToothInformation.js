@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ToothInformation({ toothInfo }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +8,8 @@ export default function ToothInformation({ toothInfo }) {
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
   const [userNhi, setUserNhi] = useState(null);
+  const panelRef = useRef(null);
+  const [panelHeight, setPanelHeight] = useState(120);
 
   const latestTreatmentType = (arr = []) => {
     if (!Array.isArray(arr) || arr.length === 0) return null;
@@ -185,6 +187,13 @@ export default function ToothInformation({ toothInfo }) {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (panelRef.current) {
+      const height = panelRef.current.offsetHeight;
+      setPanelHeight(height);
+    }
+  }, [isOpen, treatments, futureTreatments]);
+
   const handlePanelClick = (e) => {
     e.stopPropagation();
   };
@@ -272,7 +281,7 @@ export default function ToothInformation({ toothInfo }) {
           style={{
             position: 'fixed',
             right: '24px',
-            bottom: isOpen ? 'calc(100% - 320px)' : '175px',
+            bottom: isOpen ? `calc(98vh - ${panelHeight}px - 24px)`: `calc(73vh - ${panelHeight + 24}px)`,
             padding: '8px',
             height: '82px',
             width: '82px',
@@ -291,7 +300,7 @@ export default function ToothInformation({ toothInfo }) {
         Learn {<br></br>} More
       </button>
 
-      <div className={`tooth-info ${isOpen ? 'active' : ''}`} onClick={onToggle}>
+      <div ref={panelRef} className={`tooth-info ${isOpen ? 'active' : ''}`} onClick={onToggle}>
         <div onClick={(e) => {
           e.stopPropagation();
           setIsOpen(!isOpen);
