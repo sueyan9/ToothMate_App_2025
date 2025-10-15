@@ -134,9 +134,6 @@ const ChildAccountScreen = ({ navigation }) => {
 
   // UPDATED: Use active profile picture index if available
   const getDisplayProfilePicture = () => {
-    if (activeProfilePictureIndex !== null && activeProfilePictureIndex >= 0) {
-      return activeProfilePictureIndex;
-    }
     return selectedProfilePicture;
   };
 
@@ -145,8 +142,12 @@ const ChildAccountScreen = ({ navigation }) => {
   };
 
   // UPDATED: Save the profile picture for the active child profile
-  const handleProfilePictureSelect = async (pictureIndex) => {
-    setProfilePicture(pictureIndex);
+  const handleProfilePictureSelect = async (pictureIndex, userId) => {
+    console.log('Updating profile picture - userId:', userId, 'pictureIndex:', pictureIndex);
+     console.log('Current AsyncStorage id:', await AsyncStorage.getItem('id'));
+     console.log('Current details id: ', details._id);
+
+    setProfilePicture(pictureIndex, userId);
     setActiveProfilePictureIndex(pictureIndex);
     
     // Save to AsyncStorage so it persists
@@ -271,9 +272,9 @@ const ChildAccountScreen = ({ navigation }) => {
         {/* Profile Picture Section */}
         <View style={styles.profilePictureContainer}>
           <View style={styles.profilePicture}>
-            {displayProfilePicture !== null ? (
+            {selectedProfilePicture !== null ? (
               <Image
-                source={profilePictures[displayProfilePicture]}
+                source={profilePictures[selectedProfilePicture]}
                 style={styles.profileImage}
               />
             ) : (
@@ -400,10 +401,10 @@ const ChildAccountScreen = ({ navigation }) => {
                     styles.profileOption,
                     displayProfilePicture === index && styles.selectedProfileOption
                   ]}
-                  onPress={() => handleProfilePictureSelect(index)}
+                  onPress={() => {handleProfilePictureSelect(index, details._id), console.log("detailsss: ", details._id)}}
                 >
                   <Image source={picture} style={styles.profileOptionImage} />
-                  {displayProfilePicture === index && (
+                  {selectedProfilePicture === index && (
                     <View style={styles.selectedOverlay}>
                       <Ionicons name="checkmark-circle" size={24} color="#516287" />
                     </View>
