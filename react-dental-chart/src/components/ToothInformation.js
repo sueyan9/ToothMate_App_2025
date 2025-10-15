@@ -9,7 +9,7 @@ export default function ToothInformation({ toothInfo }) {
   const [userId, setUserId] = useState(null);
   const [userNhi, setUserNhi] = useState(null);
   const panelRef = useRef(null);
-  const [panelHeight, setPanelHeight] = useState(120);
+  const [panelTop, setPanelTop] = useState(120);
 
   const latestTreatmentType = (arr = []) => {
     if (!Array.isArray(arr) || arr.length === 0) return null;
@@ -188,10 +188,19 @@ export default function ToothInformation({ toothInfo }) {
   }, [isOpen]);
 
   useEffect(() => {
-    if (panelRef.current) {
-      const height = panelRef.current.offsetHeight;
-      setPanelHeight(height);
-    }
+    let animationId;
+
+    const updatePos = () => {
+      if (panelRef.current) {
+        const rect = panelRef.current.getBoundingClientRect();
+        setPanelTop(rect.top);
+      }
+      animationId = requestAnimationFrame(updatePos);
+    };
+
+    animationId = requestAnimationFrame(updatePos);
+
+    return () => cancelAnimationFrame(animationId);
   }, [isOpen, treatments, futureTreatments]);
 
   const handlePanelClick = (e) => {
@@ -281,7 +290,7 @@ export default function ToothInformation({ toothInfo }) {
           style={{
             position: 'fixed',
             right: '24px',
-            bottom: isOpen ? `calc(98vh - ${panelHeight}px - 24px)`: `calc(73vh - ${panelHeight + 24}px)`,
+            bottom: panelTop !== null ? `calc(100vh - ${panelTop}px + 24px)` : '106px',
             padding: '8px',
             height: '82px',
             width: '82px',
