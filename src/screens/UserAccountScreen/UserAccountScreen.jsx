@@ -73,7 +73,7 @@ const profilePictures = [
 const Collapsible = ({
     title,
     icon = 'chevron-forward',
-    count = 0,
+    count,
     defaultOpen = false,
     children,
   }) => {
@@ -89,9 +89,11 @@ const Collapsible = ({
           <Ionicons name={icon} size={24} color="#516287" />
           <Text style={styles.cardTitle}>{title}</Text>
           <View style={{ flex: 1 }} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{count}</Text>
-          </View>
+          {count !== undefined && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{count}</Text>
+            </View>
+          )}
           <Ionicons
               name={open ? 'chevron-up' : 'chevron-down'}
               size={22}
@@ -128,6 +130,9 @@ const UserAccountScreen = ({ navigation }) => {
     'Emergency Contact Name',
     'Emergency Contact Phone',
     'Medical Information',
+    'Insurance Information',
+    'Insurance Provider',
+    'Insurance Number',
     'NHI Number',
     'Dental Clinic',
     'Clinic Address',
@@ -1101,11 +1106,11 @@ const {
         {/* Profile Information Cards */}
         <View style={styles.infoSection}>
           {/* Personal Information Card */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <Ionicons name="person-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>{t('Personal Information')}</Text>
-            </View>
+          <Collapsible
+            title={t('Personal Information')}
+            icon="person-outline"
+            defaultOpen={false}
+          >
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('First Name')}</Text>
               <Text style={styles.infoValue}>
@@ -1148,13 +1153,13 @@ const {
                 {details.emergencyContactPhone || t('None')}
               </Text>
             </View>
-          </View>
+          </Collapsible>
           {/* Medical Information Card */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <Ionicons name="medical-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>{t('Medical Information')}</Text>
-            </View>
+          <Collapsible
+            title={t('Medical Information')}
+            icon="medical-outline"
+            defaultOpen={false}
+          >
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('NHI Number')}</Text>
               <Text style={styles.infoValue}>
@@ -1183,16 +1188,15 @@ const {
                 </Text>
               </View>
             )}
-          </View>
+          </Collapsible>
 
-          {/* Insurance infoamtion card */}
-          <View style={styles.infoCard}>
-              <View style={styles.cardHeader}>
-              <Ionicons name="heart-half-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>{t('Insurance Infomation')}</Text>
-              </View>
-
-              <View style={styles.infoRow}>
+          {/* Insurance Information Card */}
+          <Collapsible
+            title={t('Insurance Information')}
+            icon="heart-half-outline"
+            defaultOpen={false}
+          >
+            <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Insurance Provider')}</Text>
               <Text style={styles.infoValue}>
                 {details.insurance || t('Not specified')}
@@ -1205,16 +1209,15 @@ const {
                 {details.insurance_number || t('Not specified')}
               </Text>
             </View>
+          </Collapsible>
 
-          </View>
 
-
-          {/* Account Actions Card */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <Ionicons name="settings-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>{t('Account Settings')}</Text>
-            </View>
+          {/* Account Settings Card */}
+          <Collapsible
+            title={t('Account Settings')}
+            icon="settings-outline"
+            defaultOpen={false}
+          >
             <TouchableOpacity
               style={styles.actionButton}
               onPress={handleUpdateDetails}
@@ -1273,7 +1276,7 @@ const {
                 <Ionicons name="chevron-forward" size={20} color="#DC3545" />
               </TouchableOpacity>
             )}
-          </View>
+          </Collapsible>
         </View>
           {/* X-ray Images */}
           <Collapsible
