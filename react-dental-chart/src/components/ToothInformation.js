@@ -292,12 +292,12 @@ export default function ToothInformation({ toothInfo }) {
       </button>
 
       <div className={`tooth-info ${isOpen ? 'active' : ''}`} onClick={onToggle}>
-        {!isOpen && (<div style={{color: '#666', marginBottom: '8px'}}>Work done on this tooth: {getAllTreatmentsDone() || 'None'}</div>)}
         <div onClick={(e) => {
           e.stopPropagation();
           setIsOpen(!isOpen);
-        }} className="tooth-info-header">
-          {isOpen ? `↓ ${toothInfo.name} (#${toothInfo.toothNumber})` : `↑ ${toothInfo.name}`}
+        }}>
+          {!isOpen && (<div style={{color: '#666', marginBottom: '8px'}}>Work done on this tooth: {getAllTreatmentsDone() || 'None'}</div>)}
+          <div className="tooth-info-header">{isOpen ? `↓ ${toothInfo.name} (#${toothInfo.toothNumber})` : `↑ ${toothInfo.name}`}</div>
         </div>
             <div onClick={handlePanelClick}>
               <div className="tooth-info-content">
