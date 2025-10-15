@@ -224,7 +224,7 @@ const MainFlow = () => (
             }}
         />
         <Tab.Screen
-            name="Chart"
+            name="DentalChart"
             component={DentalChartScreen}
             options={{
                 title: 'My Mouth',
