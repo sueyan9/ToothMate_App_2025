@@ -272,7 +272,7 @@ export default function ToothInformation({ toothInfo }) {
           style={{
             position: 'fixed',
             right: '24px',
-            bottom: isOpen ? 'calc(100% - 380px)' : '175px',
+            bottom: isOpen ? 'calc(100% - 350px)' : '175px',
             padding: '8px',
             height: '82px',
             width: '82px',
