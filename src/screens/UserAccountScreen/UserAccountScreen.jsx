@@ -966,7 +966,7 @@ const {
               if (currentId) {
                 await AsyncStorage.setItem('parentId', currentId);
               }
-              
+
               await AsyncStorage.setItem('id', childId);
               await AsyncStorage.setItem('activeProfileName', `${selectedChild.firstname} ${selectedChild.lastname}`);
               await AsyncStorage.setItem('activeProfileUsername', selectedChild.email || selectedChild.nhi || '');
@@ -1187,6 +1187,14 @@ const {
                 <Text style={styles.infoLabel}>{t('Clinic Phone')}</Text>
                 <Text style={styles.infoValue}>
                   {clinic.phone}
+                </Text>
+              </View>
+            )}
+            {details.allergy && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>{t('Known Allergies')}</Text>
+                <Text style={styles.infoValue}>
+                  {details.allergy}
                 </Text>
               </View>
             )}
