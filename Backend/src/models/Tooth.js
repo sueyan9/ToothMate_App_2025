@@ -19,6 +19,10 @@ const toothSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    partial_erupted: {
+        type: Boolean,
+        default: false
+    }
 });
 
 //make  sure the code is unique for every user

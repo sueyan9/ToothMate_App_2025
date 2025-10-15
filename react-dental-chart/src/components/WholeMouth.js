@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
-import React, { Suspense, useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -65,13 +65,13 @@ const normalizeTreatmentType = (t) => {
 };
 
 const WholeMouthModel = ({
-                             selectedTreatment = [],
-                             activeTimePeriod,
-                             treatmentsByPeriod,
-                             eruptionLevels = {},
-                             onToothClick, // 添加这个prop
-                             ...props
-                         }) => {
+        selectedTreatment = [],
+        activeTimePeriod,
+        treatmentsByPeriod,
+        eruptionLevels = {},
+        onToothClick, // 添加这个prop
+        ...props
+    }) => {
     const group = useRef();
     const { nodes, materials } = useGLTF('/assets/adult_whole_mouth.glb');
 
@@ -392,11 +392,11 @@ const WholeMouthModel = ({
 };
 
 export default function WholeMouth({
-                                       selectedTreatment,
-                                       activeTimePeriod,
-                                       treatmentsByPeriod,
-                                       eruptionLevels,
-                                   }) {
+        selectedTreatment,
+        activeTimePeriod,
+        treatmentsByPeriod,
+        eruptionLevels,
+    }) {
     const navigate = useNavigate();
 
     // 添加牙齿点击处理函数
