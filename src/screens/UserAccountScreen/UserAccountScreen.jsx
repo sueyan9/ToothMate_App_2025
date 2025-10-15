@@ -925,7 +925,7 @@ const {
   };
 
   const handleProfilePictureSelect = (pictureIndex) => {
-    setProfilePicture(pictureIndex);
+    setProfilePicture(pictureIndex, details._id);
     setShowProfileModal(false);
     console.log(`Profile picture ${pictureIndex + 1} selected`);
   };
@@ -962,16 +962,18 @@ const {
 
             // Store active child profile meta
             try {
-              await AsyncStorage.setItem('activeProfileId', childId);
+              const currentId = await AsyncStorage.getItem('id');
+              if (currentId) {
+                await AsyncStorage.setItem('parentId', currentId);
+              }
+
+              await AsyncStorage.setItem('id', childId);
               await AsyncStorage.setItem('activeProfileName', `${selectedChild.firstname} ${selectedChild.lastname}`);
               await AsyncStorage.setItem('activeProfileUsername', selectedChild.email || selectedChild.nhi || '');
               await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedChild.profile_picture ?? -1));
               await AsyncStorage.setItem('currentAccountType', 'child');
               // Ensure parentId is available for returning
-              const currentId = await AsyncStorage.getItem('id');
-              if (currentId) {
-                await AsyncStorage.setItem('parentId', currentId);
-              }
+              
             } catch (e) {
               console.error('Error saving active child profile to storage:', e);
             }
@@ -1185,6 +1187,14 @@ const {
                 <Text style={styles.infoLabel}>{t('Clinic Phone')}</Text>
                 <Text style={styles.infoValue}>
                   {clinic.phone}
+                </Text>
+              </View>
+            )}
+            {details.allergy && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>{t('Known Allergies')}</Text>
+                <Text style={styles.infoValue}>
+                  {details.allergy}
                 </Text>
               </View>
             )}

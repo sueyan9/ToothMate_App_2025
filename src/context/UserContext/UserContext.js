@@ -89,9 +89,7 @@ const getUser = dispatch => {
       dispatch({ type: 'get_user', payload: userDataWithHardcodedFields });
 
       // Set profile picture from backend data
-      if (response.data.profile_picture !== undefined && response.data.profile_picture !== null) {
-        dispatch({ type: 'set_profile_picture', payload: response.data.profile_picture });
-      }
+      dispatch({ type: 'set_profile_picture', payload: response.data.profile_picture });
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -201,12 +199,11 @@ const getAllImages = dispatch => {
 };
 
 const setProfilePicture = dispatch => {
-  return async (pictureIndex) => {
+  return async (pictureIndex, userId) => {
     try {
-      const id = await AsyncStorage.getItem('id');
       
       // Save to backend
-      await axiosApi.put(`/updateProfilePicture/${id}`, {
+      await axiosApi.put(`/updateProfilePicture/${userId}`, {
         profile_picture: pictureIndex
       });
       
