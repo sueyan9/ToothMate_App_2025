@@ -150,11 +150,10 @@ const ChildAccountStack = () => (
 
 // Profile flow navigation
 const ProfileStack = () => {
-    const { t, currentLanguage } = useTranslation();
+    const { t } = useTranslation();
     
     return (
         <Stack.Navigator 
-            key={`profile-${currentLanguage}`}
             initialRouteName="UserAccount"
         >
             <Stack.Screen name="UserAccount" component={UserAccountScreen} options={{headerShown: false}}/>
@@ -178,7 +177,6 @@ const MainFlow = () => {
     
     return (
         <Tab.Navigator 
-            key={`main-${currentLanguage}`}
             screenOptions={({ route, navigation }) => {
                 const state = navigation.getState();
                 const currentTab = state.routes[state.index];
@@ -358,10 +356,8 @@ const ChildFlow = () => (
 
 // Main app navigator
 const AppNavigator = () => {
-    const { currentLanguage } = useTranslation();
-    
     return (
-        <NavigationContainer ref={navigationRef} key={currentLanguage}>
+        <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
                 initialRouteName="ResolveAuth"
                 screenOptions={{ headerShown: false }}
