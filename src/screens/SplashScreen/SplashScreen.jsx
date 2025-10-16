@@ -20,7 +20,7 @@ const SplashScreen = props => {
             buttonStyle={styles.button}
             containerStyle={styles.buttonContainer}
             title="Log In"
-            onPress={() => navigation.navigate('loginFlow', { screen: 'Signup' })}
+            onPress={() => navigation.navigate('loginFlow', { screen: 'Welcome' })}
             titleStyle={styles.signinButtonTitleStyle}/>
 
             <Button

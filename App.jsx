@@ -31,6 +31,7 @@ import SignupScreen from './src/screens/SignupScreen';
 import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
 import UserAccountScreen from './src/screens/UserAccountScreen';
 import UserScreen from './src/screens/UserScreen';
+import WelcomeScreen from './src/screens/WelcomeScreen';
 
 // Import new game screens
 import BrushingTimerScreen from './src/screens/BrushingTimerScreen/BrushingTimerScreen';
@@ -58,7 +59,7 @@ import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
 import { SessionContext, SessionProvider } from './src/context/SessionContext/SessionContext';
-import SplashScreen from './src/screens/SplashScreen/SplashScreen';
+import SplashScreen from './src/screens/SplashScreen';
 
 //  Create stack and tab navigators
 const Stack = createNativeStackNavigator();
@@ -373,11 +374,14 @@ const AppNavigator = () => {
                 
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
                 <Stack.Screen name="SplashScreen" component={SplashScreen}/>
+                
 
                 {/* Login flow  */}
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
+                            {/*temp */}
+                            <Stack.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
                             <Stack.Screen name="Signin" component={SigninScreen} options={{ headerShown: false }}/>
                             <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
