@@ -84,9 +84,9 @@ export default StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row',
-        gap: 12,
-        marginRight: 24,
-        marginLeft: 24,
+        gap: 8,
+        marginRight: 20,
+        marginLeft: 20,
         marginTop: 8,
         flex: 1,
         justifyContent: 'center'
@@ -95,7 +95,7 @@ export default StyleSheet.create({
         backgroundColor: '#EDDFD3',
         borderColor: '#875B51',
         borderRadius: 30,
-        height: 70,
+        paddingVertical: 16,
         paddingHorizontal: 16,
         justifyContent: 'center',
         alignItems: 'center',
@@ -103,7 +103,7 @@ export default StyleSheet.create({
     },
     buttonText: {
         color: '#333',
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '600',
         textAlign: 'center'
     }

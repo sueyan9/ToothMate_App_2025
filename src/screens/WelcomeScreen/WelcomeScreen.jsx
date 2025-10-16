@@ -109,7 +109,7 @@ const WelcomeScreen = props => {
                     <Text style={styles.buttonText}>Get Started</Text>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity style={{flex: 1}} onPress={() => console.log("FIND A TM PRESSED")}>
+            <TouchableOpacity style={{flex: 1}} onPress={() => navigation.navigate('LocationFinder')}>
                 <View style={styles.button}>
                     <Text style={styles.buttonText}>Find A <Text style={{color: '#516287'}}>ToothMate</Text></Text>
                 </View>

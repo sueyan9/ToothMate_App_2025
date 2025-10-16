@@ -52,10 +52,10 @@ const tryLocalSignin = dispatch => async () => {
       dispatch({ type: 'signin', payload: { token, id } });
       navigate('mainFlow', { screen: 'AccountFlow' });
     } else {
-      navigate('SplashScreen');
+      navigate('Welcome');
     }
   } else {
-    navigate('SplashScreen');
+    navigate('Welcome');
   }
 };
 

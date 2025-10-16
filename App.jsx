@@ -21,6 +21,7 @@ import GameScreen from './src/screens/GameScreen/GameScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
 import InvoiceScreen from './src/screens/InvoiceScreen';
+import LocationFinder from './src/screens/LocationFinder';
 import NotificationSettingsScreen from './src/screens/NotificationSettingsScreen';
 import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
@@ -53,7 +54,7 @@ import { Provider as UserProvider } from './src/context/UserContext/UserContext'
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
@@ -373,15 +374,14 @@ const AppNavigator = () => {
             >
                 
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
-                <Stack.Screen name="SplashScreen" component={SplashScreen}/>
+                <Stack.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
+                <Stack.Screen name="LocationFinder" component={LocationFinder} options={{headerShown: false}}/>
                 
 
                 {/* Login flow  */}
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
                     {() => (
                         <Stack.Navigator>
-                            {/*temp */}
-                            <Stack.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
                             <Stack.Screen name="Signin" component={SigninScreen} options={{ headerShown: false }}/>
                             <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
@@ -415,6 +415,14 @@ export default function App() {
     //stops screenshots
     //usePreventScreenCapture();
 
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 3000);
+    }, []);
+
     // Load fonts
     const [fontsLoaded] = useFonts({
         Righteous_400Regular,
@@ -429,6 +437,11 @@ export default function App() {
             </View>
         );
     }
+
+    if (isLoading) {
+        return <SplashScreen/>
+    }
+
 
     return (
         <SessionProvider onSessionExpired={() => {
