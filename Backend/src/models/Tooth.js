@@ -19,7 +19,12 @@ const toothSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    partial_erupted: {
+        type: Boolean,
+        default: false
+    },
 });
+
 
 //make  sure the code is unique for every user
 toothSchema.index({ userId: 1, toothNumber: 1 }, { unique: true });

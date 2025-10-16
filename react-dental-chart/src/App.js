@@ -152,7 +152,7 @@ const API_BASE_URL =
     (typeof window !== 'undefined' && window.API_BASE_URL) ||
     (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
     (typeof process !== 'undefined' && process.env && (process.env.REACT_APP_API_BASE_URL || process.env.API_BASE_URL)) ||
-    'https://toothmate-app-2025.onrender.com';
+    'http://172.29.1.220:3000';
 
 
 function normalizeTreatments(payload) {
@@ -243,6 +243,32 @@ async function fetchTreatmentsByUser(idOrNhi) {
   if (!res.ok) throw new Error(`HTTP ${res.status} - ${text.slice(0,200)}`);
   const data = JSON.parse(text);
   return normalizeTreatments(data);
+}
+async function fetchTeethData(idOrNhi) {
+  if (!API_BASE_URL) throw new Error('API_BASE_URL is not configured');
+  const base = API_BASE_URL.replace(/\/$/, '');
+
+  const isObjectId = /^[0-9a-fA-F]{24}$/.test(String(idOrNhi));
+
+  console.log('Frontend - fetchTeethData called with:', idOrNhi);
+  console.log('Frontend - isObjectId:', isObjectId);
+
+  let url;
+  if (isObjectId) {
+    url = `${base}/getAllTeethByUserId/${encodeURIComponent(idOrNhi)}`;
+  } else {
+    url = `${base}/getAllTeeth/${encodeURIComponent(idOrNhi)}`;
+  }
+
+  console.log('Frontend - Fetching teeth data from:', url);
+  const res = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
+  const text = await res.text();
+  console.log('Frontend - Raw response:', text);
+
+  if (!res.ok) throw new Error(`HTTP ${res.status} - ${text.slice(0,200)}`);
+  const data = JSON.parse(text);
+  console.log('Frontend - Parsed teeth data:', data);
+  return Array.isArray(data) ? data : [];
 }
 
 const BackButton = () => {
@@ -351,32 +377,70 @@ export default function App() {
   const [eruptionLevels, setEruptionLevels] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+//toothDate
+  const [teethData, setTeethData] = useState([]);
+  const [teethLoading, setTeethLoading] = useState(false);
+  const [teethError, setTeethError] = useState('');
+
   const latestUserRef = useRef(null);
 
   const pull = useCallback(async (uid) => {
-    if (isLoading) return;
+    if (isLoading) {
+      console.log('Already loading, skipping...');
+      return;
+    }
     setLoading(true);
     setError('');
     latestUserRef.current = uid;
 
     try {
+      console.log('=== Starting data fetch ===');
       console.log('Fetching data for userId:', uid);
-      const data = await fetchTreatmentsByUser(uid);
-      console.log('Received data:', data);
+
+      try {
+        const teeth = await fetchTeethData(uid);
+        console.log('Teeth data fetch successful:', teeth);
+        console.log('Teeth data length:', teeth.length);
+        if (teeth.length > 0) {
+          console.log('First tooth sample:', teeth[0]);
+        }
+      } catch (teethErr) {
+        console.error('Teeth data fetch failed:', teethErr);
+      }
+
+      // get treatment and tooth data
+      console.log('Starting parallel fetch...');
+      const [treatmentData, teeth] = await Promise.all([
+        fetchTreatmentsByUser(uid),
+        fetchTeethData(uid).catch(err => {
+          console.warn('Failed to fetch teeth data:', err);
+          setTeethError(err.message);
+          return [];
+        })
+      ]);
+
+      console.log('=== Data fetch completed ===');
+      console.log('Received treatment data:', treatmentData);
+      console.log('Received teeth data:', teeth);
+      console.log('Teeth data length:', teeth.length);
 
       if (latestUserRef.current !== uid) return; // avoid race
 
+      // setting treatemnt data
       setTreatmentsByPeriod({
-        historical: data.historical,
-        future: data.future
+        historical: treatmentData.historical,
+        future: treatmentData.future
       });
 
-      if (data.eruptionLevels) {
-        setEruptionLevels(data.eruptionLevels);
+      if (treatmentData.eruptionLevels) {
+        setEruptionLevels(treatmentData.eruptionLevels);
       }
 
+      setTeethData(teeth);
+      setTeethError('');
+
       const keys = uniqueKeysFrom(
-          activeTimePeriod === 'future' ? data.future : data.historical
+          activeTimePeriod === 'future' ? treatmentData.future : treatmentData.historical
       );
       console.log('Treatment keys:', keys);
       setSelectedTreatment(keys);
@@ -385,10 +449,11 @@ export default function App() {
       setError(e && e.message ? e.message : 'Load failed');
       setTreatmentsByPeriod({ historical: [], future: [] });
       setSelectedTreatment([]);
+      setTeethData([]);
     } finally {
       setLoading(false);
     }
-  }, [activeTimePeriod]);
+  }, [activeTimePeriod, isLoading]);
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -399,6 +464,14 @@ export default function App() {
       setMode(parentParam !== 'false' ? 'parent' : 'child');
     }
   }, []);
+
+useEffect(() => {
+  console.log('=== teethData state changed ===');
+  console.log('teethData:', teethData);
+  console.log('teethData length:', teethData.length);
+  console.log('teethLoading:', teethLoading);
+  console.log('teethError:', teethError);
+}, [teethData, teethLoading, teethError]);
 
   useEffect(() => {
     if (userId) pull(userId);
@@ -421,7 +494,7 @@ export default function App() {
     } else if (key === 'none') {
       setSelectedTreatment([]);
     } else {
-      // 单个治疗类型切换
+      // single treatement type swap
       setSelectedTreatment((prev) => {
         console.log('Toggling treatment:', key, 'Current:', prev);
         if (prev.includes(key)) {
@@ -470,6 +543,7 @@ export default function App() {
                                     activeTimePeriod={activeTimePeriod}
                                     treatmentsByPeriod={treatmentsByPeriod}
                                     eruptionLevels={eruptionLevels}
+                                    teethData={teethData}
                                 />
                             )
                         )}
