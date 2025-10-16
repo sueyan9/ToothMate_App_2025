@@ -1146,13 +1146,13 @@ const {
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Emergency Contact Name')}</Text>
               <Text style={styles.infoValue}>
-                {details.emergencyContactName || t('None')}
+                {details.emergency_name || t('None')}
               </Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Emergency Contact Phone')}</Text>
               <Text style={styles.infoValue}>
-                {details.emergencyContactPhone || t('None')}
+                {details.emergency_phone || t('None')}
               </Text>
             </View>
           </Collapsible>
@@ -1194,7 +1194,7 @@ const {
               <View style={styles.infoRow}>
                 <Text style={styles.infoLabel}>{t('Known Allergies')}</Text>
                 <Text style={styles.infoValue}>
-                  {details.allergy}
+                  {details.allergy || 'None'}
                 </Text>
               </View>
             )}

@@ -402,6 +402,22 @@ const ChildAccountScreen = ({ navigation }) => {
                 {formatDate(details.dob)}
               </Text>
             </View>
+            {details.emergency_name && (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('Emergency Contact Name')}</Text>
+              <Text style={styles.infoValue}>
+                {details.emergency_name}
+              </Text>
+            </View>
+            )}
+            {details.emegency_phone && (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('Emergency Contact Phone')}</Text>
+              <Text style={styles.infoValue}>
+                {details.emegency_phone}
+              </Text>
+            </View>
+            )}
           </Collapsible>
 
           {/* Medical Information Card */}
@@ -438,6 +454,12 @@ const ChildAccountScreen = ({ navigation }) => {
                 </Text>
               </View>
             )}
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('Known Allergies')}</Text>
+              <Text style={styles.infoValue}>
+                {details.allergy || 'None'}
+              </Text>
+            </View>
           </Collapsible>
         </View>
       </ScrollView>
