@@ -32,7 +32,7 @@ const AppointmentScreen = ({ route }) => {
 
   useEffect(() => {
     // Force re-render when language changes
-    setRefreshKey(prev => prev + 1);
+   // setRefreshKey(prev => prev + 1);
     
     // Translate texts when language changes
     if (currentLanguage !== 'en') {

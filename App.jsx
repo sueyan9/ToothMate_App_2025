@@ -5,7 +5,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, View } from 'react-native';
 
-
 // import all screens
 import Contact from './src/components/ContactButton';
 import LanguageSelector from './src/components/LanguageSelector';
@@ -61,7 +60,6 @@ import Icon from './src/assets/icons';
 import { SessionContext, SessionProvider } from './src/context/SessionContext/SessionContext';
 import SplashScreen from './src/screens/SplashScreen/SplashScreen';
 
-
 //  Create stack and tab navigators
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -74,8 +72,7 @@ const HeaderLogo = () => (
     </View>
 );
 
-
-// Account flow navigation - FIXED: Using UserAccountScreen instead of missing AccountScreen
+// Account flow navigation
 const AccountStack = () => (
     <Stack.Navigator initialRouteName="Account">
         <Stack.Screen name="Account" component={UserAccountScreen} />
@@ -119,7 +116,7 @@ const ChildClinicStack = () => (
     </Stack.Navigator>
 );
 
-// Child education flow - UPDATED: Now includes all the new game screens
+// Child education flow - includes all new game screens
 const ChildEducationStack = () => (
     <Stack.Navigator initialRouteName="Library">
         <Stack.Screen name="Library" component={ChildEducationScreen} options={{ headerShown: false }}/>
@@ -149,12 +146,12 @@ const ChildAccountStack = () => (
 );
 
 // Profile flow navigation
+// FIXED: Removed key={`profile-${currentLanguage}`} to prevent navigation reset on language change
 const ProfileStack = () => {
-    const { t, currentLanguage } = useTranslation();
+    const { t } = useTranslation();
     
     return (
         <Stack.Navigator 
-            key={`profile-${currentLanguage}`}
             initialRouteName="UserAccount"
         >
             <Stack.Screen name="UserAccount" component={UserAccountScreen} options={{headerShown: false}}/>
@@ -165,10 +162,10 @@ const ProfileStack = () => {
     );
 };
 
-//  Main flow with bottom tab navigation
-//  Main flow with bottom tab navigation
+// Main flow with bottom tab navigation
+// FIXED: Removed key={`main-${currentLanguage}`} to prevent navigation reset on language change
 const MainFlow = () => {
-    const { t, currentLanguage } = useTranslation();
+    const { t } = useTranslation();
     const { startSession } = useContext(SessionContext);
     
     useEffect(() => {
@@ -178,7 +175,6 @@ const MainFlow = () => {
     
     return (
         <Tab.Navigator 
-            key={`main-${currentLanguage}`}
             screenOptions={({ route, navigation }) => {
                 const state = navigation.getState();
                 const currentTab = state.routes[state.index];
@@ -274,94 +270,102 @@ const MainFlow = () => {
         </Tab.Navigator>
     );
 };
+
 // Child flow with bottom tab navigation
-const ChildFlow = () => (
-    <Tab.Navigator 
-        screenOptions={({ route, navigation }) => {
-            const state = navigation.getState();
-            const currentTab = state.routes[state.index];
-            const nestedState = currentTab.state;
-            const currentNestedRoute = nestedState?.routes?.[nestedState.index];
-
-            const isViewingIndividualContent = currentTab.name === 'ChildEducation' && currentNestedRoute?.name === 'content' &&
-            currentNestedRoute?.params?.isModal === true;
-
-            // Hide tab bar for game screens
-            const isGameScreen = currentTab.name === 'ChildEducation' && 
-            ['BrushingTimer', 'LearnTeeth', 'ToothHero', 'ToothMazeAdventure'].includes(currentNestedRoute?.name);
-
-            return {
-            headerShown: !isGameScreen, // Hide header for game screens
-            headerLeft: () => <HeaderLogo/>,
-            headerTitle: '',
-            headerStyle: {backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',borderBottomWidth: 0, elevation: 0, shadowOpacity: 0,},
-            headerTitleAlign: 'left',
-            headerTransparent: !isViewingIndividualContent,
-            tabBarActiveTintColor: '#875B51',
-            tabBarInactiveTintColor: '#333333',
-            tabBarStyle: {
-                backgroundColor: '#FFFDF6',
-                borderTopWidth: 0,
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                height: 68,
-                position: 'absolute',
-                elevation: 5,
-                shadowColor: '#333333',
-                shadowOffset: {width: 0, height: -3},
-                shadowOpacity: 0.1,
-                shadowRadius: 5,
-                display: isGameScreen ? 'none' : 'flex', // Hide tab bar for game screens
-            }
-        }
-        }}
-    >
-        <Tab.Screen
-        name="ChildEducation"
-        component={ChildEducationStack}
-        options={{
-            title: 'Fun Zone',
-            tabBarIcon: ({ color, size }) => (
-            <Image 
-    source={GameIcon} 
-    style={{ width: size, height: size, tintColor: color }} 
-    />
-
-            ),
-        }}
-        />
-
-        <Tab.Screen
-        name="DentalChart"
-        component={DentalChartScreen}
-        options={{
-            title: 'My Mouth',
-            tabBarIcon: ({ color, size }) => (
-            <ToothIcon color={color} size={size} />
-            ),
-        }}
-        />
-
-        <Tab.Screen
-        name="Account"
-        component={ChildAccountScreen}
-        options={{
-            title: 'Profile',
-            headerRight: () => <LanguageSelector />,
-            tabBarIcon: ({ color, size }) => (
-            <Icon name="profile" color={color} size={size} />
-            ),
-        }}
-        />
-    </Tab.Navigator>
-);
-
-// Main app navigator
-const AppNavigator = () => {
-    const { currentLanguage } = useTranslation();
+const ChildFlow = () => {
+    const { t } = useTranslation();
     
     return (
-        <NavigationContainer ref={navigationRef} key={currentLanguage}>
+        <Tab.Navigator 
+            screenOptions={({ route, navigation }) => {
+                const state = navigation.getState();
+                const currentTab = state.routes[state.index];
+                const nestedState = currentTab.state;
+                const currentNestedRoute = nestedState?.routes?.[nestedState.index];
+
+                const isViewingIndividualContent = currentTab.name === 'ChildEducation' && currentNestedRoute?.name === 'content' &&
+                currentNestedRoute?.params?.isModal === true;
+
+                // Hide tab bar for game screens
+                const isGameScreen = currentTab.name === 'ChildEducation' && 
+                ['BrushingTimer', 'LearnTeeth', 'ToothHero', 'ToothMazeAdventure'].includes(currentNestedRoute?.name);
+
+                return {
+                    headerShown: !isGameScreen,
+                    headerLeft: () => <HeaderLogo/>,
+                    headerTitle: '',
+                    headerStyle: {
+                        backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
+                        borderBottomWidth: 0,
+                        elevation: 0,
+                        shadowOpacity: 0,
+                    },
+                    headerTitleAlign: 'left',
+                    headerTransparent: !isViewingIndividualContent,
+                    tabBarActiveTintColor: '#875B51',
+                    tabBarInactiveTintColor: '#333333',
+                    tabBarStyle: {
+                        backgroundColor: '#FFFDF6',
+                        borderTopWidth: 0,
+                        borderTopLeftRadius: 20,
+                        borderTopRightRadius: 20,
+                        height: 68,
+                        position: 'absolute',
+                        elevation: 5,
+                        shadowColor: '#333333',
+                        shadowOffset: {width: 0, height: -3},
+                        shadowOpacity: 0.1,
+                        shadowRadius: 5,
+                        display: isGameScreen ? 'none' : 'flex',
+                    }
+                }
+            }}
+        >
+            <Tab.Screen
+                name="ChildEducation"
+                component={ChildEducationStack}
+                options={{
+                    title: t('Fun Zone'),
+                    tabBarIcon: ({ color, size }) => (
+                        <Image 
+                            source={GameIcon} 
+                            style={{ width: size, height: size, tintColor: color }} 
+                        />
+                    ),
+                }}
+            />
+
+            <Tab.Screen
+                name="DentalChart"
+                component={DentalChartScreen}
+                options={{
+                    title: t('My Mouth'),
+                    tabBarIcon: ({ color, size }) => (
+                        <ToothIcon color={color} size={size} />
+                    ),
+                }}
+            />
+
+            <Tab.Screen
+                name="Account"
+                component={ChildAccountScreen}
+                options={{
+                    title: t('Profile'),
+                    headerRight: () => <LanguageSelector />,
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="profile" color={color} size={size} />
+                    ),
+                }}
+            />
+        </Tab.Navigator>
+    );
+};
+
+// Main app navigator
+// FIXED: Removed key={currentLanguage} from NavigationContainer to prevent navigation tree reset on language change
+const AppNavigator = () => {
+    return (
+        <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
                 initialRouteName="ResolveAuth"
                 screenOptions={{ headerShown: false }}
@@ -369,7 +373,6 @@ const AppNavigator = () => {
                 
                 <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
                 <Stack.Screen name="SplashScreen" component={SplashScreen}/>
-
 
                 {/* Login flow  */}
                 <Stack.Screen name="loginFlow" options={{ headerShown: false }}>
@@ -386,7 +389,6 @@ const AppNavigator = () => {
                 {/* main flow */}
                 <Stack.Screen name="mainFlow" component={MainFlow} />
                 
-
                 {/* child flow */}
                 <Stack.Screen name="childFlow" component={ChildFlow} />
 
@@ -404,12 +406,12 @@ const AppNavigator = () => {
     );
 };
 
-// Wrap the app with all providers - MOVED useFonts HERE!
+// Wrap the app with all providers
 export default function App() {
     //stops screenshots
     //usePreventScreenCapture();
 
-    // ADDED: Load fonts inside the component
+    // Load fonts
     const [fontsLoaded] = useFonts({
         Righteous_400Regular,
         VarelaRound_400Regular,
@@ -429,23 +431,23 @@ export default function App() {
             navigationRef.navigate('loginFlow', { screen: 'Signup' });
             console.log('Session expired - redirect to login');
         }}>
-        <AuthProvider>
-            <ClinicProvider>
-                <EducationProvider>
-                    <AppointmentProvider>
-                        <UserProvider>
-                            <NotificationProvider>
-                                <TranslationProvider>
-                                <ProgressProvider>
-                                        <AppNavigator />
-                                </ProgressProvider>
-                                </TranslationProvider>
-                            </NotificationProvider>
-                        </UserProvider>
-                    </AppointmentProvider>
-                </EducationProvider>
-            </ClinicProvider>
-        </AuthProvider>
+            <AuthProvider>
+                <ClinicProvider>
+                    <EducationProvider>
+                        <AppointmentProvider>
+                            <UserProvider>
+                                <NotificationProvider>
+                                    <TranslationProvider>
+                                        <ProgressProvider>
+                                            <AppNavigator />
+                                        </ProgressProvider>
+                                    </TranslationProvider>
+                                </NotificationProvider>
+                            </UserProvider>
+                        </AppointmentProvider>
+                    </EducationProvider>
+                </ClinicProvider>
+            </AuthProvider>
         </SessionProvider>
     );
 }

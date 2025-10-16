@@ -40,7 +40,7 @@ const translateText = (dispatch) => async (texts, targetLanguage) => {
   }
 
   try {
-    dispatch({ type: 'set_loading', payload: true });
+  //  dispatch({ type: 'set_loading', payload: true });
     dispatch({ type: 'set_error', payload: null });
 
     // Convert language code to DeepL format
@@ -126,7 +126,7 @@ const translateText = (dispatch) => async (texts, targetLanguage) => {
     dispatch({ type: 'set_error', payload: errorMessage });
     return texts; // Return original texts if translation fails
   } finally {
-    dispatch({ type: 'set_loading', payload: false });
+   // dispatch({ type: 'set_loading', payload: false });
   }
 };
 

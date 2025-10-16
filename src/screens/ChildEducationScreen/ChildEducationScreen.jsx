@@ -43,7 +43,7 @@ const ChildEducationScreen = ({ navigation }) => {
     ];
 
     useEffect(() => {
-        setRefreshKey(prev => prev + 1);
+       // setRefreshKey(prev => prev + 1);
         
         if (currentLanguage !== 'en') {
             translateAndCache(textsToTranslate);
