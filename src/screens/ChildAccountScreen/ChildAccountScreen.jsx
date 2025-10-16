@@ -39,7 +39,7 @@ const ChildAccountScreen = ({ navigation }) => {
   const textsToTranslate = [
     'Account Settings',
     'Change Profile Picture',
-    'Back to Parent Profile',
+    'Switch Profiles',
     'Personal Information',
     'First Name',
     'Last Name',
@@ -63,7 +63,7 @@ const ChildAccountScreen = ({ navigation }) => {
   ];
 
   const {
-    state: { details, clinic, selectedProfilePicture },
+    state: { details, clinic, selectedProfilePicture, childDetails },
     getUser,
     getDentalClinic,
     setProfilePicture,
@@ -72,6 +72,7 @@ const ChildAccountScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showAccessCodeModal, setShowAccessCodeModal] = useState(false);
+  const [showProfileSwitchModal, setShowProfileSwitchModal] = useState(false);
   const [accessCode, setAccessCode] = useState('');
   
   // ADDED: State to hold the active child profile information
@@ -160,35 +161,17 @@ const ChildAccountScreen = ({ navigation }) => {
     setShowProfileModal(false);
   };
 
-  // UPDATED: Handles profile switching logic
+  // UPDATED: Handles profile switching logic with parental code check
   const handleSwitchProfiles = async () => {
     try {
       const storedCode = await AsyncStorage.getItem('profileSwitchCode');
       if (storedCode) {
-        // If a parental control code exists, show the modal
+        // If a parental control code exists, show the access code modal first
         setAccessCode('');
         setShowAccessCodeModal(true);
       } else {
-        // No code set — switch directly back to parent
-        const parentId = await AsyncStorage.getItem('parentId');
-        if (parentId) {
-          await AsyncStorage.setItem('id', parentId);
-          await AsyncStorage.removeItem('parentId');
-          await AsyncStorage.setItem('currentAccountType', 'parent');
-          
-          // ADDED: Clear active profile information
-          await AsyncStorage.removeItem('activeProfileId');
-          await AsyncStorage.removeItem('activeProfileName');
-          await AsyncStorage.removeItem('activeProfileUsername');
-          await AsyncStorage.removeItem('activeProfilePictureIndex');
-          
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'mainFlow' }],
-          });
-        } else {
-          console.error("Parent ID not found");
-        }
+        // No code set — show the profile switch modal directly
+        setShowProfileSwitchModal(true);
       }
     } catch (error) {
       console.error('Error checking parental control code:', error);
@@ -212,26 +195,8 @@ const ChildAccountScreen = ({ navigation }) => {
 
       if (accessCode.trim() === storedCode) {
         setShowAccessCodeModal(false);
-
-        const parentId = await AsyncStorage.getItem('parentId');
-        if (parentId) {
-          await AsyncStorage.setItem('id', parentId);
-          await AsyncStorage.removeItem('parentId');
-          await AsyncStorage.setItem('currentAccountType', 'parent');
-          
-          // ADDED: Clear active profile information
-          await AsyncStorage.removeItem('activeProfileId');
-          await AsyncStorage.removeItem('activeProfileName');
-          await AsyncStorage.removeItem('activeProfileUsername');
-          await AsyncStorage.removeItem('activeProfilePictureIndex');
-          
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'mainFlow' }],
-          });
-        } else {
-          console.error("Parent ID not found");
-        }
+        // If code is correct, show the profile switch modal
+        setShowProfileSwitchModal(true);
       } else {
         Alert.alert(
           t('Error'),
@@ -247,6 +212,71 @@ const ChildAccountScreen = ({ navigation }) => {
         [{ text: 'OK' }]
       );
     }
+  };
+
+  // ADDED: Instagram-style profile switching handler for all available accounts including parent
+  const handleProfileSwitch = (accountId, accountType) => {
+    if (accountId === 'current') {
+      setShowProfileSwitchModal(false);
+      return;
+    }
+
+    Alert.alert(
+      'Switch Profile',
+      'Are you sure you want to switch accounts?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Switch',
+          onPress: async () => {
+            setShowProfileSwitchModal(false);
+            
+            try {
+              const currentId = await AsyncStorage.getItem('id');
+              
+              if (accountType === 'parent') {
+                // Switching to parent account
+                await AsyncStorage.setItem('id', accountId);
+                await AsyncStorage.removeItem('parentId');
+                await AsyncStorage.setItem('currentAccountType', 'parent');
+                
+                // Clear active profile information
+                await AsyncStorage.removeItem('activeProfileId');
+                await AsyncStorage.removeItem('activeProfileName');
+                await AsyncStorage.removeItem('activeProfileUsername');
+                await AsyncStorage.removeItem('activeProfilePictureIndex');
+                
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'mainFlow' }],
+                });
+              } else {
+                // Switching to another child account
+                await AsyncStorage.setItem('parentId', currentId);
+                await AsyncStorage.setItem('id', accountId);
+                await AsyncStorage.setItem('currentAccountType', 'child');
+                
+                // Clear old active profile information
+                await AsyncStorage.removeItem('activeProfileId');
+                await AsyncStorage.removeItem('activeProfileName');
+                await AsyncStorage.removeItem('activeProfileUsername');
+                await AsyncStorage.removeItem('activeProfilePictureIndex');
+                
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'childFlow' }],
+                });
+              }
+            } catch (e) {
+              console.error('Error switching accounts:', e);
+            }
+          }
+        }
+      ]
+    );
   };
 
   if (isLoading) {
@@ -304,7 +334,7 @@ const ChildAccountScreen = ({ navigation }) => {
             onPress={handleSwitchProfiles}
           >
             <Ionicons name="swap-horizontal-outline" size={16} color="#516287" />
-            <Text style={styles.switchProfileText}>{t('Back to Parent Profile')}</Text>
+            <Text style={styles.switchProfileText}>{t('Switch Profiles')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -474,6 +504,137 @@ const ChildAccountScreen = ({ navigation }) => {
               </View>
             </View>
           </KeyboardAvoidingView>
+        </View>
+      </Modal>
+
+      {/* Instagram-Style Profile Switch Modal - UPDATED: Shows all accounts including parent */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showProfileSwitchModal}
+        onRequestClose={() => setShowProfileSwitchModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.profileSwitchModal}>
+            {/* Modal Header with Close Button */}
+            <View style={styles.modalHeader}>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setShowProfileSwitchModal(false)}
+              >
+                <Ionicons name="close" size={24} color="#333333" />
+              </TouchableOpacity>
+            </View>
+            
+            {/* Current Account Section */}
+            <View style={styles.currentAccountSection}>
+              <TouchableOpacity 
+                style={styles.currentAccountRow}
+                onPress={() => handleProfileSwitch('current')}
+              >
+                <View style={styles.currentAccountInfo}>
+                  <View style={styles.currentAccountAvatar}>
+                    {selectedProfilePicture !== null ? (
+                      <Image 
+                        source={profilePictures[selectedProfilePicture]} 
+                        style={styles.currentAccountImage} 
+                      />
+                    ) : (
+                      <Text style={styles.currentAccountInitials}>
+                        {getInitials(details.firstname, details.lastname)}
+                      </Text>
+                    )}
+                  </View>
+                  <View style={styles.currentAccountText}>
+                    <Text style={styles.currentAccountName}>
+                      {details.firstname && details.lastname ? 
+                        `${details.firstname} ${details.lastname}` : 
+                        'Your Account'
+                      }
+                    </Text>
+                    <Text style={styles.currentAccountUsername}>
+                      {details.email || 'child@email.com'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.checkmarkContainer}>
+                  <Ionicons name="checkmark-circle" size={24} color="#3797F0" />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* Other Accounts Section - UPDATED: Shows parent account and all other child accounts */}
+            <View style={styles.otherAccountsSection}>
+              {/* ADDED: Parent Account Option */}
+              <TouchableOpacity
+                key="parent"
+                style={styles.accountRow}
+                onPress={async () => {
+                  const parentId = await AsyncStorage.getItem('parentId');
+                  if (parentId) {
+                    handleProfileSwitch(parentId, 'parent');
+                  } else {
+                    Alert.alert('Error', 'Parent ID not found');
+                  }
+                }}
+              >
+                <View style={styles.accountInfo}>
+                  <View style={styles.accountAvatar}>
+                    <Ionicons name="shield-outline" size={32} color="#516287" />
+                  </View>
+                  <View style={styles.accountText}>
+                    <Text style={styles.accountName}>
+                      Parent Account
+                    </Text>
+                    <Text style={styles.accountUsername}>
+                      Switch to parent
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+              {/* ADDED: Other Child Accounts */}
+              {childDetails && childDetails.length > 0 ? (
+                childDetails.map((child) => {
+                  // Don't show current account in the list
+                  if ((child._id || child.id) === details._id) return null;
+                  
+                  return (
+                    <TouchableOpacity
+                      key={child._id || child.id}
+                      style={styles.accountRow}
+                      onPress={() => handleProfileSwitch(child._id || child.id, 'child')}
+                    >
+                      <View style={styles.accountInfo}>
+                        <View style={styles.accountAvatar}>
+                          {child.profile_picture !== null && child.profile_picture !== undefined ? (
+                            <Image 
+                              source={profilePictures[child.profile_picture]} 
+                              style={styles.accountImage} 
+                            />
+                          ) : (
+                            <Text style={styles.accountInitials}>
+                              {getInitials(child.firstname, child.lastname)}
+                            </Text>
+                          )}
+                        </View>
+                        <View style={styles.accountText}>
+                          <Text style={styles.accountName}>
+                            {child.firstname && child.lastname 
+                              ? `${child.firstname} ${child.lastname}` 
+                              : 'Child Account'}
+                          </Text>
+                          <Text style={styles.accountUsername}>
+                            {child.email || child.nhi || 'Child'}
+                          </Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })
+              ) : null}
+            </View>
+          </View>
         </View>
       </Modal>
     </SafeAreaView>

@@ -61,6 +61,13 @@ export default StyleSheet.create({
     color: '#333333',
     textAlign: 'center',
   },
+  // ADDED: Profile username styling
+  profileUsername: {
+    fontSize: 14,
+    color: '#656B69',
+    textAlign: 'center',
+    marginTop: 4,
+  },
 
   // Information Section
   infoSection: {
@@ -107,61 +114,6 @@ export default StyleSheet.create({
     color: '#333333',
     fontWeight: '400',
     lineHeight: 22,
-  },
-
-  // Action Buttons
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 4,
-    marginBottom: 8,
-    borderRadius: 8,
-  },
-  actionButtonText: {
-    flex: 1,
-    fontSize: 16,
-    color: '#333333',
-    marginLeft: 12,
-    fontWeight: '500',
-  },
-  disconnectButton: {
-    backgroundColor: '#FFF5F5',
-    borderWidth: 1,
-    borderColor: '#FED7D7',
-    marginTop: 8,
-  },
-  disconnectText: {
-    color: '#DC3545',
-  },
-
-  // Sign Out Section
-  signOutSection: {
-    paddingBottom: 120,
-    alignItems: 'center',
-  },
-  signOutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFF',
-    borderWidth: 2,
-    borderColor: '#DC3545',
-    borderRadius: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    width: '80%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  signOutText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#DC3545',
-    marginLeft: 8,
   },
 
   // Profile Image
@@ -277,7 +229,7 @@ export default StyleSheet.create({
     borderRadius: 40,
   },
 
-  // Access Code Modal (Updated)
+  // Access Code Modal
   accessCodeModalContent: {
     backgroundColor: '#FFFDF6',
     borderRadius: 16,
@@ -354,6 +306,187 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+
+  // ADDED: Instagram-Style Profile Switch Modal Styles
+  profileSwitchModal: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 20,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    maxHeight: '80%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+
+  modalHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#C7C7CC',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginTop: 8,
+    marginBottom: 20,
+  },
+
+  currentAccountSection: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EFEFEF',
+  },
+
+  currentAccountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+
+  currentAccountInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+
+  currentAccountAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#F0F0F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+    borderWidth: 2,
+    borderColor: '#3797F0',
+  },
+
+  currentAccountImage: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+  },
+
+  currentAccountInitials: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#516287',
+  },
+
+  currentAccountText: {
+    flex: 1,
+  },
+
+  currentAccountName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 2,
+  },
+
+  currentAccountUsername: {
+    fontSize: 14,
+    color: '#8E8E93',
+  },
+
+  checkmarkContainer: {
+    marginLeft: 12,
+  },
+
+  otherAccountsSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+
+  accountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+
+  accountInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+
+  accountAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#F0F0F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+
+  accountImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+  },
+
+  accountInitials: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#516287',
+  },
+
+  accountText: {
+    flex: 1,
+  },
+
+  accountName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000',
+    marginBottom: 2,
+  },
+
+  accountUsername: {
+    fontSize: 14,
+    color: '#8E8E93',
+  },
+
+  addAccountSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#EFEFEF',
+  },
+
+  addAccountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+
+  addAccountIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#F0F0F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+    borderWidth: 2,
+    borderColor: '#DBDBDB',
+    borderStyle: 'dashed',
+  },
+
+  addAccountText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000',
   },
 
   // Input validation styles
