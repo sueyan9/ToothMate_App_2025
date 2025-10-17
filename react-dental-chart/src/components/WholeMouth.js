@@ -36,7 +36,6 @@ const toothMaterials = {
     sealant: new THREE.MeshStandardMaterial({ color: '#FF0099', roughness: 0.1, metalness: 0.1 }),
     missing: new THREE.MeshStandardMaterial({ color: 'white', opacity: 0.0, transparent: true }),
     normal: new THREE.MeshStandardMaterial({ color: '#5C5C5C', roughness: 0.8, metalness: 0.1 }),
-
 };
 
 const normalizeTreatmentType = (t) => {

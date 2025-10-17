@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { TREATMENTS } from './Treatment';
 
 export default function FilterMenu({
-                                     selected,
-                                     onSelect,
-                                     isOpen,
-                                     activeTimePeriod,
-                                     onTimePeriodSelect,
-                                     treatmentsByPeriod,
-                                     availableTreatmentKeys
-                                   }) {
+    selected,
+    onSelect,
+    isOpen,
+    activeTimePeriod,
+    onTimePeriodSelect,
+    treatmentsByPeriod,
+    availableTreatmentKeys
+  }) {
   const getFilterStyle = (filterType) => ({
     backgroundColor: activeTimePeriod === filterType ? '#EDDFD3' : 'transparent',
     color: '#333333',
@@ -139,6 +139,7 @@ export default function FilterMenu({
 
   return (
       <div className={`filter-menu ${isOpen ? 'active' : ''}`}>
+        <p style={{marginTop: '-18px', marginBottom: '-2px', color: '#888', fontSize: '12px'}}>Drag the mouth to move around and click on a tooth for more information.</p>
         <div className="filter-title">Selected Treatments</div>
 
         <div style={{

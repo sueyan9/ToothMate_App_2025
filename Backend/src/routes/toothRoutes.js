@@ -34,7 +34,8 @@ router.post("/createTooth", async (req, res) => {
             nhi: userNhi,
             userId: user._id,
             toothNumber,
-            extracted: extracted || false
+            extracted: extracted || false,
+            partial_erupted: false
         });
 
         await tooth.save();

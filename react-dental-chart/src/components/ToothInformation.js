@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ToothInformation({ toothInfo }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +8,8 @@ export default function ToothInformation({ toothInfo }) {
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
   const [userNhi, setUserNhi] = useState(null);
+  const panelRef = useRef(null);
+  const [panelTop, setPanelTop] = useState(120);
 
   const latestTreatmentType = (arr = []) => {
     if (!Array.isArray(arr) || arr.length === 0) return null;
@@ -185,6 +187,22 @@ export default function ToothInformation({ toothInfo }) {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    let animationId;
+
+    const updatePos = () => {
+      if (panelRef.current) {
+        const rect = panelRef.current.getBoundingClientRect();
+        setPanelTop(rect.top);
+      }
+      animationId = requestAnimationFrame(updatePos);
+    };
+
+    animationId = requestAnimationFrame(updatePos);
+
+    return () => cancelAnimationFrame(animationId);
+  }, [isOpen, treatments, futureTreatments]);
+
   const handlePanelClick = (e) => {
     e.stopPropagation();
   };
@@ -193,16 +211,6 @@ export default function ToothInformation({ toothInfo }) {
     if (window.ReactNativeWebView) {
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'VIEW_EDUCATION',
-        toothName: toothInfo.name,
-        treatments: treatments
-      }));
-    }
-  };
-
-  const handleViewAppointments = () => {
-    if (window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMessage(JSON.stringify({
-        type: 'VIEW_APPOINTMENTS',
         toothName: toothInfo.name,
         treatments: treatments
       }));
@@ -218,6 +226,37 @@ export default function ToothInformation({ toothInfo }) {
       return dateString;
     }
   };
+
+  function normalizeTreatmentType(treatmentType) {
+    const typeMap = {
+  
+      'Crown Placement': 'Crown',
+      'Filling': 'Filling',
+      'Extraction': 'Extraction',
+      'Bridge': 'Bridge',
+      'Implant': 'Implant',
+      'Veneer': 'Veneer',
+      'Sealant': 'Sealant',
+      'root_canal': 'Root Canal',
+      'crown': 'Crown',
+      'filling': 'Filling',
+      'extraction': 'Extraction',
+      'bridge': 'Bridge',
+      'implant': 'Implant',
+      'veneer': 'Veneer',
+      'sealant': 'Sealant',
+      'Cleaning': null,
+      'Checkup': null
+    };
+    return typeMap[treatmentType] || treatmentType?.toLowerCase();
+  }
+
+  const getAllTreatmentsDone = () => {
+    if (treatments.length === 0) return '';
+  
+    const uniqueTypes = [...new Set(treatments.map(treatment => normalizeTreatmentType(treatment.type)))];
+    return uniqueTypes.join(', ');
+  }
 
   // Loading state
   if (isLoading) {
@@ -246,15 +285,38 @@ export default function ToothInformation({ toothInfo }) {
   if (!toothInfo) return null;
 
   return (
-      <div className={`tooth-info ${isOpen ? 'active' : ''}`} onClick={onToggle}>
+    <div style={{position: 'relative'}}>
+        <button
+          style={{
+            position: 'fixed',
+            right: '24px',
+            bottom: panelTop !== null ? `calc(100vh - ${panelTop}px + 24px)` : '106px',
+            padding: '8px',
+            height: '82px',
+            width: '82px',
+            background: '#516287',
+            color: '#fff',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            borderRadius: '60px',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'bottom 0.3s ease-in-out',
+            zIndex: 1001,
+          }}
+          onClick={handleViewEducation}
+      >
+        Learn {<br></br>} More
+      </button>
+
+      <div ref={panelRef} className={`tooth-info ${isOpen ? 'active' : ''}`} onClick={onToggle}>
         <div onClick={(e) => {
           e.stopPropagation();
           setIsOpen(!isOpen);
-        }} className="tooth-info-header">
-          {isOpen ? `↓ ${toothInfo.name} (#${toothInfo.toothNumber})` : `↑ ${toothInfo.name}`}
+        }}>
+          {!isOpen && (<div style={{color: '#666', marginBottom: '8px'}}>Work done on this tooth: {getAllTreatmentsDone() || 'None'}</div>)}
+          <div className="tooth-info-header">{isOpen ? `↓ ${toothInfo.name} (#${toothInfo.toothNumber})` : `↑ ${toothInfo.name}`}</div>
         </div>
-
-        {isOpen && (
             <div onClick={handlePanelClick}>
               <div className="tooth-info-content">
               <div>
@@ -265,42 +327,11 @@ export default function ToothInformation({ toothInfo }) {
                           {treatments.map((treatment, index) => (
                               <li key={index} className="treatment-item">
                                 <div><strong>Date:</strong> {formatDate(treatment.date)}</div>
-                                <div><strong>Treatment Type:</strong> {treatment.type}</div>
+                                <div><strong>Treatment Type:</strong> {normalizeTreatmentType(treatment.type)}</div>
                                 {treatment.notes && <div><strong>Notes:</strong> {treatment.notes}</div>}
                               </li>
                           ))}
                         </ul>
-
-                        <button
-                            style={{
-                              padding: '10px 20px',
-                              background: '#4CAF50',
-                              color: '#fff',
-                              border: 'none',
-                              borderRadius: '5px',
-                              cursor: 'pointer',
-                              marginTop: '10px'
-                            }}
-                            onClick={handleViewEducation}
-                        >
-                          Learn More
-                        </button>
-
-                        <button
-                            style={{
-                              padding: '10px 20px',
-                              background: '#2196F3',
-                              color: '#fff',
-                              border: 'none',
-                              borderRadius: '5px',
-                              cursor: 'pointer',
-                              marginTop: '10px',
-                              marginLeft: '10px'
-                            }}
-                            onClick={handleViewAppointments}
-                        >
-                          View Appointments
-                        </button>
                       </>
                   ) : (
                       <p>No previous treatments recorded for this tooth.</p>
@@ -328,7 +359,7 @@ export default function ToothInformation({ toothInfo }) {
 
               </div>
             </div>
-        )}
+      </div>
       </div>
   );
 }
