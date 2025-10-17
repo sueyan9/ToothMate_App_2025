@@ -9,6 +9,8 @@ const TreatmentReducer = (state, action) => {
         return { ...state, treatments: payload };
         case 'create_treatment':
         return { ...state, treatments: [...(state.treatments || []), payload] };
+        case 'delete_treatment':
+        return { ...state, treatments: [] }; // Clear treatments after deletion
         default:
         return state;
     }
@@ -30,7 +32,7 @@ const getTreatments = dispatch => {
 };
 
 const createTreatment = dispatch => {
-    return async (userNhi, toothNumber, treatmentType, date, notes) => {
+    return async (userNhi, toothNumber, treatmentType, date, notes, test) => {
         try {
         if (!userNhi) {
             throw new Error('User NHI is required');
@@ -51,6 +53,7 @@ const createTreatment = dispatch => {
             date,
             notes,
             completed: false,
+            test
             }
         );
 
@@ -64,19 +67,17 @@ const createTreatment = dispatch => {
     };
 };
 
-const deleteTreatment = dispatch => {
-    return async treatmentId => {
+const deleteTestTreatment = dispatch => {
+    return async () => {
         try {
-        if (!treatmentId) {
-            throw new Error('Treatment ID is required');
-        }
+        const response = await axiosApi.delete('/Treatment/test_data');
 
-        await axiosApi.delete(`/Treatment/${treatmentId}`);
-
-        console.log(`Treatment ${treatmentId} deleted successfully`);
-        return treatmentId;
+        dispatch({ type: 'delete_treatment', payload: response.data });
+        
+        console.log(`Test treatments deleted:`, response.data);
+        return response.data;
         } catch (error) {
-        console.error('Error deleting treatment:', error);
+        console.error('Error deleting test treatments:', error);
         throw error;
         }
     };
@@ -84,6 +85,6 @@ const deleteTreatment = dispatch => {
 
 export const { Provider, Context } = createDataContext(
     TreatmentReducer,
-    { getTreatments, createTreatment, deleteTreatment },
+    { getTreatments, createTreatment, deleteTestTreatment },
     { treatments: [] },
 );

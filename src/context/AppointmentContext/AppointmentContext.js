@@ -18,6 +18,13 @@ const AppointmentReducer = (state, action) => {
           ? payload 
           : state.nextAppointment,
     };
+    case 'unconfirm_appointment':
+      return {
+        ...state,
+        nextAppointment: state.nextAppointment?._id === payload._id 
+          ? payload 
+          : state.nextAppointment,
+      };
     default:
       return state;
   }

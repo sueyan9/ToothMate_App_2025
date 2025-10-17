@@ -21,6 +21,7 @@ import {
   fetchAssetsForAppointment
 } from '../../api/appointments';
 import axiosApi from '../../api/axios';
+import ResetButton from '../../components/ResetButton/index';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import { Context as ClinicContext } from '../../context/ClinicContext/ClinicContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
@@ -1473,7 +1474,10 @@ const {
             <Ionicons name="log-out-outline" size={24} color="#DC3545" />
             <Text style={styles.signOutText}>{t('Sign Out')}</Text>
           </TouchableOpacity>
+
+          <ResetButton/>
         </View>
+
       </ScrollView>
 
       {/* Profile Picture Selection Modal */}

@@ -146,7 +146,7 @@ router.get('/getTreatmentsByToothNumberNhi/:nhi/:toothNumber', async (req, res) 
 // 创建治疗记录
 router.post("/createTreatment", async (req, res) => {
     try {
-        const { userNhi, toothNumber, treatmentType, date, notes, completed } = req.body;
+        const { userNhi, toothNumber, treatmentType, date, notes, completed, test } = req.body;
 
         const user = await User.findOne({ nhi: userNhi });
         if (!user) {
@@ -160,7 +160,8 @@ router.post("/createTreatment", async (req, res) => {
             treatmentType,
             date,
             notes,
-            completed: completed || false
+            completed: completed || false,
+            test_data: test
         });
 
         const savedTreatment = await newTreatment.save();
@@ -170,25 +171,20 @@ router.post("/createTreatment", async (req, res) => {
     }
 });
 
-router.delete('/Treatment/:id', async (req, res) => {
+router.delete('/Treatment/test_data', async (req, res) => {
     try {
-        const { id } = req.params;
+        // Delete all treatments with test_data = true
+        const result = await Treatment.deleteMany({
+        test_data: true
+        });
 
-        // Validate treatment ID
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'invalid treatment id' });
-        }
-
-        const deletedTreatment = await Treatment.findByIdAndDelete(id);
-
-        if (!deletedTreatment) {
-        return res.status(404).json({ error: 'treatment not found' });
-        }
-
-        console.log(`[DELETE /Treatment/:id] Deleted treatment ${id}`);
-        res.json({ message: 'Treatment deleted successfully' });
+        console.log(`[DELETE /Treatment/test_data] Deleted ${result.deletedCount} test treatments`);
+        res.json({ 
+        message: `Deleted ${result.deletedCount} test treatment(s)`,
+        deletedCount: result.deletedCount 
+        });
     } catch (e) {
-        console.error('DELETE /Treatment/:id failed:', e);
+        console.error('DELETE /Treatment/test_data failed:', e);
         res.status(422).json({ error: e.message });
     }
 });

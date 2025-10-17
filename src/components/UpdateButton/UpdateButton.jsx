@@ -7,7 +7,7 @@ import { Context as TreatmentContext } from '../../context/TreatmentContext/Trea
 const UpdateButton = () => {
     const navigation = useNavigation();
     const {confirmAppointment, unconfirmAppointment} = useContext(AppointmentContext);
-    const { createTreatment, deleteTreatment } = useContext(TreatmentContext);
+    const { createTreatment, deleteTestTreatment } = useContext(TreatmentContext);
     const [isLoading, setIsLoading] = useState(false);
 
     const appointmentId = "68ec66f6f1371a38fc91fee4";
@@ -25,9 +25,13 @@ const UpdateButton = () => {
                 'ABY0987',           // userNhi
                 '11',                 // toothNumber
                 'Filling',           // treatmentType
-                new Date(),          // date
-                'Root canal notes'   // notes
+                new Date('2023-10-21'),          // date
+                'Root canal notes',
+                true   // notes
             );
+
+            //await deleteTestTreatment();
+            //await unconfirmAppointment(appointmentId);
 
             const currentIndex = navigation.getState().index;
             navigation.reset({
