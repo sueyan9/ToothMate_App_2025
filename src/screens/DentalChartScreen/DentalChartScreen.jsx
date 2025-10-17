@@ -27,10 +27,13 @@ const DentalChartScreen = () => {
         const res = await axiosApi.get(`/isChild/${userId}`);
         
         setRes(res.data);
-          if (res.data.isChild != null){
-              setParent(false)
-          }
-      } 
+          // if (res.data.isChild != null){
+          //    setParent(false)
+          // }
+          // parent=true => adult; parent=false => child
+                setParent(!(res?.data?.isChild === true));
+
+    }
       catch (error) {
         console.error('❌  Failed to fetch user:', error);
       }
@@ -52,7 +55,7 @@ const DentalChartScreen = () => {
 
     const base = String(WEB_DENTAL_CHART_URL || '').replace(/\/+$/, '');
     if (!base) console.warn('[DC] WEB_DENTAL_CHART_URL is empty! Did @env load?');
-    const url = `${base}/?parent=${parent ? 'true' : 'false'}${userId ? `&userId=${encodeURIComponent(userId)}` : ''}`;
+    const url = `${base}/?parent=${parent ? 'true' : 'false'}${!parent ? '&hideBack=true' : ''}${userId ? `&userId=${encodeURIComponent(userId)}` : ''}`;
     useEffect(() => {
         if (!userId || !res) return;
         console.log('WebView URL =>', url);
