@@ -85,11 +85,9 @@ const WholeMouthModel = ({
         (qs.get('mode') === 'child') ||
         (qs.get('hideBack') === 'true');
 
-// 仅儿童隐藏磨牙；成人不隐藏
-    console.log('[WholeMouth] search=', window.location.search, 'isChild=', isChild);
     const CHILD_HIDE_MOLARS = [16,17,18,26,27,28,36,37,38,46,47,48];
     const HIDE_TEETH = isChild ? new Set(CHILD_HIDE_MOLARS) : new Set();
-    console.log('[WholeMouth] hideCount=', HIDE_TEETH.size);
+
 
     const getToothData = (toothNumber) => {
         return teethData.find((tooth) => tooth.toothNumber === toothNumber) || {};
@@ -229,14 +227,15 @@ export default function WholeMouth({
     const navigate = useNavigate();
 
     const handleToothClick = (toothNumber, toothComponent) => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('userId');
+        const current = new URLSearchParams(window.location.search || '');
+        const next = new URLSearchParams();
 
-        if (userId) {
-            navigate(`/${toothComponent}?userId=${encodeURIComponent(userId)}`);
-        } else {
-            navigate(`/${toothComponent}`);
-        }
+        ['userId', 'parent', 'mode', 'hideBack'].forEach((k) => {
+            const v = current.get(k);
+            if (v !== null) next.set(k, v);
+        });
+
+        navigate(`/${toothComponent}?${next.toString()}`);
     };
 
     return (

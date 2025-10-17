@@ -276,9 +276,13 @@ const BackButton = () => {
   const navigate = useNavigate();
   const isToothPage = location.pathname !== '/';
   if (!isToothPage) return null;
+  const goHome = () => {
+    const search = window.location.search || '';
+    navigate({ pathname: '/', search }); // keep ?parent/mode/hideBack/userId
+  };
   return (
       <button
-          onClick={() => navigate('/')}
+          onClick={goHome}
           style={{ position: 'fixed', top: '32px', left: '24px', zIndex: 1000, padding: '10px 15px', backgroundColor: '#E9F1F8', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
           aria-label="Back"
       >
