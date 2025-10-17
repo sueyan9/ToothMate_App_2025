@@ -18,30 +18,41 @@ const DentalChartScreen = () => {
   const [selection, setSelection] = useState(null); // { toothId, toothName, treatment }
   const [userId, setUserId] = useState(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('id');
-        setUserId(userId);//key : save to state,webview can use it.
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const id = await AsyncStorage.getItem('id');
+                setUserId(id);
+                if (!id) { setParent(true); return; }
 
-        const res = await axiosApi.get(`/isChild/${userId}`);
-        
-        setRes(res.data);
-          // if (res.data.isChild != null){
-          //    setParent(false)
-          // }
-          // parent=true => adult; parent=false => child
-                setParent(!(res?.data?.isChild === true));
+                const endpoint = `/isChild/${id}`;
+                console.log('[DC] call =>', (axiosApi.defaults?.baseURL || '') + endpoint);
 
-    }
-      catch (error) {
-        console.error('❌  Failed to fetch user:', error);
-      }
-    };
-    fetchUser();
-  }, []);
+                const resp = await axiosApi.get(endpoint);
+                console.log('[DC] /isChild resp =', resp?.status, resp?.data);
 
- // the native button can show without WebView
+                const data = resp?.data ?? {};
+                setRes(data);
+                const hasIsChild = Object.prototype.hasOwnProperty.call(data, 'isChild');
+
+                if (!hasIsChild) {
+                    console.warn('[DC] /isChild missing isChild field, fallback to adult');
+                    setParent(true); // 成人兜底
+                    return;
+                }
+
+                const toBool = (v) => v === true || v === 'true' || v === 1 || v === '1';
+                const isParent = toBool(data.isChild); // 后端把“家长”塞在 isChild 字段里
+                setParent(isParent);                   // parent=true(成人) / false(儿童)
+            } catch (e) {
+                console.error('❌ fetch /isChild failed:', e?.message || e);
+                setParent(true); // 兜底成人
+            }
+        };
+        fetchUser();      // 调用它
+
+            }, []);
+    // the native button can show without WebView
    useEffect(() => {
      const p = route.params?.selectedTooth;
        if (p?.treatment) {
@@ -55,7 +66,9 @@ const DentalChartScreen = () => {
 
     const base = String(WEB_DENTAL_CHART_URL || '').replace(/\/+$/, '');
     if (!base) console.warn('[DC] WEB_DENTAL_CHART_URL is empty! Did @env load?');
-    const url = `${base}/?parent=${parent ? 'true' : 'false'}${!parent ? '&hideBack=true' : ''}${userId ? `&userId=${encodeURIComponent(userId)}` : ''}`;
+
+    const isChild = !parent;
+    const url = `${base}/?parent=${isChild ? 'false' : 'true'}&mode=${isChild ? 'child' : 'parent'}&hideBack=${isChild ? 'true' : 'false'}${userId ? `&userId=${encodeURIComponent(userId)}` : ''}`;
     useEffect(() => {
         if (!userId || !res) return;
         console.log('WebView URL =>', url);

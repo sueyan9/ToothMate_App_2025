@@ -79,10 +79,17 @@ const WholeMouthModel = ({
     // 单颗/多颗强制隐藏（成人编号 11–48）
     // 示例：隐藏全部磨牙 => 16,17,18,26,27,28,36,37,38,46,47,48
     // 你也可以只隐藏一颗，比如 new Set([16])
-    const HIDE_TEETH = new Set([
-        // 例：隐藏全部磨牙（儿童显示 20 颗）
-        16,17,18,26,27,28,36,37,38,46,47,48
-    ]);
+    const qs = new URLSearchParams(window.location.search);
+    const isChild =
+        (qs.get('parent') === 'false') ||
+        (qs.get('mode') === 'child') ||
+        (qs.get('hideBack') === 'true');
+
+// 仅儿童隐藏磨牙；成人不隐藏
+    console.log('[WholeMouth] search=', window.location.search, 'isChild=', isChild);
+    const CHILD_HIDE_MOLARS = [16,17,18,26,27,28,36,37,38,46,47,48];
+    const HIDE_TEETH = isChild ? new Set(CHILD_HIDE_MOLARS) : new Set();
+    console.log('[WholeMouth] hideCount=', HIDE_TEETH.size);
 
     const getToothData = (toothNumber) => {
         return teethData.find((tooth) => tooth.toothNumber === toothNumber) || {};
@@ -143,10 +150,14 @@ const WholeMouthModel = ({
     };
 
     const renderTooth = (nodeKey, toothNumber, toothLabel, base) => {
-        if (HIDE_TEETH.has(toothNumber)) return null; // 单颗强制隐藏
+        // 儿童模式：命中隐藏集合则不渲染
+        if (HIDE_TEETH.has(toothNumber)) return null;
+
         const node = nodes?.[nodeKey];
         if (!node?.geometry) return null;
+
         const rot = base === 'upper' ? [1.11, 0, 0] : [Math.PI / 2, 0, 0];
+
         return (
             <mesh
                 geometry={node.geometry}

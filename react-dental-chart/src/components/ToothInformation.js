@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { formatDisplayNumber, getDisplayToothName } from './Util/toothDisplay';
 
 export default function ToothInformation({ toothInfo }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,12 @@ export default function ToothInformation({ toothInfo }) {
   const [userNhi, setUserNhi] = useState(null);
   const panelRef = useRef(null);
   const [panelTop, setPanelTop] = useState(120);
+//kid teeth display
+  const qs = new URLSearchParams(window.location.search);
+  const isChild = (qs.get('parent') === 'false') || (qs.get('mode') === 'child');
+
+  const displayNumber = toothInfo?.displayNumber ?? formatDisplayNumber(toothInfo?.toothNumber, isChild);
+  const displayName = toothInfo?.displayName ?? getDisplayToothName(toothInfo?.toothNumber, isChild);
 
   const latestTreatmentType = (arr = []) => {
     if (!Array.isArray(arr) || arr.length === 0) return null;
@@ -20,7 +27,7 @@ export default function ToothInformation({ toothInfo }) {
 
   const onToggle = () => setIsOpen(!isOpen);
 
-  // ① Web: URL parameters
+  //  Web: URL parameters
   useEffect(() => {
     try {
       const sp = new URLSearchParams(window.location.search);
@@ -31,7 +38,7 @@ export default function ToothInformation({ toothInfo }) {
     } catch {}
   }, []);
 
-  // ② RN: WebView bridge injection
+  // RN: WebView bridge injection
   useEffect(() => {
     const handler = (evt) => {
       try {
@@ -46,7 +53,7 @@ export default function ToothInformation({ toothInfo }) {
     return () => window.removeEventListener('message', handler);
   }, []);
 
-  // ③ Call backend API to get treatment records
+  //  Call backend API to get treatment records
   useEffect(() => {
     let cancelled = false;
     if (!toothInfo?.toothNumber) return;
@@ -55,9 +62,6 @@ export default function ToothInformation({ toothInfo }) {
       try {
         setIsLoading(true);
         setError(null);
-        console.log('Loading treatments for tooth:', toothInfo.toothNumber);
-        console.log('UserId:', userId);
-        console.log('UserNhi:', userNhi);
 
         // If no user info, don't show treatment records
         if (!userId && !userNhi) {
@@ -169,12 +173,12 @@ export default function ToothInformation({ toothInfo }) {
       type: 'TOOTH_SELECTED',
       payload: {
         toothNumber: toothInfo.toothNumber,
-        toothName: toothInfo.name,
+        toothName: displayName,
         treatments: treatments,
         treatment: latestTreatmentType(treatments),
       }
     }));
-  }, [isOpen, toothInfo, treatments]);
+  }, [isOpen, toothInfo, treatments, displayName]);
 
   useEffect(() => {
     const handleClickOutside = () => {
@@ -211,7 +215,7 @@ export default function ToothInformation({ toothInfo }) {
     if (window.ReactNativeWebView) {
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'VIEW_EDUCATION',
-        toothName: toothInfo.name,
+        toothName: displayName,
         treatments: treatments
       }));
     }
@@ -315,7 +319,9 @@ export default function ToothInformation({ toothInfo }) {
           setIsOpen(!isOpen);
         }}>
           {!isOpen && (<div style={{color: '#666', marginBottom: '8px'}}>Work done on this tooth: {getAllTreatmentsDone() || 'None'}</div>)}
-          <div className="tooth-info-header">{isOpen ? `↓ ${toothInfo.name} (#${toothInfo.toothNumber})` : `↑ ${toothInfo.name}`}</div>
+          <div className="tooth-info-header">
+            {isOpen ? `↓ ${displayName} (#${displayNumber})` : `↑ ${displayName}`}
+          </div>
         </div>
             <div onClick={handlePanelClick}>
               <div className="tooth-info-content">

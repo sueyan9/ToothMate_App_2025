@@ -533,20 +533,17 @@ useEffect(() => {
                       <div className="main-3d" onClick={() => setShowMenu(false)} style={{ cursor: 'default' }}>
                         {loading && <p>Loading…</p>}
                         {error && <p style={{ color: '#B00020' }}>Failed: {error}</p>}
-                        {!loading && !error && userId && (
-                            mode === 'child' ? (
-                                <WholeMouthKid selectedTreatment={selectedTreatment} />
-                            ) : (
-                                <WholeMouth
-                                    selectedTreatment={selectedTreatment}
-                                    setSelectedTreatment={setSelectedTreatment}
-                                    activeTimePeriod={activeTimePeriod}
-                                    treatmentsByPeriod={treatmentsByPeriod}
-                                    eruptionLevels={eruptionLevels}
-                                    teethData={teethData}
-                                />
+                        <WholeMouth
+                            selectedTreatment={selectedTreatment}
+                            setSelectedTreatment={setSelectedTreatment}
+                            activeTimePeriod={activeTimePeriod}
+                            treatmentsByPeriod={treatmentsByPeriod}
+                            eruptionLevels={eruptionLevels}
+                            teethData={teethData}
+                            hideBackOverride={mode === 'child'}   // 关键：把 child 传给 WholeMouth
+                        />
                             )
-                        )}
+                        )
                         {!userId && !loading && <p>No user set. Use /u/:userId or ?userId=, or RN WebView postMessage.</p>}
                       </div>
                       <div className={`filter-menu-container ${showMenu ? 'active' : ''}`} onClick={(e) => e.stopPropagation()}>
