@@ -170,4 +170,27 @@ router.post("/createTreatment", async (req, res) => {
     }
 });
 
+router.delete('/Treatment/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Validate treatment ID
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'invalid treatment id' });
+        }
+
+        const deletedTreatment = await Treatment.findByIdAndDelete(id);
+
+        if (!deletedTreatment) {
+        return res.status(404).json({ error: 'treatment not found' });
+        }
+
+        console.log(`[DELETE /Treatment/:id] Deleted treatment ${id}`);
+        res.json({ message: 'Treatment deleted successfully' });
+    } catch (e) {
+        console.error('DELETE /Treatment/:id failed:', e);
+        res.status(422).json({ error: e.message });
+    }
+});
+
 module.exports = router;

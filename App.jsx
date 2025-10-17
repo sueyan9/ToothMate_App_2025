@@ -50,6 +50,7 @@ import { Provider as NotificationProvider } from './src/context/NotificationCont
 import { ProgressProvider } from './src/context/ProgressContext/ProgressContext';
 import { Provider as TranslationProvider } from './src/context/TranslationContext/TranslationContext';
 import { useTranslation } from './src/context/TranslationContext/useTranslation';
+import { Provider as TreatmentProvider } from './src/context/TreatmentContext/TreatmentContext';
 import { Provider as UserProvider } from './src/context/UserContext/UserContext';
 import { navigationRef } from './src/navigationRef';
 
@@ -59,20 +60,13 @@ import { ActivityIndicator } from 'react-native';
 import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
+import UpdateButton from './src/components/UpdateButton';
 import { SessionContext, SessionProvider } from './src/context/SessionContext/SessionContext';
 import SplashScreen from './src/screens/SplashScreen';
 
 //  Create stack and tab navigators
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
-const HeaderLogo = () => (
-    <View style={{alignItems: 'center', justifyContent: 'center'}}>
-        <Image
-        source={require('./assets/tooth_icon.png')}
-        style={{width: 100, height: 35, resizeMode: 'contain'}}/>
-    </View>
-);
 
 // Account flow navigation
 const AccountStack = () => (
@@ -194,7 +188,7 @@ const MainFlow = () => {
                 return {
                     headerShown: !isProfileInner,
                     ...( !isProfileInner ? {
-                        headerLeft: () => <HeaderLogo />,
+                        headerLeft: () => <UpdateButton />,
                         headerTitle: 'ToothMate',
                         headerStyle: {
                             backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
@@ -294,7 +288,7 @@ const ChildFlow = () => {
 
                 return {
                     headerShown: !isGameScreen,
-                    headerLeft: () => <HeaderLogo/>,
+                    headerLeft: () => <UpdateButton/>,
                     headerTitle: '',
                     headerStyle: {
                         backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
@@ -449,6 +443,7 @@ export default function App() {
             console.log('Session expired - redirect to login');
         }}>
             <AuthProvider>
+                <TreatmentProvider>
                 <ClinicProvider>
                     <EducationProvider>
                         <AppointmentProvider>
@@ -464,6 +459,7 @@ export default function App() {
                         </AppointmentProvider>
                     </EducationProvider>
                 </ClinicProvider>
+                </TreatmentProvider>
             </AuthProvider>
         </SessionProvider>
     );

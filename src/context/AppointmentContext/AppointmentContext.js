@@ -11,6 +11,13 @@ const AppointmentReducer = (state, action) => {
       return payload;
     case 'get_next_appointment':
       return { ...state, nextAppointment: payload };
+    case 'confirm_appointment':
+      return {
+        ...state,
+        nextAppointment: state.nextAppointment?._id === payload._id 
+          ? payload 
+          : state.nextAppointment,
+    };
     default:
       return state;
   }
@@ -63,8 +70,55 @@ const getNextAppointment = dispatch => {
   };
 };
 
+const confirmAppointment = dispatch => {
+  return async (appointmentId, nhi) => {
+    try {
+      if (!appointmentId) {
+        throw new Error('Appointment ID is required');
+      }
+      
+      const response = await axiosApi.patch(
+        `/Appointments/${appointmentId}/confirm`,
+        { confirmed: true }
+      );
+      
+      dispatch({ type: 'confirm_appointment', payload: response.data });
+
+      console.log(`Appointment ${appointmentId} confirmed successfully`);
+
+      return response.data;
+    } catch (error) {
+      console.error('Error confirming appointment:', error);
+      throw error;
+    }
+  };
+};
+
+const unconfirmAppointment = dispatch => {
+  return async (appointmentId, nhi) => {
+    try {
+      if (!appointmentId) {
+        throw new Error('Appointment ID is required');
+      }
+      
+      const response = await axiosApi.patch(
+        `/Appointments/${appointmentId}/confirm`,
+        { confirmed: false }
+      );
+      
+      dispatch({ type: 'unconfirm_appointment', payload: response.data });
+
+      console.log(`Appointment ${appointmentId} unconfirmed successfully`);
+      return response.data;
+    } catch (error) {
+      console.error('Error unconfirming appointment:', error);
+      throw error;
+    }
+  };
+};
+
 export const { Provider, Context } = createDataContext(
   AppointmentReducer,
-  { getAppointmentContent, getUserAppointments, getNextAppointment },
+  { getAppointmentContent, getUserAppointments, getNextAppointment, confirmAppointment, unconfirmAppointment },
   { appointments: [], userAppointments: [], nextAppointment: null },
 );
