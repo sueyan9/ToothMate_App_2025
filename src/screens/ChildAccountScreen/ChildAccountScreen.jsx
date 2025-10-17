@@ -286,6 +286,7 @@ const ChildAccountScreen = ({ navigation }) => {
                 await AsyncStorage.removeItem('activeProfileName');
                 await AsyncStorage.removeItem('activeProfileUsername');
                 await AsyncStorage.removeItem('activeProfilePictureIndex');
+                await AsyncStorage.removeItem('activeProfileFirstName');
                 
                 navigation.reset({
                   index: 0,

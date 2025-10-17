@@ -42,28 +42,28 @@ const HomeScreen = () => {
         require('../../../assets/profile pictures/p8.png'),
     ];
 
-    const quotes = [
-        "Smile while you still have teeth!",
-        "Bacteria don't take a vacation, and neither should oral hygeine!",
-        "Oral health: where you won't get a plaque for good performance!",
-        "Dentists make the world a better place, one smile at a time!",
-        "Did you know that drinking milk helps to strengthen your teeth and build stronger enamel!",
-        "Americans buy more than 14 million gallons of toothpaste every year.",
-        "Coconuts are a natural anti-bacterial food and can help reduce the risk of developing gum disease and cavities.",
-        "Approximately 75% of school children worldwide have active dental cavities.",
-        "Kids miss 51 million school hours a year due to dental-related illnesses.",
-        "Tooth enamel is the hardest substance in the human body.",
-        "Chewing sugar-free gum can actually be good for your oral health. It helps to clean your mouth and fight off cavities.",
-        "There are more bacteria in the human mouth than there are people on the Earth.",
-        "The color of your toothpaste apparently matters. More people prefer blue toothpaste over red toothpaste.",
-        "People prefer blue toothbrushes to red ones. The exact reason is unknown, but it could be because blue is often associated with cleanliness.",
-        "A happy mouth is a happy body!",
+    const tips = [
+        "Brush twice daily for 2 minutes each time.",
+        "Floss every day to remove plaque between teeth.",
+        "Drink water instead of sugary drinks.",
+        "Milk strengthens teeth and builds enamel.",
+        "Sugar-free gum helps fight cavities.",
+        "Visit your dentist every 6 months.",
+        "Limit acidic foods and beverages.",
+        "Replace your toothbrush every 3 months.",
+        "Don't brush immediately after acidic drinks.",
+        "Eat calcium-rich foods for strong teeth.",
+        "Avoid smoking and tobacco products.",
+        "Use fluoride toothpaste daily.",
+        "Coconut oil has natural antibacterial properties.",
+        "Rinse your mouth after meals.",
+        "A healthy mouth is a healthy body!"
     ]
 
-    const getRandomQuote = () => {
-        const randomQuote = Math.floor(Math.random() * 14) + 1;
+    const getRandomTip = () => {
+        const randomTip = Math.floor(Math.random() * 14) + 1;
 
-        return quotes[randomQuote];
+        return tips[randomTip];
     }
 
     const navigation = useNavigation();
@@ -240,9 +240,9 @@ const HomeScreen = () => {
                     <Text style={styles.bookNowText}>Book Now</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={[styles.updateBox, {flex: 1.6}]}>
-                    <Text style={styles.basicText}>{t('Oral Health Quote Of The Day:')}</Text>
-                    <Text style={styles.noteText}>{getRandomQuote()}</Text>
+                <View style={[styles.updateBox, {flex: 1}]}>
+                    <Text style={styles.basicText}>{t('Daily Oral Health Tip:')}</Text>
+                    <Text style={styles.noteText}>{getRandomTip()}</Text>
                 </View>
             </View>
 

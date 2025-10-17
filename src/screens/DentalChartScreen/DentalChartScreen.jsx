@@ -1,11 +1,12 @@
 import { WEB_DENTAL_CHART_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View, Text, Alert } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import axiosApi from "../../api/axios";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import styles from './styles';
 
 const DentalChartScreen = () => {
   const webViewRef = useRef(null);
@@ -17,6 +18,7 @@ const DentalChartScreen = () => {
   const [res, setRes] = useState(null); // Stores the response from the isChild API
   const [selection, setSelection] = useState(null); // { toothId, toothName, treatment }
   const [userId, setUserId] = useState(null);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -25,6 +27,8 @@ const DentalChartScreen = () => {
         setUserId(userId);//key : save to state,webview can use it.
 
         const res = await axiosApi.get(`/isChild/${userId}`);
+        const name = await AsyncStorage.getItem('activeProfileFirstName');
+        setUserName(name);
         
         setRes(res.data);
           if (res.data.isChild != null){
@@ -127,6 +131,9 @@ const DentalChartScreen = () => {
                return (
                    <View style={{ flex: 1 }}>
                        <SafeAreaView />
+                       {userName && (
+                       <Text style={styles.chartTitle}>{userName}'s Mouth</Text>
+                       )}
                        <WebView
                            ref={webViewRef}
                            source={{ uri: url }}

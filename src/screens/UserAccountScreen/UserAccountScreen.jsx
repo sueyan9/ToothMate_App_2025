@@ -970,6 +970,7 @@ const {
 
               await AsyncStorage.setItem('id', childId);
               await AsyncStorage.setItem('activeProfileName', `${selectedChild.firstname} ${selectedChild.lastname}`);
+              await AsyncStorage.setItem('activeProfileFirstName', `${selectedChild.firstname}`);
               await AsyncStorage.setItem('activeProfileUsername', selectedChild.email || selectedChild.nhi || '');
               await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedChild.profile_picture ?? -1));
               await AsyncStorage.setItem('currentAccountType', 'child');

@@ -42,6 +42,7 @@ const user = dispatch => async () => {
 const tryLocalSignin = dispatch => async () => {
   const token = await AsyncStorage.getItem('token');
   const id = await AsyncStorage.getItem('id');
+  const parentId = await AsyncStorage.getItem('parentId');
   if (token) {
     if (id) {
       /*
@@ -49,8 +50,13 @@ const tryLocalSignin = dispatch => async () => {
       dispatch({ type: "signin", payload: response.data });
       navigate("Account");
       */
-      dispatch({ type: 'signin', payload: { token, id } });
-      navigate('mainFlow', { screen: 'AccountFlow' });
+      if (!parentId) {
+        dispatch({ type: 'signin', payload: { token, id } });
+        navigate('mainFlow', { screen: 'AccountFlow' });
+      } else {
+        dispatch({ type: 'signin', payload: { token, parentId } });
+        navigate('childFlow', { screen: 'ChildEducation' });
+      }
     } else {
       navigate('Welcome');
     }
