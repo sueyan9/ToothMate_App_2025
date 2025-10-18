@@ -3,7 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { Suspense, useEffect, useRef } from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import ToothInformation from '../ToothInformation';
-
+import { formatDisplayNumber, getDisplayToothName } from '../Util/toothDisplay';
 
 const CameraController = () => {
     const { camera, gl } = useThree();
