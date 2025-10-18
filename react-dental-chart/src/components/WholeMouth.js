@@ -1,29 +1,12 @@
 import { useGLTF } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef ,useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import '../styles.css';
 import { getToothPositionFromData } from './Util/getToothPositionFromData';
-
-const CameraController = () => {
-    const { camera, gl } = useThree();
-    useEffect(() => {
-        const controls = new OrbitControls(camera, gl.domElement);
-        controls.minDistance = 5;
-        controls.maxDistance = 6;
-        controls.minPolarAngle = Math.PI / 3;
-        controls.maxPolarAngle = Math.PI / 1.6;
-        controls.minAzimuthAngle = -Math.PI / 4;
-        controls.maxAzimuthAngle = Math.PI / 4;
-        controls.rotateSpeed = 0.8;
-        controls.panSpeed = 1.0;
-        return () => controls.dispose();
-    }, [camera, gl]);
-    return null;
-};
-
+//define material for treatment color
 const toothMaterials = {
     filling: new THREE.MeshStandardMaterial({ color: '#C00A0A', roughness: 0.1, metalness: 0.1 }),
     crown: new THREE.MeshStandardMaterial({ color: '#FF5100', roughness: 0.1, metalness: 0.1 }),
@@ -64,6 +47,24 @@ const normalizeTreatmentType = (t) => {
     return fromMap || String(t).toLowerCase();
 };
 
+const CameraController = () => {
+    const { camera, gl } = useThree();
+    useEffect(() => {
+        const controls = new OrbitControls(camera, gl.domElement);
+        controls.minDistance = 5;
+        controls.maxDistance = 6;
+        controls.minPolarAngle = Math.PI / 3;
+        controls.maxPolarAngle = Math.PI / 1.6;
+        controls.minAzimuthAngle = -Math.PI / 4;
+        controls.maxAzimuthAngle = Math.PI / 4;
+        controls.rotateSpeed = 0.8;
+        controls.panSpeed = 1.0;
+        return () => controls.dispose();
+    }, [camera, gl]);
+    return null;
+};
+
+
 const WholeMouthModel = ({
                              selectedTreatment = [],
                              activeTimePeriod,
@@ -76,9 +77,7 @@ const WholeMouthModel = ({
     const group = useRef();
     const { nodes, materials } = useGLTF('/assets/adult_whole_mouth.glb');
 
-    // 单颗/多颗强制隐藏（成人编号 11–48）
-    // 示例：隐藏全部磨牙 => 16,17,18,26,27,28,36,37,38,46,47,48
-    // 你也可以只隐藏一颗，比如 new Set([16])
+    //kid model hide teeth set
     const qs = new URLSearchParams(window.location.search);
     const isChild =
         (qs.get('parent') === 'false') ||
@@ -87,7 +86,19 @@ const WholeMouthModel = ({
 
     const CHILD_HIDE_MOLARS = [16,17,18,26,27,28,36,37,38,46,47,48];
     const HIDE_TEETH = isChild ? new Set(CHILD_HIDE_MOLARS) : new Set();
+    // check data status
+    const isDataLoaded = teethData && teethData.length > 0 && treatmentsByPeriod;
 
+// use useMemo store geomerty to avoiding dupliated clone
+    const geometries = useMemo(() => {
+        const geos = {};
+        Object.entries(nodes).forEach(([key, node]) => {
+            if (node?.geometry) {
+                geos[key] = node.geometry.clone();
+            }
+        });
+        return geos;
+    }, [nodes]);
 
     const getToothData = (toothNumber) => {
         return teethData.find((tooth) => tooth.toothNumber === toothNumber) || {};
@@ -100,8 +111,8 @@ const WholeMouthModel = ({
                 : (treatmentsByPeriod?.historical || []);
         return list.filter((t) => t.toothNumber === toothNumber);
     };
-
-    const getToothMaterial = (toothNumber) => {
+    const getToothMaterial = useMemo(() => {
+        return (toothNumber) => {
         const toothInfo = getToothData(toothNumber);
         const types = listByTooth(toothNumber)
             .map((t) => normalizeTreatmentType(t.treatmentType))
@@ -122,6 +133,7 @@ const WholeMouthModel = ({
         if (!match) return toothMaterials.normal;
         return match === 'extraction' ? toothMaterials.missing : (toothMaterials[match] || toothMaterials.normal);
     };
+    }, [selectedTreatment, activeTimePeriod, treatmentsByPeriod, teethData]);
 
     const generateEruptionLevels = () => {
         const levels = {};
@@ -148,17 +160,17 @@ const WholeMouthModel = ({
     };
 
     const renderTooth = (nodeKey, toothNumber, toothLabel, base) => {
-        // 儿童模式：命中隐藏集合则不渲染
         if (HIDE_TEETH.has(toothNumber)) return null;
 
-        const node = nodes?.[nodeKey];
-        if (!node?.geometry) return null;
+        const geometry = geometries[nodeKey];
+        if (!geometry) return null;
 
         const rot = base === 'upper' ? [1.11, 0, 0] : [Math.PI / 2, 0, 0];
 
         return (
             <mesh
-                geometry={node.geometry}
+                key={`${toothNumber}-${toothLabel}`}
+                geometry={geometry}
                 material={getToothMaterial(toothNumber)}
                 position={getToothPositionFromData(toothNumber, P[base], combinedEruptionLevels)}
                 rotation={rot}
@@ -167,7 +179,10 @@ const WholeMouthModel = ({
             />
         );
     };
-
+// 如果数据还没加载完成，显示加载状态或默认模型
+    if (!isDataLoaded) {
+        return null;
+    }
     return (
         <group ref={group} {...props} dispose={null}>
             <mesh geometry={nodes.upper_jaw.geometry} material={materials.Gum} position={P.upper} rotation={[1.11, 0, 0]} scale={39.99} />
@@ -216,7 +231,7 @@ const WholeMouthModel = ({
         </group>
     );
 };
-
+//======whole mouth main part=====
 export default function WholeMouth({
                                        selectedTreatment,
                                        activeTimePeriod,

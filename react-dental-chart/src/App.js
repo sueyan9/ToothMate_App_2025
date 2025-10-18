@@ -237,7 +237,6 @@ async function fetchTreatmentsByUser(idOrNhi) {
       ? `${base}/getTreatmentsByUser?userId=${encodeURIComponent(idOrNhi)}`
       : `${base}/getTreatmentsByUserNhi?nhi=${encodeURIComponent(idOrNhi)}`;
 
-  console.log('Fetching treatments from:', url);
   const res = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
   const text = await res.text();
   if (!res.ok) throw new Error(`HTTP ${res.status} - ${text.slice(0,200)}`);
@@ -250,9 +249,6 @@ async function fetchTeethData(idOrNhi) {
 
   const isObjectId = /^[0-9a-fA-F]{24}$/.test(String(idOrNhi));
 
-  console.log('Frontend - fetchTeethData called with:', idOrNhi);
-  console.log('Frontend - isObjectId:', isObjectId);
-
   let url;
   if (isObjectId) {
     url = `${base}/getAllTeethByUserId/${encodeURIComponent(idOrNhi)}`;
@@ -260,14 +256,11 @@ async function fetchTeethData(idOrNhi) {
     url = `${base}/getAllTeeth/${encodeURIComponent(idOrNhi)}`;
   }
 
-  console.log('Frontend - Fetching teeth data from:', url);
   const res = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
   const text = await res.text();
-  console.log('Frontend - Raw response:', text);
 
   if (!res.ok) throw new Error(`HTTP ${res.status} - ${text.slice(0,200)}`);
   const data = JSON.parse(text);
-  console.log('Frontend - Parsed teeth data:', data);
   return Array.isArray(data) ? data : [];
 }
 
@@ -403,8 +396,6 @@ export default function App() {
 
       try {
         const teeth = await fetchTeethData(uid);
-        console.log('Teeth data fetch successful:', teeth);
-        console.log('Teeth data length:', teeth.length);
         if (teeth.length > 0) {
           console.log('First tooth sample:', teeth[0]);
         }
@@ -413,7 +404,6 @@ export default function App() {
       }
 
       // get treatment and tooth data
-      console.log('Starting parallel fetch...');
       const [treatmentData, teeth] = await Promise.all([
         fetchTreatmentsByUser(uid),
         fetchTeethData(uid).catch(err => {
@@ -422,11 +412,6 @@ export default function App() {
           return [];
         })
       ]);
-
-      console.log('=== Data fetch completed ===');
-      console.log('Received treatment data:', treatmentData);
-      console.log('Received teeth data:', teeth);
-      console.log('Teeth data length:', teeth.length);
 
       if (latestUserRef.current !== uid) return; // avoid race
 
@@ -446,10 +431,8 @@ export default function App() {
       const keys = uniqueKeysFrom(
           activeTimePeriod === 'future' ? treatmentData.future : treatmentData.historical
       );
-      console.log('Treatment keys:', keys);
       setSelectedTreatment(keys);
     } catch (e) {
-      console.error('Error in pull:', e);
       setError(e && e.message ? e.message : 'Load failed');
       setTreatmentsByPeriod({ historical: [], future: [] });
       setSelectedTreatment([]);
@@ -470,10 +453,7 @@ export default function App() {
   }, []);
 
 useEffect(() => {
-  console.log('=== teethData state changed ===');
-  console.log('teethData:', teethData);
-  console.log('teethData length:', teethData.length);
-  console.log('teethLoading:', teethLoading);
+
   console.log('teethError:', teethError);
 }, [teethData, teethLoading, teethError]);
 
@@ -500,14 +480,11 @@ useEffect(() => {
     } else {
       // single treatement type swap
       setSelectedTreatment((prev) => {
-        console.log('Toggling treatment:', key, 'Current:', prev);
         if (prev.includes(key)) {
           const newSelection = prev.filter((k) => k !== key);
-          console.log('Removed, new selection:', newSelection);
           return newSelection;
         } else {
           const newSelection = [...prev, key];
-          console.log('Added, new selection:', newSelection);
           return newSelection;
         }
       });
