@@ -391,4 +391,214 @@ export default StyleSheet.create({
     borderRadius: 4,
     alignSelf: 'flex-start',
   },
+  // ===== NEW MODAL STYLES ONLY =====
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#FFFDF6',
+  },
+
+  heroSection: {
+    paddingTop: 20,
+    paddingBottom: 24,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    backgroundColor: '#415277ff',
+    borderTopLeftRadius: 16,
+  borderTopRightRadius: 16,
+  marginTop: 15,
+  },
+
+  modalCloseButton: {
+    alignSelf: 'flex-start',
+    padding: 8,
+    marginBottom: 0,
+  },
+
+  heroContent: {
+    alignItems: 'center',
+  },
+
+  heroTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#FAFAF8',
+    textAlign: 'center',
+    marginBottom: 15,
+    marginTop: 10,
+  },
+
+  categoryBadgeHero: {
+    backgroundColor: '#EDDFD3',
+    borderRadius: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    marginBottom: 10,
+  },
+
+  categoryBadgeText: {
+    fontSize: 13,
+    color: '#875B51',
+    fontWeight: '600',
+  },
+
+  contentWrapper: {
+    paddingHorizontal: 20,
+    paddingTop: 24,
+  },
+
+  sectionContainer: {
+    marginBottom: 28,
+    backgroundColor: '#FAFAF8',
+    borderRadius: 16,
+    padding: 20,
+  },
+
+  sectionHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 14,
+  },
+
+  sectionIconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#333333',
+    flex: 1,
+  },
+
+  sectionDescription: {
+    fontSize: 15,
+    lineHeight: 24,
+    color: '#555555',
+    marginLeft: 52,
+  },
+
+  tipsContainer: {
+    gap: 12,
+    marginTop: 8,
+  },
+
+  tipItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 14,
+    gap: 12,
+    borderLeftWidth: 3,
+    borderLeftColor: '#516287',
+  },
+
+  tipNumberContainer: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#78d0f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexShrink: 0,
+  },
+
+  tipNumber: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+
+  tipText: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#333333',
+  },
+
+  benefitsCard: {
+    backgroundColor: '#FFF9F0',
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#FFE5D9',
+  },
+
+  benefitsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+
+  benefitsTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#875B51',
+    marginLeft: 10,
+  },
+
+  benefitsText: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: '#666666',
+  },
+
+  factCard: {
+    backgroundColor: '#F0F8FF',
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 24,
+    borderLeftWidth: 4,
+    borderLeftColor: '#875B51',
+  },
+
+  factCardTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+
+  factCardTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#875B51',
+    marginLeft: 10,
+  },
+
+  factCardText: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: '#516287',
+    fontWeight: '500',
+  },
+
+  saveButton: {
+    flexDirection: 'row',
+    backgroundColor: '#516287',
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    marginBottom: 45,
+    shadowColor: '#516287',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  // ===== END NEW MODAL STYLES =====
 });

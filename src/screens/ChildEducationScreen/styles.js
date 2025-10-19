@@ -15,7 +15,7 @@ export default StyleSheet.create({
     position: 'relative',
   },
   titleText: {
-    fontSize: 25,
+    fontSize: 24,
     fontFamily: 'VarelaRound_400Regular',
     color: '#2C3E50',
     textAlign: 'center',
@@ -25,6 +25,7 @@ export default StyleSheet.create({
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
     paddingTop: 20,
+    flexWrap: 'wrap',
   },
   subtitleText: {
     fontSize: 16,
@@ -374,5 +375,12 @@ export default StyleSheet.create({
     color: '#333333',
     textAlign: 'center',
     marginTop: 100,
+  },
+  greetingText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333333',
+    textAlign: 'center',
+    paddingTop: 20,
   },
 });
