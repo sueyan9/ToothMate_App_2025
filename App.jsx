@@ -17,6 +17,7 @@ import DentalChartScreen from './src/screens/DentalChartScreen';
 import DisconnectChildScreen from './src/screens/DisconnectChildScreen';
 import EducationContentScreen from './src/screens/EducationContentScreen';
 import EducationScreen from './src/screens/EducationScreen';
+import ForgotPasswordScreen from './src/screens/SigninScreen/ForgotPasswordScreen';
 import GameScreen from './src/screens/GameScreen/GameScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
@@ -378,6 +379,7 @@ const AppNavigator = () => {
                         <Stack.Navigator>
                             <Stack.Screen name="Signin" component={SigninScreen} options={{ headerShown: false }}/>
                             <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
+                            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }} />
                             <Stack.Screen name="SelectClinic" component={SelectClinicScreen} />
                             <Stack.Screen name="DentalChart" component={DentalChartScreen} />
                         </Stack.Navigator>

@@ -62,6 +62,15 @@ const SigninScreen = props => {
               onPress={handleSignin}
               titleStyle={styles.signinButtonTitleStyle}
           />
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+            <Spacer>
+              <View style={styles.link}>
+                <Text style={styles.forgotPasswordStyle}>
+                  Forgot Password?
+                </Text>
+              </View>
+            </Spacer>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('loginFlow', { screen: 'Signup' })}>
             <Spacer>
               <View style={styles.link}>
