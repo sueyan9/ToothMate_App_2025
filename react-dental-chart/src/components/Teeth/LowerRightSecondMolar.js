@@ -34,7 +34,7 @@ const RightLowerSecondMolar = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Second_Molar_Geo_1.geometry}
           material={materials['1']}
-          material-color={'lightblue'}
+          //material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Second_Molar_Geo_2.geometry}
@@ -197,7 +197,6 @@ export const LowerRightSecondMolar = () => {
       </Canvas>
       </div>
       <ToothInformation toothInfo={toothInfo} />
-      />
     </>
   )
 }

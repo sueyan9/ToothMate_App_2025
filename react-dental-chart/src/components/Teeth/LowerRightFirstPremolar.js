@@ -31,7 +31,7 @@ const RightLowerFirstPremolar = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_First_Premolar_1.geometry}
           material={materials['1']}
-          material-color={'lightblue'}
+          //material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_First_Premolar_2.geometry}

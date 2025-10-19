@@ -30,17 +30,17 @@ const RightUpperLateralIncisor = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Upper_Lateral_Incisor_Geo058_1.geometry}
           material={materials['1']}
-          material-color={'lightgreen'}
+          //material-color={'lightgreen'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Lateral_Incisor_Geo058_2.geometry}
           material={materials['2']}
-          material-color={'lightgreen'}
+          //material-color={'lightgreen'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Lateral_Incisor_Geo058_3.geometry}
           material={materials['3']}
-          material-color={'lightgreen'}
+          //material-color={'lightgreen'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Lateral_Incisor_Geo058_4.geometry}

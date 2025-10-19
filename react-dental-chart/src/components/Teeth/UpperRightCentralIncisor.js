@@ -30,17 +30,17 @@ const RightUpperCentralIncisor = ({ ...props }) => {
         <mesh
           geometry={nodes.human_teeth_upper_central_incisor_geo052_1.geometry}
           material={materials['1']}
-          material-color={'lightgreen'}
+          //material-color={'lightgreen'}
         />
         <mesh
           geometry={nodes.human_teeth_upper_central_incisor_geo052_2.geometry}
           material={materials['2']}
-          material-color={'lightgreen'}
+          //material-color={'lightgreen'}
         />
         <mesh
           geometry={nodes.human_teeth_upper_central_incisor_geo052_3.geometry}
           material={materials['3']}
-          material-color={'lightgreen'}
+          //material-color={'lightgreen'}
         />
         <mesh
           geometry={nodes.human_teeth_upper_central_incisor_geo052_4.geometry}

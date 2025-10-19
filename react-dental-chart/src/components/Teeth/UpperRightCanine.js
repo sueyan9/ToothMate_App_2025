@@ -30,17 +30,17 @@ const RightUpperCanine = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo004_4.geometry}
           material={materials['1']}
-          material-color={'lightgreen'}
+          //material-color={'lightgreen'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo004_5.geometry}
           material={materials['2']}
-          material-color={'lightgreen'}
+          //material-color={'lightgreen'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo004_1.geometry}
           material={materials['3']}
-          material-color={'lightgreen'}
+          //material-color={'lightgreen'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Canine_Geo004_6.geometry}

@@ -50,7 +50,7 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_5.geometry}
           material={materials['5']}
-          material-color={'lightblue'}
+          //material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_6.geometry}

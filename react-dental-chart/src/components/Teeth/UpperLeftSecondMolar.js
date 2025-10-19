@@ -30,17 +30,17 @@ const LeftUpperSecondMolar = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Upper_Second_Molar_Geo003.geometry}
           material={materials['1']}
-          material-color={'lightblue'}
+          //material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Second_Molar_Geo003_3.geometry}
           material={materials['2']}
-          material-color={'lightblue'}
+          //material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Second_Molar_Geo003_4.geometry}
           material={materials['3']}
-          material-color={'lightblue'}
+          //material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Second_Molar_Geo003_5.geometry}

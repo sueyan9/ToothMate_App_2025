@@ -30,17 +30,17 @@ const UpperLeftWisdom = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo006_3.geometry}
           material={materials['1']}
-          material-color={'lightblue'}
+          //material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo006_1.geometry}
           material={materials['2']}
-          material-color={'lightblue'}
+          //material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo006_7.geometry}
           material={materials['3']}
-          material-color={'lightblue'}
+          //material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Upper_Third_Molar_Wisdom_Geo006_8.geometry}
