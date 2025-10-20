@@ -216,7 +216,8 @@ export default function ToothInformation({ toothInfo }) {
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'VIEW_EDUCATION',
         toothName: displayName,
-        treatments: treatments
+        treatments: treatments,
+        child: isChild
       }));
     }
   };
