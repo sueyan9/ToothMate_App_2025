@@ -305,21 +305,75 @@ const signout = dispatch => async () => {
   navigate('loginFlow');
 };
 
+const findUserByEmailOrNhi = dispatch => async ({ emailOrNhi }) => {
+  try {
+    const response = await axiosApi.post('/findUserByEmailOrNhi', {
+      emailOrNhi: emailOrNhi.toLowerCase()
+    });
+
+    return response.data;
+  } catch (err) {
+    dispatch({
+      type: 'add_error',
+      payload: err.response?.data?.error || 'Error finding user',
+    });
+    throw err;
+  }
+};
+
+const verifySignupCodeForReset = dispatch => async ({ userId, signupCode }) => {
+  try {
+    const response = await axiosApi.post('/verifySignupCodeForReset', {
+      userId,
+      signupCode
+    });
+    console.log('verifySignupCodeForReset response:', response.data);
+    console.log('Response valid property:', response.data.valid);
+    return response.data;
+  } catch (err) {
+    dispatch({
+      type: 'add_error',
+      payload: err.response?.data?.error || 'Error verifying code',
+    });
+    throw err;
+  }
+};
+const resetPassword = dispatch => async ({ userId, newPassword }) => {
+  try {
+    const response = await axiosApi.post('/resetPassword', {
+      userId,
+      newPassword
+    });
+
+    dispatch({ type: 'clear_error_message' });
+    return response.data;
+  } catch (err) {
+    dispatch({
+      type: 'add_error',
+      payload: err.response?.data?.error || 'Error resetting password',
+    });
+    throw err;
+  }
+};
+
 export const { Provider, Context } = createDataContext(
-  authReducer,
-  {
-    signUp,
-    signin,
-    signout,
-    clearErrorMessage,
-    tryLocalSignin,
-    user,
-    getChildAccounts,
-    signupchild,
-    updateUser,
-    updateUserClinic,
-    changePassword,
-    completeRegistration,
-  },
-  { token: null, errorMessage: '', id: null },
+    authReducer,
+    {
+      signUp,
+      signin,
+      signout,
+      clearErrorMessage,
+      tryLocalSignin,
+      user,
+      getChildAccounts,
+      signupchild,
+      updateUser,
+      updateUserClinic,
+      changePassword,
+      completeRegistration,
+      findUserByEmailOrNhi,
+      verifySignupCodeForReset,
+      resetPassword,
+    },
+    { token: null, errorMessage: '', id: null },
 );

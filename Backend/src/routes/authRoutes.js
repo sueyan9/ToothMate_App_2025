@@ -379,5 +379,88 @@ router.get("/checkEmail/:email", async (req, res) => {
     res.status(500).json({ error: "Error checking email" });
   }
 });
+// =========forgetpassword======
+//check user by email/NHI
+router.post("/findUserByEmailOrNhi", async (req, res) => {
+  const { emailOrNhi } = req.body;
 
+  try {
+    const user = await User.findOne({
+      $or: [
+        { email: emailOrNhi.toLowerCase() },
+        { nhi: emailOrNhi.toUpperCase() }
+      ]
+    });
+
+    if (user) {
+      res.json({ user: { _id: user._id, firstname: user.firstname, lastname: user.lastname } });
+    } else {
+      res.json({ user: null });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Error finding user" });
+  }
+});
+
+// 2. verify signup code ,usring this for reset
+router.post("/verifySignupCodeForReset", async (req, res) => {
+  const { userId, signupCode } = req.body;
+
+  try {
+    const user = await User.findOne({
+      _id: userId,
+      signup_code: signupCode.toUpperCase()
+    });
+
+    if (user) {
+      res.json({ valid: true });
+    } else {
+      res.json({ valid: false });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Error verifying code" });
+  }
+});
+
+// reset pin
+router.post("/resetPassword", async (req, res) => {
+  const { userId, newPassword } = req.body;
+
+  try {
+    // same as signup logic
+    if (newPassword === '') {
+      return res.status(422).json({ error: "Please enter your password" });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(422).json({ error: "Password must be at least 8 characters" });
+    }
+
+    if (newPassword === newPassword.toLowerCase()) {
+      return res.status(422).json({ error: "Please enter a password with at least one capital letter" });
+    }
+
+    if (!/\d/.test(newPassword)) {
+      return res.status(422).json({ error: "Please enter a password with at least one number" });
+    }
+
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(newPassword)) {
+      return res.status(422).json({ error: "Please enter a password with at least one special character" });
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // update new pin
+    await User.findByIdAndUpdate(userId, {
+      password: hashedPassword,
+      $unset: { signup_code: "" } //  clean signup code
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Reset password error:", err);
+    res.status(500).json({ error: "Error resetting password" });
+  }
+});
 module.exports = router;

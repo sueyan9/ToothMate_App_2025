@@ -38,6 +38,34 @@ const userSchema = new mongoose.Schema({
   profile_picture: {
     type: Number,
     default: null
+  },
+  signup_code: {
+    type: String,
+    default: null
+  },
+  insurance: {
+    type: String,
+    default: null
+  },
+  insurance_number: {
+    type: String,
+    default: null
+  },
+  restricted_access: {
+    type: Boolean,
+    default: false
+  },
+  allergy: {
+    type: String,
+    default: null
+  },
+  emergency_name: {
+    type: String,
+    default: null
+  },
+  emergency_phone: {
+    type: String,
+    default: null
   }
 });
 

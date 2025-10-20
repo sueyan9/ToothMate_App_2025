@@ -12,7 +12,7 @@ import styles from './styles';
 const ForgotPasswordScreen = props => {
   const { navigation } = props;
 
-  const { clearErrorMessage } = useContext(AuthContext);
+  const { findUserByEmailOrNhi, verifySignupCodeForReset, resetPassword, clearErrorMessage } = useContext(AuthContext);
 
   const [stage, setStage] = useState('identify'); // 'identify' | 'verify' | 'reset'
   const [emailOrNhi, setEmailOrNhi] = useState('');
@@ -54,18 +54,20 @@ const ForgotPasswordScreen = props => {
     }
 
     try {
-      const response = await axiosApi.post('/findUserByEmailOrNhi', {
+      const response = await findUserByEmailOrNhi({
         emailOrNhi: emailOrNhi.trim().toLowerCase()
       });
 
-      if (response.data.user) {
-        setUserFound(response.data.user);
+      console.log('API Response:1111', response);
+      if (response.user) {
+        setUserFound(response.user);
         setStage('verify');
         setSuccessMessage('User found! Please enter your signup code.');
       } else {
         setErrorMessage('User not found');
       }
     } catch (err) {
+      console.log('Error:1234', err);
       setErrorMessage(err.response?.data?.error || 'Error finding user');
     }
   };
@@ -80,12 +82,13 @@ const ForgotPasswordScreen = props => {
     }
 
     try {
-      const response = await axiosApi.post('/verifySignupCodeForReset', {
+      console.log('Verifying code for user:222222', userFound._id, 'with code:', signupCode);
+      const response = await verifySignupCodeForReset({
         userId: userFound._id,
         signupCode: signupCode.trim()
       });
 
-      if (response.data.valid) {
+      if (response && response.valid === true) {
         setStage('reset');
         setSuccessMessage('Signup code verified! Please enter your new password.');
       } else {
@@ -114,7 +117,7 @@ const ForgotPasswordScreen = props => {
       setErrorMessage('Passwords do not match');
     } else {
       try {
-        await axiosApi.post('/resetPassword', {
+        await resetPassword({
           userId: userFound._id,
           newPassword: password
         });
