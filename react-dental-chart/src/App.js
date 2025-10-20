@@ -236,12 +236,31 @@ async function fetchTreatmentsByUser(idOrNhi) {
       ? `${base}/getTreatmentsByUser?userId=${encodeURIComponent(idOrNhi)}`
       : `${base}/getTreatmentsByUserNhi?nhi=${encodeURIComponent(idOrNhi)}`;
 
-  console.log('Fetching treatments from:', url);
   const res = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
   const text = await res.text();
   if (!res.ok) throw new Error(`HTTP ${res.status} - ${text.slice(0,200)}`);
   const data = JSON.parse(text);
   return normalizeTreatments(data);
+}
+async function fetchTeethData(idOrNhi) {
+  if (!API_BASE_URL) throw new Error('API_BASE_URL is not configured');
+  const base = API_BASE_URL.replace(/\/$/, '');
+
+  const isObjectId = /^[0-9a-fA-F]{24}$/.test(String(idOrNhi));
+
+  let url;
+  if (isObjectId) {
+    url = `${base}/getAllTeethByUserId/${encodeURIComponent(idOrNhi)}`;
+  } else {
+    url = `${base}/getAllTeeth/${encodeURIComponent(idOrNhi)}`;
+  }
+
+  const res = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
+  const text = await res.text();
+
+  if (!res.ok) throw new Error(`HTTP ${res.status} - ${text.slice(0,200)}`);
+  const data = JSON.parse(text);
+  return Array.isArray(data) ? data : [];
 }
 
 const BackButton = () => {
@@ -249,9 +268,13 @@ const BackButton = () => {
   const navigate = useNavigate();
   const isToothPage = location.pathname !== '/';
   if (!isToothPage) return null;
+  const goHome = () => {
+    const search = window.location.search || '';
+    navigate({ pathname: '/', search }); // keep ?parent/mode/hideBack/userId
+  };
   return (
       <button
-          onClick={() => navigate('/')}
+          onClick={goHome}
           style={{ position: 'fixed', top: '32px', left: '24px', zIndex: 1000, padding: '10px 15px', backgroundColor: '#E9F1F8', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
           aria-label="Back"
       >
@@ -350,44 +373,73 @@ export default function App() {
   const [eruptionLevels, setEruptionLevels] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+//toothDate
+  const [teethData, setTeethData] = useState([]);
+  const [teethLoading, setTeethLoading] = useState(false);
+  const [teethError, setTeethError] = useState('');
+
   const latestUserRef = useRef(null);
 
   const pull = useCallback(async (uid) => {
-    if (isLoading) return;
+    if (isLoading) {
+      console.log('Already loading, skipping...');
+      return;
+    }
     setLoading(true);
     setError('');
     latestUserRef.current = uid;
 
     try {
+      console.log('=== Starting data fetch ===');
       console.log('Fetching data for userId:', uid);
-      const data = await fetchTreatmentsByUser(uid);
-      console.log('Received data:', data);
+
+      try {
+        const teeth = await fetchTeethData(uid);
+        if (teeth.length > 0) {
+          console.log('First tooth sample:', teeth[0]);
+        }
+      } catch (teethErr) {
+        console.error('Teeth data fetch failed:', teethErr);
+      }
+
+      // get treatment and tooth data
+      const [treatmentData, teeth] = await Promise.all([
+        fetchTreatmentsByUser(uid),
+        fetchTeethData(uid).catch(err => {
+          console.warn('Failed to fetch teeth data:', err);
+          setTeethError(err.message);
+          return [];
+        })
+      ]);
 
       if (latestUserRef.current !== uid) return; // avoid race
 
+      // setting treatemnt data
       setTreatmentsByPeriod({
-        historical: data.historical,
-        future: data.future
+        historical: treatmentData.historical,
+        future: treatmentData.future
       });
 
-      if (data.eruptionLevels) {
-        setEruptionLevels(data.eruptionLevels);
+      if (treatmentData.eruptionLevels) {
+        setEruptionLevels(treatmentData.eruptionLevels);
       }
 
+      setTeethData(teeth);
+      setTeethError('');
+
       const keys = uniqueKeysFrom(
-          activeTimePeriod === 'future' ? data.future : data.historical
+          activeTimePeriod === 'future' ? treatmentData.future : treatmentData.historical
       );
-      console.log('Treatment keys:', keys);
       setSelectedTreatment(keys);
     } catch (e) {
-      console.error('Error in pull:', e);
       setError(e && e.message ? e.message : 'Load failed');
       setTreatmentsByPeriod({ historical: [], future: [] });
       setSelectedTreatment([]);
+      setTeethData([]);
     } finally {
       setLoading(false);
     }
-  }, [activeTimePeriod]);
+  }, [activeTimePeriod, isLoading]);
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -398,6 +450,11 @@ export default function App() {
       setMode(parentParam !== 'false' ? 'parent' : 'child');
     }
   }, []);
+
+useEffect(() => {
+
+  console.log('teethError:', teethError);
+}, [teethData, teethLoading, teethError]);
 
   useEffect(() => {
     if (userId) pull(userId);
@@ -420,16 +477,13 @@ export default function App() {
     } else if (key === 'none') {
       setSelectedTreatment([]);
     } else {
-      // 单个治疗类型切换
+      // single treatement type swap
       setSelectedTreatment((prev) => {
-        console.log('Toggling treatment:', key, 'Current:', prev);
         if (prev.includes(key)) {
           const newSelection = prev.filter((k) => k !== key);
-          console.log('Removed, new selection:', newSelection);
           return newSelection;
         } else {
           const newSelection = [...prev, key];
-          console.log('Added, new selection:', newSelection);
           return newSelection;
         }
       });
@@ -459,19 +513,17 @@ export default function App() {
                       <div className="main-3d" onClick={() => setShowMenu(false)} style={{ cursor: 'default' }}>
                         {loading && <p>Loading…</p>}
                         {error && <p style={{ color: '#B00020' }}>Failed: {error}</p>}
-                        {!loading && !error && userId && (
-                            mode === 'child' ? (
-                                <WholeMouthKid selectedTreatment={selectedTreatment} />
-                            ) : (
-                                <WholeMouth
-                                    selectedTreatment={selectedTreatment}
-                                    setSelectedTreatment={setSelectedTreatment}
-                                    activeTimePeriod={activeTimePeriod}
-                                    treatmentsByPeriod={treatmentsByPeriod}
-                                    eruptionLevels={eruptionLevels}
-                                />
+                        <WholeMouth
+                            selectedTreatment={selectedTreatment}
+                            setSelectedTreatment={setSelectedTreatment}
+                            activeTimePeriod={activeTimePeriod}
+                            treatmentsByPeriod={treatmentsByPeriod}
+                            eruptionLevels={eruptionLevels}
+                            teethData={teethData}
+                            hideBackOverride={mode === 'child'}   // 关键：把 child 传给 WholeMouth
+                        />
                             )
-                        )}
+                        )
                         {!userId && !loading && <p>No user set. Use /u/:userId or ?userId=, or RN WebView postMessage.</p>}
                       </div>
                       <div className={`filter-menu-container ${showMenu ? 'active' : ''}`} onClick={(e) => e.stopPropagation()}>
