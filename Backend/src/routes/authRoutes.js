@@ -242,7 +242,7 @@ router.get("/isChild/:id", (req, res) => {
   const id = req.params.id;
 
   const user = User.findOne({ _id: id })
-    .then((user) => res.json({ isChild: user.parent }))
+    .then((user) => res.json({ isChild: user.parent != null }))
     .catch((err) => res.status(404).json({ error: "Error" }));
 });
 
