@@ -30,7 +30,7 @@ const LanguageSelector = () => {
 
   const getLanguageFlag = (language) => {
     const flags = {
-      'English': '🇺🇸',
+      'English': '🇬🇧',
       'Spanish': '🇪🇸',
       'Chinese': '🇨🇳',
       'Dutch': '🇳🇱',
