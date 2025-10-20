@@ -43,7 +43,7 @@ const DentalChartScreen = () => {
 
                 const toBool = (v) => v === true || v === 'true' || v === 1 || v === '1';
                 const isChildUser = toBool(data.isChild); // 后端把“家长”塞在 isChild 字段里
-                setParent(isChildUser);                   // parent=true(成人) / false(儿童)
+                setParent(!isChildUser);                   // parent=true(成人) / false(儿童)
             } catch (e) {
                 console.error('❌ fetch /isChild failed:', e?.message || e);
                 setParent(true); // 兜底成人
