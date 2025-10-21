@@ -17,7 +17,6 @@ import DentalChartScreen from './src/screens/DentalChartScreen';
 import DisconnectChildScreen from './src/screens/DisconnectChildScreen';
 import EducationContentScreen from './src/screens/EducationContentScreen';
 import EducationScreen from './src/screens/EducationScreen';
-import ForgotPasswordScreen from './src/screens/SigninScreen/ForgotPasswordScreen';
 import GameScreen from './src/screens/GameScreen/GameScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ImagesScreen from './src/screens/ImagesScreen';
@@ -28,6 +27,7 @@ import PasswordChangeScreen from './src/screens/PasswordChangeScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import SelectClinicScreen from './src/screens/SelectClinicScreen';
 import SigninScreen from './src/screens/SigninScreen';
+import ForgotPasswordScreen from './src/screens/SigninScreen/ForgotPasswordScreen';
 import SignupChildScreen from './src/screens/SignupChildScreen';
 import SignupScreen from './src/screens/SignupScreen';
 import UpdateClinicScreen from './src/screens/UpdateClinicScreen';
@@ -56,15 +56,14 @@ import { Provider as UserProvider } from './src/context/UserContext/UserContext'
 import { navigationRef } from './src/navigationRef';
 
 //splash screen
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import GameIcon from './assets/game_icon.png';
 import ToothIcon from './src/assets/ToothIcon';
 import Icon from './src/assets/icons';
 import UpdateButton from './src/components/UpdateButton';
-import { SessionContext, SessionProvider } from './src/context/SessionContext/SessionContext';
+import { AccessProvider } from './src/context/AccessContext/AccessContext';
 import SplashScreen from './src/screens/SplashScreen';
-
 //  Create stack and tab navigators
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -163,12 +162,6 @@ const ProfileStack = () => {
 // FIXED: Removed key={`main-${currentLanguage}`} to prevent navigation reset on language change
 const MainFlow = () => {
     const { t } = useTranslation();
-    const { startSession } = useContext(SessionContext);
-    
-    useEffect(() => {
-        // Start session when user enters the main app
-        startSession();
-    }, []);
     
     return (
         <Tab.Navigator 
@@ -440,15 +433,12 @@ export default function App() {
 
 
     return (
-        <SessionProvider onSessionExpired={() => {
-            navigationRef.navigate('loginFlow', { screen: 'Signup' });
-            console.log('Session expired - redirect to login');
-        }}>
             <AuthProvider>
                 <TreatmentProvider>
                 <ClinicProvider>
                     <EducationProvider>
                         <AppointmentProvider>
+                            <AccessProvider onAccessRevoked={() => console.log("Access Revoked")} navigation={navigationRef}>
                             <UserProvider>
                                 <NotificationProvider>
                                     <TranslationProvider>
@@ -458,11 +448,11 @@ export default function App() {
                                     </TranslationProvider>
                                 </NotificationProvider>
                             </UserProvider>
+                            </AccessProvider>
                         </AppointmentProvider>
                     </EducationProvider>
                 </ClinicProvider>
                 </TreatmentProvider>
             </AuthProvider>
-        </SessionProvider>
     );
 }

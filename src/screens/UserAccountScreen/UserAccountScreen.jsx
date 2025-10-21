@@ -22,6 +22,7 @@ import {
 } from '../../api/appointments';
 import axiosApi from '../../api/axios';
 import ResetButton from '../../components/ResetButton/index';
+import { Context as AccessContext } from '../../context/AccessContext/AccessContext';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
 import { Context as ClinicContext } from '../../context/ClinicContext/ClinicContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
@@ -235,6 +236,30 @@ const {
     updateClinic,
     setCurrentAccount, // ADDED
   } = useContext(UserContext);
+
+  const accessContext = useContext(AccessContext);
+  const { 
+    state: accessState = { isMasterAdmin: false, isGrantingAccess: false, hasAccess: false },
+    grantAccessToAll = () => {},
+    revokeAccessFromAll = () => {},
+    checkAccess = () => {}
+  } = accessContext || {};
+
+  const { isMasterAdmin, isGrantingAccess, hasAccess } = accessState;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      checkAccess();
+    }, [])
+  );
+
+  const handleGrantAccess = async () => {
+    await grantAccessToAll(isMasterAdmin);
+  };
+
+  const handleRevokeAccess = async () => {
+    await revokeAccessFromAll(isMasterAdmin);
+  };
 
   const { signout } = useContext(AuthContext);
   const { state: clinicState, getAllClinics } = useContext(ClinicContext);
@@ -1275,6 +1300,25 @@ const {
               <Text style={styles.actionButtonText}>{t('Notification Settings')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
+
+            {isMasterAdmin && (
+              <View>
+                <TouchableOpacity 
+                style={styles.actionButton}
+                onPress={handleRevokeAccess}
+              >
+                <Ionicons name="person" size={20} color="#516287" />
+                <Text style={styles.actionButtonText}>End Access</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.actionButton}
+                onPress={handleGrantAccess}
+              >
+                <Ionicons name="person" size={20} color="#516287" />
+                <Text style={styles.actionButtonText}>Start Access</Text>
+              </TouchableOpacity>
+              </View>
+            )}
 
             {canDisconnect && (
               <TouchableOpacity

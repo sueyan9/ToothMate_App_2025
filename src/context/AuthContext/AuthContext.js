@@ -168,12 +168,27 @@ const signin =
     try {
       const response = await axiosApi.post('/signin', { emailOrNhi, password });
 
+      const userDetails = response.data.user;
+
+      // Master admin always has access
+      const isMasterAdmin = userDetails.nhi?.toUpperCase() === 'ABY0987';
+      const hasAccess = isMasterAdmin || userDetails.restricted_access === true;
+
+      if (!hasAccess) {
+        dispatch({
+          type: 'add_error',
+          payload: 'Access denied, please contact admin.',
+        });
+        return; // Stop here - don't log them in
+      }
+
       await AsyncStorage.setItem('token', response.data.token);
       await AsyncStorage.setItem('id', response.data.id);
       dispatch({
         type: 'signin',
         payload: { token: response.data.token, id: response.data.id },
       });
+
       // navigate('AccountFlow');
       navigate('mainFlow', { screen: 'AccountFlow' });
     } catch (err) {
