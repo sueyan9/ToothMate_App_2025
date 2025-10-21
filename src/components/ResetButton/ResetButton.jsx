@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { useContext, useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import axiosApi from '../../api/axios';
 import { Context as AppointmentContext } from '../../context/AppointmentContext/AppointmentContext';
 import { Context as TreatmentContext } from '../../context/TreatmentContext/TreatmentContext';
 import styles from './styles';
@@ -11,7 +12,22 @@ const ResetButton = () => {
     const {deleteTestTreatment } = useContext(TreatmentContext);
     const [isLoading, setIsLoading] = useState(false);
 
-    const appointmentId = "68ec66f6f1371a38fc91fee4";
+    const appointmentId = "68e300017e788723fccaa7d2";
+
+    const deleteTestAppointments = async () => {
+        try {
+            const response = await axiosApi.delete('/Appointments/test-data/all');
+            
+            if (response.data.deletedCount > 0) {
+                Alert.alert('Success', response.data.message);
+            } else {
+                Alert.alert('No Test Data', 'No test appointments found.');
+            }
+        } catch (error) {
+            console.error('Failed to delete test appointments:', error);
+            Alert.alert('Error', 'Failed to delete test appointments.');
+        }
+    };
 
     const handleUpdateInformation = async () => {
         if (!appointmentId) {
@@ -20,6 +36,7 @@ const ResetButton = () => {
         }
         setIsLoading(true);
         try {
+            await deleteTestAppointments();
             await unconfirmAppointment(appointmentId);
             await deleteTestTreatment();
 

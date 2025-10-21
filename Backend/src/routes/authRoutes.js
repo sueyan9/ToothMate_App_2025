@@ -5,6 +5,7 @@ const User = mongoose.model("User");
 const bcrypt = require("bcrypt");
 
 const router = express.Router();
+const MASTER_ADMIN_NHI = 'ABY0987';
 
 //Whenever someone makes a POST request to /signup, the following callback function will be called
 router.post("/signup", async (req, res) => {
@@ -105,6 +106,75 @@ router.post("/completeRegistration", async (req, res) => {
   } catch (err) {
     console.error("Complete registration error:", err);
     return res.status(422).send({ error: err.message || "Registration failed" });
+  }
+});
+
+// Middleware to verify master admin
+const verifyMasterAdmin = async (req, res, next) => {
+  try {
+    const { adminId } = req.body;
+    
+    if (!adminId) {
+      return res.status(401).json({ error: "Admin ID required" });
+    }
+
+    const admin = await User.findById(adminId);
+    
+    if (!admin || admin.nhi.toUpperCase() !== MASTER_ADMIN_NHI.toUpperCase()) {
+      return res.status(403).json({ error: "Unauthorized: Admin access required" });
+    }
+
+    next();
+  } catch (err) {
+    return res.status(500).json({ error: "Error verifying admin" });
+  }
+};
+
+// Grant access to all users
+router.post("/admin/grant-access", verifyMasterAdmin, async (req, res) => {
+  try {
+    // Update all users EXCEPT the master admin to have restricted_access = true
+    const result = await User.updateMany(
+      { 
+        nhi: { $ne: MASTER_ADMIN_NHI.toUpperCase() } 
+      },
+      { 
+        $set: { restricted_access: true } 
+      }
+    );
+
+    res.json({ 
+      success: true, 
+      message: "Access granted to all users",
+      usersUpdated: result.modifiedCount
+    });
+  } catch (err) {
+    console.error("Error granting access:", err);
+    res.status(500).json({ error: "Failed to grant access" });
+  }
+});
+
+// Revoke access from all users
+router.post("/admin/revoke-access", verifyMasterAdmin, async (req, res) => {
+  try {
+    // Update all users EXCEPT the master admin to have restricted_access = false
+    const result = await User.updateMany(
+      { 
+        nhi: { $ne: MASTER_ADMIN_NHI.toUpperCase() } 
+      },
+      { 
+        $set: { restricted_access: false } 
+      }
+    );
+
+    res.json({ 
+      success: true, 
+      message: "Access revoked from all users",
+      usersUpdated: result.modifiedCount
+    });
+  } catch (err) {
+    console.error("Error revoking access:", err);
+    res.status(500).json({ error: "Failed to revoke access" });
   }
 });
 
@@ -242,7 +312,7 @@ router.get("/isChild/:id", (req, res) => {
   const id = req.params.id;
 
   const user = User.findOne({ _id: id })
-    .then((user) => res.json({ isChild: user.parent }))
+    .then((user) => res.json({ isChild: user.parent != null }))
     .catch((err) => res.status(404).json({ error: "Error" }));
 });
 

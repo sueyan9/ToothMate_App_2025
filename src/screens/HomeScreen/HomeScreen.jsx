@@ -213,8 +213,12 @@ const HomeScreen = () => {
                     {nextAppointment.notes && (
                     <Text style={styles.noteText}>{t('Note from Dentist:')}{'\n'}{nextAppointment.notes}</Text>
                     )}
+                    {(!nextAppointment.notes) && (
+                    <Text style={styles.noteText}>{t('Note from Dentist:')}{'\n'}No notes for this appointment.</Text>
+                    )}
                     </>
                     )}
+                    
                     {nextAppointment === null && (
                     <View style={{flexDirection: 'row', alignItems:'center', marginTop: 0,}}>
                         <TouchableOpacity>

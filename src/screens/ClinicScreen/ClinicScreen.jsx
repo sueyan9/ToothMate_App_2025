@@ -380,20 +380,6 @@ const ClinicScreen = ({navigation, route}) => {
 // Submit a new appointment
     const handleNewAppt = async () => {
 
-        Alert.alert('Set Notifications', 'Would you like a reminder for this appointment?',
-            [
-                {
-                    text: 'No',
-                    onPress: () => setSetReminder(false),
-                    style: 'cancel'
-                },
-                {
-                    text: 'Yes',
-                    onPress: () => setSetReminder(true),
-                }
-            ]
-        );
-
         if (cooldownRemaining > 0) {
         Alert.alert(
             'Please Wait', 
@@ -419,6 +405,26 @@ const ClinicScreen = ({navigation, route}) => {
             return;
         }
 
+        const userWantsReminder = await new Promise((resolve) => {
+            Alert.alert(
+                'Set Notifications', 
+                'Would you like a reminder for this appointment?',
+                [
+                    {
+                        text: 'No',
+                        onPress: () => resolve(false),
+                        style: 'cancel'
+                    },
+                    {
+                        text: 'Yes',
+                        onPress: () => resolve(true),
+                    }
+                ]
+            );
+        });
+
+        setSetReminder(userWantsReminder);
+
         setIsSubmitting(true);
         const startNZ = dayjs(newAppt.startDate)
             .tz(NZ_TZ)
@@ -440,6 +446,7 @@ const ClinicScreen = ({navigation, route}) => {
             return;
         }
         try {
+
             const startNZ = dayjs(newAppt.startDate)
                 .tz(NZ_TZ)
                 .hour(newAppt.startTime.getHours())
@@ -460,6 +467,8 @@ const ClinicScreen = ({navigation, route}) => {
                 endLocal: endWithOffset,
                 timezone: NZ_TZ,
                 clinic: clinicId,
+                test_data: false,
+                confirmed: false
             };
             const urlPost = '/Appointments';
             logReq('POST appointments', urlPost, appointmentData);

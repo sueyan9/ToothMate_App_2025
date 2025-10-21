@@ -66,7 +66,7 @@ const userSchema = new mongoose.Schema({
   emergency_phone: {
     type: String,
     default: null
-  }
+  },
 });
 
 //Pre-save hook that automatically runs before we save a user

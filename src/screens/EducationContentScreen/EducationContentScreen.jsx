@@ -165,7 +165,9 @@ const EducationContentScreen = ({ route }) => {
                 navigation.navigate('content', { selectedFilter: fromFilter });
             } else {
                 // Fallback to going back in navigation stack
-                navigation.goBack();
+                navigation.navigate('Education', {
+                    screen: "Library"
+                });
             }
         };
 
