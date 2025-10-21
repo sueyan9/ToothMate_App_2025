@@ -29,14 +29,9 @@ const UpdateButton = () => {
             console.log(`[REQ] ${label}`, {baseURL: base, url, cfgOrBody});
         };
 
-    const appointmentId = "68ec66f6f1371a38fc91fee4";
+    const appointmentId = "68e300017e788723fccaa7d2";
 
     const handleUpdateInformation = async () => {
-        const testDate = dayjs.tz('2024-04-29 09:30', 'Pacific/Auckland');
-        console.log('Parsed date:', testDate.format());
-        console.log('UTC:', testDate.utc().format());
-        console.log('ISO:', testDate.toISOString());
-        console.log('Offset:', testDate.format('Z'));
 
         if (!appointmentId) {
             Alert.alert('Error', 'AppointmentID is missing!');
@@ -64,6 +59,8 @@ const UpdateButton = () => {
                 endLocal: '2024-04-29T10:00:00.000Z',
                 timezone: 'Pacific/Auckland',
                 clinic: '67fa2286e8aa598431bff1f1',
+                test_data: true,
+                confirmed: true
             };
             const urlPost = '/Appointments';
             logReq('POST appointments', urlPost, appointmentData);

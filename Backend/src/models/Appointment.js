@@ -42,6 +42,11 @@ const appointmentSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
+  test_data: {
+        type: Boolean,
+        required: true,
+        default: false
+  },
   pdfs: [PdfSchema],
   images: [ImgSchema],
       notes: String,

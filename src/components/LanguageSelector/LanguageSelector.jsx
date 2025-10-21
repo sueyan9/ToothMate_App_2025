@@ -34,7 +34,6 @@ const LanguageSelector = () => {
       'Spanish': '🇪🇸',
       'Chinese': '🇨🇳',
       'Dutch': '🇳🇱',
-      'Maori': null
     };
     return flags[language] || '🌐';
   };

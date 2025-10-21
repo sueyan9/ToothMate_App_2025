@@ -180,6 +180,21 @@ router.patch('/Appointments/:id/confirm', async (req, res) => {
   }
 });
 
+router.delete('/Appointments/test-data/all', async (req, res) => {
+  try {
+    const result = await Appointment.deleteMany({ test_data: true });
+    
+    res.json({ 
+      success: true, 
+      deletedCount: result.deletedCount,
+      message: `Deleted ${result.deletedCount} test appointment(s)`
+    });
+  } catch (e) {
+    console.error('DELETE /Appointments/test-data/all failed:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 router.post('/Appointments', async (req, res) => {
   try {
     console.log('[POST /Appointments] body =', req.body);
@@ -190,11 +205,12 @@ router.post('/Appointments', async (req, res) => {
       clinic:clinicId,
       purpose,
       notes,
-      status = 'scheduled',
       startLocal,
       endLocal,
       timezone = NZ_TZ,
       treatments = [],
+      test_data,
+      confirmed
     } = req.body;
     if (!nhi) return res.status(400).json({ error: 'nhi required' });
     if (!purpose) return res.status(400).json({ error: 'purpose required' });
@@ -216,17 +232,17 @@ router.post('/Appointments', async (req, res) => {
     const doc = await Appointment.create({
       nhi: nhi.toUpperCase(),
       userId,
-      // dentist: { name: dentist.name },
-      // clinic: { name: clinic.name, location: clinic.location, phone: clinic.phone },
       dentist: dentist?.name ? { name: dentist.name } : undefined,
       clinic: clinicId,
       purpose,
       notes,
-      status,
+      status: 'scheduled',
       treatments,
       startAt,
       endAt,
       timezone,
+      test_data,
+      confirmed
     });
     console.log('[POST /Appointments] created _id =', doc._id.toString());
     res.status(201).json(doc);
@@ -234,6 +250,7 @@ router.post('/Appointments', async (req, res) => {
     res.status(422).json({ error: e.message });
   }
 });
+
 //get xray/images
 router.get("/getAllImages/:nhi", (req, res) => {
   const nhi = req.params.nhi;
