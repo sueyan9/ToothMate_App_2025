@@ -213,7 +213,7 @@ const HomeScreen = () => {
                     {nextAppointment.notes && (
                     <Text style={styles.noteText}>{t('Note from Dentist:')}{'\n'}{nextAppointment.notes}</Text>
                     )}
-                    {nextAppointment.notes === "" | nextAppointment.notes === null && (
+                    {(!nextAppointment.notes) && (
                     <Text style={styles.noteText}>{t('Note from Dentist:')}{'\n'}No notes for this appointment.</Text>
                     )}
                     </>
