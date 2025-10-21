@@ -1520,7 +1520,9 @@ const {
             <Text style={styles.signOutText}>{t('Sign Out')}</Text>
           </TouchableOpacity>
 
+          {isMasterAdmin && (
           <ResetButton/>
+          )}
         </View>
 
       </ScrollView>

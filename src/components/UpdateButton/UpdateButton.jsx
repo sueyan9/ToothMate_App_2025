@@ -53,10 +53,10 @@ const UpdateButton = () => {
             const appointmentData = {
                 nhi: "ABY0987",
                 purpose: "Root Canal",
-                dentist: "Dr. Chen",
+                dentist: "Dr. Chen", //not workin
                 notes: "First appointment for root canal treatment.",
-                startLocal: '2024-04-29T09:30:00.000Z',
-                endLocal: '2024-04-29T10:00:00.000Z',
+                startLocal: '2025-12-29T09:30:00.000Z',
+                endLocal: '2025-12-29T10:00:00.000Z',
                 timezone: 'Pacific/Auckland',
                 clinic: '67fa2286e8aa598431bff1f1',
                 test_data: true,
