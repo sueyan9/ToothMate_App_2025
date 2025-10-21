@@ -13,13 +13,14 @@ import styles from './styles';
 
 const { width } = Dimensions.get('window');
 
-const ChildEducationScreen = ({ navigation }) => {
+const ChildEducationScreen = ({ navigation, route }) => {
     const { state } = useContext(Context);
     const { t, translateAndCache, currentLanguage } = useTranslation();
     const { brushedToday, pointsEarned, streakDays } = useProgress(); // Use progress context
     
     // ADDED: Get child name from UserContext
     const { state: { details } } = useContext(UserContext);
+    const toLearn = route.params?.learn;
     
     // ADDED: State to store child's first name
     const [childName, setChildName] = useState('');
@@ -49,6 +50,13 @@ const ChildEducationScreen = ({ navigation }) => {
         'Dental Quiz Adventure',
         'Test your tooth knowledge'
     ];
+
+    useEffect(() => {
+        if (toLearn) {
+            navigation.navigate("LearnTeeth");
+            navigation.setParams({ learn: undefined });
+        }
+    }, [toLearn, navigation]);
 
     // ADDED: Load child name from AsyncStorage
     useEffect(() => {
@@ -174,8 +182,7 @@ const ChildEducationScreen = ({ navigation }) => {
     });
 
     const renderGameCard = (game, index) => {
-        const cardStyle = game.size === 'large' ? styles.largeCard : 
-                         game.size === 'small' ? styles.smallCard : styles.mediumCard;
+        const cardStyle = game.size === 'large' ? styles.largeCard : game.size === 'small' ? styles.smallCard : styles.mediumCard;
         
         return (
             <TouchableOpacity 

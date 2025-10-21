@@ -89,7 +89,10 @@ useEffect(() => {
                     // From ToothInformation.handleViewEducation (web button):
                     if (data?.type === 'VIEW_EDUCATION') {
                         if (data?.child) {
-                            navigation.navigate('ChildEducation');
+                            navigation.navigate('ChildEducation', {
+                                screen: 'Library',
+                                params: { learn: true }
+                            });
                             return;
                         }
                         const treatmentType = getMostRecentTreatmentType(data?.treatments);
