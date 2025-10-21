@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Modal, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import styles from './styles';
 
@@ -30,11 +30,11 @@ const LanguageSelector = () => {
 
   const getLanguageFlag = (language) => {
     const flags = {
-      'English': '🇺🇸',
+      'English': '🇬🇧',
       'Spanish': '🇪🇸',
       'Chinese': '🇨🇳',
       'Dutch': '🇳🇱',
-      'Maori': '🇳🇿'
+      'Maori': null
     };
     return flags[language] || '🌐';
   };
@@ -48,9 +48,21 @@ const LanguageSelector = () => {
           setModalVisible(true);
         }}
       >
-        <Text style={styles.languageButtonText}>
-          🌐 {getLanguageFlag(getCurrentLanguageDisplay())}
-        </Text>
+        {getCurrentLanguageDisplay() !== 'Maori' && (
+          <Text style={styles.languageButtonText}>
+            🌐 {getLanguageFlag(getCurrentLanguageDisplay())}
+          </Text>
+        )}
+        {getCurrentLanguageDisplay() === 'Maori' && (
+          <View style={{flexDirection: 'row', gap: 6}}>
+          <Text style={styles.languageButtonText}>
+            🌐
+          </Text>
+          <Image
+            source={require('../../../assets/maori_flag.png')}
+            style={{width: 20, height: 20, resizeMode: 'contain', marginRight: 2}}/>
+            </View>
+        )}
       </TouchableOpacity>
 
       <Modal
@@ -72,9 +84,17 @@ const LanguageSelector = () => {
                 ]}
                 onPress={() => handleLanguageChange(language)}
               >
-                <Text style={styles.languageFlag}>
-                  {getLanguageFlag(language)}
-                </Text>
+
+                {language !== 'Maori' && (
+                  <Text style={styles.languageFlag}>
+                    {getLanguageFlag(language)}
+                  </Text>
+                )}
+                {language === 'Maori' && (
+                  <Image
+                    source={require('../../../assets/maori_flag.png')}
+                    style={{width: 24, height: 24, resizeMode: 'contain', marginRight: 15, marginLeft: 3}}/>
+                )}
                 <Text style={[
                   styles.languageText,
                   getCurrentLanguageDisplay() === language && styles.selectedLanguageText

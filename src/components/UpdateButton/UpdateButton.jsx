@@ -1,18 +1,43 @@
 import { useNavigation } from '@react-navigation/native';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { useContext, useState } from 'react';
 import { Alert, Image, TouchableOpacity, View } from 'react-native';
+import axiosApi from '../../api/axios';
 import { Context as AppointmentContext } from '../../context/AppointmentContext/AppointmentContext';
 import { Context as TreatmentContext } from '../../context/TreatmentContext/TreatmentContext';
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 const UpdateButton = () => {
     const navigation = useNavigation();
-    const {confirmAppointment, unconfirmAppointment} = useContext(AppointmentContext);
-    const { createTreatment, deleteTestTreatment } = useContext(TreatmentContext);
+    const {confirmAppointment} = useContext(AppointmentContext);
+    const { createTreatment} = useContext(TreatmentContext);
     const [isLoading, setIsLoading] = useState(false);
+
+    const nz = (datetime) => {
+            return dayjs(datetime)
+                .utcOffset(12 * 30) // Force UTC+12 offset (720 minutes)
+                .toISOString();
+        };
+
+
+    const logReq = (label, url, cfgOrBody) => {
+            const base = axiosApi?.defaults?.baseURL;
+            console.log(`[REQ] ${label}`, {baseURL: base, url, cfgOrBody});
+        };
 
     const appointmentId = "68ec66f6f1371a38fc91fee4";
 
     const handleUpdateInformation = async () => {
+        const testDate = dayjs.tz('2024-04-29 09:30', 'Pacific/Auckland');
+        console.log('Parsed date:', testDate.format());
+        console.log('UTC:', testDate.utc().format());
+        console.log('ISO:', testDate.toISOString());
+        console.log('Offset:', testDate.format('Z'));
+
         if (!appointmentId) {
             Alert.alert('Error', 'AppointmentID is missing!');
             return;
@@ -30,8 +55,19 @@ const UpdateButton = () => {
                 true   // notes
             );
 
-            //await deleteTestTreatment();
-            //await unconfirmAppointment(appointmentId);
+            const appointmentData = {
+                nhi: "ABY0987",
+                purpose: "Root Canal",
+                dentist: "Dr. Chen",
+                notes: "First appointment for root canal treatment.",
+                startLocal: '2024-04-29T09:30:00.000Z',
+                endLocal: '2024-04-29T10:00:00.000Z',
+                timezone: 'Pacific/Auckland',
+                clinic: '67fa2286e8aa598431bff1f1',
+            };
+            const urlPost = '/Appointments';
+            logReq('POST appointments', urlPost, appointmentData);
+            await axiosApi.post('/Appointments', appointmentData);
 
             const currentIndex = navigation.getState().index;
             navigation.reset({

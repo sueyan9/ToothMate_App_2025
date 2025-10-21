@@ -34,7 +34,7 @@ const appointmentSchema = new mongoose.Schema({
   clinic: { type: mongoose.Schema.Types.ObjectId, ref: 'Clinic', required: true },
   purpose: {
     type: String,
-    enum: ['Check-up', 'Consultation'],
+    enum: ['Check-up', 'Consultation', 'Root Canal'],
     required: true,
   },
   confirmed: {
