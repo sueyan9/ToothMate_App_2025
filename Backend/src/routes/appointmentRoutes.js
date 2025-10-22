@@ -75,6 +75,40 @@ router.get('/Appointments/next', async (req, res) => {
   }
 });
 
+// PATCH /Appointments/:id/confirm - Update appointment confirmation status
+router.patch('/Appointments/:id/confirm', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { confirmed } = req.body;
+
+    // Validate appointment ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'invalid appointment id' });
+    }
+
+    // Validate confirmed is a boolean
+    if (typeof confirmed !== 'boolean') {
+      return res.status(400).json({ error: 'confirmed must be a boolean' });
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      id,
+      { confirmed },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ error: 'appointment not found' });
+    }
+
+    console.log(`[PATCH /Appointments/:id/confirm] Updated appointment ${id} confirmation to ${confirmed}`);
+    res.json(updatedAppointment);
+  } catch (e) {
+    console.error('PATCH /Appointments/:id/confirm failed:', e);
+    res.status(422).json({ error: e.message });
+  }
+});
+
 // GET /Appointment/:nhi  query by NHI
 router.get('/Appointments/:nhi', async (req, res) => {
   try {
@@ -146,39 +180,6 @@ body: {
   startLocal: 'YYYY-MM-DD HH:mm', endLocal: 'YYYY-MM-DD HH:mm' //
 }
 */
-
-router.patch('/Appointments/:id/confirm', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { confirmed } = req.body;
-
-    // Validate appointment ID
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'invalid appointment id' });
-    }
-
-    // Validate confirmed is a boolean
-    if (typeof confirmed !== 'boolean') {
-      return res.status(400).json({ error: 'confirmed must be a boolean' });
-    }
-
-    const updatedAppointment = await Appointment.findByIdAndUpdate(
-      id,
-      { confirmed },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedAppointment) {
-      return res.status(404).json({ error: 'appointment not found' });
-    }
-
-    console.log(`[PATCH /Appointments/:id/confirm] Updated appointment ${id} confirmation to ${confirmed}`);
-    res.json(updatedAppointment);
-  } catch (e) {
-    console.error('PATCH /Appointments/:id/confirm failed:', e);
-    res.status(422).json({ error: e.message });
-  }
-});
 
 router.delete('/Appointments/test-data/all', async (req, res) => {
   try {
@@ -265,30 +266,6 @@ router.get("/getAllImages/:nhi", (req, res) => {
       res.json(images);
     })
     .catch(() => res.status(404).json({ error: "No images found" }));
-});
-
-// GET /appointments/:nhi?when=past|upcoming&limit=20&skip=0
-router.get('/Appointments/:nhi', async (req, res) => {
-  try {
-    const { nhi } = req.params;
-    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
-    const skip = parseInt(req.query.skip, 10) || 0;
-
-    const filter = { nhi: (nhi || '').toUpperCase() };
-
-    const [items, total] = await Promise.all([
-      Appointment.find(filter)
-          .sort({ startAt: 1, date: 1 }) // showing as asending
-          .skip(skip)
-          .limit(limit)
-          .lean(),
-      Appointment.countDocuments(filter),
-    ]);
-
-    res.json({ items, total, skip, limit });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
 });
 
 module.exports = router;
