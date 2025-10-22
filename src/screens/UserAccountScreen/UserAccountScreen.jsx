@@ -1016,10 +1016,6 @@ const {
     );
   };
 
-  const handleDisconnectFromParent = () => {
-    navigation.navigate('DisconnectChild');
-  };
-
   const handleSignOut = () => {
     Alert.alert(
       t('Sign Out'),
@@ -1319,19 +1315,6 @@ const {
               </TouchableOpacity>
               </View>
             )}
-
-            {canDisconnect && (
-              <TouchableOpacity
-                style={[styles.actionButton, styles.disconnectButton]}
-                onPress={handleDisconnectFromParent}
-              >
-                <Ionicons name="unlink-outline" size={20} color="#DC3545" />
-                <Text style={[styles.actionButtonText, styles.disconnectText]}>
-                  {t('Disconnect From Parent')}
-                </Text>
-                <Ionicons name="chevron-forward" size={20} color="#DC3545" />
-              </TouchableOpacity>
-            )}
           </Collapsible>
         </View>
           {/* X-ray Images */}
@@ -1520,7 +1503,9 @@ const {
             <Text style={styles.signOutText}>{t('Sign Out')}</Text>
           </TouchableOpacity>
 
+          {isMasterAdmin && (
           <ResetButton/>
+          )}
         </View>
 
       </ScrollView>
