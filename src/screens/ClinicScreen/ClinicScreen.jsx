@@ -156,7 +156,7 @@ const ClinicScreen = ({navigation, route}) => {
                 startDate: route.params.date,
                 startTime: roundTo30(new Date()),
                 endTime: addMinutes(roundTo30(new Date()), SLOT_MINUTES),
-                purpose: 'Check-Up',
+                purpose: 'Check-up',
                 notes: '',
             })
             navigation.setParams({ openModal: undefined, date: undefined });
