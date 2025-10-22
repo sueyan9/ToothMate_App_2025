@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect,useState, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -153,26 +153,32 @@ const LeftLowerWisdom = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Left_Lower_Wisdom.glb')
+
 export const LowerLeftWisdomTooth = () => {
+  // 删除所有 useState 和 useEffect 代码
+
+  // 添加牙齿基本信息
+  const toothInfo = {
+    toothNumber: 38,
+    name: "Left Lower Wisdom Tooth",
+    position: "Lower Jaw Left Side",
+    type: "Third Molar",
+    rootCount: 2,
+    canalCount: 3
+  }
+
   return (
     <>
-    <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
-      <img 
-        src="../assets/back_arrow.png" 
-        alt="Back"
-        onClick={() => (window.location = '/')}
+    <div
         style={{
-          position: 'absolute',
-          top: '32px',
-          left: '32px',
-          width: '24px',
-          height: '24px',
-          cursor: 'pointer',
-          zIndex: 100
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
         }}
-      />
-    </div>
-      <Canvas style={{ width: '100%', height: '500%' }}>
+      >
+      <Canvas style={{ width: '100%', height: '80%' }}>
         <CameraController />
         <ambientLight intensity={0.7} />
         <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
@@ -180,8 +186,8 @@ export const LowerLeftWisdomTooth = () => {
           <LeftLowerWisdom />
         </Suspense>
       </Canvas>
-      <div>Lower left wisdom tooth</div>
-      <ToothInformation toothNumber={38} />
+      </div>
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }

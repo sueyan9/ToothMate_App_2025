@@ -1,4 +1,3 @@
-//File to handle authentication
 const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -35,6 +34,77 @@ router.post("/signup", async (req, res) => {
     res.send({ token, id: user._id });
   } catch (err) {
     return res.status(422).send(err.message); //422 indicates user sent us invalid data
+  }
+});
+
+router.post("/completeRegistration", async (req, res) => {
+  const { signupCode, nhi, email, password, patientId } = req.body;
+  
+  try {
+    // Verify the signup code and patient ID match
+    const patient = await User.findOne({ 
+      _id: patientId, 
+      signup_code: signupCode.toUpperCase() 
+    });
+    
+    if (!patient) {
+      return res.status(422).send({ error: "Invalid signup code or patient ID" });
+    }
+    
+    // Verify NHI matches
+    if (patient.nhi.toUpperCase() !== nhi.toUpperCase()) {
+      return res.status(422).send({ error: "NHI does not match our records" });
+    }
+    
+    // Check if registration is already completed
+    if (patient.email && patient.password) {
+      return res.status(422).send({ error: "Registration already completed" });
+    }
+    
+    // Check if email is already used by another user
+    const existingEmailUser = await User.findOne({ 
+      email: email.toLowerCase(),
+      _id: { $ne: patientId } // exclude current patient
+    });
+    
+    if (existingEmailUser) {
+      return res.status(422).send({ error: "Email already in use" });
+    }
+    
+    // Hash password before saving
+    const bcrypt = require("bcrypt");
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+    // Update the patient record with email and password
+    const updatedPatient = await User.findByIdAndUpdate(
+      patientId,
+      {
+        email: email.toLowerCase(),
+        password: hashedPassword,
+        // Optionally remove the signup_code after successful registration
+        $unset: { signup_code: "" }
+      },
+      { new: true }
+    );
+    
+    // Generate JWT token for automatic login
+    const token = jwt.sign({ userId: updatedPatient._id }, "MY_SECRET_KEY");
+    
+    res.send({ 
+      token, 
+      id: updatedPatient._id,
+      user: {
+        firstname: updatedPatient.firstname,
+        lastname: updatedPatient.lastname,
+        email: updatedPatient.email,
+        nhi: updatedPatient.nhi
+      }
+    });
+    
+  } catch (err) {
+    console.error("Complete registration error:", err);
+    return res.status(422).send({ error: err.message || "Registration failed" });
   }
 });
 
@@ -75,24 +145,65 @@ router.post("/signupchild", async (req, res) => {
   }
 });
 
-router.post("/signin", async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(422).send({ error: "Must provide email and password" });
+router.get("/checkSignupCode/:code", async (req, res) => {
+  try {
+    const signupCode = req.params.code.toUpperCase();
+    const patient = await User.findOne({ signup_code: signupCode });
+    
+    if (patient) {
+      // Check if patient already has email and password (already completed registration)
+      if (patient.email && patient.password) {
+        res.json({ 
+          valid: false, 
+          error: "Registration already completed for this code" 
+        });
+      } else {
+        res.json({ 
+          valid: true, 
+          patient: {
+            _id: patient._id,
+            firstname: patient.firstname,
+            lastname: patient.lastname,
+            nhi: patient.nhi,
+            dob: patient.dob,
+            clinic: patient.clinic
+          }
+        });
+      }
+    } else {
+      res.json({ valid: false });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Error checking signup code" });
   }
+});
 
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(422).send({ error: "Invalid password or email" });
+
+router.post("/signin", async (req, res) => {
+  const { emailOrNhi, password } = req.body;
+
+  if (!emailOrNhi || !password) {
+    return res.status(422).send({ error: "Must provide email/nhi and password" });
   }
 
   try {
+    const user = await User.findOne({
+      $or: [
+        {email: emailOrNhi.toLowerCase()},
+        {nhi: emailOrNhi.toUpperCase()}
+      ]
+    });
+
+    if (!user) {
+      return res.status(422).send({error: "Invalid login credentials."});
+    }
+
     await user.comparePassword(password);
+
     const token = jwt.sign({ userId: user._id }, "MY_SECRET_KEY");
     res.send({ token, id: user._id, user });
   } catch (err) {
-    return res.status(422).send({ error: "Invalid password or email" });
+    return res.status(422).send({ error: "Invalid login credentials." });
   }
 });
 
@@ -131,7 +242,7 @@ router.get("/isChild/:id", (req, res) => {
   const id = req.params.id;
 
   const user = User.findOne({ _id: id })
-    .then((user) => res.json({ isChild: user.parent }))
+    .then((user) => res.json({ isChild: user.parent != null }))
     .catch((err) => res.status(404).json({ error: "Error" }));
 });
 
@@ -154,6 +265,7 @@ router.get("/getUserClinic/:id", (req, res) => {
 router.get("/user/:id", (req, res) => {
   const id = req.params.id;
 
+  console.log("get user from app", id);
   const user = User.findOne({ _id: id })
     .then((user) => res.json(user))
     .catch((err) => res.status(404).json({ error: "No email found" }));
@@ -223,6 +335,22 @@ router.get("/checkNhi/:nhi", async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ error: "Error checking NHI" });
+  }
+});
+
+// Route to check if email already exists
+router.get("/checkEmail/:email", async (req, res) => {
+  try {
+    const email = req.params.email.toLowerCase();
+    const existingUser = await User.findOne({ email: email });
+    
+    if (existingUser) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Error checking email" });
   }
 });
 

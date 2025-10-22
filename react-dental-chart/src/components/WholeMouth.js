@@ -1,424 +1,275 @@
 import { useGLTF } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
-import { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef ,useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import '../styles.css';
-import { toothData } from './ToothData';
+import { getToothPositionFromData } from './Util/getToothPositionFromData';
+//define material for treatment color
+const toothMaterials = {
+    filling: new THREE.MeshStandardMaterial({ color: '#C00A0A', roughness: 0.1, metalness: 0.1 }),
+    crown: new THREE.MeshStandardMaterial({ color: '#FF5100', roughness: 0.1, metalness: 0.1 }),
+    bridge: new THREE.MeshStandardMaterial({ color: '#FFD500', roughness: 0.1, metalness: 0.1 }),
+    implant: new THREE.MeshStandardMaterial({ color: '#007610', roughness: 0.1, metalness: 0.1 }),
+    extraction: new THREE.MeshStandardMaterial({ color: '#5C5C5C', roughness: 0.1, metalness: 0.1, opacity: 0.6, transparent: true }),
+    rootCanal: new THREE.MeshStandardMaterial({ color: '#0080FF', roughness: 0.1, metalness: 0.1 }),
+    root_canal: new THREE.MeshStandardMaterial({ color: '#0080FF', roughness: 0.1, metalness: 0.1 }),
+    veneer: new THREE.MeshStandardMaterial({ color: '#7B00FF', roughness: 0.1, metalness: 0.1 }),
+    sealant: new THREE.MeshStandardMaterial({ color: '#FF0099', roughness: 0.1, metalness: 0.1 }),
+    missing: new THREE.MeshStandardMaterial({ color: 'white', opacity: 0.0, transparent: true }),
+    normal: new THREE.MeshStandardMaterial({ color: '#5C5C5C', roughness: 0.8, metalness: 0.1 }),
+};
+
+const normalizeTreatmentType = (t) => {
+    if (!t) return '';
+    const map = {
+        'Root Canal': 'rootCanal',
+        'root_canal': 'root_canal',
+        'Crown Placement': 'crown',
+        'Filling': 'filling',
+        'Extraction': 'extraction',
+        'Bridge': 'bridge',
+        'Implant': 'implant',
+        'Veneer': 'veneer',
+        'Sealant': 'sealant',
+        'crown': 'crown',
+        'filling': 'filling',
+        'extraction': 'extraction',
+        'bridge': 'bridge',
+        'implant': 'implant',
+        'veneer': 'veneer',
+        'sealant': 'sealant',
+        'Cleaning': 'normal',
+        'Checkup': 'normal',
+    };
+    const fromMap = map[t];
+    return fromMap || String(t).toLowerCase();
+};
 
 const CameraController = () => {
-  const { camera, gl } = useThree()
+    const { camera, gl } = useThree();
+    useEffect(() => {
+        const controls = new OrbitControls(camera, gl.domElement);
+        controls.minDistance = 5;
+        controls.maxDistance = 6;
+        controls.minPolarAngle = Math.PI / 3;
+        controls.maxPolarAngle = Math.PI / 1.6;
+        controls.minAzimuthAngle = -Math.PI / 4;
+        controls.maxAzimuthAngle = Math.PI / 4;
+        controls.rotateSpeed = 0.8;
+        controls.panSpeed = 1.0;
+        return () => controls.dispose();
+    }, [camera, gl]);
+    return null;
+};
 
-  useEffect(() => {
-    const controls = new OrbitControls(camera, gl.domElement)
 
-    controls.minDistance = 3
-    controls.maxDistance = 6
-    return () => {
-      controls.dispose()
+const WholeMouthModel = ({
+                             selectedTreatment = [],
+                             activeTimePeriod,
+                             treatmentsByPeriod,
+                             eruptionLevels = {},
+                             teethData = [],
+                             onToothClick,
+                             ...props
+                         }) => {
+    const group = useRef();
+    const { nodes, materials } = useGLTF('/assets/adult_whole_mouth.glb');
+
+    //kid model hide teeth set
+    const qs = new URLSearchParams(window.location.search);
+    const isChild =
+        (qs.get('parent') === 'false') ||
+        (qs.get('mode') === 'child') ||
+        (qs.get('hideBack') === 'true');
+
+    const CHILD_HIDE_MOLARS = [16,17,18,26,27,28,36,37,38,46,47,48];
+    const HIDE_TEETH = isChild ? new Set(CHILD_HIDE_MOLARS) : new Set();
+    // check data status
+    const isDataLoaded = teethData && teethData.length > 0 && treatmentsByPeriod;
+
+// use useMemo store geomerty to avoiding dupliated clone
+    const geometries = useMemo(() => {
+        const geos = {};
+        Object.entries(nodes).forEach(([key, node]) => {
+            if (node?.geometry) {
+                geos[key] = node.geometry.clone();
+            }
+        });
+        return geos;
+    }, [nodes]);
+
+    const getToothData = (toothNumber) => {
+        return teethData.find((tooth) => tooth.toothNumber === toothNumber) || {};
+    };
+
+    const listByTooth = (toothNumber) => {
+        const list =
+            activeTimePeriod === 'future'
+                ? (treatmentsByPeriod?.future || [])
+                : (treatmentsByPeriod?.historical || []);
+        return list.filter((t) => t.toothNumber === toothNumber);
+    };
+    const getToothMaterial = useMemo(() => {
+        return (toothNumber) => {
+        const toothInfo = getToothData(toothNumber);
+        const types = listByTooth(toothNumber)
+            .map((t) => normalizeTreatmentType(t.treatmentType))
+            .filter(Boolean);
+        if (!types.length) return toothMaterials.normal;
+
+        if (!selectedTreatment || selectedTreatment.length === 0 || selectedTreatment[0] === 'none') {
+            if (types.includes('extraction')) {
+                return toothMaterials.extraction;
+            }
+            return toothMaterials.normal;
+        }
+
+        if (selectedTreatment.includes('all')) {
+            return types.includes('extraction') ? toothMaterials.missing : (toothMaterials[types[0]] || toothMaterials.normal);
+        }
+        const match = types.find((k) => selectedTreatment.includes(k));
+        if (!match) return toothMaterials.normal;
+        return match === 'extraction' ? toothMaterials.missing : (toothMaterials[match] || toothMaterials.normal);
+    };
+    }, [selectedTreatment, activeTimePeriod, treatmentsByPeriod, teethData]);
+
+    const generateEruptionLevels = () => {
+        const levels = {};
+        teethData.forEach((tooth) => {
+            if (tooth.partial_erupted === true) {
+                levels[tooth.toothNumber] = 0.5;
+            } else if (tooth.extracted === true) {
+                levels[tooth.toothNumber] = 0.0;
+            } else {
+                levels[tooth.toothNumber] = 1.0;
+            }
+        });
+        return levels;
+    };
+
+    const combinedEruptionLevels = {
+        ...eruptionLevels,
+        ...generateEruptionLevels(),
+    };
+
+    const P = {
+        upper: [0, 0.36, -0.29],
+        lower: [0, 0.36, -0.07],
+    };
+
+    const renderTooth = (nodeKey, toothNumber, toothLabel, base) => {
+        if (HIDE_TEETH.has(toothNumber)) return null;
+
+        const geometry = geometries[nodeKey];
+        if (!geometry) return null;
+
+        const rot = base === 'upper' ? [1.11, 0, 0] : [Math.PI / 2, 0, 0];
+
+        return (
+            <mesh
+                key={`${toothNumber}-${toothLabel}`}
+                geometry={geometry}
+                material={getToothMaterial(toothNumber)}
+                position={getToothPositionFromData(toothNumber, P[base], combinedEruptionLevels)}
+                rotation={rot}
+                scale={39.99}
+                onClick={() => onToothClick(toothNumber, toothLabel)}
+            />
+        );
+    };
+// 如果数据还没加载完成，显示加载状态或默认模型
+    if (!isDataLoaded) {
+        return null;
     }
-  }, [camera, gl])
-  return null
-}
+    return (
+        <group ref={group} {...props} dispose={null}>
+            <mesh geometry={nodes.upper_jaw.geometry} material={materials.Gum} position={P.upper} rotation={[1.11, 0, 0]} scale={39.99} />
+            <mesh geometry={nodes.lower_jaw.geometry} material={materials.Gum} position={P.lower} rotation={[Math.PI / 2, 0, 0]} scale={39.99} />
+            <mesh geometry={nodes.tongue.geometry} material={materials.tongue} position={P.lower} rotation={[Math.PI / 2, 0, 0]} scale={39.99} />
 
-const WholeMouthModel = ({ selectedTreatment, missingTeeth = [], ...props }) => {
-  const group = useRef()
+            {/* LOWER RIGHT */}
+            {renderTooth('lower_right_wisdom', 48, 'lower-right-wisdom', 'lower')}
+            {renderTooth('lower_right_second_molar', 47, 'lower-right-second-molar', 'lower')}
+            {renderTooth('lower_right_first_molar', 46, 'lower-right-first-molar', 'lower')}
+            {renderTooth('lower_right_second_premolar', 45, 'lower-right-second-premolar', 'lower')}
+            {renderTooth('lower_right_first_premolar', 44, 'lower-right-first-premolar', 'lower')}
+            {renderTooth('lower_right_canine', 43, 'lower-right-canine', 'lower')}
+            {renderTooth('lower_right_lateral_incisor', 42, 'lower-right-lateral-incisor', 'lower')}
+            {renderTooth('lower_right_central_incisor', 41, 'lower-right-central-incisor', 'lower')}
 
-  const toothMaterials = {
-    filling: new THREE.MeshStandardMaterial({
-      color: '#C00A0A',
-      roughness: 0.1,
-      metalness: 0.1,
-    }),
-    crown : new THREE.MeshStandardMaterial({
-      color: '#FF5100',
-      roughness: 0.1,
-      metalness: 0.1,
-    }),
-    bridge: new THREE.MeshStandardMaterial({
-      color: '#FFD500',
-      roughness: 0.1,
-      metalness: 0.1,
-    }),
-    implant: new THREE.MeshStandardMaterial({
-      color: '#007610',
-      roughness: 0.1,
-      metalness: 0.1,
-    }),
-    extraction: new THREE.MeshStandardMaterial({
+            {/* LOWER LEFT 38–31 */}
+            {renderTooth('lower_left_wisdom', 38, 'lower-left-wisdom', 'lower')}
+            {renderTooth('lower_left_second_molar', 37, 'lower-left-second-molar', 'lower')}
+            {renderTooth('lower_left_first_molar', 36, 'lower-left-first-molar', 'lower')}
+            {renderTooth('lower_left_second_premolar', 35, 'lower-left-second-premolar', 'lower')}
+            {renderTooth('lower_left_first_premolar', 34, 'lower-left-first-premolar', 'lower')}
+            {renderTooth('lower_left_canine', 33, 'lower-left-canine', 'lower')}
+            {renderTooth('lower_left_lateral_incisor', 32, 'lower-left-lateral-incisor', 'lower')}
+            {renderTooth('lower_left_central_incisor', 31, 'lower-left-central-incisor', 'lower')}
 
-      color: '#5C5C5C',
+            {/* UPPER RIGHT 18–11 */}
+            {renderTooth('upper_right_wisdom', 18, 'upper-right-wisdom', 'upper')}
+            {renderTooth('upper_right_second_molar', 17, 'upper-right-second-molar', 'upper')}
+            {renderTooth('upper_right_first_molar', 16, 'upper-right-first-molar', 'upper')}
+            {renderTooth('upper_right_second_premolar', 15, 'upper-right-second-premolar', 'upper')}
+            {renderTooth('upper_right_first_premolar', 14, 'upper-right-first-premolar', 'upper')}
+            {renderTooth('upper_right_canine', 13, 'upper-right-canine', 'upper')}
+            {renderTooth('upper_right_lateral_incisor', 12, 'upper-right-lateral-incisor', 'upper')}
+            {renderTooth('upper_right_central_incisor', 11, 'upper-right-central-incisor', 'upper')}
 
-      roughness: 0.1,
-      metalness: 0.1,
-      opacity: 0.6,
-      transparent: true,
-    }),
-    rootCanal: new THREE.MeshStandardMaterial({
-      color: '#0080FF',
-      roughness: 0.1,
-      metalness: 0.1,
-    }),
-    veneer: new THREE.MeshStandardMaterial({  
-      color: '#7B00FF',
-      roughness: 0.1,
-      metalness: 0.1,
-    }),
-    sealant: new THREE.MeshStandardMaterial({
-      color: '#FF0099',
-      roughness: 0.1,
-      metalness: 0.1,
-    }),
-    missing: new THREE.MeshStandardMaterial({
-      color: 'white',
-      opacity: 0.0,
-      transparent: true,
-    }),
-    normal: new THREE.MeshStandardMaterial({
-      color: '#5C5C5C',
-      roughness: 0.1,
-      metalness: 0.1,
-    }),
-  }
+            {/* UPPER LEFT 28–21 */}
+            {renderTooth('upper_left_wisdom', 28, 'upper-left-wisdom', 'upper')}
+            {renderTooth('upper_left_second_molar', 27, 'upper-left-second-molar', 'upper')}
+            {renderTooth('upper_left_first_molar', 26, 'upper-left-first-molar', 'upper')}
+            {renderTooth('upper_left_second_premolar', 25, 'upper-left-second-premolar', 'upper')}
+            {renderTooth('upper_left_first_premolar', 24, 'upper-left-first-premolar', 'upper')}
+            {renderTooth('upper_left_canine', 23, 'upper-left-canine', 'upper')}
+            {renderTooth('upper_left_lateral_incisor', 22, 'upper-left-lateral-incisor', 'upper')}
+            {renderTooth('upper_left_central_incisor', 21, 'upper-left-central-incisor', 'upper')}
+        </group>
+    );
+};
+//======whole mouth main part=====
+export default function WholeMouth({
+                                       selectedTreatment,
+                                       activeTimePeriod,
+                                       treatmentsByPeriod,
+                                       eruptionLevels,
+                                       teethData = [],
+                                   }) {
+    const navigate = useNavigate();
 
-  const getToothMaterial = (type) => {
+    const handleToothClick = (toothNumber, toothComponent) => {
+        const current = new URLSearchParams(window.location.search || '');
+        const next = new URLSearchParams();
 
-  if (type === 'missing') {
-    return toothMaterials.missing;
-  }
+        ['userId', 'parent', 'mode', 'hideBack'].forEach((k) => {
+            const v = current.get(k);
+            if (v !== null) next.set(k, v);
+        });
 
-  if (!selectedTreatment || selectedTreatment[0] === 'none') {
-    if (type === 'extraction') {
-      return toothMaterials.missing;
-    }
-    return toothMaterials.normal;
-  }
-  if (selectedTreatment.length === 0) {
-    return toothMaterials[type];
-  }
-  if (selectedTreatment.includes(type)) {
-    return toothMaterials[type] || toothMaterials.normal;
-  }
+        navigate(`/${toothComponent}?${next.toString()}`);
+    };
 
-  if (type === 'extraction') {
-      return toothMaterials.missing;
-  }
-
-  return toothMaterials.normal;
-}
-
-  const { nodes, materials } = useGLTF('/assets/adult_whole_mouth.glb')
-
-  return (
-    <group ref={group} {...props} dispose={null}>
-      <mesh
-        geometry={nodes.upper_jaw.geometry}
-        material={materials.Gum}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-      />
-      <mesh
-        geometry={nodes.lower_jaw.geometry}
-        material={materials.Gum}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-      />
-      <mesh
-        geometry={nodes.tongue.geometry}
-        material={materials.tongue}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-      />
-
-      {/* LOWER RIGHT */}
-
-      <mesh
-        geometry={nodes.lower_right_wisdom.geometry}
-        material={getToothMaterial(toothData[48].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-right-wisdom')}
-      />
-      <mesh
-        geometry={nodes.lower_right_second_molar.geometry}
-        material={getToothMaterial(toothData[47].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-right-second-molar')}
-      />
-      <mesh
-        geometry={nodes.lower_right_first_molar.geometry}
-        material={getToothMaterial(toothData[46].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-right-first-molar')}
-      />
-      <mesh
-        geometry={nodes.lower_right_second_premolar.geometry}
-        material={getToothMaterial(toothData[45].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-right-second-premolar')}
-      />
-      <mesh
-        geometry={nodes.lower_right_first_premolar.geometry}
-        material={getToothMaterial(toothData[44].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-right-first-premolar')}
-      />
-      <mesh
-        geometry={nodes.lower_right_canine.geometry}
-        material={getToothMaterial(toothData[43].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-right-canine')}
-      />
-      <mesh
-        geometry={nodes.lower_right_lateral_incisor.geometry}
-        material={getToothMaterial(toothData[42].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-right-lateral-incisor')}
-      />
-      <mesh
-        geometry={nodes.lower_right_central_incisor.geometry}
-        material={getToothMaterial(toothData[41].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-right-central-incisor')}
-      />
-
-      {/* LOWER LEFT */}
-
-      <mesh
-        geometry={nodes.lower_left_wisdom.geometry}
-        material={getToothMaterial(toothData[38].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-left-wisdom')}
-      />
-      <mesh
-        geometry={nodes.lower_left_second_molar.geometry}
-        material={getToothMaterial(toothData[37].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-left-second-molar')}
-      />
-      <mesh
-        geometry={nodes.lower_left_first_molar.geometry}
-        material={getToothMaterial(toothData[36].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-left-first-molar')}
-      />
-      <mesh
-        geometry={nodes.lower_left_second_premolar.geometry}
-        material={getToothMaterial(toothData[35].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-left-second-premolar')}
-      />
-      <mesh
-        geometry={nodes.lower_left_first_premolar.geometry}
-        material={getToothMaterial(toothData[34].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-left-first-premolar')}
-      />
-      <mesh
-        geometry={nodes.lower_left_canine.geometry}
-        material={getToothMaterial(toothData[33].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-left-canine')}
-      />
-      <mesh
-        geometry={nodes.lower_left_lateral_incisor.geometry}
-        material={getToothMaterial(toothData[32].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-left-lateral-incisor')}
-      />
-      <mesh
-        geometry={nodes.lower_left_central_incisor.geometry}
-        material={getToothMaterial(toothData[31].treatment)}
-        position={[0, 0.36, -0.07]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/lower-left-central-incisor')}
-      />
-
-      {/* UPPER RIGHT */}
-
-      <mesh
-        geometry={nodes.upper_right_wisdom.geometry}
-        material={getToothMaterial(toothData[18].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-right-wisdom')}
-      />
-      <mesh
-        geometry={nodes.upper_right_second_molar.geometry}
-        material={getToothMaterial(toothData[17].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-right-second-molar')}
-      />
-      <mesh
-        geometry={nodes.upper_right_first_molar.geometry}
-        material={getToothMaterial(toothData[16].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-right-first-molar')}
-      />
-      <mesh
-        geometry={nodes.upper_right_second_premolar.geometry}
-        material={getToothMaterial(toothData[15].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-right-second-premolar')}
-      />
-      <mesh
-        geometry={nodes.upper_right_first_premolar.geometry}
-        material={getToothMaterial(toothData[14].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-right-first-premolar')}
-      />
-      <mesh
-        geometry={nodes.upper_right_canine.geometry}
-        material={getToothMaterial(toothData[13].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-right-canine')}
-      />
-      <mesh
-        geometry={nodes.upper_right_lateral_incisor.geometry}
-        material={getToothMaterial(toothData[12].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-right-lateral-incisor')}
-      />
-      <mesh
-        geometry={nodes.upper_right_central_incisor.geometry}
-        material={getToothMaterial(toothData[11].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-right-central-incisor')}
-      />
-
-      {/* UPPER LEFT */}
-
-      <mesh
-        geometry={nodes.upper_left_wisdom.geometry}
-        material={getToothMaterial(toothData[28].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-left-wisdom')}
-      />
-      <mesh
-        geometry={nodes.upper_left_second_molar.geometry}
-        material={getToothMaterial(toothData[27].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-left-second-molar')}
-      />
-      <mesh
-        geometry={nodes.upper_left_first_molar.geometry}
-        material={getToothMaterial(toothData[26].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-left-first-molar')}
-      />
-      <mesh
-        geometry={nodes.upper_left_second_premolar.geometry}
-        material={getToothMaterial(toothData[25].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-left-second-premolar')}
-      />
-      <mesh
-        geometry={nodes.upper_left_first_premolar.geometry}
-        material={getToothMaterial(toothData[24].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-left-first-premolar')}
-      />
-      <mesh
-        geometry={nodes.upper_left_canine.geometry}
-        material={getToothMaterial(toothData[23].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-left-canine')}
-      />
-      <mesh
-        geometry={nodes.upper_left_lateral_incisor.geometry}
-        material={getToothMaterial(toothData[22].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-left-lateral-incisor')}
-      />
-      <mesh
-        geometry={nodes.upper_left_central_incisor.geometry}
-        material={getToothMaterial(toothData[21].treatment)}
-        position={[0, 0.36, -0.29]}
-        rotation={[1.11, 0, 0]}
-        scale={39.99}
-        onClick={() => (window.location = '/upper-left-central-incisor')}
-      />
-    </group>
-  )
-}
-
-export default function WholeMouth({ selectedTreatment, setSelectedTreatment }) {
-
-  return (
-    <div className='mouth-container'>
-      <Canvas>
-        <CameraController />
-        <ambientLight intensity={0.7} />
-        <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
-        <Suspense fallback={null}>
-          <WholeMouthModel selectedTreatment={selectedTreatment}/>
-        </Suspense>
-      </Canvas>
-
-      <p className='mouth-instructions mouth-info'>Tap and drag to interact with the mouth. Tap a tooth to view further details.</p>
-
-    </div>
-  )
+    return (
+        <div className="mouth-container">
+            <Canvas camera={{ fov: 95 }}>
+                <CameraController />
+                <ambientLight intensity={0.7} />
+                <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
+                <Suspense fallback={null}>
+                    <WholeMouthModel
+                        selectedTreatment={selectedTreatment}
+                        activeTimePeriod={activeTimePeriod}
+                        treatmentsByPeriod={treatmentsByPeriod}
+                        eruptionLevels={eruptionLevels}
+                        teethData={teethData}
+                        onToothClick={handleToothClick}
+                    />
+                </Suspense>
+            </Canvas>
+        </div>
+    );
 }

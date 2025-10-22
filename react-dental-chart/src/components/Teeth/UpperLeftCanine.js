@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef,useState } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -155,26 +155,28 @@ const LeftUpperCanine = ({ ...props }) => {
   )
 }
 
+useGLTF.preload('/assets/Left_Upper_Canine.glb')
+
 export const UpperLeftCanine = () => {
+  const toothInfo = {
+    toothNumber: 23,
+    name: "Left Upper Canine",
+    position: "Upper Jaw Left Side",
+    type: "Canine",
+    rootCount: 1,
+    canalCount: 1
+  }
   return (
     <>
-    <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
-      <img 
-        src="../assets/back_arrow.png" 
-        alt="Back"
-        onClick={() => (window.location = '/')}
+    <div
         style={{
-          position: 'absolute',
-          top: '32px',
-          left: '32px',
-          width: '24px',
-          height: '24px',
-          cursor: 'pointer',
-          zIndex: 100
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
         }}
-      />
-    </div>
-      <Canvas style={{ width: '100%', height: '500%' }}>
+      >
+      <Canvas style={{ width: '100%', height: '80%' }}>
         <CameraController />
         <ambientLight intensity={0.7} />
         <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
@@ -182,8 +184,8 @@ export const UpperLeftCanine = () => {
           <LeftUpperCanine />
         </Suspense>
       </Canvas>
-      <div>Upper left canine</div>
-      <ToothInformation toothNumber={23} />
+      </div>
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }

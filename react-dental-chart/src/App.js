@@ -1,9 +1,7 @@
-
-// ====================== React Imports ======================
-import { useEffect, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-// =====teeth components======
-
+import { ArrowLeft } from 'lucide-react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from 'react-router-dom';
+// ===== teeth components =====
 import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine';
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor';
 import { LowerLeftFirstMolar } from './components/Teeth/LowerLeftFirstMolar';
@@ -38,157 +36,555 @@ import { UpperRightSecondPremolar } from './components/Teeth/UpperRightSecondPre
 import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth';
 
 // ====================== Component Imports ======================
-import WholeMouth from './components/WholeMouth';
-
 import FilterMenu from './components/FilterMenu';
+import MiniMouth from './components/Util/MiniMouth';
+import WholeMouth from './components/WholeMouth';
 import WholeMouthKid from './components/WholeMouthKid';
 
+function useUserId() {
+  const [userId, setUserId] = React.useState(null);
 
-export default function App() {
-  const [showMenu, setShowMenu] = useState(false);
-  const [selectedTreatment, setSelectedTreatment] = useState([])
+  const parseFromUrl = React.useCallback(() => {
+    try {
+      // 1) search: ?userId= / ?userid= / ?uid=
+      const qs = new URLSearchParams(window.location.search || "");
+      const fromQuery =
+          qs.get("userId") || qs.get("userid") || qs.get("uid");
+      if (fromQuery) return String(fromQuery);
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const [mode, setMode] = useState(null); // default is adult
-
-// handle filter menu selection function
-
-  const handleSelect = (key) => {
-        if (key === 'all') {
-    setSelectedTreatment([]);
-  } else if (key === 'none') {
-    setSelectedTreatment(['none']);
-  } else {
-    setSelectedTreatment(prev => {
-      if (prev.includes(key)) {
-        return prev.filter(k => k !== key);
-      } else {
-        return [...prev.filter(k => k !== 'none'), key];
+      // hash
+      const hash = window.location.hash || "";
+      if (hash) {
+        const hashUrl = new URL(hash.replace(/^#/, ""), window.location.origin);
+        const hqs = hashUrl.searchParams;
+        const fromHashQuery = hqs.get("userId") || hqs.get("userid") || hqs.get("uid");
+        if (fromHashQuery) return String(fromHashQuery);
+        const mHash = hashUrl.pathname.match(/^\/u\/([^/]+)/);
+        if (mHash && mHash[1]) return decodeURIComponent(mHash[1]);
       }
-    });
+
+      // pathname
+      const m = window.location.pathname.match(/^\/u\/([^/]+)/);
+      if (m && m[1]) return decodeURIComponent(m[1]);
+
+      return null;
+    } catch {
+      return null;
+    }
+  }, []);
+
+  // 把 /u/:id 或 hash 形式 规范化 为 /?userId=:id，并保留现有的其它 query（如 parent）
+  const normalizeUrlIfNeeded = React.useCallback((id) => {
+    if (!id) return;
+    const loc = window.location;
+    const sp = new URLSearchParams(loc.search || "");
+    const already = sp.get("userId") || sp.get("userid") || sp.get("uid");
+    const isUPath = /^\/u\/[^/]+/.test(loc.pathname);
+    const isHashU = /^#\/u\/[^/]+/.test(loc.hash || "");
+    if (!already || isUPath || isHashU) {
+      sp.set("userId", id);
+      window.history.replaceState(null, "", `/?${sp.toString()}`);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    // 初次解析
+    const initial = parseFromUrl();
+    if (initial) {
+      normalizeUrlIfNeeded(initial);
+      setUserId(String(initial));
+    }
+
+    const onUrlChange = () => {
+      const id = parseFromUrl();
+      if (id) normalizeUrlIfNeeded(id);
+      setUserId(id ? String(id) : null);
+    };
+    // 代理 pushState/replaceState，捕获 SPA 内部导航（用 window.history）
+    const origPush = window.history.pushState;
+    const origReplace = window.history.replaceState;
+    window.history.pushState = function (...args) {
+      const ret = origPush.apply(window.history, args);
+      window.dispatchEvent(new Event("urlchange"));
+      return ret;
+    };
+    window.history.replaceState = function (...args) {
+      const ret = origReplace.apply(window.history, args);
+      window.dispatchEvent(new Event("urlchange"));
+      return ret;
+    };
+    // RN → Web 的 message（你的 WebView onLoadEnd 注入的那条）
+    const onMessage = (e) => {
+      try {
+        const data = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
+        const incoming =
+            data?.userId ??
+            (data?.type === "setUserId" ? data.userId : null);
+        if (incoming) {
+          normalizeUrlIfNeeded(String(incoming));
+          setUserId(String(incoming));
+        }
+      } catch {
+        // 非 JSON 忽略
+      }
+    };
+
+    window.addEventListener("message", onMessage);
+    window.addEventListener("popstate", onUrlChange);
+    window.addEventListener("hashchange", onUrlChange);
+    window.addEventListener("urlchange", onUrlChange);
+
+    return () => {
+      window.history.pushState = origPush;
+      window.history.replaceState = origReplace;
+      window.removeEventListener("message", onMessage);
+      window.removeEventListener("popstate", onUrlChange);
+      window.removeEventListener("hashchange", onUrlChange);
+      window.removeEventListener("urlchange", onUrlChange);
+    };
+  }, [parseFromUrl, normalizeUrlIfNeeded]);
+
+  return [userId, setUserId];
+}
+
+// 兼容多种环境变量来源（CRA / Vite / 直接注入到 window）
+const API_BASE_URL =
+    (typeof window !== 'undefined' && window.API_BASE_URL) ||
+    (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
+    (typeof process !== 'undefined' && process.env && (process.env.REACT_APP_API_BASE_URL || process.env.API_BASE_URL)) ||
+    'https://toothmate-app-2025.onrender.com';
+
+
+function normalizeTreatments(payload) {
+  console.log('Normalizing payload:', payload);
+
+  // 如果后端直接返回 { historical: [], future: [] } 格式
+  if (payload?.historical || payload?.future) {
+    return {
+      historical: Array.isArray(payload.historical) ? payload.historical : [],
+      future: Array.isArray(payload.future) ? payload.future : [],
+      eruptionLevels: payload?.eruptionLevels || {},
+    };
   }
+
+  // 如果后端返回的是治疗记录数组，需要按时间分类
+  const all = Array.isArray(payload) ? payload : [];
+  const now = new Date();
+  const historical = [];
+  const future = [];
+
+  for (const t of all) {
+    // 根据 completed 字段和 date 字段分类
+    if (t.completed || (t.date && new Date(t.date) < now)) {
+      historical.push(t);
+    } else {
+      future.push(t);
+    }
+  }
+
+  console.log('Normalized data:', { historical, future });
+  return { historical, future, eruptionLevels: {} };
+}
+// 在 uniqueKeysFrom 函数之前添加这个函数
+function normalizeTreatmentType(treatmentType) {
+  const typeMap = {
+
+    'Crown Placement': 'crown',
+    'Filling': 'filling',
+    'Extraction': 'extraction',
+    'Bridge': 'bridge',
+    'Implant': 'implant',
+    'Veneer': 'veneer',
+    'Sealant': 'sealant',
+    'root_canal': 'root_canal',
+    'crown': 'crown',
+    'filling': 'filling',
+    'extraction': 'extraction',
+    'bridge': 'bridge',
+    'implant': 'implant',
+    'veneer': 'veneer',
+    'sealant': 'sealant',
+    'Cleaning': null,
+    'Checkup': null
+  };
+  return typeMap[treatmentType] || treatmentType?.toLowerCase();
+}
+// 用于 UI 上展示的键集合
+function uniqueKeysFrom(list) {
+  const s = new Set();
+  (Array.isArray(list) ? list : []).forEach((item) => {
+    console.log('Processing item:', item.treatmentType);
+    let k = item?.treatmentType;
+    if (k) {
+      const normalized = normalizeTreatmentType(k);
+      console.log('Normalized to:', normalized);
+      if (normalized) {
+        s.add(normalized);
+      }
+    }
+  });
+  const result = Array.from(s).sort();
+  console.log('Final unique keys:', result);
+  return result;
+}
+// 获取治疗数据的函数
+async function fetchTreatmentsByUser(idOrNhi) {
+  if (!API_BASE_URL) throw new Error('API_BASE_URL is not configured');
+  const base = API_BASE_URL.replace(/\/$/, '');
+  const isObjectId = /^[0-9a-fA-F]{24}$/.test(String(idOrNhi));
+
+  const url = isObjectId
+      ? `${base}/getTreatmentsByUser?userId=${encodeURIComponent(idOrNhi)}`
+      : `${base}/getTreatmentsByUserNhi?nhi=${encodeURIComponent(idOrNhi)}`;
+
+  const res = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`HTTP ${res.status} - ${text.slice(0,200)}`);
+  const data = JSON.parse(text);
+  return normalizeTreatments(data);
+}
+async function fetchTeethData(idOrNhi) {
+  if (!API_BASE_URL) throw new Error('API_BASE_URL is not configured');
+  const base = API_BASE_URL.replace(/\/$/, '');
+
+  const isObjectId = /^[0-9a-fA-F]{24}$/.test(String(idOrNhi));
+
+  let url;
+  if (isObjectId) {
+    url = `${base}/getAllTeethByUserId/${encodeURIComponent(idOrNhi)}`;
+  } else {
+    url = `${base}/getAllTeeth/${encodeURIComponent(idOrNhi)}`;
+  }
+
+  const res = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
+  const text = await res.text();
+
+  if (!res.ok) throw new Error(`HTTP ${res.status} - ${text.slice(0,200)}`);
+  const data = JSON.parse(text);
+  return Array.isArray(data) ? data : [];
+}
+
+const BackButton = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isToothPage = location.pathname !== '/';
+  if (!isToothPage) return null;
+  const goHome = () => {
+    const search = window.location.search || '';
+    navigate({ pathname: '/', search }); // keep ?parent/mode/hideBack/userId
+  };
+  return (
+      <button
+          onClick={goHome}
+          style={{ position: 'fixed', top: '32px', left: '24px', zIndex: 1000, padding: '10px 15px', backgroundColor: '#E9F1F8', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
+          aria-label="Back"
+      >
+        <ArrowLeft size={24} color={'#333333'} />
+      </button>
+  );
+};
+
+const getToothNumber = (path) => {
+  const toothName = path.split('/').pop();  
+
+  const toothMap = {
+    'upper-right-central-incisor': 11,
+    'upper-right-lateral-incisor': 12,
+    'upper-right-canine': 13,
+    'upper-right-first-premolar': 14,
+    'upper-right-second-premolar': 15,
+    'upper-right-first-molar': 16,
+    'upper-right-second-molar': 17,
+    'upper-right-third-molar': 18,
+    
+    // Upper left (quadrant 2)
+    'upper-left-central-incisor': 21,
+    'upper-left-lateral-incisor': 22,
+    'upper-left-canine': 23,
+    'upper-left-first-premolar': 24,
+    'upper-left-second-premolar': 25,
+    'upper-left-first-molar': 26,
+    'upper-left-second-molar': 27,
+    'upper-left-third-molar': 28,
+    
+    // Lower left (quadrant 3)
+    'lower-left-central-incisor': 31,
+    'lower-left-lateral-incisor': 32,
+    'lower-left-canine': 33,
+    'lower-left-first-premolar': 34,
+    'lower-left-second-premolar': 35,
+    'lower-left-first-molar': 36,
+    'lower-left-second-molar': 37,
+    'lower-left-third-molar': 38,
+    
+    // Lower right (quadrant 4)
+    'lower-right-central-incisor': 41,
+    'lower-right-lateral-incisor': 42,
+    'lower-right-canine': 43,
+    'lower-right-first-premolar': 44,
+    'lower-right-second-premolar': 45,
+    'lower-right-first-molar': 46,
+    'lower-right-second-molar': 47,
+    'lower-right-third-molar': 48,
   };
 
-// Parse query parameters to determine user type (parent/child)
+  return toothMap[toothName] || null; 
+};
+
+const MouthWindow = () => {
+  const location = useLocation();
+  const isToothPage = location.pathname !== '/';
+
+  if (!isToothPage) return null;
+
+  const toothNumber = getToothNumber(location.pathname);
+
+  return (
+    <div
+    style={{
+        position: 'absolute',
+        right: 0,
+        top: '5vh',
+        width: 100,
+        height: 100,
+        background: 'rgba(240, 248, 255, 0)',
+        borderRadius: 10,
+        boxShadow:'none', //'0 2px 6px rgba(0,0,0,0.1)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(2px)',
+        zIndex: 1000,
+        pointerEvents: 'none',
+    }}>
+      <MiniMouth key={toothNumber} targetToothNumber={toothNumber} />
+    </div>
+  )
+};
+
+export default function App() {
+  const [userId] = useUserId();
+
+  const [showMenu, setShowMenu] = useState(false);
+  const [selectedTreatment, setSelectedTreatment] = useState([]);
+  const [mode, setMode] = useState(null); // 'parent' | 'child'
+  const [activeTimePeriod, setActiveTimePeriod] = useState('historical');
+  const [isLoading, setIsLoading] = useState(false);
+  const [treatmentsByPeriod, setTreatmentsByPeriod] = useState({ historical: [], future: [] });
+  const [eruptionLevels, setEruptionLevels] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+//toothDate
+  const [teethData, setTeethData] = useState([]);
+  const [teethLoading, setTeethLoading] = useState(false);
+  const [teethError, setTeethError] = useState('');
+
+  const latestUserRef = useRef(null);
+
+  const pull = useCallback(async (uid) => {
+    if (isLoading) {
+      console.log('Already loading, skipping...');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    latestUserRef.current = uid;
+
+    try {
+      console.log('=== Starting data fetch ===');
+      console.log('Fetching data for userId:', uid);
+
+      try {
+        const teeth = await fetchTeethData(uid);
+        if (teeth.length > 0) {
+          console.log('First tooth sample:', teeth[0]);
+        }
+      } catch (teethErr) {
+        console.error('Teeth data fetch failed:', teethErr);
+      }
+
+      // get treatment and tooth data
+      const [treatmentData, teeth] = await Promise.all([
+        fetchTreatmentsByUser(uid),
+        fetchTeethData(uid).catch(err => {
+          console.warn('Failed to fetch teeth data:', err);
+          setTeethError(err.message);
+          return [];
+        })
+      ]);
+
+      if (latestUserRef.current !== uid) return; // avoid race
+
+      // setting treatemnt data
+      setTreatmentsByPeriod({
+        historical: treatmentData.historical,
+        future: treatmentData.future
+      });
+
+      if (treatmentData.eruptionLevels) {
+        setEruptionLevels(treatmentData.eruptionLevels);
+      }
+
+      setTeethData(teeth);
+      setTeethError('');
+
+      const keys = uniqueKeysFrom(
+          activeTimePeriod === 'future' ? treatmentData.future : treatmentData.historical
+      );
+      setSelectedTreatment(keys);
+    } catch (e) {
+      setError(e && e.message ? e.message : 'Load failed');
+      setTreatmentsByPeriod({ historical: [], future: [] });
+      setSelectedTreatment([]);
+      setTeethData([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTimePeriod, isLoading]);
+
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const parentParam = query.get('parent');
-
     if (parentParam === null) {
       setMode('parent');
-      setCurrentUser({parent: true});
-      return;
+    } else {
+      setMode(parentParam !== 'false' ? 'parent' : 'child');
     }
-
-    const isParent = parentParam !== 'false';
-    setMode(isParent ? 'parent' : 'child');
-    setCurrentUser({ parent: isParent });
-
   }, []);
 
-// ======= Render =======
+useEffect(() => {
+
+  console.log('teethError:', teethError);
+}, [teethData, teethLoading, teethError]);
+
+  useEffect(() => {
+    if (userId) pull(userId);
+  }, [userId, pull]);
+
+  useEffect(() => {
+    const list = activeTimePeriod === 'future' ? treatmentsByPeriod.future : treatmentsByPeriod.historical;
+    setSelectedTreatment(uniqueKeysFrom(list));
+  }, [activeTimePeriod, treatmentsByPeriod]);
+
+  const handleSelect = (key, autoSelectedTreatments = null) => {
+    console.log('handleSelect called with:', key, autoSelectedTreatments);
+    if (key === 'auto') {
+      setSelectedTreatment(autoSelectedTreatments || []);
+      return;
+    }
+    if (key === 'all') {
+      const list = activeTimePeriod === 'future' ? treatmentsByPeriod.future : treatmentsByPeriod.historical;
+      setSelectedTreatment(uniqueKeysFrom(list));
+    } else if (key === 'none') {
+      setSelectedTreatment([]);
+    } else {
+      // single treatement type swap
+      setSelectedTreatment((prev) => {
+        if (prev.includes(key)) {
+          const newSelection = prev.filter((k) => k !== key);
+          return newSelection;
+        } else {
+          const newSelection = [...prev, key];
+          return newSelection;
+        }
+      });
+    }
+  };
+
+  const handleTimePeriodSelect = (timePeriod) => {
+    if (timePeriod === 'all') return;
+    setActiveTimePeriod(timePeriod);
+  };
+
+  const availableTreatmentKeys = useMemo(() => {
+    const list = activeTimePeriod === 'future' ? treatmentsByPeriod.future : treatmentsByPeriod.historical;
+    return uniqueKeysFrom(list);
+  }, [treatmentsByPeriod, activeTimePeriod]);
 
   return (
-    <div>
-      <Router>
-        <div className="container">
-          <Routes>
-
-            {/* ========== Home Route (3D Mouth) ========== */}
-
-            <Route
-                exact path="/"
-                element={
-                  <div className='top-icon'>
-                    {!showMenu && (
-                          <div className='top-icon-text'
-                              onClick={e => {
-                                e.stopPropagation();
-                                setShowMenu(true);
-                              }}
-                          >
-                            ☰
-                          </div>
-                          )}
-                  <div className="container">
+      <div>
+        <Router>
+          <div className="container">
+            <BackButton />
+            <Routes>
+              <Route
+                  path="/"
+                  element={
+                    <div className="main-layout">
+                      <div className="main-3d" onClick={() => setShowMenu(false)} style={{ cursor: 'default' }}>
+                        {loading && <p>Loading…</p>}
+                        {error && <p style={{ color: '#B00020' }}>Failed: {error}</p>}
+                        <WholeMouth
+                            selectedTreatment={selectedTreatment}
+                            setSelectedTreatment={setSelectedTreatment}
+                            activeTimePeriod={activeTimePeriod}
+                            treatmentsByPeriod={treatmentsByPeriod}
+                            eruptionLevels={eruptionLevels}
+                            teethData={teethData}
+                            hideBackOverride={mode === 'child'}   // 关键：把 child 传给 WholeMouth
+                        />
+                            )
+                        )
+                        {!userId && !loading && <p>No user set. Use /u/:userId or ?userId=, or RN WebView postMessage.</p>}
+                      </div>
+                      <div className={`filter-menu-container ${showMenu ? 'active' : ''}`} onClick={(e) => e.stopPropagation()}>
                         <FilterMenu
                             selected={selectedTreatment}
                             onSelect={handleSelect}
                             isOpen={showMenu}
-                            isChild={mode === 'child'}
+                            activeTimePeriod={activeTimePeriod}
+                            onTimePeriodSelect={handleTimePeriodSelect}
+                            treatmentsByPeriod={treatmentsByPeriod}
+                            availableTreatmentKeys={availableTreatmentKeys}
                         />
-
-                    <div className="main-3d"
-                      onClick={() => setShowMenu(false)}
-                      style={{ cursor: showMenu ? 'pointer' : 'default' }}
-                      >
-
-                      {currentUser ? (
-                          mode === 'child' ? (
-                          <WholeMouthKid selectedTreatment={selectedTreatment} />
-                      ) : (
-                          <WholeMouth
-                              selectedTreatment={selectedTreatment}
-                              setSelectedTreatment={setSelectedTreatment}
-                          />
-                          )
-                      ) : (
-                          <p>Loading...</p>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                  </div>
-            }
-            />
+                  }
+              />
 
-            {/* ========== Tooth Detail Routes ========== */}
+              {/* LOWER LEFT */}
+              <Route path="/lower-left-wisdom" element={<LowerLeftWisdomTooth />} />
+              <Route path="/lower-left-second-molar" element={<LowerLeftSecondMolar />} />
+              <Route path="/lower-left-first-molar" element={<LowerLeftFirstMolar />} />
+              <Route path="/lower-left-second-premolar" element={<LowerLeftSecondPremolar />} />
+              <Route path="/lower-left-first-premolar" element={<LowerLeftFirstPremolar />} />
+              <Route path="/lower-left-canine" element={<LowerLeftCanine />} />
+              <Route path="/lower-left-lateral-incisor" element={<LowerLeftLateralIncisor />} />
+              <Route path="/lower-left-central-incisor" element={<LowerLeftCentralIncisor />} />
 
-            {/* LOWER LEFT */}
+              {/* LOWER RIGHT */}
+              <Route path="/lower-right-wisdom" element={<LowerRightWisdomTooth />} />
+              <Route path="/lower-right-second-molar" element={<LowerRightSecondMolar />} />
+              <Route path="/lower-right-first-molar" element={<LowerRightFirstMolar />} />
+              <Route path="/lower-right-second-premolar" element={<LowerRightSecondPremolar />} />
+              <Route path="/lower-right-first-premolar" element={<LowerRightFirstPremolar />} />
+              <Route path="/lower-right-canine" element={<LowerRightCanine />} />
+              <Route path="/lower-right-lateral-incisor" element={<LowerRightLateralIncisor />} />
+              <Route path="/lower-right-central-incisor" element={<LowerRightCentralIncisor />} />
 
-            <Route path="/lower-left-wisdom" element={<LowerLeftWisdomTooth />} />
-            <Route path="/lower-left-second-molar" element={<LowerLeftSecondMolar />} />
-            <Route path="/lower-left-first-molar" element={<LowerLeftFirstMolar />} />
-            <Route path="/lower-left-second-premolar" element={<LowerLeftSecondPremolar />} />
-            <Route path="/lower-left-first-premolar" element={<LowerLeftFirstPremolar />} />
-            <Route path="/lower-left-canine" element={<LowerLeftCanine />} />
-            <Route path="/lower-left-lateral-incisor" element={<LowerLeftLateralIncisor />} />
-            <Route path="/lower-left-central-incisor" element={<LowerLeftCentralIncisor />} />
+              {/* UPPER LEFT */}
+              <Route path="/upper-left-wisdom" element={<UpperLeftWisdomTooth />} />
+              <Route path="/upper-left-second-molar" element={<UpperLeftSecondMolar />} />
+              <Route path="/upper-left-first-molar" element={<UpperLeftFirstMolar />} />
+              <Route path="/upper-left-second-premolar" element={<UpperLeftSecondPremolar />} />
+              <Route path="/upper-left-first-premolar" element={<UpperLeftFirstPremolar />} />
+              <Route path="/upper-left-canine" element={<UpperLeftCanine />} />
+              <Route path="/upper-left-lateral-incisor" element={<UpperLeftLateralIncisor />} />
+              <Route path="/upper-left-central-incisor" element={<UpperLeftCentralIncisor />} />
 
-            {/* LOWER RIGHT */}
-
-            <Route path="/lower-right-wisdom" element={<LowerRightWisdomTooth />} />
-            <Route path="/lower-right-second-molar" element={<LowerRightSecondMolar />} />
-            <Route path="/lower-right-first-molar" element={<LowerRightFirstMolar />} />
-            <Route path="/lower-right-second-premolar" element={<LowerRightSecondPremolar />} />
-            <Route path="/lower-right-first-premolar" element={<LowerRightFirstPremolar />} />
-            <Route path="/lower-right-canine" element={<LowerRightCanine />} />
-            <Route path="/lower-right-lateral-incisor" element={<LowerRightLateralIncisor />} />
-            <Route path="/lower-right-central-incisor" element={<LowerRightCentralIncisor />} />
-
-            {/* UPPER LEFT */}
-
-            <Route path="/upper-left-wisdom" element={<UpperLeftWisdomTooth />} />
-            <Route path="/upper-left-second-molar" element={<UpperLeftSecondMolar />} />
-            <Route path="/upper-left-first-molar" element={<UpperLeftFirstMolar />} />
-            <Route path="/upper-left-second-premolar" element={<UpperLeftSecondPremolar />} />
-            <Route path="/upper-left-first-premolar" element={<UpperLeftFirstPremolar />} />
-            <Route path="/upper-left-canine" element={<UpperLeftCanine />} />
-            <Route path="/upper-left-lateral-incisor" element={<UpperLeftLateralIncisor />} />
-            <Route path="/upper-left-central-incisor" element={<UpperLeftCentralIncisor />} />
-
-            {/* UPPER RIGHT */}
-
-            <Route path="/upper-right-wisdom" element={<UpperRightWisdomTooth />} />
-            <Route path="/upper-right-second-molar" element={<UpperRightSecondMolar />} />
-            <Route path="/upper-right-first-molar" element={<UpperRightFirstMolar />} />
-            <Route path="/upper-right-second-premolar" element={<UpperRightSecondPremolar />} />
-            <Route path="/upper-right-first-premolar" element={<UpperRightFirstPremolar />} />
-            <Route path="/upper-right-canine" element={<UpperRightCanine />} />
-            <Route path="/upper-right-lateral-incisor" element={<UpperRightLateralIncisor />} />
-            <Route path="/upper-right-central-incisor" element={<UpperRightCentralIncisor />} />
-          </Routes>
-        </div>
-      </Router>
-    </div>
-  )
+              {/* UPPER RIGHT */}
+              <Route path="/upper-right-wisdom" element={<UpperRightWisdomTooth />} />
+              <Route path="/upper-right-second-molar" element={<UpperRightSecondMolar />} />
+              <Route path="/upper-right-first-molar" element={<UpperRightFirstMolar />} />
+              <Route path="/upper-right-second-premolar" element={<UpperRightSecondPremolar />} />
+              <Route path="/upper-right-first-premolar" element={<UpperRightFirstPremolar />} />
+              <Route path="/upper-right-canine" element={<UpperRightCanine />} />
+              <Route path="/upper-right-lateral-incisor" element={<UpperRightLateralIncisor />} />
+              <Route path="/upper-right-central-incisor" element={<UpperRightCentralIncisor />} />
+            </Routes>
+            <MouthWindow/>
+          </div>
+        </Router>
+      </div>
+  );
 }

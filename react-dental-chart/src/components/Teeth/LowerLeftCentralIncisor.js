@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ToothInformation from '../ToothInformation'
 
@@ -30,23 +30,27 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_1.geometry}
           material={materials['1']}
-          material-color={'lightblue'}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_2.geometry}
           material={materials['2']}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_3.geometry}
           material={materials['3']}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_4.geometry}
           material={materials['4']}
+
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_5.geometry}
           material={materials['5']}
+          material-color={'lightblue'}
         />
         <mesh
           geometry={nodes.Human_Teeth_Lower_Central_Incisor_6.geometry}
@@ -152,27 +156,27 @@ const LeftLowerCentralIncisor = ({ ...props }) => {
     </group>
   )
 }
-
+useGLTF.preload('/assets/Left_Lower_Central_Incisor.glb')
 export const LowerLeftCentralIncisor = () => {
+  const toothInfo = {
+    toothNumber: 31,
+    name: "Left Lower Central Incisor",
+    position: "Lower Jaw Left Side",
+    type: "Central Incisor",
+    rootCount: 1,
+    canalCount: 1
+  }
   return (
     <>
-    <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
-      <img 
-        src="../assets/back_arrow.png" 
-        alt="Back"
-        onClick={() => (window.location = '/')}
+    <div
         style={{
-          position: 'absolute',
-          top: '32px',
-          left: '32px',
-          width: '24px',
-          height: '24px',
-          cursor: 'pointer',
-          zIndex: 100
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
         }}
-      />
-    </div>
-      <Canvas style={{ width: '100%', height: '500%' }}>
+      >
+      <Canvas style={{ width: '100%', height: '80%' }}>
         <CameraController />
         <ambientLight intensity={0.7} />
         <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
@@ -180,8 +184,8 @@ export const LowerLeftCentralIncisor = () => {
           <LeftLowerCentralIncisor />
         </Suspense>
       </Canvas>
-      <div>Lower left central incisor</div>
-      <ToothInformation toothNumber={31} />
+      </div>
+      <ToothInformation toothInfo={toothInfo} />
     </>
   )
 }

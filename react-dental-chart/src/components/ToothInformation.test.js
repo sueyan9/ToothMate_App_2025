@@ -55,13 +55,12 @@ jest.mock('./Util/toothData.json', () => ({
 describe('ToothInformation', () => {
     it('renders closed state initially', () => {
         render(<ToothInformation toothNumber={11} />);
-        expect(screen.getByText('↑ More Information')).toBeInTheDocument();
         expect(screen.queryByText('Historical Treatments')).not.toBeInTheDocument();
     });
 
     it('toggles information panel on click', () => {
         render(<ToothInformation toothNumber={11} />);
-        const header = screen.getByText('↑ More Information');
+        const header = screen.getByText('↑ Upper Right Central Incisor');
 
         //open
         fireEvent.click(header);
@@ -69,12 +68,12 @@ describe('ToothInformation', () => {
 
         //close
         fireEvent.click(header);
-        expect(screen.getByText('↑ More Information')).toBeInTheDocument();
+        expect(screen.getByText('↑ Upper Right Central Incisor')).toBeInTheDocument();
     });
 
     it('closes when click outside', () => {
         render(<ToothInformation toothNumber={11} />);
-        const header = screen.getByText('↑ More Information');
+        const header = screen.getByText('↑ Upper Right Central Incisor');
 
         fireEvent.click(header);
         expect(screen.getByText('Historical Treatments')).toBeInTheDocument();
@@ -85,7 +84,7 @@ describe('ToothInformation', () => {
 
     it('does not close when clicking inside the panel', () => {
         render(<ToothInformation toothNumber={11} />);
-        const header = screen.getByText('↑ More Information');
+        const header = screen.getByText('↑ Upper Right Central Incisor');
 
         fireEvent.click(header);
         const panel = screen.getByText('Historical Treatments').closest('div');
@@ -96,7 +95,7 @@ describe('ToothInformation', () => {
 
     it('displays correct information', () => {
         render(<ToothInformation toothNumber={11} />);
-        fireEvent.click(screen.getByText('↑ More Information'));
+        fireEvent.click(screen.getByText('↑ Upper Right Central Incisor'));
 
         expect(screen.getByText('↓ Upper Right Central Incisor (#11)')).toBeInTheDocument();
         expect(screen.getByText('Composite filling added.')).toBeInTheDocument();
@@ -105,7 +104,7 @@ describe('ToothInformation', () => {
 
     it('handles teeth with no treatments', () => {
         render(<ToothInformation toothNumber={44} />);
-        fireEvent.click(screen.getByText('↑ More Information'));
+        fireEvent.click(screen.getByText('↑ Lower Right First Premolar'));
 
         expect(screen.getByText('↓ Lower Right First Premolar (#44)')).toBeInTheDocument();
         expect(screen.getByText('No treatments recorded for this tooth.')).toBeInTheDocument();
@@ -114,7 +113,7 @@ describe('ToothInformation', () => {
 
     it('handles teeth with only future treatments', () => {
         render(<ToothInformation toothNumber={27} />);
-        fireEvent.click(screen.getByText('↑ More Information'));
+        fireEvent.click(screen.getByText('↑ Upper Left Second Molar'));
 
         expect(screen.getByText('↓ Upper Left Second Molar (#27)')).toBeInTheDocument();
         expect(screen.getByText('No treatments recorded for this tooth.')).toBeInTheDocument();
@@ -123,7 +122,7 @@ describe('ToothInformation', () => {
 
     it('handles teeth with only treatments', () => {
         render(<ToothInformation toothNumber={34} />);
-        fireEvent.click(screen.getByText('↑ More Information'));
+        fireEvent.click(screen.getByText('↑ Lower Left First Molar'));
 
         expect(screen.getByText('↓ Lower Left First Molar (#34)')).toBeInTheDocument();
         expect(screen.queryByText('No treatments recorded for this tooth.')).not.toBeInTheDocument();
@@ -132,7 +131,7 @@ describe('ToothInformation', () => {
 
     it('shows default name if tooth not found', () => {
         render(<ToothInformation toothNumber={99} />);
-        fireEvent.click(screen.getByText('↑ More Information'));
+        fireEvent.click(screen.getByText('↑ Tooth 99'));
 
         expect(screen.getByText('↓ Tooth 99 (#99)')).toBeInTheDocument();
     });
