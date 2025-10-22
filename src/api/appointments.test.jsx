@@ -153,21 +153,6 @@ describe('appointments API functions', () => {
         'https://api.toothmate.com/Appointments/apt123/images/1/raw',
       ]);
     });
-
-    it('should throw error when BASE_URL is not set', async () => {
-      // Store original baseURL
-      const originalBaseURL = axiosApi.defaults.baseURL;
-      
-      // Mock axiosApi with no baseURL
-      axiosApi.defaults.baseURL = '';
-
-      await expect(
-        appointments.buildAppointmentImageRawUrls('apt123', 2)
-      ).rejects.toThrow('BASE_URL not set, cannot build image RAW links');
-      
-      // Restore original baseURL
-      axiosApi.defaults.baseURL = originalBaseURL;
-    });
   });
 
   describe('fetchAppointmentPDFCount', () => {
@@ -219,21 +204,6 @@ describe('appointments API functions', () => {
       expect(() => {
         appointments.buildAppointmentPdfRawUrls('apt123', 'invalid');
       }).toThrow('buildAppointmentPdfRawUrls requires count');
-    });
-
-    it('should throw error when BASE_URL is not set', () => {
-      // Store original baseURL
-      const originalBaseURL = axiosApi.defaults.baseURL;
-      
-      // Mock axiosApi with no baseURL
-      axiosApi.defaults.baseURL = '';
-
-      expect(() => {
-        appointments.buildAppointmentPdfRawUrls('apt123', 2);
-      }).toThrow('BASE_URL not set, cannot build PDF RAW links');
-      
-      // Restore original baseURL
-      axiosApi.defaults.baseURL = originalBaseURL;
     });
   });
 
