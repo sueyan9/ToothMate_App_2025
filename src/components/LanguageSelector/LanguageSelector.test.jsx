@@ -1,24 +1,29 @@
 // LanguageSelector.test.jsx
-import { fireEvent, render } from '@testing-library/react-native';
-import React from 'react';
-import { useTranslation } from '../../context/TranslationContext/useTranslation';
-// Force default to avoid ESM/CJS edge where the imported value is undefined
-const LanguageSelector = require('./LanguageSelector').default;
 
-// Make RN Modal render its children only when visible=true (no JSX in mock)
-jest.mock('react-native/Libraries/Modal/Modal', () => {
-  const React = require('react');
-  return ({ visible, children }) =>
-    visible ? React.createElement(React.Fragment, null, children) : null;
-});
+// Mock the translation hook FIRST before any imports
+jest.mock('../../context/TranslationContext/useTranslation', () => ({
+  useTranslation: jest.fn(),
+}));
+
+// Mock React Native components 
+jest.mock('react-native', () => ({
+  StyleSheet: { 
+    create: (styles) => styles,
+    flatten: (style) => style || {},
+  },
+  View: 'View',
+  Text: 'Text',
+  TouchableOpacity: 'TouchableOpacity',
+  Modal: ({ children, visible }) => (visible ? children : null),
+  Image: 'Image',
+}));
 
 // Mock the maori flag image required by the component
 jest.mock('../../../assets/maori_flag.png', () => 1, { virtual: true });
 
-// Mock the translation hook
-jest.mock('../../context/TranslationContext/useTranslation', () => ({
-  useTranslation: jest.fn(),
-}));
+import { fireEvent, render } from '@testing-library/react-native';
+import { useTranslation } from '../../context/TranslationContext/useTranslation';
+import LanguageSelector from './LanguageSelector';
 
 // Mock styles (unchanged)
 jest.mock('./styles', () => ({
