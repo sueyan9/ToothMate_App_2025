@@ -298,19 +298,33 @@ const ChildAccountScreen = ({ navigation }) => {
                 }
               } else {
                 // Switching to another child account
-                // CRITICAL FIX: Don't update parentId when switching between children
                 const existingParentId = await AsyncStorage.getItem('parentId');
+                
+                // CRITICAL: Preserve the original parent ID
+                if (!existingParentId) {
+                  // This shoulrdn't happen, but just in case
+                  const currentId = await AsyncStorage.getItem('id');
+                  await AsyncStorage.setItem('parentId', currentId);
+                }
+                // If existingParentId exists, don't touch it - it's the true parent
 
                 await AsyncStorage.setItem('id', accountId);
                 await AsyncStorage.setItem('currentAccountType', 'child');
 
-                // parentId should remain unchanged
-
-                // Clear old active profile information
-                await AsyncStorage.removeItem('activeProfileId');
-                await AsyncStorage.removeItem('activeProfileName');
-                await AsyncStorage.removeItem('activeProfileUsername');
-                await AsyncStorage.removeItem('activeProfilePictureIndex');
+                const targetChild = childDetails.find(c => (c._id || c.id) === accountId);
+                if (targetChild) {
+                  await AsyncStorage.setItem('activeProfileName', `${targetChild.firstname} ${targetChild.lastname}`);
+                  await AsyncStorage.setItem('activeProfileFirstName', targetChild.firstname);
+                  await AsyncStorage.setItem('activeProfileUsername', targetChild.email || targetChild.nhi || '');
+                  await AsyncStorage.setItem('activeProfilePictureIndex', String(targetChild.profile_picture ?? -1));
+                } else {
+                  // If we can't find the child, clear the active profile info
+                  await AsyncStorage.removeItem('activeProfileId');
+                  await AsyncStorage.removeItem('activeProfileName');
+                  await AsyncStorage.removeItem('activeProfileUsername');
+                  await AsyncStorage.removeItem('activeProfilePictureIndex');
+                  await AsyncStorage.removeItem('activeProfileFirstName');
+                }
 
                 navigation.reset({
                   index: 0,

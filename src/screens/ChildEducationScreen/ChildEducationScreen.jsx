@@ -67,8 +67,10 @@ const ChildEducationScreen = ({ navigation, route }) => {
                     // Extract first name from "First Last" format
                     const firstName = profileName.split(' ')[0];
                     setChildName(firstName);
+                    await AsyncStorage.setItem('activeProfileFirstName', firstName);
                 } else if (details?.firstname) {
                     setChildName(details.firstname);
+                    await AsyncStorage.setItem('activeProfileFirstName', details.firstname);
                 }
             } catch (error) {
                 console.error('Error loading child name:', error);

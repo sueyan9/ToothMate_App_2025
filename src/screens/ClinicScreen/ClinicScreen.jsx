@@ -80,11 +80,8 @@ const ClinicScreen = ({navigation, route}) => {
     const [appointmentView, setAppointmentView] = useState('day');
 
     const DENTIST_NAMES = [
-        'Dr. Toothmate',
-        'Dr. Williams',
-        'Dr. Chen',
-        'Dr. Patel',
-        'Dr. Singh',
+        'Dr. Sarah Michaels',
+        'Dr. Terry Crews',
     ];
     const PURPOSES = ['Check-up', 'Consultation'];
 
@@ -152,8 +149,12 @@ const ClinicScreen = ({navigation, route}) => {
             console.log('Opening modal from route params');
             setShowAddModal(true);
             if (route.params.date) {
+                const dateObj = typeof route.params.date === 'string' 
+                ? new Date(route.params.date) 
+                : route.params.d
+
             setNewAppt({
-                startDate: route.params.date,
+                startDate: dateObj,
                 startTime: roundTo30(new Date()),
                 endTime: addMinutes(roundTo30(new Date()), SLOT_MINUTES),
                 purpose: 'Check-up',
@@ -1414,6 +1415,8 @@ const ClinicScreen = ({navigation, route}) => {
                 onPress={() => {
                     const dateString = selectedDate || dayjs().tz(NZ_TZ).format('YYYY-MM-DD');
 
+                    const dateObj = dayjs.tz(dateString, NZ_TZ).toDate();
+
                     // today → next valid slot from now; other days → 09:00
                     const isToday = dayjs.tz(dateString, NZ_TZ).isSame(nzNow(), 'day');
                     const start = isToday
@@ -1423,7 +1426,7 @@ const ClinicScreen = ({navigation, route}) => {
                     const startRounded = clampToBusinessStart(roundTo30(start));
 
                     setNewAppt({
-                        startDate: dateString,
+                        startDate: dateObj,
                         startTime: startRounded,
                         endTime: addMinutes(startRounded, SLOT_MINUTES),
                         purpose: '',

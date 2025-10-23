@@ -58,8 +58,7 @@ const tryLocalSignin = dispatch => async () => {
         dispatch({ type: 'signin', payload: { token, id } });
         navigate('mainFlow', { screen: 'AccountFlow' });
       } else {
-        dispatch({ type: 'signin', payload: { token, parentId } });
-        navigate('childFlow', { screen: 'ChildEducation' });
+        navigate('Welcome');
       }
     } else {
       navigate('Welcome');
