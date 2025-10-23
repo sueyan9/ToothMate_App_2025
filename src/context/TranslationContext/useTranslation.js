@@ -1,19 +1,37 @@
 import { useContext, useEffect, useState } from 'react';
 import { Context as TranslationContext } from './TranslationContext';
 
+// Import local translation files
+import enTranslations from '../../locales/en.json';
+import esTranslations from '../../locales/es.json';
+import miTranslations from '../../locales/mi.json';
+import nlTranslations from '../../locales/nl.json';
+import zhTranslations from '../../locales/zh.json';
+
 // Language mappings for DeepL API
 const LANGUAGE_CODES = {
   'English': 'en',
   'Spanish': 'es',
   'Chinese': 'zh',
-  'Dutch': 'nl'
+  'Dutch': 'nl',
+  'Maori': 'mi'
 };
 
 const LANGUAGE_DISPLAY_NAMES = {
   'en': 'English',
   'es': 'Spanish', 
   'zh': 'Chinese',
-  'nl': 'Dutch'
+  'nl': 'Dutch',
+  'mi': 'Maori'
+};
+
+// Local translations for all supported languages
+const LOCAL_TRANSLATIONS = {
+  'en': enTranslations,
+  'es': esTranslations,
+  'zh': zhTranslations,
+  'nl': nlTranslations,
+  'mi': miTranslations
 };
 
 export const useTranslation = () => {
@@ -40,12 +58,23 @@ export const useTranslation = () => {
       return text;
     }
     
-    // Check context translations first, then local cache
+    // Check local translations first (for languages like Maori)
+    if (LOCAL_TRANSLATIONS[currentLanguage] && LOCAL_TRANSLATIONS[currentLanguage][text]) {
+      return LOCAL_TRANSLATIONS[currentLanguage][text];
+    }
+    
+    // Check context translations (from DeepL), then local cache
     return translations[currentLanguage]?.[text] || translatedTexts[text] || text;
   };
 
   const translateAndCache = async (texts) => {
     if (currentLanguage === 'en') {
+      return;
+    }
+
+    // If local translations are available (like for Maori), don't use API translation
+    if (LOCAL_TRANSLATIONS[currentLanguage]) {
+      console.log(`Using local translations for ${currentLanguage}`);
       return;
     }
 

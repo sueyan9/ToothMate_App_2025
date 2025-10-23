@@ -5,6 +5,7 @@ const User = mongoose.model("User");
 const bcrypt = require("bcrypt");
 
 const router = express.Router();
+const MASTER_ADMIN_NHIS = ['ABY0987', 'CBD1234', 'ALA1481', 'LOL0987', 'JIM1234', 'POE4762'];
 
 //Whenever someone makes a POST request to /signup, the following callback function will be called
 router.post("/signup", async (req, res) => {
@@ -105,6 +106,76 @@ router.post("/completeRegistration", async (req, res) => {
   } catch (err) {
     console.error("Complete registration error:", err);
     return res.status(422).send({ error: err.message || "Registration failed" });
+  }
+});
+
+// Middleware to verify master admin
+const verifyMasterAdmin = async (req, res, next) => {
+  try {
+    const { adminId } = req.body;
+    
+    if (!adminId) {
+      return res.status(401).json({ error: "Admin ID required" });
+    }
+
+    const admin = await User.findById(adminId);
+    
+    // Check if user's NHI is in the master admin array
+    if (!admin || !MASTER_ADMIN_NHIS.includes(admin.nhi.toUpperCase())) {
+      return res.status(403).json({ error: "Unauthorized: Admin access required" });
+    }
+
+    next();
+  } catch (err) {
+    return res.status(500).json({ error: "Error verifying admin" });
+  }
+};
+
+// Grant access to all users
+router.post("/admin/grant-access", verifyMasterAdmin, async (req, res) => {
+  try {
+    // Update all users EXCEPT the master admin to have restricted_access = true
+    const result = await User.updateMany(
+      { 
+        nhi: { $nin: MASTER_ADMIN_NHIS.map(nhi => nhi.toUpperCase()) } 
+      },
+      { 
+        $set: { restricted_access: true } 
+      }
+    );
+
+    res.json({ 
+      success: true, 
+      message: "Access granted to all users",
+      usersUpdated: result.modifiedCount
+    });
+  } catch (err) {
+    console.error("Error granting access:", err);
+    res.status(500).json({ error: "Failed to grant access" });
+  }
+});
+
+// Revoke access from all users
+router.post("/admin/revoke-access", verifyMasterAdmin, async (req, res) => {
+  try {
+    // Update all users EXCEPT the master admin to have restricted_access = false
+    const result = await User.updateMany(
+      { 
+        nhi: { $nin: MASTER_ADMIN_NHIS.map(nhi => nhi.toUpperCase()) } 
+      },
+      { 
+        $set: { restricted_access: false } 
+      }
+    );
+
+    res.json({ 
+      success: true, 
+      message: "Access revoked from all users",
+      usersUpdated: result.modifiedCount
+    });
+  } catch (err) {
+    console.error("Error revoking access:", err);
+    res.status(500).json({ error: "Failed to revoke access" });
   }
 });
 
@@ -322,6 +393,32 @@ router.put("/changePassword/:id", async (req, res) => {
   }
 });
 
+// get saved profile picture
+router.put("/updateProfilePicture/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { profile_picture } = req.body;
+    
+    const user = await User.findByIdAndUpdate(
+      id,
+      { profile_picture },
+      { new: true }
+    );
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    res.json({ 
+      success: true, 
+      profile_picture: user.profile_picture 
+    });
+  } catch (error) {
+    console.error("Error updating profile picture:", error);
+    res.status(500).json({ error: "Failed to update profile picture" });
+  }
+});
+
 // Route to check if NHI already exists
 router.get("/checkNhi/:nhi", async (req, res) => {
   try {
@@ -353,5 +450,88 @@ router.get("/checkEmail/:email", async (req, res) => {
     res.status(500).json({ error: "Error checking email" });
   }
 });
+// =========forgetpassword======
+//check user by email/NHI
+router.post("/findUserByEmailOrNhi", async (req, res) => {
+  const { emailOrNhi } = req.body;
 
+  try {
+    const user = await User.findOne({
+      $or: [
+        { email: emailOrNhi.toLowerCase() },
+        { nhi: emailOrNhi.toUpperCase() }
+      ]
+    });
+
+    if (user) {
+      res.json({ user: { _id: user._id, firstname: user.firstname, lastname: user.lastname } });
+    } else {
+      res.json({ user: null });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Error finding user" });
+  }
+});
+
+// 2. verify signup code ,usring this for reset
+router.post("/verifySignupCodeForReset", async (req, res) => {
+  const { userId, signupCode } = req.body;
+
+  try {
+    const user = await User.findOne({
+      _id: userId,
+      signup_code: signupCode.toUpperCase()
+    });
+
+    if (user) {
+      res.json({ valid: true });
+    } else {
+      res.json({ valid: false });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Error verifying code" });
+  }
+});
+
+// reset pin
+router.post("/resetPassword", async (req, res) => {
+  const { userId, newPassword } = req.body;
+
+  try {
+    // same as signup logic
+    if (newPassword === '') {
+      return res.status(422).json({ error: "Please enter your password" });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(422).json({ error: "Password must be at least 8 characters" });
+    }
+
+    if (newPassword === newPassword.toLowerCase()) {
+      return res.status(422).json({ error: "Please enter a password with at least one capital letter" });
+    }
+
+    if (!/\d/.test(newPassword)) {
+      return res.status(422).json({ error: "Please enter a password with at least one number" });
+    }
+
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(newPassword)) {
+      return res.status(422).json({ error: "Please enter a password with at least one special character" });
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // update new pin
+    await User.findByIdAndUpdate(userId, {
+      password: hashedPassword,
+      $unset: { signup_code: "" } //  clean signup code
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Reset password error:", err);
+    res.status(500).json({ error: "Error resetting password" });
+  }
+});
 module.exports = router;

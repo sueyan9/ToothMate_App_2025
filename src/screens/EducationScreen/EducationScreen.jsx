@@ -22,6 +22,7 @@ const EducationScreen = ({ navigation }) => {
     // Define texts to translate
     const textsToTranslate = [
         'All',
+        'ToothMate Library',
         'Dentist Recommended Readings',
         'Whats Good for My Teeth',
         'Whats Bad for My Teeth',
@@ -33,7 +34,7 @@ const EducationScreen = ({ navigation }) => {
 
     useEffect(() => {
         // Force re-render when language changes
-        setRefreshKey(prev => prev + 1);
+      //  setRefreshKey(prev => prev + 1);
         
         // Translate texts when language changes
         if (currentLanguage !== 'en') {

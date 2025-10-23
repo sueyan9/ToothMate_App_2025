@@ -1,7 +1,33 @@
 // UserAccountScreen.js
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // ADDED: for parental code + active profile tracking
-import { useContext, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  Alert,
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import {
+  fetchAssetsForAppointment
+} from '../../api/appointments';
+import axiosApi from '../../api/axios';
+import ResetButton from '../../components/ResetButton/index';
+import { Context as AccessContext } from '../../context/AccessContext/AccessContext';
+import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
+import { Context as ClinicContext } from '../../context/ClinicContext/ClinicContext';
+import { useTranslation } from '../../context/TranslationContext/useTranslation';
+import { Context as UserContext } from '../../context/UserContext/UserContext';
+import styles from './styles';
 const tryInferName = (url) => {
     try {
         const u = new URL(url);
@@ -33,29 +59,6 @@ const formatDocWhen = (doc) => {
         hour: '2-digit', minute: '2-digit',
     });
 };
-//import { useFocusEffect } from '@react-navigation/native';
-import {
-  Alert,
-  FlatList,
-  Image,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import {
-  fetchAssetsForAppointment,
-} from '../../api/appointments';
-import axiosApi from '../../api/axios';
-import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
-import { useTranslation } from '../../context/TranslationContext/useTranslation';
-import { Context as UserContext } from '../../context/UserContext/UserContext';
-import styles from './styles';
 // Import profile pictures
 const profilePictures = [
   require('../../../assets/profile pictures/p0.png'),
@@ -72,7 +75,7 @@ const profilePictures = [
 const Collapsible = ({
     title,
     icon = 'chevron-forward',
-    count = 0,
+    count,
     defaultOpen = false,
     children,
   }) => {
@@ -88,9 +91,11 @@ const Collapsible = ({
           <Ionicons name={icon} size={24} color="#516287" />
           <Text style={styles.cardTitle}>{title}</Text>
           <View style={{ flex: 1 }} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{count}</Text>
-          </View>
+          {count !== undefined && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{count}</Text>
+            </View>
+          )}
           <Ionicons
               name={open ? 'chevron-up' : 'chevron-down'}
               size={22}
@@ -127,6 +132,9 @@ const UserAccountScreen = ({ navigation }) => {
     'Emergency Contact Name',
     'Emergency Contact Phone',
     'Medical Information',
+    'Insurance Information',
+    'Insurance Provider',
+    'Insurance Number',
     'NHI Number',
     'Dental Clinic',
     'Clinic Address',
@@ -175,6 +183,7 @@ const UserAccountScreen = ({ navigation }) => {
     'Clinic Code',
     'Enter clinic code',
     'Valid clinic code',
+    'view all clinics',
     'Confirm Clinic Change',
     'Are you sure you want to change your clinic to:',
     'Confirm Change',
@@ -201,6 +210,7 @@ const UserAccountScreen = ({ navigation }) => {
     'Please enter a clinic code.',
     'Please enter a valid clinic code.',
     'Invalid clinic code',
+    'No clinics found matching',
     'Please enter a valid email address',
     'Email already exists',
     'Error validating email',
@@ -215,8 +225,9 @@ const UserAccountScreen = ({ navigation }) => {
   ];
 
 const {
-    state: { details, clinic, canDisconnect, selectedProfilePicture, currentAccountType },
+    state: { details, childDetails, clinic, canDisconnect, selectedProfilePicture, currentAccountType },
     getUser,
+    getChild,
     getDentalClinic,
     checkCanDisconnect,
     setProfilePicture,
@@ -226,8 +237,32 @@ const {
     setCurrentAccount, // ADDED
   } = useContext(UserContext);
 
-  const { signout } = useContext(AuthContext);
+  const accessContext = useContext(AccessContext);
+  const { 
+    state: accessState = { isMasterAdmin: false, isGrantingAccess: false, hasAccess: false },
+    grantAccessToAll = () => {},
+    revokeAccessFromAll = () => {},
+    checkAccess = () => {}
+  } = accessContext || {};
 
+  const { isMasterAdmin, isGrantingAccess, hasAccess } = accessState;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      checkAccess();
+    }, [])
+  );
+
+  const handleGrantAccess = async () => {
+    await grantAccessToAll(isMasterAdmin);
+  };
+
+  const handleRevokeAccess = async () => {
+    await revokeAccessFromAll(isMasterAdmin);
+  };
+
+  const { signout } = useContext(AuthContext);
+  const { state: clinicState, getAllClinics } = useContext(ClinicContext);
   const [isLoading, setIsLoading] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false); // For profile picture selection
   const [showProfileSwitchModal, setShowProfileSwitchModal] = useState(false); // For profile switching
@@ -243,6 +278,7 @@ const {
   const [clinicInfo, setClinicInfo] = useState(null);
   const [clinicCode, setClinicCode] = useState('');
   const [privacyConsent, setPrivacyConsent] = useState(null);
+  const [shouldReopenClinicModal, setShouldReopenClinicModal] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     address: '',
@@ -415,31 +451,6 @@ const {
   const [parentalCode, setParentalCode] = useState('');
   const [confirmParentalCode, setConfirmParentalCode] = useState('');
 
-  // Instagram-style profiles for switching
-  const [profiles] = useState([
-    {
-      id: 'current',
-      name: `${details.firstname && details.lastname ? `${details.firstname} ${details.lastname}` : 'Your Account'}`,
-      username: details.email || 'user@email.com',
-      profilePicture: selectedProfilePicture,
-      isCurrentUser: true
-    },
-    {
-      id: 'sarah',
-      name: 'Sarah M',
-      username: 'sarah.m@email.com',
-      profilePicture: 2,
-      isCurrentUser: false
-    },
-    {
-      id: 'adam',
-      name: 'Adam M', 
-      username: 'adam.m@email.com',
-      profilePicture: 5,
-      isCurrentUser: false
-    }
-  ]);
-
   useEffect(() => {
     // Force re-render when language changes
     setRefreshKey(prev => prev + 1);
@@ -465,6 +476,7 @@ const {
             setIsLoading(true);
             try {
                 await getUser();
+                await getChild();
                 await getDentalClinic();
                 await checkCanDisconnect();
             } catch (error) {
@@ -513,38 +525,33 @@ const {
     checkEmail();
   }, [formData.email, details.email]);
 
-  // Live clinic code validation effect
+
+
+  // Load clinics when clinic modal opens
   useEffect(() => {
-    const checkClinicCode = async () => {
-      if (clinicCode.trim() === '') {
-        setClinicInfo(null);
-        setClinicCodeStatus(null);
-        return;
+    if (showClinicModal) {
+      getAllClinics();
+    }
+  }, [showClinicModal]);
+
+  // Reopen clinic modal when returning from LocationFinder
+  useFocusEffect(
+    React.useCallback(() => {
+      if (shouldReopenClinicModal) {
+        setShowClinicModal(true);
+        setShouldReopenClinicModal(false);
       }
+    }, [shouldReopenClinicModal])
+  );
 
-        try {
-            const response = await axiosApi.get(`/checkClinicCode/${clinicCode.trim()}`);
-            if (response.data.valid) {
-                setClinicInfo(response.data);
-
-                // Check if the entered clinic code is the same as the current clinic
-                if (clinic && clinic.code === clinicCode.trim()) {
-                    setClinicCodeStatus('same-clinic');
-                } else {
-                    setClinicCodeStatus('valid');
-                }
-            } else {
-                setClinicInfo(null);
-                setClinicCodeStatus('invalid');
-            }
-        } catch (err) {
-            setClinicInfo(null);
-            setClinicCodeStatus('invalid');
-        }
-    };
-
-      checkClinicCode();
-  }, [clinicCode, clinic]);
+  // Filter clinics based on clinic code input (same logic as LocationFinder)
+  const searchedAndFilteredClinics = (clinicState || []).filter(item => {
+    if (clinicCode === '') return false; // Don't show anything when empty
+    
+    const searchLower = clinicCode.toLowerCase();
+    // Only search by clinic code (not name/address like LocationFinder)
+    return (item.code && item.code.toLowerCase().includes(searchLower));
+  });
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Not specified';
@@ -587,27 +594,7 @@ const {
     }
   };
 
-  // Helper function to get clinic code input style based on validation status
-    const getClinicCodeInputStyle = () => {
-        if (clinicCodeStatus === 'valid') {
-            return [styles.textInput, styles.validInput];
-        } else if (clinicCodeStatus === 'invalid') {
-            return [styles.textInput, styles.invalidInput];
-        } else if (clinicCodeStatus === 'same-clinic') {
-            return [styles.textInput, styles.warningInput];
-        }
-        return styles.textInput;
-    };
 
-  // Helper function to get clinic code error message
-    const getClinicCodeErrorMessage = () => {
-        if (clinicCodeStatus === 'invalid') {
-            return t('Invalid clinic code');
-        } else if (clinicCodeStatus === 'same-clinic') {
-            return t('You are already registered with this clinic');
-        }
-        return null;
-    };
   // Helper functions for password validation
   const getPasswordValidationErrors = (password) => {
     const errors = [];
@@ -734,6 +721,17 @@ const {
     setShowClinicModal(true);
   };
 
+  const handleSelectClinic = (selectedClinic) => {
+    setClinicCode(selectedClinic.code);
+    setClinicInfo(selectedClinic);
+    // Determine clinic status
+    if (clinic && clinic.code === selectedClinic.code) {
+      setClinicCodeStatus('same-clinic');
+    } else {
+      setClinicCodeStatus('valid');
+    }
+  };
+
   const handleChangePassword = () => {
     setPasswordData({
       currentPassword: '',
@@ -741,6 +739,10 @@ const {
       confirmPassword: ''
     });
     setShowPasswordModal(true);
+  };
+
+  const handleNotificationSettings = () => {
+    navigation.navigate('NotificationSettings');
   };
 
   const handlePasswordSubmit = () => {
@@ -841,15 +843,44 @@ const {
       Alert.alert(t('Error'), t('Please enter a clinic code.'));
       return;
     }
-
-    if (clinicCodeStatus !== 'valid') {
+    
+    // Find the clinic in the loaded clinics
+    const selectedClinic = clinicState?.find(c => 
+      c.code && c.code.toLowerCase() === clinicCode.trim().toLowerCase()
+    );
+    
+    if (!selectedClinic) {
       Alert.alert(t('Error'), t('Please enter a valid clinic code.'));
       return;
     }
-
+    
+    // Check if it's the same clinic as current
+    if (clinic && clinic.code === selectedClinic.code) {
+      Alert.alert(t('Error'), t('You are already registered with this clinic'));
+      return;
+    }
+    
+    // Set clinic info and proceed
+    setClinicInfo(selectedClinic);
+    setClinicCodeStatus('valid');
     setShowClinicModal(false);
     setShowClinicConfirmModal(true);
-    setShowClinicConfirmModal(true);
+  };
+
+  const handleClinicCodeChange = (text) => {
+    setClinicCode(text);
+    // Clear validation states when user types new text
+    if (clinicCodeStatus === 'valid' || clinicCodeStatus === 'same-clinic') {
+      setClinicCodeStatus(null);
+      setClinicInfo(null);
+    }
+  };
+
+  const handleViewAllClinics = () => {
+    // Close the current modal, set flag to reopen it when returning, and navigate to LocationFinder
+    setShowClinicModal(false);
+    setShouldReopenClinicModal(true);
+    navigation.navigate('LocationFinder');
   };
 
   const handleClinicCancel = () => {
@@ -857,18 +888,30 @@ const {
     setClinicCode('');
     setClinicInfo(null);
     setClinicCodeStatus(null);
+    setPrivacyConsent(null);
+    setShouldReopenClinicModal(false);
   };
 
   const handleClinicConfirmSave = async () => {
     setShowClinicConfirmModal(false);
     try {
-      const result = await updateClinic(clinicInfo.id);
+      // Use _id if id is not available (MongoDB typically uses _id)
+      const clinicId = clinicInfo.id || clinicInfo._id;
+      console.log('Updating clinic with ID:', clinicId, 'Full clinic info:', clinicInfo, 'Privacy consent:', privacyConsent);
+      const result = await updateClinic(clinicId, privacyConsent);
+      console.log('Update clinic result:', result);
+      
       if (result.success) {
         setShowClinicSuccessModal(true);
         // Reset clinic data
         setClinicCode('');
         setClinicInfo(null);
         setClinicCodeStatus(null);
+        setPrivacyConsent(null);
+        
+        // Refresh user data to show updated clinic
+        await getUser();
+        await getDentalClinic();
       } else {
         Alert.alert(
           'Error',
@@ -877,6 +920,7 @@ const {
         );
       }
     } catch (error) {
+      console.error('Error updating clinic:', error);
       Alert.alert(
         'Error',
         'An unexpected error occurred. Please try again.',
@@ -891,6 +935,7 @@ const {
     setClinicCode('');
     setClinicInfo(null);
     setClinicCodeStatus(null);
+    setPrivacyConsent(null);
   };
 
   const handleClinicSuccessClose = () => {
@@ -906,23 +951,28 @@ const {
   };
 
   const handleProfilePictureSelect = (pictureIndex) => {
-    setProfilePicture(pictureIndex);
+    setProfilePicture(pictureIndex, details._id);
     setShowProfileModal(false);
     console.log(`Profile picture ${pictureIndex + 1} selected`);
   };
 
   // Instagram-style profile switching handler
-  const handleProfileSwitch = (profileId) => {
-    if (profileId === 'current') {
+  const handleProfileSwitch = (childId) => {
+    if (childId === 'current') {
       setShowProfileSwitchModal(false);
       return;
     }
     
-    const selectedProfile = profiles.find(p => p.id === profileId);
+    const selectedChild = childDetails.find(c => (c._id || c.id) === childId);
+
+    if (!selectedChild) {
+      Alert.alert('Error', 'Child account not found');
+      return;
+    }
     
     Alert.alert(
       'Switch Profile',
-      `Switch to ${selectedProfile?.name}?`,
+      `Switch to ${selectedChild.firstname} ${selectedChild.lastname}'s account?`,
       [
         {
           text: 'Cancel',
@@ -934,40 +984,41 @@ const {
             setShowProfileSwitchModal(false);
             
             // Update the current account in context
-            await setCurrentAccount(profileId, selectedProfile);
+            await setCurrentAccount(childId, selectedChild);
 
-            // ADDED: store active child profile meta so ChildAccount can show correct name & picture
+            // Store active child profile meta
             try {
-              await AsyncStorage.setItem('activeProfileId', profileId);
-              await AsyncStorage.setItem('activeProfileName', selectedProfile?.name || '');
-              await AsyncStorage.setItem('activeProfileUsername', selectedProfile?.username || '');
-              await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedProfile?.profilePicture ?? -1));
-              await AsyncStorage.setItem('currentAccountType', 'child');
-              // Ensure parentId is available for returning
-              const currentId = await AsyncStorage.getItem('id');
-              if (currentId) {
-                await AsyncStorage.setItem('parentId', currentId);
-              }
+                const currentId = await AsyncStorage.getItem('id');
+
+                // CRITICAL FIX: Only set parentId if it doesn't already exist
+                const existingParentId = await AsyncStorage.getItem('parentId');
+                if (!existingParentId && currentId) {
+                    // This is a parent switching to child for the first time
+                    await AsyncStorage.setItem('parentId', currentId);
+                }
+                // If parentId already exists, we're switching between children
+                // so DON'T overwrite it
+
+                await AsyncStorage.setItem('id', childId);
+                await AsyncStorage.setItem('activeProfileName', `${selectedChild.firstname} ${selectedChild.lastname}`);
+                await AsyncStorage.setItem('activeProfileFirstName', `${selectedChild.firstname}`);
+                await AsyncStorage.setItem('activeProfileUsername', selectedChild.email || selectedChild.nhi || '');
+                await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedChild.profile_picture ?? -1));
+                await AsyncStorage.setItem('currentAccountType', 'child');
+              
             } catch (e) {
               console.error('Error saving active child profile to storage:', e);
             }
             
-            // Navigate to child flow for Sarah and Adam
-            if (profileId === 'sarah' || profileId === 'adam') {
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'childFlow' }],
-              });
-            }
-            // Current user is already in mainFlow, so no navigation needed
+            // Navigate to child flow
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'childFlow' }],
+            });
           }
         }
       ]
     );
-  };
-
-  const handleDisconnectFromParent = () => {
-    navigation.navigate('DisconnectChild');
   };
 
   const handleSignOut = () => {
@@ -1085,11 +1136,11 @@ const {
         {/* Profile Information Cards */}
         <View style={styles.infoSection}>
           {/* Personal Information Card */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <Ionicons name="person-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>{t('Personal Information')}</Text>
-            </View>
+          <Collapsible
+            title={t('Personal Information')}
+            icon="person-outline"
+            defaultOpen={false}
+          >
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('First Name')}</Text>
               <Text style={styles.infoValue}>
@@ -1123,22 +1174,22 @@ const {
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Emergency Contact Name')}</Text>
               <Text style={styles.infoValue}>
-                {details.emergencyContactName || t('None')}
+                {details.emergency_name || t('None')}
               </Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('Emergency Contact Phone')}</Text>
               <Text style={styles.infoValue}>
-                {details.emergencyContactPhone || t('None')}
+                {details.emergency_phone || t('None')}
               </Text>
             </View>
-          </View>
+          </Collapsible>
           {/* Medical Information Card */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <Ionicons name="medical-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>{t('Medical Information')}</Text>
-            </View>
+          <Collapsible
+            title={t('Medical Information')}
+            icon="medical-outline"
+            defaultOpen={false}
+          >
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('NHI Number')}</Text>
               <Text style={styles.infoValue}>
@@ -1167,14 +1218,44 @@ const {
                 </Text>
               </View>
             )}
-          </View>
+            {details.allergy && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>{t('Known Allergies')}</Text>
+                <Text style={styles.infoValue}>
+                  {details.allergy || 'None'}
+                </Text>
+              </View>
+            )}
+          </Collapsible>
 
-          {/* Account Actions Card */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <Ionicons name="settings-outline" size={24} color="#516287" />
-              <Text style={styles.cardTitle}>{t('Account Settings')}</Text>
+          {/* Insurance Information Card */}
+          <Collapsible
+            title={t('Insurance Information')}
+            icon="heart-half-outline"
+            defaultOpen={false}
+          >
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('Insurance Provider')}</Text>
+              <Text style={styles.infoValue}>
+                {details.insurance || t('Not specified')}
+              </Text>
             </View>
+            
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('Insurance Number')}</Text>
+              <Text style={styles.infoValue}>
+                {details.insurance_number || t('Not specified')}
+              </Text>
+            </View>
+          </Collapsible>
+
+
+          {/* Account Settings Card */}
+          <Collapsible
+            title={t('Account Settings')}
+            icon="settings-outline"
+            defaultOpen={false}
+          >
             <TouchableOpacity
               style={styles.actionButton}
               onPress={handleUpdateDetails}
@@ -1212,19 +1293,34 @@ const {
               <Ionicons name="chevron-forward" size={20} color="#516287" />
             </TouchableOpacity>
 
-            {canDisconnect && (
-              <TouchableOpacity
-                style={[styles.actionButton, styles.disconnectButton]}
-                onPress={handleDisconnectFromParent}
+            <TouchableOpacity 
+              style={styles.actionButton}
+              onPress={handleNotificationSettings}
+            >
+              <Ionicons name="notifications-outline" size={20} color="#516287" />
+              <Text style={styles.actionButtonText}>{t('Notification Settings')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#516287" />
+            </TouchableOpacity>
+
+            {isMasterAdmin && (
+              <View>
+                <TouchableOpacity 
+                style={styles.actionButton}
+                onPress={handleRevokeAccess}
               >
-                <Ionicons name="unlink-outline" size={20} color="#DC3545" />
-                <Text style={[styles.actionButtonText, styles.disconnectText]}>
-                  {t('Disconnect From Parent')}
-                </Text>
-                <Ionicons name="chevron-forward" size={20} color="#DC3545" />
+                <Ionicons name="person" size={20} color="#516287" />
+                <Text style={styles.actionButtonText}>End Access</Text>
               </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.actionButton}
+                onPress={handleGrantAccess}
+              >
+                <Ionicons name="person" size={20} color="#516287" />
+                <Text style={styles.actionButtonText}>Start Access</Text>
+              </TouchableOpacity>
+              </View>
             )}
-          </View>
+          </Collapsible>
         </View>
           {/* X-ray Images */}
           <Collapsible
@@ -1411,7 +1507,12 @@ const {
             <Ionicons name="log-out-outline" size={24} color="#DC3545" />
             <Text style={styles.signOutText}>{t('Sign Out')}</Text>
           </TouchableOpacity>
+
+          {isMasterAdmin && (
+          <ResetButton/>
+          )}
         </View>
+
       </ScrollView>
 
       {/* Profile Picture Selection Modal */}
@@ -1514,26 +1615,42 @@ const {
 
             {/* Other Accounts Section */}
             <View style={styles.otherAccountsSection}>
-              {profiles.filter(profile => !profile.isCurrentUser).map((profile) => (
-                <TouchableOpacity
-                  key={profile.id}
+              {childDetails && childDetails.length > 0 ? (
+                childDetails.map((child) => (
+                  <TouchableOpacity
+                  key={child._id || child.id}
                   style={styles.accountRow}
-                  onPress={() => handleProfileSwitch(profile.id)}
+                  onPress={() => handleProfileSwitch(child._id || child.id)}
                 >
                   <View style={styles.accountInfo}>
                     <View style={styles.accountAvatar}>
-                      <Image 
-                        source={profilePictures[profile.profilePicture]} 
-                        style={styles.accountImage} 
-                      />
-                    </View>
-                    <View style={styles.accountText}>
-                      <Text style={styles.accountName}>{profile.name}</Text>
-                      <Text style={styles.accountUsername}>{profile.username}</Text>
-                    </View>
+                      {child.profile_picture !== null && child.profile_picture !== undefined ? (
+                        <Image 
+                          source={profilePictures[child.profile_picture]} 
+                          style={styles.accountImage} 
+                        />
+                      ) : (
+                      <Text style={styles.accountInitials}>
+                        {getInitials(child.firstname, child.lastname)}
+                      </Text> )}
                   </View>
-                </TouchableOpacity>
-              ))}
+                  <View style={styles.accountText}>
+                    <Text style={styles.accountName}>
+                      {child.firstname && child.lastname 
+                        ? `${child.firstname} ${child.lastname}` 
+                        : 'Child Account'}
+                    </Text>
+                    <Text style={styles.accountUsername}>
+                      {child.email || child.nhi || 'Child'}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+                ))) : (
+                  <View style={styles.noChildrenContainer}>
+                    <Text style={styles.noChildrenText}>No child accounts linked</Text>
+                  </View>
+                )}
             </View>
 
             {/* Add Account Section */}
@@ -1809,18 +1926,59 @@ const {
             </View>
             <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>{t('Clinic Code')}</Text>
+                <View style={styles.labelWithLink}>
+                  <Text style={styles.inputLabel}>{t('Clinic Code')}</Text>
+                  <TouchableOpacity onPress={handleViewAllClinics}>
+                    <Text style={styles.linkText}>({t('view all clinics')})</Text>
+                  </TouchableOpacity>
+                </View>
                 <TextInput
-                  style={getClinicCodeInputStyle()}
+                  style={styles.textInput}
                   value={clinicCode}
-                  onChangeText={setClinicCode}
+                  onChangeText={handleClinicCodeChange}
                   placeholder={t('Enter clinic code')}
                   autoCapitalize="characters"
                 />
-                {getClinicCodeErrorMessage() && (
-                  <Text style={styles.errorText}>{getClinicCodeErrorMessage()}</Text>
+                
+                {/* Filtered Clinics List */}
+                {clinicCode.trim().length > 0 && (
+                  <View style={styles.clinicsListContainer}>
+                    <Text style={{padding: 8, fontSize: 12, color: '#666'}}>
+                      Found {searchedAndFilteredClinics.length} clinics
+                    </Text>
+                    {searchedAndFilteredClinics.length > 0 ? (
+                      <ScrollView 
+                        style={styles.clinicsList} 
+                        nestedScrollEnabled={true}
+                        showsVerticalScrollIndicator={false}
+                      >
+                        {searchedAndFilteredClinics.map((clinic) => (
+                          <TouchableOpacity
+                            key={clinic._id || clinic.id}
+                            style={styles.clinicListItem}
+                            onPress={() => handleSelectClinic(clinic)}
+                          >
+                            <View style={styles.clinicListContent}>
+                              <Text style={styles.clinicListCode}>{clinic.code}</Text>
+                              <Text style={styles.clinicListName}>{clinic.name}</Text>
+                              {clinic.address && (
+                                <Text style={styles.clinicListAddress}>{clinic.address}</Text>
+                              )}
+                            </View>
+                          </TouchableOpacity>
+                        ))}
+                      </ScrollView>
+                    ) : (
+                      <View style={styles.noResultsContainer}>
+                        <Text style={styles.noResultsText}>
+                          {t('No clinics found matching')} "{clinicCode}"
+                        </Text>
+                      </View>
+                    )}
+                  </View>
                 )}
-                {clinicCodeStatus === 'valid' && clinicInfo && (
+                
+                {clinicCodeStatus === 'valid' && clinicInfo && clinicCode.trim().length > 0 && (
                   <View style={styles.clinicInfoContainer}>
                     <Text style={styles.successText}>✓ {t('Valid clinic code')}</Text>
                     <Text style={styles.clinicInfoTitle}>{clinicInfo.name}</Text>

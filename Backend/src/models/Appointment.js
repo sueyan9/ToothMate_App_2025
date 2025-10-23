@@ -27,20 +27,25 @@ const appointmentSchema = new mongoose.Schema({
   dentist: {
     name: {
       type: String,
-      enum: ['Dr. Toothmate', 'Dr. Williams', 'Dr. Chen', 'Dr. Patel', 'Dr. Singh'],
+      enum: ['Dr. Sarah Michaels', 'Dr. Terry Crews'],
       required: false,
     },
   },
   clinic: { type: mongoose.Schema.Types.ObjectId, ref: 'Clinic', required: true },
   purpose: {
     type: String,
-    enum: ['Check-up', 'Consultation'],
+    enum: ['Check-up', 'Consultation', 'Root Canal'],
     required: true,
   },
   confirmed: {
     type: Boolean,
     required: true,
     default: false,
+  },
+  test_data: {
+        type: Boolean,
+        required: true,
+        default: false
   },
   pdfs: [PdfSchema],
   images: [ImgSchema],

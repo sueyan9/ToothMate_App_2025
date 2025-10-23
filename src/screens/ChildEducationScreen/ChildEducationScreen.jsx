@@ -1,20 +1,29 @@
 import { Righteous_400Regular, useFonts } from '@expo-google-fonts/righteous';
 import { VarelaRound_400Regular } from '@expo-google-fonts/varela-round';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useContext, useEffect, useState } from 'react';
 import { Animated, Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Context } from '../../context/EducationContext/EducationContext';
 import { useProgress } from '../../context/ProgressContext/ProgressContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
+import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
 
 const { width } = Dimensions.get('window');
 
-const ChildEducationScreen = ({ navigation }) => {
+const ChildEducationScreen = ({ navigation, route }) => {
     const { state } = useContext(Context);
     const { t, translateAndCache, currentLanguage } = useTranslation();
     const { brushedToday, pointsEarned, streakDays } = useProgress(); // Use progress context
+    
+    // ADDED: Get child name from UserContext
+    const { state: { details } } = useContext(UserContext);
+    const toLearn = route.params?.learn;
+    
+    // ADDED: State to store child's first name
+    const [childName, setChildName] = useState('');
     
     const [fontsLoaded] = useFonts({
         Righteous_400Regular,
@@ -43,7 +52,38 @@ const ChildEducationScreen = ({ navigation }) => {
     ];
 
     useEffect(() => {
-        setRefreshKey(prev => prev + 1);
+        if (toLearn) {
+            navigation.navigate("LearnTeeth");
+            navigation.setParams({ learn: undefined });
+        }
+    }, [toLearn, navigation]);
+
+    // ADDED: Load child name from AsyncStorage
+    useEffect(() => {
+        const loadChildName = async () => {
+            try {
+                const profileName = await AsyncStorage.getItem('activeProfileName');
+                if (profileName) {
+                    // Extract first name from "First Last" format
+                    const firstName = profileName.split(' ')[0];
+                    setChildName(firstName);
+                    await AsyncStorage.setItem('activeProfileFirstName', firstName);
+                } else if (details?.firstname) {
+                    setChildName(details.firstname);
+                    await AsyncStorage.setItem('activeProfileFirstName', details.firstname);
+                }
+            } catch (error) {
+                console.error('Error loading child name:', error);
+                if (details?.firstname) {
+                    setChildName(details.firstname);
+                }
+            }
+        };
+        loadChildName();
+    }, [details?.firstname]);
+
+    useEffect(() => {
+       // setRefreshKey(prev => prev + 1);
         
         if (currentLanguage !== 'en') {
             translateAndCache(textsToTranslate);
@@ -144,8 +184,7 @@ const ChildEducationScreen = ({ navigation }) => {
     });
 
     const renderGameCard = (game, index) => {
-        const cardStyle = game.size === 'large' ? styles.largeCard : 
-                         game.size === 'small' ? styles.smallCard : styles.mediumCard;
+        const cardStyle = game.size === 'large' ? styles.largeCard : game.size === 'small' ? styles.smallCard : styles.mediumCard;
         
         return (
             <TouchableOpacity 
@@ -230,7 +269,12 @@ const ChildEducationScreen = ({ navigation }) => {
         <View style={styles.container} key={refreshKey}>
             {/* Header */}
             <View style={styles.header}>
-                <Text style={styles.titleText}>{t('ToothMate Fun Zone')}</Text>
+                {/* ADDED: Greeting with child name */}
+                {childName && (
+                    <Text style={styles.titleText}>Welcome to the ToothMate Fun Zone {childName}!</Text>
+                )}
+                
+                
             </View>
 
             <ScrollView 

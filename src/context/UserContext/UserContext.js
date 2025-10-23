@@ -87,6 +87,9 @@ const getUser = dispatch => {
       };
 
       dispatch({ type: 'get_user', payload: userDataWithHardcodedFields });
+
+      // Set profile picture from backend data
+      dispatch({ type: 'set_profile_picture', payload: response.data.profile_picture });
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -196,28 +199,24 @@ const getAllImages = dispatch => {
 };
 
 const setProfilePicture = dispatch => {
-  return async (pictureIndex) => {
+  return async (pictureIndex, userId) => {
     try {
-      await AsyncStorage.setItem('selectedProfilePicture', pictureIndex.toString());
+      
+      // Save to backend
+      await axiosApi.put(`/updateProfilePicture/${userId}`, {
+        profile_picture: pictureIndex
+      });
+      
+      // Update local state
       dispatch({ type: 'set_profile_picture', payload: pictureIndex });
+      
+      return { success: true };
     } catch (error) {
       console.error("Error saving profile picture: ", error);
+      return { success: false, error: 'Failed to update profile picture' };
     }
   };
 };
-
-const getProfilePicture = dispatch => {
-  return async () => {
-    try {
-      const savedPicture = await AsyncStorage.getItem('selectedProfilePicture');
-      if (savedPicture !== null) {
-        dispatch({ type: 'set_profile_picture', payload: parseInt(savedPicture) });
-      }
-    } catch (error) {
-      console.error('Error loading profile picture: ', error);
-    }
-  }
-}
 
 // NEW: Profile switching functions
 const setCurrentAccount = dispatch => {
@@ -374,19 +373,31 @@ const changePassword = dispatch => {
 };
 
 const updateClinic = dispatch => {
-  return async (clinicId) => {
+  return async (clinicId, privacyConsent = null) => {
     try {
       const id = await AsyncStorage.getItem('id');
-
-      const response = await axiosApi.put(`/updateUserClinic/${id}`, {
+      
+      const requestBody = {
         clinic: clinicId
-      });
-
+      };
+      
+      // Include privacy consent if provided
+      if (privacyConsent !== null) {
+        requestBody.privacyConsent = privacyConsent;
+      }
+      
+      console.log('UpdateClinic - User ID:', id, 'Clinic ID:', clinicId, 'Request body:', requestBody);
+      
+      const response = await axiosApi.put(`/updateUserClinic/${id}`, requestBody);
+      console.log('UpdateClinic - Response:', response.data);
+      
       if (response.data.error === "") {
         // Refresh clinic data after successful update
         const userClinic = await axiosApi.get(`/getUserClinic/${id}`);
+        console.log('UpdateClinic - User clinic data:', userClinic.data);
         const clinicID = userClinic.data.clinic;
         const clinicResponse = await axiosApi.get(`/getDentalClinic/${clinicID}`);
+        console.log('UpdateClinic - New clinic data:', clinicResponse.data);
         dispatch({ type: 'get_clinic', payload: clinicResponse.data.clinic });
 
         return { success: true };
@@ -412,7 +423,6 @@ export const { Provider, Context } = createDataContext(
     disconnectChild,
     getAllImages,
     setProfilePicture,
-    getProfilePicture,
     updateUser,
     changePassword,
     updateClinic,

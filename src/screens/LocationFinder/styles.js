@@ -10,9 +10,9 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#E9F1F8',
-        paddingHorizontal: 24,
+        paddingHorizontal: 16,
         paddingTop: 20,
-        paddingBottom: 64,
+        paddingBottom: 32,
     },
     profile: {
         width: 80,

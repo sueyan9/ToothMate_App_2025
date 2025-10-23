@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Context as ApptContext } from '../../context/AppointmentContext/AppointmentContext';
 import { Context as AuthContext } from '../../context/AuthContext/AuthContext';
+import { Context as NotificationContext } from '../../context/NotificationContext/NotificationContext';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
@@ -41,28 +42,28 @@ const HomeScreen = () => {
         require('../../../assets/profile pictures/p8.png'),
     ];
 
-    const quotes = [
-        "Smile while you still have teeth!",
-        "Bacteria don't take a vacation, and neither should oral hygeine!",
-        "Oral health: where you won't get a plaque for good performance!",
-        "Dentists make the world a better place, one smile at a time!",
-        "Did you know that drinking milk helps to strengthen your teeth and build stronger enamel!",
-        "Americans buy more than 14 million gallons of toothpaste every year.",
-        "Coconuts are a natural anti-bacterial food and can help reduce the risk of developing gum disease and cavities.",
-        "Approximately 75% of school children worldwide have active dental cavities.",
-        "Kids miss 51 million school hours a year due to dental-related illnesses.",
-        "Tooth enamel is the hardest substance in the human body.",
-        "Chewing sugar-free gum can actually be good for your oral health. It helps to clean your mouth and fight off cavities.",
-        "There are more bacteria in the human mouth than there are people on the Earth.",
-        "The color of your toothpaste apparently matters. More people prefer blue toothpaste over red toothpaste.",
-        "People prefer blue toothbrushes to red ones. The exact reason is unknown, but it could be because blue is often associated with cleanliness.",
-        "A happy mouth is a happy body!",
+    const tips = [
+        "Brush twice daily for 2 minutes each time.",
+        "Floss every day to remove plaque between teeth.",
+        "Drink water instead of sugary drinks.",
+        "Milk strengthens teeth and builds enamel.",
+        "Sugar-free gum helps fight cavities.",
+        "Visit your dentist every 6 months.",
+        "Limit acidic foods and beverages.",
+        "Replace your toothbrush every 3 months.",
+        "Don't brush immediately after acidic drinks.",
+        "Eat calcium-rich foods for strong teeth.",
+        "Avoid smoking and tobacco products.",
+        "Use fluoride toothpaste daily.",
+        "Coconut oil has natural antibacterial properties.",
+        "Rinse your mouth after meals.",
+        "A healthy mouth is a healthy body!"
     ]
 
-    const getRandomQuote = () => {
-        const randomQuote = Math.floor(Math.random() * 14) + 1;
+    const getRandomTip = () => {
+        const randomTip = Math.floor(Math.random() * 14) + 1;
 
-        return quotes[randomQuote];
+        return tips[randomTip];
     }
 
     const navigation = useNavigation();
@@ -70,6 +71,8 @@ const HomeScreen = () => {
     const {
         signout,
     } = useContext(AuthContext);
+    
+    const { initializeNotifications } = useContext(NotificationContext);
 
     // Translate texts when language changes
     useEffect(() => {
@@ -77,6 +80,11 @@ const HomeScreen = () => {
             translateAndCache(textsToTranslate);
         }
     }, [currentLanguage]);
+    
+    // Initialize notifications when component mounts
+    useEffect(() => {
+        initializeNotifications();
+    }, []);
 
     const handleSignOut = () => {
     Alert.alert(
@@ -100,8 +108,7 @@ const HomeScreen = () => {
         state: { details, selectedProfilePicture, childDetails }, 
         getUser, 
         getDentalClinic, 
-        checkCanDisconnect,
-        getProfilePicture
+        checkCanDisconnect
         } = useContext(UserContext);
 
         const {
@@ -119,7 +126,6 @@ const HomeScreen = () => {
                 await getUser();
                 await getDentalClinic();
                 await checkCanDisconnect();
-                await getProfilePicture();
 
                 if(details?.nhi) {
                     await getNextAppointment(details, childDetails);
@@ -170,7 +176,6 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-
             <View style={styles.helloContainer}>
                 <View style={styles.profileContainer}>
                     {selectedProfilePicture !== null ? (
@@ -193,7 +198,7 @@ const HomeScreen = () => {
             <View style={styles.updateContainer}>
                 <View style={styles.updateBox}>
                     <Text style={styles.basicText}>{t('Your Next Appointment:')}</Text>
-                    {nextAppointment && (
+                    {nextAppointment !== null && (
                         <>
                     <View style={{flexDirection: 'row', alignItems:'center', marginTop: 16, marginBottom: 8}}>
                         <View style={styles.dateCircle}>
@@ -202,18 +207,22 @@ const HomeScreen = () => {
                             <TouchableOpacity onPress={() => navigation.navigate('Bookings')}>
                                 <Text style={styles.appointmentText}>{new Date(nextAppointment.startAt).toLocaleDateString('en-NZ', {
                                     day: 'numeric', month: 'long'})} at {nextAppointment.clinic?.name || 'Dental Clinic'}</Text>
-                                    <Text style={styles.appointmentText}>For {getAppointmentName()}</Text>
+                                    <Text style={styles.appointmentTextName}>For {getAppointmentName()}</Text>
                             </TouchableOpacity>
                     </View>
                     {nextAppointment.notes && (
                     <Text style={styles.noteText}>{t('Note from Dentist:')}{'\n'}{nextAppointment.notes}</Text>
                     )}
+                    {(!nextAppointment.notes) && (
+                    <Text style={styles.noteText}>{t('Note from Dentist:')}{'\n'}No notes for this appointment.</Text>
+                    )}
                     </>
                     )}
-                    {!nextAppointment && (
-                    <View style={{flexDirection: 'row', alignItems:'center', marginTop: 16,}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Bookings')}>
-                            <Text style={styles.appointmentText}>No upcoming bookings.</Text>
+                    
+                    {nextAppointment === null && (
+                    <View style={{flexDirection: 'row', alignItems:'center', marginTop: 0,}}>
+                        <TouchableOpacity>
+                            <Text style={styles.noteText}>No upcoming bookings.</Text>
                         </TouchableOpacity>
                     </View>
                     )}
@@ -235,13 +244,12 @@ const HomeScreen = () => {
                     <Text style={styles.bookNowText}>Book Now</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={[styles.updateBox, {flex: 1.6}]}>
-                    <Text style={styles.basicText}>{t('Oral Health Quote Of The Day:')}</Text>
-                    <Text style={styles.noteText}>{getRandomQuote()}</Text>
+                <View style={[styles.updateBox, {flex: 1}]}>
+                    <Text style={styles.basicText}>{t('Daily Oral Health Tip:')}</Text>
+                    <Text style={styles.noteText}>{getRandomTip()}</Text>
                 </View>
             </View>
 
-            {/* dental chart card */}
             <View style={styles.updateContainer}>
                 <View style={styles.updateBox}>
                     <Image source={require('../../../assets/mouthIcons.png')}

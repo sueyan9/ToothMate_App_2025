@@ -399,6 +399,70 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
     },
+    // Reminder Settings Styles
+    sectionLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 12,
+        color: '#333',
+    },
+    reminderContainer: {
+        backgroundColor: '#ffffffff',
+        borderRadius: 8,
+        padding: 8,
+        borderWidth: 1,
+        borderColor: '#e1e1e1ff',
+    },
+    reminderRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 8,
+    },
+    reminderInfo: {
+        flex: 1,
+        marginRight: 12,
+    },
+    reminderTitle: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: 2,
+    },
+    reminderSubtitle: {
+        fontSize: 14,
+        color: '#666',
+    },
+    reminderOptions: {
+        marginTop: 8,
+        paddingTop: 8,
+        borderTopWidth: 1,
+        borderTopColor: '#e9ecef',
+    },
+    reminderOptionText: {
+        fontSize: 15,
+        color: '#333',
+    },
+    filterButton: {
+      backgroundColor: 'transparent',
+      color: '#333333',
+      borderColor: '#516287',
+      borderWidth: 2.5,
+      alignItems: 'center',
+      padding: 8,
+      borderStyle: 'solid',
+      borderRadius: 20,
+      cursor: 'pointer',
+      flex: 1,
+      marginBottom: 0,
+      fontWeight: 'bold',
+      transition: 'all 0.3s ease-in-out',
+      outline: 'none',
+    },
+    filterButtonActive: {
+      backgroundColor: '#EDDFD3',
+      borderColor: '#875B51',
+    },
 });
 
 export default styles;

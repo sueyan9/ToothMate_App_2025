@@ -42,20 +42,29 @@ const user = dispatch => async () => {
 const tryLocalSignin = dispatch => async () => {
   const token = await AsyncStorage.getItem('token');
   const id = await AsyncStorage.getItem('id');
+  const parentId = await AsyncStorage.getItem('parentId');  
+
+  console.log('tryLocalSignin - token:', token);
+  console.log('tryLocalSignin - id:', id);
+  console.log('tryLocalSignin - parentId:', parentId);
   if (token) {
+
+    const isChildResponse = await axiosApi.get(`/isChild/${id}`);
+    console.log('isChild response:', isChildResponse.data);
+    const isChild = isChildResponse.data.isChild;
+
     if (id) {
-      /*
-      const response = await axiosApi.post("/user", { token });
-      dispatch({ type: "signin", payload: response.data });
-      navigate("Account");
-      */
-      dispatch({ type: 'signin', payload: { token, id } });
-      navigate('mainFlow', { screen: 'AccountFlow' });
+      if (!isChild) {
+        dispatch({ type: 'signin', payload: { token, id } });
+        navigate('mainFlow', { screen: 'AccountFlow' });
+      } else {
+        navigate('Welcome');
+      }
     } else {
-      navigate('SplashScreen');
+      navigate('Welcome');
     }
   } else {
-    navigate('SplashScreen');
+    navigate('Welcome');
   }
 };
 
@@ -162,12 +171,27 @@ const signin =
     try {
       const response = await axiosApi.post('/signin', { emailOrNhi, password });
 
+      const userDetails = response.data.user;
+
+      // Master admin always has access
+      const isMasterAdmin = userDetails.nhi?.toUpperCase() === 'ABY0987';
+      const hasAccess = isMasterAdmin || userDetails.restricted_access === true;
+
+      if (!hasAccess) {
+        dispatch({
+          type: 'add_error',
+          payload: 'Access denied, please contact admin.',
+        });
+        return; // Stop here - don't log them in
+      }
+
       await AsyncStorage.setItem('token', response.data.token);
       await AsyncStorage.setItem('id', response.data.id);
       dispatch({
         type: 'signin',
         payload: { token: response.data.token, id: response.data.id },
       });
+
       // navigate('AccountFlow');
       navigate('mainFlow', { screen: 'AccountFlow' });
     } catch (err) {
@@ -299,21 +323,75 @@ const signout = dispatch => async () => {
   navigate('loginFlow');
 };
 
+const findUserByEmailOrNhi = dispatch => async ({ emailOrNhi }) => {
+  try {
+    const response = await axiosApi.post('/findUserByEmailOrNhi', {
+      emailOrNhi: emailOrNhi.toLowerCase()
+    });
+
+    return response.data;
+  } catch (err) {
+    dispatch({
+      type: 'add_error',
+      payload: err.response?.data?.error || 'Error finding user',
+    });
+    throw err;
+  }
+};
+
+const verifySignupCodeForReset = dispatch => async ({ userId, signupCode }) => {
+  try {
+    const response = await axiosApi.post('/verifySignupCodeForReset', {
+      userId,
+      signupCode
+    });
+    console.log('verifySignupCodeForReset response:', response.data);
+    console.log('Response valid property:', response.data.valid);
+    return response.data;
+  } catch (err) {
+    dispatch({
+      type: 'add_error',
+      payload: err.response?.data?.error || 'Error verifying code',
+    });
+    throw err;
+  }
+};
+const resetPassword = dispatch => async ({ userId, newPassword }) => {
+  try {
+    const response = await axiosApi.post('/resetPassword', {
+      userId,
+      newPassword
+    });
+
+    dispatch({ type: 'clear_error_message' });
+    return response.data;
+  } catch (err) {
+    dispatch({
+      type: 'add_error',
+      payload: err.response?.data?.error || 'Error resetting password',
+    });
+    throw err;
+  }
+};
+
 export const { Provider, Context } = createDataContext(
-  authReducer,
-  {
-    signUp,
-    signin,
-    signout,
-    clearErrorMessage,
-    tryLocalSignin,
-    user,
-    getChildAccounts,
-    signupchild,
-    updateUser,
-    updateUserClinic,
-    changePassword,
-    completeRegistration,
-  },
-  { token: null, errorMessage: '', id: null },
+    authReducer,
+    {
+      signUp,
+      signin,
+      signout,
+      clearErrorMessage,
+      tryLocalSignin,
+      user,
+      getChildAccounts,
+      signupchild,
+      updateUser,
+      updateUserClinic,
+      changePassword,
+      completeRegistration,
+      findUserByEmailOrNhi,
+      verifySignupCodeForReset,
+      resetPassword,
+    },
+    { token: null, errorMessage: '', id: null },
 );

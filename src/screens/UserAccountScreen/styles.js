@@ -480,6 +480,17 @@ export default StyleSheet.create({
     color: '#333333',
     marginBottom: 8,
   },
+  labelWithLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  linkText: {
+    fontSize: 14,
+    color: '#516287',
+    fontWeight: '400',
+  },
   textInput: {
     borderWidth: 1,
     borderColor: '#EDDFD3',
@@ -580,19 +591,9 @@ export default StyleSheet.create({
     borderColor: '#DC3545',
     borderWidth: 2,
   },
-  warningInput: {
-    borderColor: '#FF8C00',
-    borderWidth: 2,
-  },
   errorText: {
     fontSize: 14,
     color: '#DC3545',
-    marginTop: 4,
-    marginLeft: 4,
-  },
-  warningText: {
-    fontSize: 14,
-    color: '#FF8C00',
     marginTop: 4,
     marginLeft: 4,
   },
@@ -623,12 +624,6 @@ export default StyleSheet.create({
     color: '#666666',
     marginTop: 2,
   },
-  warningClinicTitle: {
-    color: '#FF8C00',
-  },
-  warningClinicText: {
-    color: '#FF8C00',
-  },
   clinicConfirmInfo: {
     marginTop: 16,
     padding: 16,
@@ -649,7 +644,62 @@ export default StyleSheet.create({
     textAlign: 'center',
     marginTop: 4,
   },
-
+  
+  // Clinic search list styles
+  clinicsListContainer: {
+    marginTop: 8,
+    maxHeight: 200,
+    minHeight: 80,
+    borderWidth: 2,
+    borderColor: '#516287',
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    padding: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  clinicsList: {
+    maxHeight: 85,
+  },
+  clinicListItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+    minHeight: 60,
+  },
+  clinicListContent: {
+    flex: 1,
+  },
+  clinicListCode: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#516287',
+    marginBottom: 4,
+  },
+  clinicListName: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#333333',
+    marginBottom: 2,
+  },
+  clinicListAddress: {
+    fontSize: 12,
+    color: '#666666',
+  },
+  noResultsContainer: {
+    padding: 16,
+    alignItems: 'center',
+  },
+  noResultsText: {
+    fontSize: 14,
+    color: '#666666',
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+  
   // Success modal styles
   successModalContent: {
     backgroundColor: '#FFFDF6',
@@ -684,93 +734,6 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
-  },
-  
-  // Privacy Disclaimer Section
-  privacyDisclaimerSection: {
-    marginTop: 20,
-    marginBottom: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: '#F8F9FA',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#E9ECEF',
-    width: '100%',
-  },
-  privacyDisclaimerText: {
-    fontSize: 14,
-    color: '#495057',
-    textAlign: 'left',
-    lineHeight: 20,
-    marginBottom: 16,
-  },
-  privacyButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 12,
-  },
-  privacyButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#CED4DA',
-    backgroundColor: '#FFFFFF',
-    minWidth: 80,
-    alignItems: 'center',
-  },
-  privacyButtonSelected: {
-    backgroundColor: '#516287',
-    borderColor: '#516287',
-  },
-  privacyButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#495057',
-  },
-  privacyButtonTextSelected: {
-    color: '#FFFFFF',
-  },
-  secondaryDisclaimerText: {
-    fontSize: 12,
-    color: '#6C757D',
-    textAlign: 'left',
-    lineHeight: 16,
-    fontStyle: 'italic',
-    marginTop: 8,
-  },
-  
-  // Disabled Button Styles
-  disabledButton: {
-    backgroundColor: '#E9ECEF',
-    borderColor: '#CED4DA',
-  },
-  disabledButtonText: {
-    color: '#6C757D',
-  },
-  //images display
-  xrayThumb: {
-    width: 96,
-    height: 96,
-    borderRadius: 12,
-    backgroundColor: '#EEF1F6',
-  },
-  //Collapsible
-  badge: {
-    minWidth: 24,
-    height: 20,
-    paddingHorizontal: 6,
-    borderRadius: 10,
-    backgroundColor: '#ECEFF5',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 6,
-  },
-  badgeText: {
-    color: '#516287',
-    fontSize: 12,
-    fontWeight: '600',
   },
   // Add to the bottom of styles.js
   accessCodeModalContent: {

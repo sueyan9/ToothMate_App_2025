@@ -9,7 +9,6 @@ require("./models/Treatment");
 require("./models/Tooth");
 const express = require("express");
 const mongoose = require("mongoose");
-
 const authRoutes = require("./routes/authRoutes");
 const educationRoutes = require("./routes/educationRoutes");
 const clinicRoutes = require("./routes/clinicRoutes");
@@ -17,21 +16,37 @@ const appointmentRoutes = require("./routes/appointmentRoutes");
 const treatmentRoutes = require("./routes/treatmentRoutes");
 const toothRoutes = require("./routes/toothRoutes");
 const requireAuth = require("./middlewares/requireAuth");
-// --- App & middlewares ---
+
 const app = express();
-
-
 // no case_sensitive
 app.set('case sensitive routing', false);
 // mid-parts
-// body analyse（JSON & urlencoded）
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json());
 // logging
 app.use((req, res, next) => {
     console.log('[IN]', req.method, req.originalUrl);
     next();
 });
+function listRoutes(app){
+    const routes = [];
+    app._router.stack.forEach(m=>{
+        if (m.route) {
+            const path = m.route?.path;
+            const methods = Object.keys(m.route?.methods || {}).join(',');
+            routes.push(`${methods.toUpperCase()} ${path}`);
+        } else if (m.name === 'router' && m.handle?.stack) {
+            m.handle.stack.forEach(s=>{
+                const route = s.route;
+                if (route) {
+                    const methods = Object.keys(route.methods || {}).join(',');
+                    routes.push(`${methods.toUpperCase()} ${route.path}`);
+                }
+            });
+        }
+    });
+    console.log('[ROUTES]', routes);
+}
+
 
 // CORS deploy
 app.use((req, res, next) => {
@@ -73,7 +88,6 @@ function listRoutes(app){
     console.log('[ROUTES]', routes);
 }
 listRoutes(app);
-
 // check link health
 app.get('/health', (req, res) => {
     res.json({
@@ -86,10 +100,10 @@ app.get('/health', (req, res) => {
 // MongoDB connection
 const mongoUri = process.env.MONGO_URI;
 mongoose.connect(mongoUri, {
-    // useNewUrlParser: true,//no longer supported by Mongoose6/7
-    // useUnifiedTopology: true,
-    // useCreateIndex: true,
-    // useFindAndModify: false,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
     // use the new writeConcern form

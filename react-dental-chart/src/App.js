@@ -1,6 +1,5 @@
-import { ArrowLeft } from 'lucide-react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 // ===== teeth components =====
 import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine';
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor';
@@ -152,7 +151,7 @@ const API_BASE_URL =
     (typeof window !== 'undefined' && window.API_BASE_URL) ||
     (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
     (typeof process !== 'undefined' && process.env && (process.env.REACT_APP_API_BASE_URL || process.env.API_BASE_URL)) ||
-    'https://toothmate-app-2025.onrender.com';
+    'http://172.29.20.208:3000/';
 
 
 function normalizeTreatments(payload) {

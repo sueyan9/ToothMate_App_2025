@@ -4,6 +4,19 @@ export default StyleSheet.create({
   container: {
     flex: 1,
   },
+  chartTitle: {
+    fontSize: 20,
+    marginTop: 68,
+    position: 'absolute',
+    zIndex: 1001,
+    alignSelf: 'center',
+    fontFamily: 'VarelaRound_400Regular',
+    textShadowColor: 'rgba(0,0,0,0.1)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
   toggle: {
     flexDirection: 'row',
     borderColor: '#fff',

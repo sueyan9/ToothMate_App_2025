@@ -1,0 +1,306 @@
+import { StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#E9F1F8',
+    marginTop: 48,
+    paddingBottom: 68
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  backButton: {
+    padding: 5,
+  },
+  refreshButton: {
+    padding: 5,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'center',
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+    top: '60%',
+    paddingHorizontal: 8
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  emptySubtitle: {
+    fontSize: 16,
+    color: '#999',
+    marginTop: 10,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  settingsButton: {
+    backgroundColor: '#EDDFD3',
+    borderColor: '#875B51',
+    borderRadius: 20,
+    borderWidth: 2.5,
+    paddingHorizontal: 24,
+    paddingVertical: 8,
+    borderRadius: 25,
+    marginTop: 30,
+  },
+  settingsButtonText: {
+    color: '#333333',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  summarySection: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  summaryText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#0066cc',
+  },
+  section: {
+    marginVertical: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+    paddingHorizontal: 5,
+  },
+  appointmentsMainTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#0066cc',
+    textAlign: 'center',
+    marginTop: 15,
+    marginBottom: 25,
+    paddingHorizontal: 16,
+    textShadowColor: 'rgba(0, 102, 204, 0.3)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
+    letterSpacing: 1,
+  },
+  notificationCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 12,
+    marginBottom: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  notificationHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  notificationIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(120, 208, 245, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  notificationContent: {
+    flex: 1,
+    paddingRight: 10,
+  },
+  notificationTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  notificationBody: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  notificationDetails: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  detailText: {
+    fontSize: 13,
+    color: '#888',
+    marginBottom: 2,
+  },
+  scheduleText: {
+    fontSize: 12,
+    color: '#0066cc',
+    marginTop: 4,
+    fontWeight: '500',
+  },
+  cancelButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(244, 67, 54, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appointmentCard: {
+    backgroundColor: '#FFFDF6',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  appointmentHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 8
+  },
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#EDDFD3',
+    marginBottom: 16,
+    paddingBottom: 12,
+  },
+  locationText: {
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 2,
+  },
+  appointmentTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333333',
+    overflow: 'hidden',
+    marginRight: 32
+  },
+  nameText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333333',
+  },
+  timeText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'right',
+    marginRight: 0,
+    marginLeft: 'auto'
+  },
+  expandButton: {
+    marginRight: 0,
+    marginLeft: 'auto'
+  },
+  appointmentSubtitle: {
+    fontSize: 12,
+    color: '#333',
+    marginBottom: 4,
+  },
+  statusText: {
+    color: '#333',
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  reminderControlsTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  reminderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 3,
+    marginBottom: 3,
+  },
+  reminderLabel: {
+    fontSize: 14,
+    color: '#333',
+    flex: 1,
+  },
+  activeReminders: {
+    marginTop: 8,
+    paddingTop: 6,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  activeReminderRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 6,
+  },
+  reminderBellIcon: {
+    marginRight: 6,
+    marginTop: 1,
+  },
+  activeReminderTextContainer: {
+    flex: 1,
+  },
+  activeReminderText: {
+    fontSize: 11,
+    color: '#0066cc',
+    fontWeight: '500',
+    marginBottom: 1,
+  },
+  reminderForText: {
+    fontSize: 10,
+    color: '#888',
+    fontStyle: 'italic',
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'center',
+    marginBottom: 32
+  }
+});
+
+export default styles;

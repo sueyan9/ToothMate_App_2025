@@ -2,14 +2,13 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   languageButton: {
-    position: 'absolute',
-    right: 24,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 8,
+    marginRight: 16,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -18,7 +17,6 @@ export default StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    zIndex: 2000,
   },
   languageButtonText: {
     fontSize: 16,

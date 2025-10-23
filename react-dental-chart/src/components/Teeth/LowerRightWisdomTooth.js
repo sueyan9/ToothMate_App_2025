@@ -180,7 +180,15 @@ export const LowerRightWisdomTooth = () => {
               position: 'relative',
             }}
         >
-          <Canvas style={{ width: '100%', height: '100%' }}>
+        <div style={{ position: 'relative', width: '100%', height: '10vh' }}>
+      <img
+            src="../assets/back_arrow.png"
+            alt="Back"
+            onClick={() => (window.location = '/')}
+            className='back-button'
+          />
+    </div>
+      <Canvas style={{ width: '100%', height: '100%' }}>
             <CameraController />
             <ambientLight intensity={0.7} />
             <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />

@@ -14,6 +14,14 @@ export default StyleSheet.create({
     borderWidth: 2.5,
     borderColor: '#875B51',
   },
+  secondaryButton: {
+    marginTop: 16,
+    paddingVertical: 8,
+    backgroundColor: '#f7f7f7',
+    borderRadius: 20,
+    borderWidth: 2.5,
+    borderColor: '#dedede',
+  },
   inputStyle: {
     paddingVertical: 8,
     padding: 5,
@@ -33,7 +41,27 @@ export default StyleSheet.create({
     backgroundColor: '#f7f7f7',
     marginLeft: '2.25%',
   },
+  inputContainerStyle: {
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: '#dedede',
+    width: '95%',
+    paddingLeft: 15,
+    marginBottom: 0,
+    backgroundColor: '#f7f7f7',
+    marginLeft: '2.25%',
+  },
+  textStyle: {
+    fontSize: 16,
+  },
   labelStyles: {
+    fontSize: 14,
+    marginLeft: 18,
+    color: '#333333',
+    marginBottom: 3,
+    marginTop: 2,
+  },
+  labelStyle: {
     fontSize: 14,
     marginLeft: 18,
     color: '#333333',
@@ -44,6 +72,12 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 15,
     color: '#333333',
+    textAlign: 'center',
+  },
+  forgotPasswordStyle: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: '#875B51',
     textAlign: 'center',
   },
   containerHeading: {
@@ -99,5 +133,22 @@ export default StyleSheet.create({
   signinButtonTitleStyle: {
     color: '#333333',
     fontWeight: 'bold',
+  },
+  buttonText: {
+    color: '#333333',
+    fontWeight: 'bold',
+  },
+  secondaryButtonText: {
+    color: '#333333',
+    fontWeight: 'bold',
+  },
+  stageTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginLeft: 24,
+    marginRight: 24,
+    marginBottom: 24,
+    marginTop: 16,
   },
 });

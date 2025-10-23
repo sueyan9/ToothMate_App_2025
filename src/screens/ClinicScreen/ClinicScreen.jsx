@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import axiosApi from '../../api/axios';
+import { Context as NotificationContext } from '../../context/NotificationContext/NotificationContext';
 import { Context as UserContext } from '../../context/UserContext/UserContext';
 import styles from './styles';
 
@@ -35,6 +36,12 @@ const ClinicScreen = ({navigation, route}) => {
         getDentalClinic,
         getChild
     } = useContext(UserContext);
+    
+    const { 
+        scheduleAppointmentReminder, 
+        cancelAppointmentReminders, 
+        getAppointmentReminders 
+    } = useContext(NotificationContext);
 
     const [isLoading, setIsLoading] = useState(false);
 // Fetch user and clinic details when screen is focused
@@ -70,13 +77,11 @@ const ClinicScreen = ({navigation, route}) => {
     const [showPatientSheet, setShowPatientSheet] = useState(false);
     const [showDentistSheet, setShowDentistSheet] = useState(false);
     const [showPurposeSheet, setShowPurposeSheet] = useState(false);
+    const [appointmentView, setAppointmentView] = useState('day');
 
     const DENTIST_NAMES = [
-        'Dr. Toothmate',
-        'Dr. Williams',
-        'Dr. Chen',
-        'Dr. Patel',
-        'Dr. Singh',
+        'Dr. Sarah Michaels',
+        'Dr. Terry Crews',
     ];
     const PURPOSES = ['Check-up', 'Consultation'];
 
@@ -144,11 +149,15 @@ const ClinicScreen = ({navigation, route}) => {
             console.log('Opening modal from route params');
             setShowAddModal(true);
             if (route.params.date) {
+                const dateObj = typeof route.params.date === 'string' 
+                ? new Date(route.params.date) 
+                : route.params.d
+
             setNewAppt({
-                startDate: route.params.date,
+                startDate: dateObj,
                 startTime: roundTo30(new Date()),
                 endTime: addMinutes(roundTo30(new Date()), SLOT_MINUTES),
-                purpose: 'Check-Up',
+                purpose: 'Check-up',
                 notes: '',
             })
             navigation.setParams({ openModal: undefined, date: undefined });
@@ -169,6 +178,9 @@ const ClinicScreen = ({navigation, route}) => {
 
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+
+    // Reminder preferences for new appointment
+    const [setReminder, setSetReminder] = useState(true);
 
 // Default selected date = today
     useEffect(() => {
@@ -394,6 +406,26 @@ const ClinicScreen = ({navigation, route}) => {
             return;
         }
 
+        const userWantsReminder = await new Promise((resolve) => {
+            Alert.alert(
+                'Set Notifications', 
+                'Would you like a reminder for this appointment?',
+                [
+                    {
+                        text: 'No',
+                        onPress: () => resolve(false),
+                        style: 'cancel'
+                    },
+                    {
+                        text: 'Yes',
+                        onPress: () => resolve(true),
+                    }
+                ]
+            );
+        });
+
+        setSetReminder(userWantsReminder);
+
         setIsSubmitting(true);
         const startNZ = dayjs(newAppt.startDate)
             .tz(NZ_TZ)
@@ -415,6 +447,7 @@ const ClinicScreen = ({navigation, route}) => {
             return;
         }
         try {
+
             const startNZ = dayjs(newAppt.startDate)
                 .tz(NZ_TZ)
                 .hour(newAppt.startTime.getHours())
@@ -435,6 +468,8 @@ const ClinicScreen = ({navigation, route}) => {
                 endLocal: endWithOffset,
                 timezone: NZ_TZ,
                 clinic: clinicId,
+                test_data: false,
+                confirmed: false
             };
             const urlPost = '/Appointments';
             logReq('POST appointments', urlPost, appointmentData);
@@ -444,6 +479,49 @@ const ClinicScreen = ({navigation, route}) => {
             if (response.status === 201 || response.status === 200) {
                 Alert.alert('Success', 'Appointment requested successfully! Note all appointments are unconfirmed until confirmed by the clinic.');
                 console.warn("Appointment created!!");
+                
+                // Schedule notification reminder for the appointment
+                try {
+                    const appointmentDate = dayjs(newAppt.startDate).format('YYYY-MM-DD');
+                    const appointmentTime = dayjs(newAppt.startTime).format('HH:mm');
+                    const clinicName = clinic?.name || 'your dental clinic';
+                    const appointmentId = response.data?._id; // Get the appointment ID from response
+
+                    const patientInfo = selectedPatient.name || 'Unknown';
+                    
+                    // Only schedule reminders if user has enabled them
+                    if (setReminder) {
+                        const reminderResult = await scheduleAppointmentReminder(
+                            appointmentDate, 
+                            appointmentTime, 
+                            clinicName, 
+                            appointmentId,
+                            patientInfo
+                        );
+                        
+                        if (reminderResult.success) {
+                            const reminderCount = reminderResult.notifications?.length || 0;
+                            console.log(`Scheduled ${reminderCount} appointment reminders`);
+                            
+                            // Show success message with reminder details
+                            if (reminderCount > 0) {
+                                const reminderTypes = reminderResult.notifications?.map(n => n.type).join(', ');
+                                Alert.alert(
+                                    'Success', 
+                                    `Appointment added successfully for ${patientInfo}!\n\nReminders scheduled: ${reminderTypes}`,
+                                    [{ text: 'OK' }]
+                                );
+                            }
+                        } else {
+                            console.warn('Failed to schedule appointment reminder:', reminderResult.error);
+                            Alert.alert('Success', 'Appointment added successfully.\n\nNote: Reminders could not be scheduled.');
+                        }
+                    }
+                } catch (notificationError) {
+                    console.warn('Failed to schedule appointment reminder:', notificationError);
+                    Alert.alert('Success', 'Appointment added successfully.\n\nNote: Reminders could not be scheduled.');
+                }               
+                
 
                 setLastAppointmentTime(Date.now());
                 setCooldownRemaining(COOLDOWN_MINUTES * 60);
@@ -488,11 +566,12 @@ const ClinicScreen = ({navigation, route}) => {
         });
 
         setSelectedPatient(null);
+        setSetReminder(true);
     }
 
-    const apptDateKey = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('YYYY-MM-DD') : '');
-    const dateLabel = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('DD/MM') : '');
-    const timeLabel = (iso) => (iso ? dayjs(iso).tz(NZ_TZ).format('h:mm A') : '--');
+    const apptDateKey = (iso) => (iso ? dayjs.utc(iso).tz(NZ_TZ).format('YYYY-MM-DD') : '');
+    const dateLabel = (iso) => (iso ? dayjs.utc(iso).tz(NZ_TZ).format('DD/MM') : '');
+    const timeLabel = (iso) => (iso ? dayjs.utc(iso).tz(NZ_TZ).format('h:mm A') : '--');
 // Marked dates for calendar
     const markedDates = useMemo(() => {
         const m = {};
@@ -508,13 +587,96 @@ const ClinicScreen = ({navigation, route}) => {
         };
         return m;
     }, [appointments, selectedDate]);
+
+    const getWeekRange = (date) => {
+        const start = dayjs.utc(date).tz(NZ_TZ).startOf('week');
+        const end = dayjs.utc(date).tz(NZ_TZ).endOf('week');
+        return { start, end };
+    };
+
+    const getMonthRange = (date) => {
+        const start = dayjs.utc(date).tz(NZ_TZ).startOf('month');
+        const end = dayjs.utc(date).tz(NZ_TZ).endOf('month');
+        return { start, end };
+    };
+
 // Filter appointment list for selected date
-    const dayList = useMemo(() => {
+    const filteredAppointments = useMemo(() => {
         if (!selectedDate) return [];
-        return appointments
-            .filter(a => apptDateKey(a.startAt) === selectedDate)
-            .sort((a, b) => dayjs(a.startAt).valueOf() - dayjs(b.startAt).valueOf());
-    }, [appointments, selectedDate]);
+        
+        const selectedDayjs = dayjs.utc(selectedDate).tz(NZ_TZ);
+        
+        let filtered = [];
+        
+        switch (appointmentView) {
+            case 'day':
+                // Show appointments for selected day only
+                filtered = appointments.filter(a => 
+                    apptDateKey(a.startAt) === selectedDate
+                );
+                break;
+                
+            case 'week':
+                // Show appointments for the week containing selected date
+                const { start: weekStart, end: weekEnd } = getWeekRange(selectedDate);
+                filtered = appointments.filter(a => {
+                    const apptDate = dayjs.utc(a.startAt).tz(NZ_TZ);
+                    return (apptDate.isAfter(weekStart, 'day') || apptDate.isSame(weekStart, 'day')) && 
+                        (apptDate.isBefore(weekEnd, 'day') || apptDate.isSame(weekEnd, 'day'));
+                });
+                break;
+                
+            case 'month':
+                // Show appointments for the month containing selected date
+                const { start: monthStart, end: monthEnd } = getMonthRange(selectedDate);
+                filtered = appointments.filter(a => {
+                    const apptDate = dayjs.utc(a.startAt).tz(NZ_TZ);
+                    return (apptDate.isAfter(monthStart, 'day') || apptDate.isSame(monthStart, 'day')) && 
+                        (apptDate.isBefore(monthEnd, 'day') || apptDate.isSame(monthEnd, 'day'));
+                });
+                break;
+        }
+        
+        return filtered.sort((a, b) => dayjs.utc(a.startAt).valueOf() - dayjs.utc(b.startAt).valueOf());
+    }, [appointments, selectedDate, appointmentView]);
+
+    const groupedAppointments = useMemo(() => {
+        if (appointmentView === 'day') return null;
+        
+        const grouped = {};
+        filteredAppointments.forEach(appt => {
+            const dateKey = apptDateKey(appt.startAt);
+            if (!grouped[dateKey]) {
+                grouped[dateKey] = [];
+            }
+            grouped[dateKey].push(appt);
+        });
+        
+        return Object.keys(grouped)
+            .sort()
+            .map(dateKey => ({
+                date: dateKey,
+                appointments: grouped[dateKey]
+            }));
+    }, [filteredAppointments, appointmentView]);
+
+    const getViewTitle = () => {
+        if (!selectedDate) return 'Select a date to view appointments';
+        
+        const date = dayjs.utc(selectedDate).tz(NZ_TZ);
+        
+        switch (appointmentView) {
+            case 'day':
+                return `Appointments for ${date.format('D MMMM YYYY')}`;
+            case 'week':
+                const { start: weekStart, end: weekEnd } = getWeekRange(selectedDate);
+                return `Week of ${weekStart.format('D MMM')} - ${weekEnd.format('D MMM YYYY')}`;
+            case 'month':
+                return `${date.format('MMMM YYYY')}`;
+            default:
+                return '';
+        }
+    };
 
     const onDayPress = (day) => {
         const pressed = dayjs.tz(day.dateString, NZ_TZ);
@@ -584,46 +746,176 @@ const ClinicScreen = ({navigation, route}) => {
 
                 {/* Content area below calendar */}
                 <View style={styles.contentContainer}>
-                    <Text style={styles.selectedDateText}>
-                        {selectedDate
-                            ? `Appointments for ${formatDate(selectedDate)}`
-                            : 'Select a date to view appointments'}
-                    </Text>
+                    <View style={{flexDirection: 'row', gap: 8, marginBottom: 8, marginTop: -8, flex: 1, justifyContent: 'space-evenly'}}>
+                        <TouchableOpacity
+                            style={[
+                                styles.filterButton,
+                                appointmentView === 'day' && styles.filterButtonActive
+                            ]}
+                            onPress={() => setAppointmentView('day')}
+                        >
+                            <Text style={[
+                                styles.viewToggleText,
+                                appointmentView === 'day' && styles.viewToggleTextActive
+                            ]}>
+                                Day
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[
+                                styles.filterButton,
+                                appointmentView === 'week' && styles.filterButtonActive
+                            ]}
+                            onPress={() => setAppointmentView('week')}
+                        >
+                            <Text style={[
+                                styles.viewToggleText,
+                                appointmentView === 'week' && styles.viewToggleTextActive
+                            ]}>
+                                Week
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[
+                                styles.filterButton,
+                                appointmentView === 'month' && styles.filterButtonActive
+                            ]}
+                            onPress={() => setAppointmentView('month')}
+                        >
+                            <Text style={[
+                                styles.viewToggleText,
+                                appointmentView === 'month' && styles.viewToggleTextActive
+                            ]}>
+                                Month
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={[
+                                styles.filterButton
+                            ]}
+                            onPress={() => {setAppointmentView('day'), setSelectedDate(dayjs().tz(NZ_TZ).format('YYYY-MM-DD'))}}
+                        >
+                            <Text style={[
+                                styles.viewToggleText
+                            ]}>
+                                Today
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <Text style={styles.selectedDateText}>{getViewTitle()}</Text>
 
                     {/* Appointment cards */}
                     {selectedDate && (
                         <ScrollView style={styles.appointmentsList}>
-                            {dayList.length > 0 ? (
-                                dayList.map((a) => (
-                                    <TouchableOpacity key={a._id} style={styles.appointmentCard}
-                                        onPress={() => setSelectedAppointment(a)}>
-
-                                        <View style={styles.cardContent}>
-                                            <View style={styles.appointmentInfo}>
-                                                <View style={{display: 'flex', flexDirection: 'row'}}>
-                                                <Text style={styles.nameText}>{a.patientInfo?.name}</Text>
-                                                <Text style={styles.timeText}>{timeLabel(a.startAt)} | {dateLabel(a.startAt)}</Text>
+                            {appointmentView === 'day' ? (
+                                // Day View - List of appointments for selected day
+                                filteredAppointments.length > 0 ? (
+                                    filteredAppointments.map((a) => (
+                                        <TouchableOpacity 
+                                            key={a._id} 
+                                            style={styles.appointmentCard}
+                                            onPress={() => setSelectedAppointment(a)}
+                                        >
+                                            <View style={styles.cardContent}>
+                                                <View style={styles.appointmentInfo}>
+                                                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                                                        <Text style={styles.nameText}>{a.patientInfo?.name}</Text>
+                                                        <Text style={styles.timeText}>
+                                                            {timeLabel(a.startAt)} | {dateLabel(a.startAt)}
+                                                        </Text>
+                                                    </View>
+                                                    <Text style={styles.locationText}>
+                                                        {a.clinic?.name || a.clinic?.location}
+                                                    </Text>
+                                                    <Text style={styles.dentistText}>{a.dentist?.name}</Text>
                                                 </View>
-                                                <Text
-                                                    style={styles.locationText}>{a.clinic?.name || a.clinic?.location}</Text>
-                                                <Text style={styles.dentistText}>{a.dentist?.name}</Text>
                                             </View>
-                                        </View>
-                                        <View style={{display: 'flex', flexDirection: 'row'}}>
-                                            <View style={styles.typeTag}>
-                                                <Text style={styles.typeText}>{a.purpose}</Text>
+                                            <View style={{display: 'flex', flexDirection: 'row'}}>
+                                                <View style={styles.typeTag}>
+                                                    <Text style={styles.typeText}>{a.purpose}</Text>
+                                                </View>
+                                                <View style={[
+                                                    styles.confirmedTag, 
+                                                    a.confirmed ? styles.confirmed : styles.unconfirmed
+                                                ]}>
+                                                    <Text style={a.confirmed ? styles.confirmedText : styles.unconfirmedText}>
+                                                        {a.confirmed ? "Confirmed" : "Unconfirmed"}
+                                                    </Text>
+                                                </View>
+                                                <MaterialIcons 
+                                                    style={{marginRight: 0, marginLeft: 'auto'}} 
+                                                    name="keyboard-arrow-right" 
+                                                    size={30} 
+                                                    color="#875B51"
+                                                />
                                             </View>
-                                            <View style={[styles.confirmedTag, a.confirmed ? styles.confirmed : styles.unconfirmed]}>
-                                                <Text style={a.confirmed ? styles.confirmedText : styles.unconfirmedText}>{a.confirmed ? "Confirmed" : "Unconfirmed"}</Text>
-                                            </View>
-                                            <MaterialIcons style={{marginRight: 0, marginLeft: 'auto'}} name="keyboard-arrow-right" size={30} color="#875B51"/>
-                                        </View>                                        
-                                    </TouchableOpacity>
-                                ))
+                                        </TouchableOpacity>
+                                    ))
+                                ) : (
+                                    <View style={styles.noAppointments}>
+                                        <Text style={styles.noAppointmentsText}>No appointments for this date</Text>
+                                    </View>
+                                )
                             ) : (
-                                <View style={styles.noAppointments}>
-                                    <Text style={styles.noAppointmentsText}>No appointments for this date</Text>
-                                </View>
+                                // Week/Month View - Grouped by date
+                                groupedAppointments && groupedAppointments.length > 0 ? (
+                                    groupedAppointments.map((group) => (
+                                        <View key={group.date} style={styles.dateGroup}>
+                                            <Text style={styles.dateGroupHeader}>
+                                                {dayjs.utc(group.date).tz(NZ_TZ).format('dddd, D MMMM YYYY')}
+                                            </Text>
+                                            {group.appointments.map((a) => (
+                                                <TouchableOpacity 
+                                                    key={a._id} 
+                                                    style={styles.appointmentCard}
+                                                    onPress={() => setSelectedAppointment(a)}
+                                                >
+                                                    <View style={styles.cardContent}>
+                                                        <View style={styles.appointmentInfo}>
+                                                            <View style={{display: 'flex', flexDirection: 'row'}}>
+                                                                <Text style={styles.nameText}>{a.patientInfo?.name}</Text>
+                                                                <Text style={styles.timeText}>
+                                                                    {timeLabel(a.startAt)}
+                                                                </Text>
+                                                            </View>
+                                                            <Text style={styles.locationText}>
+                                                                {a.clinic?.name || a.clinic?.location}
+                                                            </Text>
+                                                            <Text style={styles.dentistText}>{a.dentist?.name}</Text>
+                                                        </View>
+                                                    </View>
+                                                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                                                        <View style={styles.typeTag}>
+                                                            <Text style={styles.typeText}>{a.purpose}</Text>
+                                                        </View>
+                                                        <View style={[
+                                                            styles.confirmedTag, 
+                                                            a.confirmed ? styles.confirmed : styles.unconfirmed
+                                                        ]}>
+                                                            <Text style={a.confirmed ? styles.confirmedText : styles.unconfirmedText}>
+                                                                {a.confirmed ? "Confirmed" : "Unconfirmed"}
+                                                            </Text>
+                                                        </View>
+                                                        <MaterialIcons 
+                                                            style={{marginRight: 0, marginLeft: 'auto'}} 
+                                                            name="keyboard-arrow-right" 
+                                                            size={30} 
+                                                            color="#875B51"
+                                                        />
+                                                    </View>
+                                                </TouchableOpacity>
+                                            ))}
+                                        </View>
+                                    ))
+                                ) : (
+                                    <View style={styles.noAppointments}>
+                                        <Text style={styles.noAppointmentsText}>
+                                            No appointments for this {appointmentView}
+                                        </Text>
+                                    </View>
+                                )
                             )}
                         </ScrollView>
                     )}
@@ -748,14 +1040,15 @@ const ClinicScreen = ({navigation, route}) => {
                                             return;
                                         }
 
-                                        if (!date || !(date instanceof Date)) return;
+                                        const year = date.getFullYear();
+                                        const month = date.getMonth();
+                                        const day = date.getDate();
 
-                                        const selectedDateNZ = dayjs(date).tz(NZ_TZ);
+                                        const selectedDateNZ = dayjs.tz(NZ_TZ).year(year).month(month).date(day);
                                         const isToday = selectedDateNZ.isSame(nzNow(), 'day');
 
-                                        const currentTimeNZ = dayjs(newAppt.startTime).tz(NZ_TZ);
+                                        const currentTimeNZ = dayjs(newAppt.startTime);
 
-                                        // compose a datetime on the chosen day using existing hour/minute
                                         const base = selectedDateNZ
                                         .hour(currentTimeNZ.hour())
                                         .minute(currentTimeNZ.minute())
@@ -777,7 +1070,7 @@ const ClinicScreen = ({navigation, route}) => {
 
                                         setNewAppt({
                                             ...newAppt,
-                                            startDate: date,
+                                            startDate: selectedDateNZ.toDate(),
                                             startTime: rounded,
                                             endTime: addMinutes(rounded, SLOT_MINUTES),
                                         });
@@ -1120,23 +1413,20 @@ const ClinicScreen = ({navigation, route}) => {
             <TouchableOpacity
                 style={styles.fab}
                 onPress={() => {
-                    // Handle add appointment action
-                    // handleNewAppt();
-                    // preset form when opening the modal
-                    const baseDate = selectedDate
-                        ? dayjs.tz(selectedDate, NZ_TZ).toDate()
-                        : nzNow().startOf('day').toDate();
+                    const dateString = selectedDate || dayjs().tz(NZ_TZ).format('YYYY-MM-DD');
+
+                    const dateObj = dayjs.tz(dateString, NZ_TZ).toDate();
 
                     // today → next valid slot from now; other days → 09:00
-                    const isToday = dayjs(baseDate).tz(NZ_TZ).isSame(nzNow(), 'day');
+                    const isToday = dayjs.tz(dateString, NZ_TZ).isSame(nzNow(), 'day');
                     const start = isToday
                         ? nextValidSlotFromNow()
-                        : dayjs(baseDate).hour(9).minute(0).second(0).millisecond(0).toDate();
+                        : dayjs.tz(dateString, NZ_TZ).hour(9).minute(0).second(0).millisecond(0).toDate();
 
                     const startRounded = clampToBusinessStart(roundTo30(start));
 
                     setNewAppt({
-                        startDate: baseDate,
+                        startDate: dateObj,
                         startTime: startRounded,
                         endTime: addMinutes(startRounded, SLOT_MINUTES),
                         purpose: '',

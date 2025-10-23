@@ -2,21 +2,23 @@ import { WEB_DENTAL_CHART_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import axiosApi from "../../api/axios";
+import styles from './styles';
 
 const DentalChartScreen = () => {
-  const webViewRef = useRef(null);
-  const navigation = useNavigation();
-  const route = useRoute();
+    const webViewRef = useRef(null);
+    const navigation = useNavigation();
+    const route = useRoute();
 
-  const showWeb = route.params?.showWeb ?? true; // default: show webview
-  const [parent, setParent] = useState(true); // Determines whether the user is a parent (default is true)
-  const [res, setRes] = useState(null); // Stores the response from the isChild API
-  const [selection, setSelection] = useState(null); // { toothId, toothName, treatment }
-  const [userId, setUserId] = useState(null);
+    const showWeb = route.params?.showWeb ?? true; // default: show webview
+    const [parent, setParent] = useState(true); // Determines whether the user is a parent (default is true)
+    const [res, setRes] = useState(null); // Stores the response from the isChild API
+    const [selection, setSelection] = useState(null); // { toothId, toothName, treatment }
+    const [userId, setUserId] = useState(null);
+    const [userName, setUserName] = useState("");
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -30,6 +32,9 @@ const DentalChartScreen = () => {
 
                 const resp = await axiosApi.get(endpoint);
                 console.log('[DC] /isChild resp =', resp?.status, resp?.data);
+
+                const name = await AsyncStorage.getItem('activeProfileFirstName');
+                setUserName(name);
 
                 const data = resp?.data ?? {};
                 setRes(data);
@@ -89,7 +94,10 @@ useEffect(() => {
                     // From ToothInformation.handleViewEducation (web button):
                     if (data?.type === 'VIEW_EDUCATION') {
                         if (data?.child) {
-                            navigation.navigate('ChildEducation');
+                            navigation.navigate('ChildEducation', {
+                                screen: 'Library',
+                                params: { learn: true }
+                            });
                             return;
                         }
                         const treatmentType = getMostRecentTreatmentType(data?.treatments);
@@ -146,6 +154,9 @@ useEffect(() => {
 
             return (
                 <View style={{ flex: 1 }}>
+                        {userName && (
+                        <Text style={styles.chartTitle}>{userName}'s Mouth</Text>
+                        )}
                     <SafeAreaView />
                     <WebView
                         ref={webViewRef}

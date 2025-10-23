@@ -2,7 +2,6 @@
     "teeth": {
         "11": {
             "name": "Upper Right Central Incisor",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -15,7 +14,6 @@
         },
         "12": {
             "name": "Upper Right Lateral Incisor",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -28,7 +26,6 @@
         },
         "13": {
             "name": "Upper Right Canine",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -41,7 +38,6 @@
         },
         "14": {
             "name": "Upper Right First Premolar",
-            "eruptionLevel": 0.5,
             "treatments": [
             ],
             "futuretreatments": [
@@ -49,7 +45,6 @@
         },
         "15": {
             "name": "Upper Right Second Premolar",
-            "eruptionLevel": 1.0,
             "treatments": [
                 {
                     "date": "2023-01-15",
@@ -87,7 +82,6 @@
         },
         "16": {
             "name": "Upper Right First Molar",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -100,7 +94,6 @@
         },
         "17": {
             "name": "Upper Right Second Molar",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -113,7 +106,6 @@
         },
         "18": {
             "name": "Upper Right Third Molar",
-            "eruptionLevel": 1.0,
             "treatments": [
                 {
                     "date": "2023-02-20",
@@ -126,7 +118,6 @@
         },
         "21": {
             "name": "Upper Left Central Incisor",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -139,7 +130,6 @@
         },
         "22": {
             "name": "Upper Left Lateral Incisor",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -152,7 +142,6 @@
         },
         "23": {
             "name": "Upper Left Canine",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -160,7 +149,6 @@
         },
         "24": {
             "name": "Upper Left First Premolar",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -173,7 +161,6 @@
         },
         "25": {
             "name": "Upper Left Second Premolar",
-            "eruptionLevel": 1.0,
             "treatments": [
                 {
                     "date": "2023-01-20",
@@ -186,7 +173,6 @@
         },
         "26": {
             "name": "Upper Left First Molar",
-            "eruptionLevel": 0.5,
             "treatments": [
             ],
             "futuretreatments": [
@@ -194,7 +180,6 @@
         },
         "27": {
             "name": "Upper Left Second Molar",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -207,7 +192,6 @@
         },
         "28": {
             "name": "Upper Left Third Molar",
-            "eruptionLevel": 1.0,
             "treatments": [
                 {
                     "date": "2023-02-25",
@@ -220,7 +204,6 @@
         },
         "31": {
             "name": "Lower Left Central Incisor",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -233,7 +216,6 @@
         },
         "32": {
             "name": "Lower Left Lateral Incisor",
-            "eruptionLevel": 0.5,
             "treatments": [
             ],
             "futuretreatments": [
@@ -246,7 +228,6 @@
         },
         "33": {
             "name": "Lower Left Canine",
-            "eruptionLevel": 1.0,
             "treatments": [
                 {
                     "date": "2023-04-20",
@@ -264,7 +245,6 @@
         },
         "34": {
             "name": "Lower Left First Premolar",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -277,7 +257,6 @@
         },
         "35": {
             "name": "Lower Left Second Premolar",
-            "eruptionLevel": 1.0,
             "treatments": [
                 {
                     "date": "2023-01-30",
@@ -290,7 +269,6 @@
         },
         "36": {
             "name": "Lower Left First Molar",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -303,7 +281,6 @@
         },
         "37": {
             "name": "Lower Left Second Molar",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -316,7 +293,6 @@
         },
         "38": {
             "name": "Lower Left Third Molar",
-            "eruptionLevel": 1.0,
             "treatments": [
                 {
                     "date": "2023-02-15",
@@ -329,7 +305,6 @@
         },
         "41": {
             "name": "Lower Right Central Incisor",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -342,7 +317,6 @@
         },
         "42": {
             "name": "Lower Right Lateral Incisor",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -355,7 +329,6 @@
         },
         "43": {
             "name": "Lower Right Canine",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -368,7 +341,6 @@
         },
         "44": {
             "name": "Lower Right First Premolar",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -381,7 +353,6 @@
         },
         "45": {
             "name": "Lower Right Second Premolar",
-            "eruptionLevel": 1.0,
             "treatments": [
                 {
                     "date": "2023-01-25",
@@ -399,7 +370,6 @@
         },
         "46": {
             "name": "Lower Right First Molar",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -412,7 +382,6 @@
         },
         "47": {
             "name": "Lower Right Second Molar",
-            "eruptionLevel": 1.0,
             "treatments": [
             ],
             "futuretreatments": [
@@ -425,7 +394,6 @@
         },
         "48": {
             "name": "Lower Right Third Molar",
-            "eruptionLevel": 0.5,
             "treatments": [
                 {
                     "date": "2023-02-05",
