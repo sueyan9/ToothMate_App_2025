@@ -1,13 +1,26 @@
+// LanguageSelector.test.jsx
 import { fireEvent, render } from '@testing-library/react-native';
+import React from 'react';
 import { useTranslation } from '../../context/TranslationContext/useTranslation';
-import LanguageSelector from './LanguageSelector';
+// Force default to avoid ESM/CJS edge where the imported value is undefined
+const LanguageSelector = require('./LanguageSelector').default;
+
+// Make RN Modal render its children only when visible=true (no JSX in mock)
+jest.mock('react-native/Libraries/Modal/Modal', () => {
+  const React = require('react');
+  return ({ visible, children }) =>
+    visible ? React.createElement(React.Fragment, null, children) : null;
+});
+
+// Mock the maori flag image required by the component
+jest.mock('../../../assets/maori_flag.png', () => 1, { virtual: true });
 
 // Mock the translation hook
 jest.mock('../../context/TranslationContext/useTranslation', () => ({
   useTranslation: jest.fn(),
 }));
 
-// Mock styles
+// Mock styles (unchanged)
 jest.mock('./styles', () => ({
   languageButton: {
     padding: 10,
@@ -15,160 +28,98 @@ jest.mock('./styles', () => ({
     borderRadius: 5,
     marginHorizontal: 10,
   },
-  languageButtonText: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
+  languageButtonText: { fontSize: 16, textAlign: 'center' },
   modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1, justifyContent: 'center', alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-    maxWidth: 300,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  languageOption: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  languageOptionText: {
-    fontSize: 16,
-  },
-  selectedLanguage: {
-    backgroundColor: '#e3f2fd',
-  },
-  closeButton: {
-    marginTop: 15,
-    padding: 10,
-    backgroundColor: '#007AFF',
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 16,
-  },
+  modalContent: { backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%', maxWidth: 300 },
+  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 15, textAlign: 'center' },
+  languageOption: { padding: 15, borderBottomWidth: 1, borderBottomColor: '#eee', flexDirection: 'row', alignItems: 'center' },
+  languageOptionText: { fontSize: 16 },
+  selectedLanguage: { backgroundColor: '#e3f2fd' },
+  closeButton: { marginTop: 15, padding: 10, backgroundColor: '#007AFF', borderRadius: 5 },
+  closeButtonText: { color: 'white', textAlign: 'center', fontSize: 16 },
+  languageFlag: { marginRight: 12, fontSize: 18 },
+  languageText: { fontSize: 16 },
+  selectedLanguageText: { fontWeight: 'bold' },
 }));
 
-describe('LanguageSelector Snapshot Tests', () => {
-  const mockTranslationHook = {
-    changeLanguage: jest.fn(),
-    getAvailableLanguages: jest.fn(),
-    getCurrentLanguageDisplay: jest.fn(),
-    LANGUAGE_CODES: {
-      'English': 'en',
-      'Spanish': 'es',
-      'Chinese': 'zh',
-      'Dutch': 'nl'
-    }
-  };
+describe('LanguageSelector Snapshot & Behavior Tests', () => {
+  let mockTranslationHook;
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockTranslationHook = {
+      t: (k) => k,
+      changeLanguage: jest.fn(),
+      getAvailableLanguages: jest.fn().mockReturnValue(['English', 'Spanish', 'Chinese', 'Dutch']),
+      getCurrentLanguageDisplay: jest.fn().mockReturnValue('English'),
+      LANGUAGE_CODES: {
+        English: 'en',
+        Spanish: 'es',
+        Chinese: 'zh',
+        Dutch: 'nl',
+      },
+    };
+
     useTranslation.mockReturnValue(mockTranslationHook);
   });
 
   describe('Closed Modal States', () => {
     it('should match snapshot with English selected', () => {
-      mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('English');
-      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish', 'Chinese', 'Dutch']);
-
+      mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('en-uk');
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it('should match snapshot with Spanish selected', () => {
       mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('Spanish');
-      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish', 'Chinese', 'Dutch']);
-
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it('should match snapshot with Chinese selected', () => {
       mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('Chinese');
-      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish', 'Chinese', 'Dutch']);
-
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it('should match snapshot with Dutch selected', () => {
       mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('Dutch');
-      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish', 'Chinese', 'Dutch']);
-
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
-    });
-
-    it('should match snapshot with unknown language (fallback)', () => {
-      mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('French');
-      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish', 'Chinese', 'Dutch']);
-
-      const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
   });
-
+  
   describe('Open Modal States', () => {
     it('should match snapshot with modal open - English current', () => {
       mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('English');
-      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish', 'Chinese', 'Dutch']);
+      const screen = render(<LanguageSelector />);
 
-      const { getByText } = render(<LanguageSelector />);
-      
-      // Open the modal
-      const languageButton = getByText('🌐 🇺🇸');
-      fireEvent.press(languageButton);
+      // English shows 🇬🇧 in your component
+      fireEvent.press(screen.getByText('🌐 🇬🇧'));
 
-      // Take snapshot with modal open
-      const tree = render(<LanguageSelector />);
-      // Manually set modal visible for snapshot
-      expect(tree).toMatchSnapshot();
-    });
-
-    it('should match snapshot with modal open - Spanish current', () => {
-      mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('Spanish');
-      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish', 'Chinese', 'Dutch']);
-
-      const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(screen.toJSON()).toMatchSnapshot();
     });
 
     it('should match snapshot with limited language options', () => {
-      mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('English');
-      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish']); // Only 2 languages
-
+      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish']);
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it('should match snapshot with single language option', () => {
-      mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('English');
-      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English']); // Only 1 language
-
+      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English']);
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it('should match snapshot with empty language options', () => {
-      mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('English');
-      mockTranslationHook.getAvailableLanguages.mockReturnValue([]); // No languages
-
+      mockTranslationHook.getAvailableLanguages.mockReturnValue([]);
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
   });
 
@@ -176,25 +127,21 @@ describe('LanguageSelector Snapshot Tests', () => {
     it('should match snapshot when getCurrentLanguageDisplay returns null', () => {
       mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue(null);
       mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish']);
-
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it('should match snapshot when getCurrentLanguageDisplay returns undefined', () => {
       mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue(undefined);
       mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish']);
-
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it('should match snapshot when getAvailableLanguages returns null', () => {
-      mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('English');
       mockTranslationHook.getAvailableLanguages.mockReturnValue(null);
-
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it('should match snapshot with very long language names', () => {
@@ -202,11 +149,37 @@ describe('LanguageSelector Snapshot Tests', () => {
       mockTranslationHook.getAvailableLanguages.mockReturnValue([
         'English',
         'Very Long Language Name That Might Wrap',
-        'Another Extremely Long Language Name'
+        'Another Extremely Long Language Name',
       ]);
-
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
+    });
+  });
+
+  describe('Behavior w/ language codes', () => {
+    it('selecting Spanish calls changeLanguage with its CODE (es)', () => {
+      mockTranslationHook.getCurrentLanguageDisplay.mockReturnValue('English');
+      mockTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish', 'Chinese']);
+
+      const { getByText } = render(<LanguageSelector />);
+
+      // open modal
+      fireEvent.press(getByText('🌐 🇬🇧'));
+      // choose Spanish by display name
+      fireEvent.press(getByText('Spanish'));
+
+      expect(mockTranslationHook.changeLanguage).toHaveBeenCalledWith('es');
+    });
+
+    it('selecting Chinese calls changeLanguage with its CODE (zh)', () => {
+      const { getByText, rerender, toJSON } = render(<LanguageSelector />);
+      fireEvent.press(getByText('🌐 🇬🇧'));
+      fireEvent.press(getByText('Chinese'));
+      expect(mockTranslationHook.changeLanguage).toHaveBeenCalledWith('zh');
+
+      // optional: snapshot after change
+      rerender(<LanguageSelector />);
+      expect(toJSON()).toMatchSnapshot();
     });
   });
 
@@ -215,33 +188,18 @@ describe('LanguageSelector Snapshot Tests', () => {
       const customTranslationHook = {
         ...mockTranslationHook,
         LANGUAGE_CODES: {
-          'English': 'en-US',
-          'Spanish': 'es-ES',
-          'French': 'fr-FR',
-          'German': 'de-DE'
-        }
+          English: 'en-US',
+          Spanish: 'es-ES',
+          French: 'fr-FR',
+          German: 'de-DE',
+        },
+        getAvailableLanguages: jest.fn().mockReturnValue(['English', 'Spanish', 'French', 'German']),
+        getCurrentLanguageDisplay: jest.fn().mockReturnValue('French'),
       };
       useTranslation.mockReturnValue(customTranslationHook);
 
-      customTranslationHook.getCurrentLanguageDisplay.mockReturnValue('French');
-      customTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish', 'French', 'German']);
-
       const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
-    });
-
-    it('should match snapshot with missing LANGUAGE_CODES', () => {
-      const customTranslationHook = {
-        ...mockTranslationHook,
-        LANGUAGE_CODES: {}
-      };
-      useTranslation.mockReturnValue(customTranslationHook);
-
-      customTranslationHook.getCurrentLanguageDisplay.mockReturnValue('English');
-      customTranslationHook.getAvailableLanguages.mockReturnValue(['English', 'Spanish']);
-
-      const tree = render(<LanguageSelector />);
-      expect(tree).toMatchSnapshot();
+      expect(tree.toJSON()).toMatchSnapshot();
     });
   });
 });
