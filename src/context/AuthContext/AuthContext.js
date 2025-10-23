@@ -42,15 +42,19 @@ const user = dispatch => async () => {
 const tryLocalSignin = dispatch => async () => {
   const token = await AsyncStorage.getItem('token');
   const id = await AsyncStorage.getItem('id');
-  const parentId = await AsyncStorage.getItem('parentId');
+  const parentId = await AsyncStorage.getItem('parentId');  
+
+  console.log('tryLocalSignin - token:', token);
+  console.log('tryLocalSignin - id:', id);
+  console.log('tryLocalSignin - parentId:', parentId);
   if (token) {
+
+    const isChildResponse = await axiosApi.get(`/isChild/${id}`);
+    console.log('isChild response:', isChildResponse.data);
+    const isChild = isChildResponse.data.isChild;
+
     if (id) {
-      /*
-      const response = await axiosApi.post("/user", { token });
-      dispatch({ type: "signin", payload: response.data });
-      navigate("Account");
-      */
-      if (!parentId) {
+      if (!isChild) {
         dispatch({ type: 'signin', payload: { token, id } });
         navigate('mainFlow', { screen: 'AccountFlow' });
       } else {
