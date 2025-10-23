@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -130,6 +131,8 @@ const HomeScreen = () => {
                 if(details?.nhi) {
                     await getNextAppointment(details, childDetails);
                 }
+
+                await AsyncStorage.removeItem('activeProfileFirstName');
             } catch (error) {
                 console.error('Error fetching user data:', error);
             } finally {
