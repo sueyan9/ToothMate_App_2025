@@ -988,18 +988,23 @@ const {
 
             // Store active child profile meta
             try {
-              const currentId = await AsyncStorage.getItem('id');
-              if (currentId) {
-                await AsyncStorage.setItem('parentId', currentId);
-              }
+                const currentId = await AsyncStorage.getItem('id');
 
-              await AsyncStorage.setItem('id', childId);
-              await AsyncStorage.setItem('activeProfileName', `${selectedChild.firstname} ${selectedChild.lastname}`);
-              await AsyncStorage.setItem('activeProfileFirstName', `${selectedChild.firstname}`);
-              await AsyncStorage.setItem('activeProfileUsername', selectedChild.email || selectedChild.nhi || '');
-              await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedChild.profile_picture ?? -1));
-              await AsyncStorage.setItem('currentAccountType', 'child');
-              // Ensure parentId is available for returning
+                // CRITICAL FIX: Only set parentId if it doesn't already exist
+                const existingParentId = await AsyncStorage.getItem('parentId');
+                if (!existingParentId && currentId) {
+                    // This is a parent switching to child for the first time
+                    await AsyncStorage.setItem('parentId', currentId);
+                }
+                // If parentId already exists, we're switching between children
+                // so DON'T overwrite it
+
+                await AsyncStorage.setItem('id', childId);
+                await AsyncStorage.setItem('activeProfileName', `${selectedChild.firstname} ${selectedChild.lastname}`);
+                await AsyncStorage.setItem('activeProfileFirstName', `${selectedChild.firstname}`);
+                await AsyncStorage.setItem('activeProfileUsername', selectedChild.email || selectedChild.nhi || '');
+                await AsyncStorage.setItem('activeProfilePictureIndex', String(selectedChild.profile_picture ?? -1));
+                await AsyncStorage.setItem('currentAccountType', 'child');
               
             } catch (e) {
               console.error('Error saving active child profile to storage:', e);

@@ -273,37 +273,45 @@ const ChildAccountScreen = ({ navigation }) => {
             setShowProfileSwitchModal(false);
             
             try {
-              const currentId = await AsyncStorage.getItem('id');
-              
               if (accountType === 'parent') {
-                // Switching to parent account
-                await AsyncStorage.setItem('id', accountId);
-                await AsyncStorage.removeItem('parentId');
-                await AsyncStorage.setItem('currentAccountType', 'parent');
-                
-                // Clear active profile information
-                await AsyncStorage.removeItem('activeProfileId');
-                await AsyncStorage.removeItem('activeProfileName');
-                await AsyncStorage.removeItem('activeProfileUsername');
-                await AsyncStorage.removeItem('activeProfilePictureIndex');
-                await AsyncStorage.removeItem('activeProfileFirstName');
-                
-                navigation.reset({
-                  index: 0,
-                  routes: [{ name: 'mainFlow' }],
-                });
+                // Switching back to parent account
+                const parentId = await AsyncStorage.getItem('parentId');
+
+                if (parentId) {
+                  await AsyncStorage.setItem('id', parentId);
+                  await AsyncStorage.removeItem('parentId'); // Clear parentId when returning to parent
+                  await AsyncStorage.setItem('currentAccountType', 'parent');
+
+                  // Clear active profile information
+                  await AsyncStorage.removeItem('activeProfileId');
+                  await AsyncStorage.removeItem('activeProfileName');
+                  await AsyncStorage.removeItem('activeProfileUsername');
+                  await AsyncStorage.removeItem('activeProfilePictureIndex');
+                  await AsyncStorage.removeItem('activeProfileFirstName');
+
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'mainFlow' }],
+                  });
+                } else {
+                  Alert.alert('Error', 'Parent ID not found');
+                }
               } else {
                 // Switching to another child account
-                await AsyncStorage.setItem('parentId', currentId);
+                // CRITICAL FIX: Don't update parentId when switching between children
+                const existingParentId = await AsyncStorage.getItem('parentId');
+
                 await AsyncStorage.setItem('id', accountId);
                 await AsyncStorage.setItem('currentAccountType', 'child');
-                
+
+                // parentId should remain unchanged
+
                 // Clear old active profile information
                 await AsyncStorage.removeItem('activeProfileId');
                 await AsyncStorage.removeItem('activeProfileName');
                 await AsyncStorage.removeItem('activeProfileUsername');
                 await AsyncStorage.removeItem('activeProfilePictureIndex');
-                
+
                 navigation.reset({
                   index: 0,
                   routes: [{ name: 'childFlow' }],
