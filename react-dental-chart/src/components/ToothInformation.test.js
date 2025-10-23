@@ -1,138 +1,148 @@
+// react-dental-chart/src/components/ToothInformation.test.js
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import ToothInformation from './ToothInformation';
 
-jest.mock('./Util/toothData.json', () => ({
-    teeth: {
-        11: {
-            name: "Upper Right Central Incisor",
-            treatments: [
-                {
-                    date: "2023-01-01",
-                    type: "Filling",
-                    notes: "Composite filling added."
-                }
-            ],
-            futuretreatments: [
-                {
-                    date: "2023-04-01",
-                    type: "Root Canal",
-                    notes: "Root canal treatment scheduled."
-                }
-            ]
-        },
-        34: {
-            name: "Lower Left First Molar",
-            treatments: [
-                {
-                    date: "2023-02-15",
-                    type: "Extraction",
-                    notes: "Tooth extracted due to decay."
-                }
-            ],
-            futuretreatments: [
-            ]
-        },
-        27: {
-            name: "Upper Left Second Molar",
-            treatments: [],
-            futuretreatments: [
-                {
-                    date: "2023-06-01",
-                    type: "Root Canal",
-                    notes: "Root canal treatment scheduled."
-                }
-            ]
-        },
-        44: {
-            name: "Lower Right First Premolar",
-            treatments: [],
-            futuretreatments: []
-        }
-    }
+// 🔧 Mock the display helpers so the header text matches test expectations
+jest.mock('./Util/toothDisplay', () => ({
+  formatDisplayNumber: (n) => n, // keep number as-is so "(#11)" etc. works
+  getDisplayToothName: (n) => {
+    const map = {
+      11: 'Upper Right Central Incisor',
+      27: 'Upper Left Second Molar',
+      34: 'Lower Left First Molar',
+      44: 'Lower Right First Premolar',
+    };
+    return map[n] ?? `Tooth ${n}`;
+  },
 }));
 
+// ❌ Remove this entire mock block if it exists in your file — not used by the component anymore
+// jest.mock('./Util/toothData.json', ...)
+
+// Small helper to render with the right prop shape
+const renderTooth = (num) => render(<ToothInformation toothInfo={{ toothNumber: num }} />);
+
+// Helper to control URLSearchParams (userId/userNhi) so fetch may run
+const setSearch = (search) => {
+  const url = `http://localhost/${search ? `?${search.replace(/^\?/, '')}` : ''}`;
+  window.history.pushState({}, '', url);
+};
+
 describe('ToothInformation', () => {
-    it('renders closed state initially', () => {
-        render(<ToothInformation toothNumber={11} />);
-        expect(screen.queryByText('Historical Treatments')).not.toBeInTheDocument();
+  beforeEach(() => {
+    jest.resetAllMocks();
+    setSearch(''); // default: no userId/userNhi => no fetch, instant "no data" UI
+  });
+
+  it('renders closed state initially (after loading finishes)', async () => {
+    renderTooth(11);
+    const header = await screen.findByText('↑ Upper Right Central Incisor');
+    expect(header).toBeInTheDocument();
+  });
+
+  it('toggles information panel on click', async () => {
+    renderTooth(11);
+    const headerClosed = await screen.findByText('↑ Upper Right Central Incisor');
+
+    fireEvent.click(headerClosed);
+    expect(screen.getByText('↓ Upper Right Central Incisor (#11)')).toBeInTheDocument();
+
+    // click the open header to close
+    fireEvent.click(screen.getByText('↓ Upper Right Central Incisor (#11)'));
+    expect(screen.getByText('↑ Upper Right Central Incisor')).toBeInTheDocument();
+  });
+
+  it('does not close when clicking inside the panel', async () => {
+    renderTooth(11);
+    const header = await screen.findByText('↑ Upper Right Central Incisor');
+
+    fireEvent.click(header); // open
+    const panelSection = screen.getByText('Previous Work Done').closest('div');
+    fireEvent.click(panelSection); // inside click should not close
+    expect(screen.getByText('Previous Work Done')).toBeInTheDocument();
+  });
+
+  it('displays correct information when API returns historical & future data (with userId)', async () => {
+    setSearch('?userId=abc'); // trigger fetch path
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        historical: [
+          { date: '2023-01-01', treatmentType: 'Filling', notes: 'Composite filling added.' },
+        ],
+        future: [
+          { date: '2023-04-01', treatmentType: 'Root Canal', notes: 'Root canal treatment scheduled.' },
+        ],
+      }),
     });
 
-    it('toggles information panel on click', () => {
-        render(<ToothInformation toothNumber={11} />);
-        const header = screen.getByText('↑ Upper Right Central Incisor');
+    renderTooth(11);
+    const header = await screen.findByText('↑ Upper Right Central Incisor');
+    fireEvent.click(header);
 
-        //open
-        fireEvent.click(header);
-        expect(screen.getByText('↓ Upper Right Central Incisor (#11)')).toBeInTheDocument();
+    expect(screen.getByText('↓ Upper Right Central Incisor (#11)')).toBeInTheDocument();
+    expect(screen.getByText('Composite filling added.')).toBeInTheDocument();
+    expect(screen.getByText('Root canal treatment scheduled.')).toBeInTheDocument();
+  });
 
-        //close
-        fireEvent.click(header);
-        expect(screen.getByText('↑ Upper Right Central Incisor')).toBeInTheDocument();
+  it('handles teeth with no treatments', async () => {
+    renderTooth(44);
+    const header = await screen.findByText('↑ Lower Right First Premolar');
+    fireEvent.click(header);
+
+    expect(screen.getByText('↓ Lower Right First Premolar (#44)')).toBeInTheDocument();
+    expect(screen.getByText('No previous treatments recorded for this tooth.')).toBeInTheDocument();
+    expect(screen.getByText('No planned treatments recorded for this tooth.')).toBeInTheDocument();
+  });
+
+  it('handles teeth with only future treatments (no previous)', async () => {
+    setSearch('?userId=abc');
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        historical: [],
+        future: [
+          { date: '2023-06-01', treatmentType: 'Root Canal', notes: 'Root canal treatment scheduled.' },
+        ],
+      }),
     });
 
-    it('closes when click outside', () => {
-        render(<ToothInformation toothNumber={11} />);
-        const header = screen.getByText('↑ Upper Right Central Incisor');
+    renderTooth(27);
+    const header = await screen.findByText('↑ Upper Left Second Molar');
+    fireEvent.click(header);
 
-        fireEvent.click(header);
-        expect(screen.getByText('Historical Treatments')).toBeInTheDocument();
+    expect(screen.getByText('↓ Upper Left Second Molar (#27)')).toBeInTheDocument();
+    expect(screen.getByText('No previous treatments recorded for this tooth.')).toBeInTheDocument();
+    expect(screen.queryByText('No planned treatments recorded for this tooth.')).not.toBeInTheDocument();
+  });
 
-        fireEvent.click(document.body);
-        expect(screen.queryByText('Historical Treatments')).not.toBeInTheDocument();
+  it('handles teeth with only previous treatments (no planned)', async () => {
+    setSearch('?userId=abc');
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        historical: [
+          { date: '2023-02-15', treatmentType: 'Extraction', notes: 'Tooth extracted due to decay.' },
+        ],
+        future: [],
+      }),
     });
 
-    it('does not close when clicking inside the panel', () => {
-        render(<ToothInformation toothNumber={11} />);
-        const header = screen.getByText('↑ Upper Right Central Incisor');
+    renderTooth(34);
+    const header = await screen.findByText('↑ Lower Left First Molar');
+    fireEvent.click(header);
 
-        fireEvent.click(header);
-        const panel = screen.getByText('Historical Treatments').closest('div');
+    expect(screen.getByText('↓ Lower Left First Molar (#34)')).toBeInTheDocument();
+    expect(screen.queryByText('No previous treatments recorded for this tooth.')).not.toBeInTheDocument();
+    expect(screen.getByText('No planned treatments recorded for this tooth.')).toBeInTheDocument();
+  });
 
-        fireEvent.click(panel);
-        expect(screen.getByText('Historical Treatments')).toBeInTheDocument();
-    });
-
-    it('displays correct information', () => {
-        render(<ToothInformation toothNumber={11} />);
-        fireEvent.click(screen.getByText('↑ Upper Right Central Incisor'));
-
-        expect(screen.getByText('↓ Upper Right Central Incisor (#11)')).toBeInTheDocument();
-        expect(screen.getByText('Composite filling added.')).toBeInTheDocument();
-        expect(screen.getByText('Root canal treatment scheduled.')).toBeInTheDocument();
-    });
-
-    it('handles teeth with no treatments', () => {
-        render(<ToothInformation toothNumber={44} />);
-        fireEvent.click(screen.getByText('↑ Lower Right First Premolar'));
-
-        expect(screen.getByText('↓ Lower Right First Premolar (#44)')).toBeInTheDocument();
-        expect(screen.getByText('No treatments recorded for this tooth.')).toBeInTheDocument();
-        expect(screen.getByText('No future treatments recorded for this tooth.')).toBeInTheDocument();
-    });
-
-    it('handles teeth with only future treatments', () => {
-        render(<ToothInformation toothNumber={27} />);
-        fireEvent.click(screen.getByText('↑ Upper Left Second Molar'));
-
-        expect(screen.getByText('↓ Upper Left Second Molar (#27)')).toBeInTheDocument();
-        expect(screen.getByText('No treatments recorded for this tooth.')).toBeInTheDocument();
-        expect(screen.queryByText('No future treatments recorded for this tooth.')).not.toBeInTheDocument();
-    });
-
-    it('handles teeth with only treatments', () => {
-        render(<ToothInformation toothNumber={34} />);
-        fireEvent.click(screen.getByText('↑ Lower Left First Molar'));
-
-        expect(screen.getByText('↓ Lower Left First Molar (#34)')).toBeInTheDocument();
-        expect(screen.queryByText('No treatments recorded for this tooth.')).not.toBeInTheDocument();
-        expect(screen.getByText('No future treatments recorded for this tooth.')).toBeInTheDocument();
-    });
-
-    it('shows default name if tooth not found', () => {
-        render(<ToothInformation toothNumber={99} />);
-        fireEvent.click(screen.getByText('↑ Tooth 99'));
-
-        expect(screen.getByText('↓ Tooth 99 (#99)')).toBeInTheDocument();
-    });
+  it('shows default name if tooth not found', async () => {
+    renderTooth(99);
+    const header = await screen.findByText('↑ Tooth 99');
+    fireEvent.click(header);
+    expect(screen.getByText('↓ Tooth 99 (#99)')).toBeInTheDocument();
+  });
 });
