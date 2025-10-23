@@ -3,8 +3,9 @@ import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { useContext, useState } from 'react';
-import { Alert, Image, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import axiosApi from '../../api/axios';
+import { Context as AccessContext } from '../../context/AccessContext/AccessContext';
 import { Context as AppointmentContext } from '../../context/AppointmentContext/AppointmentContext';
 import { Context as TreatmentContext } from '../../context/TreatmentContext/TreatmentContext';
 
@@ -16,6 +17,13 @@ const UpdateButton = () => {
     const {confirmAppointment} = useContext(AppointmentContext);
     const { createTreatment} = useContext(TreatmentContext);
     const [isLoading, setIsLoading] = useState(false);
+
+    const accessContext = useContext(AccessContext);
+    const { 
+    state: accessState = { isMasterAdmin: false}
+    } = accessContext || {};
+
+    const { isMasterAdmin } = accessState;
 
     const nz = (datetime) => {
             return dayjs(datetime)
@@ -29,31 +37,25 @@ const UpdateButton = () => {
             console.log(`[REQ] ${label}`, {baseURL: base, url, cfgOrBody});
         };
 
-    const appointmentId = "68e300017e788723fccaa7d2";
-
     const handleUpdateInformation = async () => {
-
-        if (!appointmentId) {
-            Alert.alert('Error', 'AppointmentID is missing!');
-            return;
-        }
+        if (isMasterAdmin) {
         setIsLoading(true);
         try {
-            await confirmAppointment(appointmentId);
+            await confirmAppointment();
 
             await createTreatment(
                 'ABY0987',           // userNhi
-                '11',                 // toothNumber
-                'Filling',           // treatmentType
+                '16',                 // toothNumber
+                'Implant',           // treatmentType
                 new Date('2023-10-21'),          // date
-                'Root canal notes',
+                'Removed affected tooth and placed endosteal implant.',
                 true   // notes
             );
 
             const appointmentData = {
                 nhi: "ABY0987",
                 purpose: "Root Canal",
-                dentist: "Dr. Chen", //not workin
+                dentist: "Dr. Sarah Michael", //not workin
                 notes: "First appointment for root canal treatment.",
                 startLocal: '2025-12-29T09:30:00.000Z',
                 endLocal: '2025-12-29T10:00:00.000Z',
@@ -77,6 +79,7 @@ const UpdateButton = () => {
             setIsLoading(false);
             
         }
+    }
     };
 
     return (

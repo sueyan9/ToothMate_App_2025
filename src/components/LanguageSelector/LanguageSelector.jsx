@@ -74,7 +74,7 @@ const LanguageSelector = () => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{t('Select Language')}</Text>
             
-            {getAvailableLanguages().map((language) => (
+            {(getAvailableLanguages() || []).map((language) => (
               <TouchableOpacity
                 key={language}
                 style={[

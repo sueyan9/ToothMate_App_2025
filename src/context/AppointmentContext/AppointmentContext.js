@@ -78,47 +78,91 @@ const getNextAppointment = dispatch => {
 };
 
 const confirmAppointment = dispatch => {
-  return async (appointmentId, nhi) => {
+  return async () => {
     try {
-      if (!appointmentId) {
-        throw new Error('Appointment ID is required');
+      // Calculate date 3 days ago
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+      
+      // Fetch ALL appointments
+      const response = await axiosApi.get('/Appointments');
+      const allAppointments = response.data;
+      
+      // Filter appointments CREATED in the past 3 days (not scheduled for the past 3 days)
+      const recentAppointments = allAppointments.filter(apt => {
+        // Use createdAt if available, otherwise extract timestamp from MongoDB _id
+        const createdDate = apt.createdAt 
+          ? new Date(apt.createdAt) 
+          : new Date(parseInt(apt._id.substring(0, 8), 16) * 1000);
+        return createdDate >= threeDaysAgo;
+      });
+      
+      console.log(`Found ${recentAppointments.length} appointments in the past 3 days`);
+      
+      // Confirm each recent appointment
+      const confirmedAppointments = [];
+      for (const apt of recentAppointments) {
+        try {
+          const confirmResponse = await axiosApi.patch(
+            `/Appointments/${apt._id}/confirm`,
+            { confirmed: true }
+          );
+          confirmedAppointments.push(confirmResponse.data);
+          console.log(`Appointment ${apt._id} confirmed successfully`);
+        } catch (err) {
+          console.error(`Failed to confirm appointment ${apt._id}:`, err);
+        }
       }
       
-      const response = await axiosApi.patch(
-        `/Appointments/${appointmentId}/confirm`,
-        { confirmed: true }
-      );
-      
-      dispatch({ type: 'confirm_appointment', payload: response.data });
+      dispatch({ type: 'confirm_appointments', payload: confirmedAppointments });
 
-      console.log(`Appointment ${appointmentId} confirmed successfully`);
-
-      return response.data;
+      return confirmedAppointments;
     } catch (error) {
-      console.error('Error confirming appointment:', error);
+      console.error('Error confirming appointments:', error);
       throw error;
     }
   };
 };
 
 const unconfirmAppointment = dispatch => {
-  return async (appointmentId, nhi) => {
+  return async () => {
     try {
-      if (!appointmentId) {
-        throw new Error('Appointment ID is required');
+      // Calculate date 3 days ago
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+      
+      // Fetch ALL appointments
+      const response = await axiosApi.get('/Appointments');
+      const allAppointments = response.data;
+      
+      // Filter appointments CREATED in the past 3 days (not scheduled for the past 3 days)
+      const recentAppointments = allAppointments.filter(apt => {
+        const createdDate = new Date(apt.createdAt || apt.created_at);
+        return createdDate >= threeDaysAgo;
+      });
+      
+      console.log(`Found ${recentAppointments.length} appointments in the past 3 days to unconfirm`);
+      
+      // Unconfirm each recent appointment
+      const unconfirmedAppointments = [];
+      for (const apt of recentAppointments) {
+        try {
+          const unconfirmResponse = await axiosApi.patch(
+            `/Appointments/${apt._id}/confirm`,
+            { confirmed: false }
+          );
+          unconfirmedAppointments.push(unconfirmResponse.data);
+          console.log(`Appointment ${apt._id} unconfirmed successfully`);
+        } catch (err) {
+          console.error(`Failed to unconfirm appointment ${apt._id}:`, err);
+        }
       }
       
-      const response = await axiosApi.patch(
-        `/Appointments/${appointmentId}/confirm`,
-        { confirmed: false }
-      );
-      
-      dispatch({ type: 'unconfirm_appointment', payload: response.data });
+      dispatch({ type: 'unconfirm_appointments', payload: unconfirmedAppointments });
 
-      console.log(`Appointment ${appointmentId} unconfirmed successfully`);
-      return response.data;
+      return unconfirmedAppointments;
     } catch (error) {
-      console.error('Error unconfirming appointment:', error);
+      console.error('Error unconfirming appointments:', error);
       throw error;
     }
   };
