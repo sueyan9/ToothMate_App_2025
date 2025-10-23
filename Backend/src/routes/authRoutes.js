@@ -5,7 +5,7 @@ const User = mongoose.model("User");
 const bcrypt = require("bcrypt");
 
 const router = express.Router();
-const MASTER_ADMIN_NHIS = ['ABY0987', 'CBD1234', 'ALA1481', 'LOL0987', 'JIM1234'];
+const MASTER_ADMIN_NHIS = ['ABY0987', 'CBD1234', 'ALA1481', 'LOL0987', 'JIM1234', 'POE4762'];
 
 //Whenever someone makes a POST request to /signup, the following callback function will be called
 router.post("/signup", async (req, res) => {
