@@ -5,7 +5,7 @@ const User = mongoose.model("User");
 const bcrypt = require("bcrypt");
 
 const router = express.Router();
-const MASTER_ADMIN_NHI = 'ABY0987';
+const MASTER_ADMIN_NHIS = ['ABY0987', 'CBD1234', 'ALA1481', 'LOL0987', 'JIM1234'];
 
 //Whenever someone makes a POST request to /signup, the following callback function will be called
 router.post("/signup", async (req, res) => {
@@ -120,7 +120,8 @@ const verifyMasterAdmin = async (req, res, next) => {
 
     const admin = await User.findById(adminId);
     
-    if (!admin || admin.nhi.toUpperCase() !== MASTER_ADMIN_NHI.toUpperCase()) {
+    // Check if user's NHI is in the master admin array
+    if (!admin || !MASTER_ADMIN_NHIS.includes(admin.nhi.toUpperCase())) {
       return res.status(403).json({ error: "Unauthorized: Admin access required" });
     }
 
@@ -136,7 +137,7 @@ router.post("/admin/grant-access", verifyMasterAdmin, async (req, res) => {
     // Update all users EXCEPT the master admin to have restricted_access = true
     const result = await User.updateMany(
       { 
-        nhi: { $ne: MASTER_ADMIN_NHI.toUpperCase() } 
+        nhi: { $nin: MASTER_ADMIN_NHIS.map(nhi => nhi.toUpperCase()) } 
       },
       { 
         $set: { restricted_access: true } 
@@ -160,7 +161,7 @@ router.post("/admin/revoke-access", verifyMasterAdmin, async (req, res) => {
     // Update all users EXCEPT the master admin to have restricted_access = false
     const result = await User.updateMany(
       { 
-        nhi: { $ne: MASTER_ADMIN_NHI.toUpperCase() } 
+        nhi: { $nin: MASTER_ADMIN_NHIS.map(nhi => nhi.toUpperCase()) } 
       },
       { 
         $set: { restricted_access: false } 

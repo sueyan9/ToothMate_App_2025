@@ -12,8 +12,6 @@ const ResetButton = () => {
     const {deleteTestTreatment } = useContext(TreatmentContext);
     const [isLoading, setIsLoading] = useState(false);
 
-    const appointmentId = "68e300017e788723fccaa7d2";
-
     const deleteTestAppointments = async () => {
         try {
             const response = await axiosApi.delete('/Appointments/test-data/all');
@@ -30,14 +28,10 @@ const ResetButton = () => {
     };
 
     const handleUpdateInformation = async () => {
-        if (!appointmentId) {
-            Alert.alert('Error', 'AppointmentID is missing!');
-            return;
-        }
         setIsLoading(true);
         try {
             await deleteTestAppointments();
-            await unconfirmAppointment(appointmentId);
+            await unconfirmAppointment();
             await deleteTestTreatment();
 
             const currentIndex = navigation.getState().index;

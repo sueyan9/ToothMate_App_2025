@@ -8,7 +8,7 @@ import axiosApi from '../../api/axios'; // Add your axios instance import
     const CHECK_INTERVAL = 10000; // Check backend every 3 seconds
 
     // Define the master admin NHI who controls access
-    const MASTER_ADMIN_NHI = 'ABY0987'; // Change this to your actual admin NHI
+    const MASTER_ADMIN_NHIS = ['ABY0987', 'CBD1234', 'ALA1481', 'LOL0987', 'JIM1234']; // Change this to your actual admin NHI
 
     const accessReducer = (state, action) => {
     switch (action.type) {
@@ -48,7 +48,7 @@ import axiosApi from '../../api/axios'; // Add your axios instance import
 
     // Check if current user is the master admin
     const checkIfMasterAdmin = (nhi) => {
-    return nhi?.toUpperCase() === MASTER_ADMIN_NHI.toUpperCase();
+        return MASTER_ADMIN_NHIS.map(n => n.toUpperCase()).includes(nhi?.toUpperCase());
     };
 
     export const AccessProvider = ({ children, onAccessRevoked, navigation }) => {
