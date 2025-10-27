@@ -1,5 +1,6 @@
+import { ArrowLeft } from 'lucide-react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from 'react-router-dom';
 // ===== teeth components =====
 import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine';
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor';
@@ -38,7 +39,6 @@ import { UpperRightWisdomTooth } from './components/Teeth/UpperRightWisdomTooth'
 import FilterMenu from './components/FilterMenu';
 import MiniMouth from './components/Util/MiniMouth';
 import WholeMouth from './components/WholeMouth';
-import WholeMouthKid from './components/WholeMouthKid';
 
 function useUserId() {
   const [userId, setUserId] = React.useState(null);
