@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 // ===== teeth components =====
 import { LowerLeftCanine } from './components/Teeth/LowerLeftCanine';
 import { LowerLeftCentralIncisor } from './components/Teeth/LowerLeftCentralIncisor';
@@ -151,13 +152,13 @@ const API_BASE_URL =
     (typeof window !== 'undefined' && window.API_BASE_URL) ||
     (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
     (typeof process !== 'undefined' && process.env && (process.env.REACT_APP_API_BASE_URL || process.env.API_BASE_URL)) ||
-    'http://172.29.20.208:3000/';
+    'https://toothmate-app-2025.onrender.com';
 
 
 function normalizeTreatments(payload) {
   console.log('Normalizing payload:', payload);
 
-  // 如果后端直接返回 { historical: [], future: [] } 格式
+  // return { historical: [], future: [] }
   if (payload?.historical || payload?.future) {
     return {
       historical: Array.isArray(payload.historical) ? payload.historical : [],
@@ -166,14 +167,14 @@ function normalizeTreatments(payload) {
     };
   }
 
-  // 如果后端返回的是治疗记录数组，需要按时间分类
+  // classify as date
   const all = Array.isArray(payload) ? payload : [];
   const now = new Date();
   const historical = [];
   const future = [];
 
   for (const t of all) {
-    // 根据 completed 字段和 date 字段分类
+    // completed / date
     if (t.completed || (t.date && new Date(t.date) < now)) {
       historical.push(t);
     } else {
@@ -184,7 +185,7 @@ function normalizeTreatments(payload) {
   console.log('Normalized data:', { historical, future });
   return { historical, future, eruptionLevels: {} };
 }
-// 在 uniqueKeysFrom 函数之前添加这个函数
+// add before  uniqueKeysFrom
 function normalizeTreatmentType(treatmentType) {
   const typeMap = {
 
@@ -208,7 +209,7 @@ function normalizeTreatmentType(treatmentType) {
   };
   return typeMap[treatmentType] || treatmentType?.toLowerCase();
 }
-// 用于 UI 上展示的键集合
+//  UI deisplay key set
 function uniqueKeysFrom(list) {
   const s = new Set();
   (Array.isArray(list) ? list : []).forEach((item) => {
@@ -226,7 +227,7 @@ function uniqueKeysFrom(list) {
   console.log('Final unique keys:', result);
   return result;
 }
-// 获取治疗数据的函数
+// get treatment
 async function fetchTreatmentsByUser(idOrNhi) {
   if (!API_BASE_URL) throw new Error('API_BASE_URL is not configured');
   const base = API_BASE_URL.replace(/\/$/, '');
