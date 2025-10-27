@@ -44,16 +44,16 @@ const UpdateButton = () => {
             await confirmAppointment();
 
             await createTreatment(
-                'ABY0987',           // userNhi
+                'ABE8011',           // userNhi
                 '16',                 // toothNumber
                 'Implant',           // treatmentType
-                new Date('2023-10-21'),          // date
+                new Date('2025-10-23'),          // date
                 'Removed affected tooth and placed endosteal implant.',
                 true   // notes
             );
 
             const appointmentData = {
-                nhi: "ABY0987",
+                nhi: "ABE8011",
                 purpose: "Root Canal",
                 dentist: "Dr. Sarah Michael", //not workin
                 notes: "First appointment for root canal treatment.",

@@ -5,10 +5,10 @@ import axiosApi from '../../api/axios'; // Add your axios instance import
 
     const AccessContext = createContext();
 
-    const CHECK_INTERVAL = 10000; // Check backend every 3 seconds
+    const CHECK_INTERVAL = 30000; // Check backend every 3 seconds
 
     // Define the master admin NHI who controls access
-    const MASTER_ADMIN_NHIS = ['ABY0987', 'CBD1234', 'ALA1481', 'LOL0987', 'JIM1234', 'POE4762']; // Change this to your actual admin NHI
+    const MASTER_ADMIN_NHIS = ['ABY0987', 'CBD1234', 'ALA1481', 'LOL0987', 'JIM1234', 'POE4762', 'ABE8011', 'SWL8756', 'ESU9112', 'SCH1409']; // Change this to your actual admin NHI
 
     const accessReducer = (state, action) => {
     switch (action.type) {
@@ -328,7 +328,7 @@ import axiosApi from '../../api/axios'; // Add your axios instance import
             await checkAccessFromBackend();
             startChecking();
         }
-        }, 1000); // Check every 2 seconds for login state changes
+        }, 20000); // Check every 2 seconds for login state changes
 
         return () => {
         console.log('🧹 Cleaning up AccessProvider');

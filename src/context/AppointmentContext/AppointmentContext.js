@@ -82,7 +82,7 @@ const confirmAppointment = dispatch => {
     try {
       // Calculate date 3 days ago
       const threeDaysAgo = new Date();
-      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 1);
       
       // Fetch ALL appointments
       const response = await axiosApi.get('/Appointments');
@@ -129,7 +129,7 @@ const unconfirmAppointment = dispatch => {
     try {
       // Calculate date 3 days ago
       const threeDaysAgo = new Date();
-      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 1);
       
       // Fetch ALL appointments
       const response = await axiosApi.get('/Appointments');

@@ -27,7 +27,6 @@ const appointmentSchema = new mongoose.Schema({
   dentist: {
     name: {
       type: String,
-      enum: ['Dr. Sarah Michaels', 'Dr. Terry Crews'],
       required: false,
     },
   },
