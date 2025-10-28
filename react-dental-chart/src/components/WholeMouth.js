@@ -6,6 +6,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import '../styles.css';
 import { getToothPositionFromData } from './Util/getToothPositionFromData';
+import { Html } from '@react-three/drei';
+
 //define material for treatment color
 const toothMaterials = {
     filling: new THREE.MeshStandardMaterial({ color: '#C00A0A', roughness: 0.1, metalness: 0.1 }),
@@ -179,9 +181,17 @@ const WholeMouthModel = ({
             />
         );
     };
-// 如果数据还没加载完成，显示加载状态或默认模型
+// shows  laoding while treatment not loaded yet
     if (!isDataLoaded) {
-        return null;
+        return (
+            <Html center>
+                <div style={{ padding: 8, background: 'rgba(234, 241, 247, 0.85)', borderRadius: 8 }}>
+        <span style={{ color: 'rgb(53, 53, 53)', fontSize: 16, fontWeight: 300 }}>
+          Loading …
+        </span>
+                </div>
+            </Html>
+        );
     }
     return (
         <group ref={group} {...props} dispose={null}>
@@ -259,7 +269,14 @@ export default function WholeMouth({
                 <CameraController />
                 <ambientLight intensity={0.7} />
                 <spotLight intensity={1} angle={0.2} penumbra={1} position={[10, 15, 10]} />
-                <Suspense fallback={null}>
+                <Suspense fallback={
+                    <Html center>
+                        <div style={{ padding: 8, background: 'rgba(255,255,255,0.85)', borderRadius: 8 }}>
+                            Loading 3D model…
+                        </div>
+                    </Html>
+                }
+                >
                     <WholeMouthModel
                         selectedTreatment={selectedTreatment}
                         activeTimePeriod={activeTimePeriod}

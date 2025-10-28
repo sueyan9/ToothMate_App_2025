@@ -542,8 +542,6 @@ const ClinicScreen = ({navigation, route}) => {
                 loadAppointments(); // Refresh the appointment list
             }
         } catch (error) {
-            console.error('Full error object:', error);
-            console.error('Error response:', error?.response);
             console.error('Error response data:', error?.response?.data);
             console.error('Error response status:', error?.response?.status);
 

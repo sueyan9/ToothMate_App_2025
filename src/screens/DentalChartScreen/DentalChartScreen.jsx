@@ -12,7 +12,7 @@ const DentalChartScreen = () => {
     const webViewRef = useRef(null);
     const navigation = useNavigation();
     const route = useRoute();
-
+    const [webLoading, setWebLoading] = useState(true);
     const showWeb = route.params?.showWeb ?? true; // default: show webview
     const [parent, setParent] = useState(true); // Determines whether the user is a parent (default is true)
     const [res, setRes] = useState(null); // Stores the response from the isChild API
@@ -42,19 +42,19 @@ const DentalChartScreen = () => {
 
                 if (!hasIsChild) {
                     console.warn('[DC] /isChild missing isChild field, fallback to adult');
-                    setParent(true); // 成人兜底
+                    setParent(true); // default adult model
                     return;
                 }
 
                 const toBool = (v) => v === true || v === 'true' || v === 1 || v === '1';
-                const isChildUser = toBool(data.isChild); // 后端把“家长”塞在 isChild 字段里
-                setParent(!isChildUser);                   // parent=true(成人) / false(儿童)
+                const isChildUser = toBool(data.isChild);
+                setParent(!isChildUser);                   // parent=true / false
             } catch (e) {
                 console.error('❌ fetch /isChild failed:', e?.message || e);
-                setParent(true); // 兜底成人
+                setParent(true); // default adult model
             }
         };
-        fetchUser();      // 调用它
+        fetchUser();      // fetch it
 
             }, []);
     // the native button can show without WebView
@@ -165,9 +165,11 @@ useEffect(() => {
                         originWhitelist={['*']}
                         javaScriptEnabled
                         domStorageEnabled
-                        onLoadStart={(e) => console.log('[DC] WebView onLoadStart url =', e?.nativeEvent?.url)}
+                        onLoadStart={() => {
+                                     setWebLoading(true);
+                                   }}
                         onLoadEnd={() => {
-                            console.log('[DC] WebView onLoadEnd');
+                            setWebLoading(false);
                             if (webViewRef.current && userId) {
                                 const payload = JSON.stringify({ type: 'setUserId', userId });
                                 webViewRef.current.injectJavaScript(`
@@ -178,13 +180,30 @@ useEffect(() => {
                                 `);
                             }
                         }}
-                        onError={(e) =>
-                            console.error('[DC] WebView onError:', e.nativeEvent)}
-                        onHttpError={(e) =>
-                            console.error('[DC] WebView onHttpError:', e.nativeEvent)}
+                        onError={(e) =>{
+                            setWebLoading(false);
+                    }}
+                        onHttpError={(e) =>{
+                            setWebLoading(false);
+                           }}
                         onMessage={handleWebMessage}
                     />
+                    {webLoading && (
+                              <View
+                                  pointerEvents="none"
+                                  style={{
+                                    position: 'absolute',
+                                    top: 0, left: 0, right: 0, bottom: 0,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: 'rgba(234, 241, 247, 0.85)',
+                                  }}
+                                >
+                                  <ActivityIndicator size="large" />
+                                  <Text style={{ marginTop: 8 }}>Loading 3D model…</Text>
 
+                              </View>
+                             )}
                 </View>
             );
 };
