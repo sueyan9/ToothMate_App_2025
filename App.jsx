@@ -154,6 +154,21 @@ const ProfileStack = () => {
             <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="ViewScheduledNotifications" component={ViewScheduledNotificationsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Password" component={PasswordChangeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="images" component={ImagesScreen}
+                          options={{
+                              headerShown: true,
+                              title: 'X-ray Images',
+                              headerBackTitleVisible: false,
+                              headerBackTitle: ' ',
+                              headerTintColor: '#000',
+                          }} />
+            <Stack.Screen name="imagesList" component={AllImagesScreen}/>
+            <Stack.Screen name="invoice" component={InvoiceScreen}
+                          options={({ route }) => ({
+                              headerShown: true,
+                              title: route?.params?.title || 'Invoice',
+                          })}
+            />
         </Stack.Navigator>
     );
 };
