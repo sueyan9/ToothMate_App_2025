@@ -42,29 +42,36 @@ const user = dispatch => async () => {
 const tryLocalSignin = dispatch => async () => {
   const token = await AsyncStorage.getItem('token');
   const id = await AsyncStorage.getItem('id');
-  const parentId = await AsyncStorage.getItem('parentId');  
+  const parentId = await AsyncStorage.getItem('parentId');
 
   console.log('tryLocalSignin - token:', token);
   console.log('tryLocalSignin - id:', id);
   console.log('tryLocalSignin - parentId:', parentId);
+
   if (token) {
+    try {
+      const isChildResponse = await axiosApi.get(`/isChild/${id}`);
+      console.log('isChild response:', isChildResponse.data);
 
-    const isChildResponse = await axiosApi.get(`/isChild/${id}`);
-    console.log('isChild response:', isChildResponse.data);
-    const isChild = isChildResponse.data.isChild;
+      const isChild = isChildResponse.data.isChild;
+      console.log('isChild:', isChild);
 
-    if (id) {
-      if (!isChild) {
-        dispatch({ type: 'signin', payload: { token, id } });
-        navigate('mainFlow', { screen: 'AccountFlow' });
+      if (id) {
+        if (!isChild) {
+          dispatch({ type: 'signin', payload: { token, id } });
+          navigate('mainFlow', { screen: 'AccountFlow' });
+        } else {
+          navigate('Welcome');
+        }
       } else {
         navigate('Welcome');
       }
-    } else {
-      navigate('Welcome');
+    } catch (err) {
+      console.error('Error fetching isChild status:', err);
+      navigate('loginFlow');
     }
   } else {
-    navigate('Welcome');
+    navigate('loginFlow');
   }
 };
 

@@ -368,28 +368,32 @@ const {
                     const urls = Array.isArray(assets?.pdfUrls) ? assets.pdfUrls : [];
                     const base64s = Array.isArray(assets?.pdfBase64) ? assets.pdfBase64 : [];
                     const structured = Array.isArray(assets?.pdfItems) ? assets.pdfItems : [];
-                    console.log('[PDF Items - structured]', structured);
-
+                    const processedUrls = new Set();
                     //0) use structure
                     for (const it of structured) {
                         if (typeof it?.url === 'string' && it.url) {
-                            pdfs.push({
-                                source: 'url',
-                                value: it.url,
-                                when: it.when ? new Date(it.when).toISOString() : (when ? new Date(when).toISOString() : undefined),
-                                name: it.name || tryInferName(it.url),
-                                category: it.category,
-                            });
+                            if (!processedUrls.has(it.url)) {
+                                processedUrls.add(it.url);
+                                pdfs.push({
+                                    source: 'url',
+                                    value: it.url,
+                                    when: it.when ? new Date(it.when).toISOString() : (when ? new Date(when).toISOString() : undefined),
+                                    name: it.name || tryInferName(it.url),
+                                    category: it.category || null,
+                                });
+                            }
                         }
                     }
-                    // 1) URL
+                    // 1) URL- only add if not already processed
                     for (const u of urls) {
-                        if (typeof u === 'string' && u) {
+                        if (typeof u === 'string' && u && !processedUrls.has(u)) {
+                            processedUrls.add(u);
                             pdfs.push({
                                 source: 'url',
                                 value: u,
                                 when: when ? new Date(when).toISOString() : undefined,
                                 name: tryInferName(u),
+                                category: null,
                             });
                         }
                     }
@@ -400,10 +404,12 @@ const {
                         if (b.startsWith('data:application/pdf;base64,')) {
                             pdfs.push({
                                 source: 'dataUrl', value: b, when: when ? new Date(when).toISOString() : undefined,
+                                category: 'invoice',
                             });
                         } else {
                             pdfs.push({
                                 source: 'base64', value: b, when: when ? new Date(when).toISOString() : undefined,
+                                category: 'invoice',
                             });
                         }
                     }
@@ -1088,7 +1094,7 @@ const {
     );
   }
     const accDocs = pdfItems.filter(p => p.category === 'acc');
-    const invoiceDocs = pdfItems.filter(p => !p.category || p.category === 'invoice');
+    const invoiceDocs = pdfItems.filter(p => p.category === 'invoice');
     const referralDocs = pdfItems.filter(p => p.category === 'referral');
 
   return (
