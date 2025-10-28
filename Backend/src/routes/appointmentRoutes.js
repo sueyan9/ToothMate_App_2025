@@ -8,7 +8,7 @@ dayjs.extend(utc); dayjs.extend(tz);
 
 const NZ_TZ = 'Pacific/Auckland';
 const Appointment = mongoose.model('Appointment');
-
+const Clinic = mongoose.model('Clinic');
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }
@@ -89,17 +89,84 @@ router.get('/Appointments/:nhi', async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+// update button function
+router.patch('/Appointments/:id/confirm', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { confirmed } = req.body;
+
+    // Validate appointment ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'invalid appointment id' });
+    }
+
+    // Validate confirmed is a boolean
+    if (typeof confirmed !== 'boolean') {
+      return res.status(400).json({ error: 'confirmed must be a boolean' });
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+        id,
+        { confirmed },
+        { new: true, runValidators: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ error: 'appointment not found' });
+    }
+
+    console.log(`[PATCH /Appointments/:id/confirm] Updated appointment ${id} confirmation to ${confirmed}`);
+    res.json(updatedAppointment);
+  } catch (e) {
+    console.error('PATCH /Appointments/:id/confirm failed:', e);
+    res.status(422).json({ error: e.message });
+  }
+});
+
+router.delete('/Appointments/test-data/all', async (req, res) => {
+  try {
+    const result = await Appointment.deleteMany({ test_data: true });
+
+    res.json({
+      success: true,
+      deletedCount: result.deletedCount,
+      message: `Deleted ${result.deletedCount} test appointment(s)`
+    });
+  } catch (e) {
+    console.error('DELETE /Appointments/test-data/all failed:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
 
 // POST /Appointment create an appointment
 router.post('/Appointments', async (req, res) => {
   try {
     const {
-      nhi, userId, dentist = {}, clinic, purpose, notes,
-      status = 'scheduled', startLocal, endLocal, timezone = NZ_TZ, treatments = [],
+      nhi,
+      userId,
+      dentist = {},
+      clinic:clinicId,
+      purpose,
+      notes,
+      startLocal,
+      endLocal,
+      timezone = NZ_TZ,
+      treatments = [],
+      test_data,
+      confirmed
     } = req.body;
 
-    if (!nhi || !purpose || !startLocal || !endLocal) {
-      return res.status(400).json({ error: 'nhi, purpose, startLocal, endLocal are required' });
+    if (!nhi) return res.status(400).json({ error: 'nhi required' });
+    if (!purpose) return res.status(400).json({ error: 'purpose required' });
+    if (!startLocal || !endLocal) return res.status(400).json({ error: 'startLocal/endLocal required' });
+    if (!clinicId) return res.status(400).json({ error: 'clinic id required' });
+    //testing clinic id & change to ObjectId
+    if (!mongoose.Types.ObjectId.isValid(clinicId)) {
+      return res.status(400).json({ error: 'invalid clinic id' });
+    }
+    const clinicDoc = await Clinic.findById(clinicId).lean();
+    if (!clinicDoc) {
+      return res.status(400).json({ error: 'clinic not found' });
     }
 
     const startAt = dayjs(startLocal).tz(timezone).toDate();
@@ -107,16 +174,26 @@ router.post('/Appointments', async (req, res) => {
     if (!(startAt < endAt)) return res.status(400).json({ error: 'endAt must be after startAt' });
 
     const doc = await Appointment.create({
-      nhi: String(nhi).toUpperCase(),
+      nhi: nhi.toUpperCase(),
       userId,
       dentist: dentist?.name ? { name: dentist.name } : undefined,
-      clinic,
-      purpose, notes, status, treatments, startAt, endAt, timezone,
+      clinic: clinicId,
+      purpose,
+      notes,
+      status: 'scheduled',
+      treatments,
+      startAt,
+      endAt,
+      timezone,
+      test_data,
+      confirmed
     });
+    console.log('[POST /Appointments] created _id =', doc._id.toString());
     res.status(201).json(doc);
-  } catch (e) { res.status(422).json({ error: e.message }); }
+  } catch (e) {
+    res.status(422).json({ error: e.message });
+  }
 });
-
 /* ===================== Assets ===================== */
 // Upload an image
 router.post('/Appointments/:id/images', upload.single('file'), async (req, res, next) => {
@@ -149,6 +226,7 @@ router.post('/Appointments/:id/images', upload.single('file'), async (req, res, 
       });
       await appt.save();
     }
+
     // 5) Unified response (include a few fields the client may use)
     return res.json({
       ok: true,
@@ -168,7 +246,21 @@ router.post('/Appointments/:id/images', upload.single('file'), async (req, res, 
     next(e);
   }
 });
-
+//get xray/images
+router.get("/getAllImages/:nhi", (req, res) => {
+  const nhi = req.params.nhi;
+  const images = [];
+  Appointment.find({ nhi: nhi })
+      .then((appointments) => {
+        appointments.forEach((appointment) => {
+          appointment.images.forEach((image) => {
+            images.push(image);
+          });
+        });
+        res.json(images);
+      })
+      .catch(() => res.status(404).json({ error: "No images found" }));
+});
 // upload PDF ( invoice / acc )
 router.post('/Appointments/:id/pdfs', upload.single('file'), async (req, res, next) => {
   try {
