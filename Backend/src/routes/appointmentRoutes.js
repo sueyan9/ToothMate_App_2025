@@ -35,6 +35,41 @@ router.get('/Appointments', async (_req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// get the next appointment by NHI
+router.get('/Appointments/next', async (req, res) => {
+  try {
+    const { nhis } = req.query;
+    
+    if (!nhis) {
+      return res.status(400).json({ error: 'nhis query parameter is required' });
+    }
+    
+    // Split comma-separated NHIs and normalize to uppercase
+    const nhiArray = nhis.split(',').map(n => String(n).trim().toUpperCase()).filter(Boolean);
+    
+    if (nhiArray.length === 0) {
+      return res.status(400).json({ error: 'at least one valid NHI is required' });
+    }
+    
+    const filter = { 
+      nhi: { $in: nhiArray }, // Match any of the provided NHIs
+      startAt: { $gte: new Date() } // Only appointments from now onwards
+    };
+    
+    console.log('[GET next appointment for multiple NHIs] filter =', filter);
+
+    const appointment = await Appointment.findOne(filter)
+      .sort({ startAt: 1 }) // Sort by earliest first
+      .populate('clinic')
+      .lean();
+    
+    res.json(appointment); // Will be null if no upcoming appointments
+  } catch (e) {
+    console.error('GET /Appointments/next failed:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // GET /Appointment/:nhi  query by NHI
 router.get('/Appointments/:nhi', async (req, res) => {
   try {
