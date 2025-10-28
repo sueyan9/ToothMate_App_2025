@@ -92,7 +92,10 @@ const ClinicScreen = ({navigation, route}) => {
     const LAST_START_MINUTES = CLOSE_MINUTES - SLOT_MINUTES; // no later than 16:30
     // Round to nearest 30 minutes
     const roundTo30 = (date) => {
-        const d = new Date(date);
+        if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+        return new Date(); // Return current date if invalid
+        }
+        const d = new Date(date.getTime()); // Create copy to avoid mutation
         const m = d.getMinutes();
         const rounded = Math.round(m / 30) * 30;
         d.setMinutes(rounded, 0, 0);
@@ -100,7 +103,10 @@ const ClinicScreen = ({navigation, route}) => {
     };
     // Ceil up to next 30 minutes
     const ceilTo30 = (date) => {
-        const d = new Date(date);
+        if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+        return new Date();
+        }
+        const d = new Date(date.getTime()); // Create copy
         const m = d.getMinutes();
         const ceil = Math.ceil(m / 30) * 30;
         if (ceil === 60) {
@@ -123,7 +129,12 @@ const ClinicScreen = ({navigation, route}) => {
         // Inside business hours → round up to nearest 30 mins
         return ceilTo30(now.toDate());
     };
-    const addMinutes = (date, mins) => new Date(date.getTime() + mins * 60000);
+    const addMinutes = (date, mins) => {
+    if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+        return new Date();
+    }
+    return new Date(date.getTime() + mins * 60000);
+};
     const nzNow = () => dayjs().tz(NZ_TZ);
 
     const [lastAppointmentTime, setLastAppointmentTime] = useState(null);
@@ -151,7 +162,7 @@ const ClinicScreen = ({navigation, route}) => {
             if (route.params.date) {
                 const dateObj = typeof route.params.date === 'string' 
                 ? new Date(route.params.date) 
-                : route.params.d
+                : route.params.date
 
             setNewAppt({
                 startDate: dateObj,
@@ -1027,53 +1038,43 @@ const ClinicScreen = ({navigation, route}) => {
                                 <Pressable style={styles.pickerBackdrop} onPress={() => setShowDatePicker(false)}>
                                 <View style={styles.pickerOverlay}>
                                 <DateTimePicker
-                                    value={newAppt.startDate}
+                                    value={newAppt.startDate instanceof Date ? newAppt.startDate : new Date()}
                                     mode="date"
                                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                                     themeVariant="light"
-                                    minimumDate={nzNow().startOf('day').toDate()}//passed time unavilable
+                                    minimumDate={new Date()}//passed time unavilable
                                     onChange={(event, date) => {
                                         setShowDatePicker(false);
             
                                         // Handle dismissal or cancellation
-                                        if (event.type === 'dismissed' || !date || !(date instanceof Date)) {
+                                        if (event.type === 'dismissed' || !date ) {
                                             return;
                                         }
 
-                                        const year = date.getFullYear();
-                                        const month = date.getMonth();
-                                        const day = date.getDate();
-
-                                        const selectedDateNZ = dayjs.tz(NZ_TZ).year(year).month(month).date(day);
-                                        const isToday = selectedDateNZ.isSame(nzNow(), 'day');
-
-                                        const currentTimeNZ = dayjs(newAppt.startTime);
-
-                                        const base = selectedDateNZ
-                                        .hour(currentTimeNZ.hour())
-                                        .minute(currentTimeNZ.minute())
-                                        .second(0)
-                                        .millisecond(0)
-                                        .toDate();
-
-                                        // snap to :00/:30 and clamp to 09:00–16:30
-                                        let rounded = roundTo30(base);
-                                        rounded = clampToBusinessStart(rounded);
-
-                                        // if today, do not allow earlier than the next valid slot from now
-                                        if (isToday) {
-                                            const nowSlot = nextValidSlotFromNow();
-                                            if (dayjs(rounded).isBefore(nowSlot)) {
-                                                rounded = clampToBusinessStart(roundTo30(nowSlot));
-                                            }
+                                        const selectedDate = new Date(date);
+                                        
+                                        // Keep the current time, or default to 9 AM
+                                        const newStartTime = new Date(selectedDate);
+                                        if (newAppt.startTime) {
+                                            newStartTime.setHours(
+                                                newAppt.startTime.getHours(),
+                                                newAppt.startTime.getMinutes(),
+                                                0, 0
+                                            );
+                                        } else {
+                                            newStartTime.setHours(9, 0, 0, 0);
                                         }
+                                        
+                                        const newEndTime = new Date(newStartTime);
+                                        newEndTime.setMinutes(newEndTime.getMinutes() + SLOT_MINUTES);
 
                                         setNewAppt({
                                             ...newAppt,
-                                            startDate: selectedDateNZ.toDate(),
-                                            startTime: rounded,
-                                            endTime: addMinutes(rounded, SLOT_MINUTES),
+                                            startDate: selectedDate,
+                                            startTime: newStartTime,
+                                            endTime: newEndTime,
                                         });
+
                                     }}
                                 />
                                 </View>
@@ -1097,7 +1098,7 @@ const ClinicScreen = ({navigation, route}) => {
                                     <Pressable style={styles.pickerBackdrop} onPress={() => setShowStartTimePicker(false)}>
                                     <View style={styles.pickerOverlay}>
                                     <DateTimePicker
-                                        value={newAppt.startTime}
+                                        value={newAppt.startTime instanceof Date ? newAppt.startTime : new Date()}
                                         mode="time"
                                         display="spinner"   
                                         themeVariant="light"    // iOS respects min/max better with spinner
