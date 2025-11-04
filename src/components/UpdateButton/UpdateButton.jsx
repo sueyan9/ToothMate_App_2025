@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { useContext, useState } from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, Modal, Text, TouchableOpacity, View } from 'react-native';
 import axiosApi from '../../api/axios';
 import { Context as AccessContext } from '../../context/AccessContext/AccessContext';
 import { Context as AppointmentContext } from '../../context/AppointmentContext/AppointmentContext';
@@ -84,6 +84,24 @@ const UpdateButton = () => {
 
     return (
         <>
+            <Modal
+                transparent={true}
+                visible={isLoading}
+                animationType="fade"
+            >
+                <View style={{ 
+                    flex: 1,
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <ActivityIndicator size="large" color="#516287" />
+                    <Text style={{ marginTop: 16, fontSize: 16, color: '#516287' }}>
+                        Updating app...
+                    </Text>
+                </View>
+            </Modal>
+
             <View style={{alignItems: 'center', justifyContent: 'center'}}>
                 <TouchableOpacity onPress={() => handleUpdateInformation()}>
                     <Image

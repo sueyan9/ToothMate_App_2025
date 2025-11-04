@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useContext, useState } from 'react';
-import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Modal, Text, TouchableOpacity, View } from 'react-native';
 import axiosApi from '../../api/axios';
 import { Context as AppointmentContext } from '../../context/AppointmentContext/AppointmentContext';
 import { Context as TreatmentContext } from '../../context/TreatmentContext/TreatmentContext';
@@ -17,13 +17,12 @@ const ResetButton = () => {
             const response = await axiosApi.delete('/Appointments/test-data/all');
             
             if (response.data.deletedCount > 0) {
-                Alert.alert('Success', response.data.message);
+                console.log('Success', response.data.message);
             } else {
-                Alert.alert('No Test Data', 'No test appointments found.');
+                console.log('No Test Data', 'No test appointments found.');
             }
         } catch (error) {
             console.error('Failed to delete test appointments:', error);
-            Alert.alert('Error', 'Failed to delete test appointments.');
         }
     };
 
@@ -53,6 +52,24 @@ const ResetButton = () => {
 
     return (
         <>
+            <Modal
+                transparent={true}
+                visible={isLoading}
+                animationType="fade"
+            >
+                <View style={{ 
+                    flex: 1,
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <ActivityIndicator size="large" color="#516287" />
+                    <Text style={{ marginTop: 16, fontSize: 16, color: '#516287' }}>
+                        Resetting app...
+                    </Text>
+                </View>
+            </Modal>
+        
             <View style={{alignItems: 'center', marginTop: 32}}>
                 <TouchableOpacity onPress={() => handleUpdateInformation()}>
                     <View style={styles.button}>

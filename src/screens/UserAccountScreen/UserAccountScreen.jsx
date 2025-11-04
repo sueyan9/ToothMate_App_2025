@@ -720,7 +720,8 @@ const {
     });
   };
 
-  const handleChangeClinic = () => {
+  const handleChangeClinic = async () => {
+    await AsyncStorage.removeItem("selectedClinicCode");
     setClinicCode('');
     setClinicInfo(null);
     setClinicCodeStatus(null);
@@ -889,13 +890,14 @@ const {
     navigation.navigate('LocationFinder');
   };
 
-  const handleClinicCancel = () => {
+  const handleClinicCancel = async () => {
     setShowClinicModal(false);
     setClinicCode('');
     setClinicInfo(null);
     setClinicCodeStatus(null);
     setPrivacyConsent(null);
     setShouldReopenClinicModal(false);
+    await AsyncStorage.removeItem('selectedClinicCode');
   };
 
   const handleClinicConfirmSave = async () => {
@@ -935,14 +937,26 @@ const {
     }
   };
 
-  const handleClinicConfirmDiscard = () => {
+  const handleClinicConfirmDiscard = async () => {
     setShowClinicConfirmModal(false);
     // Reset clinic data
     setClinicCode('');
     setClinicInfo(null);
     setClinicCodeStatus(null);
     setPrivacyConsent(null);
+    
+    await AsyncStorage.removeItem('selectedClinicCode');
   };
+
+  const getClinicCode = async () => {
+    const clinicID = await AsyncStorage.getItem('selectedClinicCode');
+
+    if (!clinicID) return clinicCode;
+    else {
+      setClinicCode(clinicID);
+      return clinicCode;
+    }
+  }
 
   const handleClinicSuccessClose = () => {
     setShowClinicSuccessModal(false);
@@ -1312,18 +1326,19 @@ const {
               <View>
                 <TouchableOpacity 
                 style={styles.actionButton}
-                onPress={handleRevokeAccess}
-              >
-                <Ionicons name="person" size={20} color="#516287" />
-                <Text style={styles.actionButtonText}>End Access</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.actionButton}
                 onPress={handleGrantAccess}
               >
                 <Ionicons name="person" size={20} color="#516287" />
                 <Text style={styles.actionButtonText}>Start Access</Text>
               </TouchableOpacity>
+                <TouchableOpacity 
+                style={styles.actionButton}
+                onPress={handleRevokeAccess}
+              >
+                <Ionicons name="person" size={20} color="#516287" />
+                <Text style={styles.actionButtonText}>End Access</Text>
+              </TouchableOpacity>
+              
               </View>
             )}
           </Collapsible>
@@ -1940,7 +1955,7 @@ const {
                 </View>
                 <TextInput
                   style={styles.textInput}
-                  value={clinicCode}
+                  value={getClinicCode}
                   onChangeText={handleClinicCodeChange}
                   placeholder={t('Enter clinic code')}
                   autoCapitalize="characters"

@@ -1,5 +1,6 @@
 
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -47,9 +48,11 @@ const LocationFinder = ({ route }) => {
     const searchFunction = (text) => setSearchText(text);
     const clearSearch = () => setSearchText('');
 
-    const handleClinicPress = (clinic) => {
+    const handleClinicPress = async (clinic) => {
         // You can add navigation to clinic details or other actions here
-        console.log('Selected clinic:', clinic);
+        console.log('Selected clinic:', clinic.code);
+        await AsyncStorage.setItem('selectedClinicCode', clinic.code);
+        navigation.goBack();
     };
 
     if (!dataLoaded) {
