@@ -23,7 +23,7 @@ const HomeScreen = () => {
         'Note from Dentist:',
         'Bring retainer!',
         'Next Oral Checkup Due:',
-        'Oral Health Quote Of The Day:',
+        'Daily Oral Health Tip:',
         'Please have a look at Savacol and a water flosser.',
         'See My Mouth',
         'Sign Out',

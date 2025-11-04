@@ -157,7 +157,7 @@ useGLTF.preload('/assets/Left_Lower_Lateral_Incisor.glb')
 
 export const LowerLeftLateralIncisor= () => {
   const toothInfo = {
-    toothNumber: 34,
+    toothNumber: 32,
     name: "Left Lower LateralIncisor",
     position: "Lower Lateral Incisor",
     type: "Lateral Incisor",

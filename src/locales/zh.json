@@ -7,12 +7,14 @@
   "Not specified": "未指定",
   "None": "无",
   "All": "全部",
-
+  "Note from Dentist": "牙医的留言",
+  "Look At My Mouth": "查看我的口腔",
   "_comment_navigation": "=== Navigation/Home Screen ===",
   "Profile": "个人资料",
   "Home": "首页",
   "Bookings": "预约",
   "Library": "图书馆",
+  "My Mouth":"我的牙齿",
   "Clinic": "诊所",
   "Education": "教育",
 
@@ -26,6 +28,8 @@
   "_comment_home": "=== Home Screen ===",
   "Your Next Appointment:": "您的下一次预约：",
   "See My Mouth": "查看我的口腔",
+  "Next Oral Checkup Due:": "下一次牙齿检查:",
+  "Daily Oral Health Tip:": "日常口腔健康贴士:",
 
   "_comment_account": "=== Account Screen ===",
   "Account Settings": "账户设置",
