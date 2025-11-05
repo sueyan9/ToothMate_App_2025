@@ -50,19 +50,10 @@ const HomeScreen = () => {
         "Milk strengthens teeth and builds enamel.",
         "Sugar-free gum helps fight cavities.",
         "Visit your dentist every 6 months.",
-        "Limit acidic foods and beverages.",
-        "Replace your toothbrush every 3 months.",
-        "Don't brush immediately after acidic drinks.",
-        "Eat calcium-rich foods for strong teeth.",
-        "Avoid smoking and tobacco products.",
-        "Use fluoride toothpaste daily.",
-        "Coconut oil has natural antibacterial properties.",
-        "Rinse your mouth after meals.",
-        "A healthy mouth is a healthy body!"
     ]
 
     const getRandomTip = () => {
-        const randomTip = Math.floor(Math.random() * 14) + 1;
+        const randomTip = Math.floor(Math.random() * 5) + 1;
 
         return tips[randomTip];
     }
@@ -217,7 +208,7 @@ const HomeScreen = () => {
                     <Text style={styles.noteText}>{t('Note from Dentist:')}{'\n'}{nextAppointment.notes}</Text>
                     )}
                     {(!nextAppointment.notes) && (
-                    <Text style={styles.noteText}>{t('Note from Dentist:')}{'\n'}No notes for this appointment.</Text>
+                    <Text style={styles.noteText}>{t('Note from Dentist:')}{'\n'}{t('No notes for this appointment.')}</Text>
                     )}
                     </>
                     )}
@@ -243,13 +234,13 @@ const HomeScreen = () => {
                             date: new Date('2026-02-01')
                         }
                     })}>
-                    <Text style={styles.noteText}>Feb 2026</Text>
-                    <Text style={styles.bookNowText}>Book Now</Text>
+                    <Text style={styles.noteText}>{t('Feb 2026')}</Text>
+                    <Text style={styles.bookNowText}>{t('Book Now')}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={[styles.updateBox, {flex: 1}]}>
                     <Text style={styles.basicText}>{t('Daily Oral Health Tip:')}</Text>
-                    <Text style={styles.noteText}>{getRandomTip()}</Text>
+                    <Text style={styles.noteText}>{t(getRandomTip())}</Text>
                 </View>
             </View>
 

@@ -97,5 +97,32 @@
   "Checkup": "Tirotiro",
   "Root Canal": "Pū awakeri niho",
   "Crown Placement": "Whakanohonga karauna",
-  "Extraction": "Tangohanga"
+  "Extraction": "Tangohanga",
+
+  "Insurance Information": "Nga korero inihua",
+  "My X-ray Images": "Aku Whakaahua X-ray",
+  "My Invoices": "Taku Nama",
+  "My ACC Documents": "Aku Tuhinga ACC",
+  "My Referrals": "Aku Tohutoro",
+  "Clinic Address": "Wāhitau Haumanu",
+  "Clinic Phone": "Waea Haumanu",
+  "Known Allergies": "Nga mate mate mate e mohiotia ana",
+  "Insurance Provider": "Kaituku Inihua",
+  "Insurance Number": "Tau Inihua",
+  "Set Parental Control Code": "Tautuhi Waehere Mana Maatua",
+
+  "My Mouth": "Taku Mangai",
+  "No notes for this appointment.": "Karekau he tuhipoka mo tenei hui.",
+  "Daily Oral Health Tip:": "Aki Hauora-waha Ia ra:",
+  "Feb 2026": "Hui-tanguru 2026",
+  "Book Now": "Pukapuka Inaianei",
+  "Look At My Mouth": "Titiro Ki Taku Mangai",
+
+  "Brush twice daily for 2 minutes each time.": "Paraihu rua ia ra mo te 2 meneti ia wa.",
+  "Floss every day to remove plaque between teeth.": "Miro ia ra ki te tango tohu i waenganui i nga niho.",
+  "Drink water instead of sugary drinks.": "Inu wai hei utu mo nga inu huka.",
+  "Milk strengthens teeth and builds enamel.": "Ko te miraka ka whakapakari i nga niho me te hanga tohu.",
+  "Sugar-free gum helps fight cavities.": "Ka awhina te kapia kore-huka ki te whawhai i nga kohao.",
+  "Visit your dentist every 6 months.": "Haere ki to niho niho ia 6 marama.",
+  "Request Clinic Change": "Tonoa te Huringa Haumanu"
 }

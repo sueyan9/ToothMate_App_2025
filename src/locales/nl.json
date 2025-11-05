@@ -88,5 +88,34 @@
   "Checkup": "Controle",
   "Root Canal": "Wortelkanaalbehandeling",
   "Crown Placement": "Kroonplaatsing",
-  "Extraction": "Extractie"
+  "Extraction": "Extractie",
+
+  "Insurance Information": "Verzekeringsinformatie",
+  "My X-ray Images": "Mijn röntgenfoto's",
+  "My Invoices": "Mijn facturen",
+  "My ACC Documents": "Mijn ACC-documenten",
+  "My Referrals": "Mijn verwijzingen",
+  "Clinic Address": "Adres kliniek",
+  "Clinic Phone": "Kliniek Telefoon",
+  "Known Allergies": "Bekende allergieën",
+  "Insurance Provider": "Verzekeringsaanbieder",
+  "Insurance Number": "Verzekeringsnummer",
+  "Set Parental Control Code": "Ouderlijk toezichtcode instellen",
+
+  "My Mouth": "Mijn mond",
+  "Note from Dentist:": "Opmerking van de tandarts:",
+  "No notes for this appointment.": "Geen aantekeningen voor deze afspraak.",
+  "Next Oral Checkup Due:": "Volgende mondcontrole gepland:",
+  "Daily Oral Health Tip:": "Dagelijkse tip voor mondgezondheid:",
+  "Feb 2026": "Februari 2026",
+  "Book Now": "Boek nu",
+  "Look At My Mouth": "Kijk naar mijn mond",
+
+  "Brush twice daily for 2 minutes each time.": "Poets uw tanden tweemaal daags, telkens 2 minuten lang.",
+  "Floss every day to remove plaque between teeth.": "Gebruik dagelijks flosdraad om tandplak tussen de tanden te verwijderen.",
+  "Drink water instead of sugary drinks.": "Drink water in plaats van suikerhoudende dranken.",
+  "Milk strengthens teeth and builds enamel.": "Melk versterkt de tanden en zorgt voor de opbouw van glazuur.",
+  "Sugar-free gum helps fight cavities.": "Suikervrije kauwgom helpt tegen gaatjes.",
+  "Visit your dentist every 6 months.": "Ga elke 6 maanden naar uw tandarts.",
+  "Request Clinic Change": "Kliniekwijziging aanvragen"
 }

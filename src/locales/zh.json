@@ -92,5 +92,30 @@
   "Checkup": "检查",
   "Root Canal": "根管治疗",
   "Crown Placement": "牙冠安装",
-  "Extraction": "拔牙"
+  "Extraction": "拔牙",
+
+  "Insurance Information": "保险资讯",
+  "My X-ray Images": "我的X光片",
+  "My Invoices": "我的发票",
+  "My ACC Documents": "我的ACC文件",
+  "My Referrals": "我的推荐",
+  "Clinic Address": "诊所地址",
+  "Clinic Phone": "诊所电话",
+  "Known Allergies": "已知过敏症",
+  "Insurance Provider": "保险提供商",
+  "Insurance Number": "保险号码",
+  "Set Parental Control Code": "设置家长控制代码",
+
+  "Note from Dentist:": "牙医备注:",
+  "No notes for this appointment.": "本次预约无备注.",
+  "Feb 2026": "2026年2月",
+  "Book Now": "立即预订",
+
+  "Brush twice daily for 2 minutes each time.": "每天刷牙两次，每次两分钟.",
+  "Floss every day to remove plaque between teeth.": "每天使用牙线清除牙齿间的牙菌斑.",
+  "Drink water instead of sugary drinks.": "少喝含糖饮料，多喝水.",
+  "Milk strengthens teeth and builds enamel.": "牛奶能强健牙齿，促进牙釉质形成.",
+  "Sugar-free gum helps fight cavities.": "无糖口香糖有助于预防蛀牙.",
+  "Visit your dentist every 6 months.": "每6个月去看一次牙医.",
+  "Request Clinic Change": "请求诊所变更"
 }

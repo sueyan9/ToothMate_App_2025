@@ -1,0 +1,3666 @@
+commit 6c11a626ebee66b8bbdde74e3d592a7f1c563d10
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 23 20:22:39 2025 +1300
+
+    fix
+
+commit 5641a3055db5051e54938088f73db804916b5798
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 23 19:14:47 2025 +1300
+
+    Fixed timing
+
+commit fa8a77358161ed318207a4b6db22b1091b56e474
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 23 19:11:25 2025 +1300
+
+    FINAL FINAL UPDATE
+
+commit a8f15a61ded39ae74f9ac7e1ea75be4341b5e898
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 23 19:06:32 2025 +1300
+
+    naming fix
+
+commit 9ee5825cf1a5532edbac94341cfb32553dfa6c40
+Merge: e917406 73399a2
+Author: Abby Sutton <108248386+abbysttn@users.noreply.github.com>
+Date:   Thu Oct 23 18:58:24 2025 +1300
+
+    Merge pull request #32 from sueyan9/abby-testchange
+    
+    Final client changes
+
+commit 73399a20826afca61bebcac2aeee65aadb7e039b
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 23 18:54:24 2025 +1300
+
+    FINAL FIX!!!
+
+commit 38a8371438aa854efe53f3d1229b3fe338fc1062
+Merge: d02b366 be94dfe
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 23 18:13:27 2025 +1300
+
+    Merge branch 'abby-testchange' of https://github.com/sueyan9/ToothMate_App_2025 into abby-testchange
+
+commit d02b3667bcc399aedc95b6f75c9b03cf7da80b61
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 23 18:12:47 2025 +1300
+
+    the child screen
+
+commit be94dfeb371c47c368fcf8755517d7ba4a84f828
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 23 16:46:15 2025 +1300
+
+    passed all tests
+
+commit 9508c0a68e46418c951406bbe135808a3778eb87
+Merge: a9b4a7b 342dcc4
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 23 16:29:44 2025 +1300
+
+    Merge branch 'abby-testchange' into Dexter-20/10/2025
+
+commit 342dcc4eb855ae17c3e44e258dfb4d7d60afe4db
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Oct 23 16:29:22 2025 +1300
+
+    test fix
+
+commit a9b4a7bec3f0c48411c6d5e64ca405574596a62d
+Merge: e76c546 2a6d614
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 23 16:27:37 2025 +1300
+
+    Merge branch 'abby-testchange' into Dexter-20/10/2025
+
+commit e91740666fcca88cc288ea5a1383a929c2202dd3
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 23 16:23:57 2025 +1300
+
+    change comments and few schema
+
+commit 2a6d6145cbf50bfd7d4e0fc0ecd572f1595e7e95
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 23 16:22:33 2025 +1300
+
+    UPdated child access
+
+commit 42d779b9b0d61498d9f629628b1f3c9753ead6bf
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 23 15:25:13 2025 +1300
+
+    added final admin nhi
+
+commit c82026706b1a1219e784f6a0b24207373083d69c
+Merge: 2491a7a cc9fda6
+Author: Johann Guadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Oct 23 15:00:07 2025 +1300
+
+    Merge pull request #31 from sueyan9/johann-unit-testing
+    
+    Johann unit testing
+
+commit 2491a7a216da5028999e9ebef44046a4fad4d8c6
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 23 14:45:26 2025 +1300
+
+    Fixed update button
+
+commit e76c54670d19fd00bd78e20ced3ed28a830708be
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 23 12:49:53 2025 +1300
+
+    Fix appointment confirmation 404 error - remove duplicate route and reorder PATCH route
+
+commit 54ee9676a16a289a1ffc203d19a51c08dd64caae
+Merge: 77c3c9f 1ee76c3
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 23 12:44:43 2025 +1300
+
+    Merge branch 'abby-testchange' into Dexter-20/10/2025
+
+commit 77c3c9fd37dd66f635ccf26bde7d1d7349fadcc4
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 23 12:16:02 2025 +1300
+
+    Update App.js
+
+commit cc9fda6a5ecf739015abfd31c2257c8316fbfcd6
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Oct 23 11:18:54 2025 +1300
+
+    fixed jest test
+
+commit 1ee76c3e56bcf150d0f5e00f0655eca129de9dd2
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 23 10:56:47 2025 +1300
+
+    Childs name added to DC
+
+commit b3f7195ba8df37cfa977611aaa710c5fb6eed4fe
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Oct 22 14:24:49 2025 +1300
+
+    appt purpose fix
+
+commit 4173ee05496408b7bd61e11fcd5b451b1dcba202
+Author: Johann Guadalupe <bastiguadalupe@gmail.com>
+Date:   Wed Oct 22 12:36:51 2025 +1300
+
+    Delete LanguageSelector.test.jsx.snap
+
+commit 8b778ee2b6a8ffd703ca01648a4e1b4065ea4af9
+Author: Johann Guadalupe <bastiguadalupe@gmail.com>
+Date:   Wed Oct 22 12:36:21 2025 +1300
+
+    Revert "jest testing"
+    
+    This reverts commit 339da366af0522b138c357de028eb6968b993c4a.
+
+commit 5c58fafe41c47890280a9c6d218d2ba65ace1499
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Oct 22 12:24:32 2025 +1300
+
+    Fixed error with scheduled checkup button
+
+commit 421cfbd7222844c36b221fda00b38c58850bb96c
+Merge: d148485 8991c2c
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Wed Oct 22 10:35:25 2025 +1300
+
+    Merge branch 'abby-testchange' into Dexter-20/10/2025
+
+commit 8991c2cc533b0c7dd91381a5c961a9bb9dbe47a9
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Oct 22 00:10:16 2025 +1300
+
+    Added Access restrictions
+    
+    - Admin can start and stop restricted access for all non admin users
+    - non admin users will be immediately kicked out when restricted access ends
+
+commit 339da366af0522b138c357de028eb6968b993c4a
+Author: Johann Guadalupe <bastiguadalupe@gmail.com>
+Date:   Tue Oct 21 22:56:11 2025 +1300
+
+    jest testing
+
+commit ea8e9d189e00193255e3e1750fcd7c523f3ebe52
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 21 20:12:34 2025 +1300
+
+    error fix
+
+commit 65bd71bb8a6bad311c05518310fd3b998a67eb56
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 21 20:02:06 2025 +1300
+
+    delete appointment
+
+commit 288b6ca18b0eb97d0138aabe45e88015f311b5c9
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 21 18:42:45 2025 +1300
+
+    add appointment + maori flag added
+
+commit 32d527c47615e5ed8adc0a61758e51b01bbf3904
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 21 13:20:09 2025 +1300
+
+    Fixed learn more button and back button
+
+commit 76c05e2df38107596aeade2460b71bd7c351a022
+Merge: 24215aa ad588b9
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 21 12:28:02 2025 +1300
+
+    Merge branch 'master' into abby-testchange
+
+commit ad588b9c13667e605accd4534c186c460e1e8694
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 21 12:26:08 2025 +1300
+
+    fix
+
+commit e68730c3aaac20a43fec737fd613b324b6a04731
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 21 12:22:49 2025 +1300
+
+    fixed logic
+
+commit e770f17f34d44f0caff2c914982c4d7d44d4ce0f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 21 12:04:17 2025 +1300
+
+    updated button
+
+commit 24215aa6437f2096713d1fbb6eb272a431c9fed6
+Merge: 8a0db41 1ad5d00
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 21 11:50:04 2025 +1300
+
+    Merge branch 'master' into abby-testchange
+
+commit d14848590ae330672cd3421f715050934cd3bdb0
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Tue Oct 21 10:55:43 2025 +1300
+
+    changed the english flag
+
+commit 8a0db411afef0c06aa4aa83cd5661f77c4567d9e
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Oct 20 15:50:21 2025 +1300
+
+    update the api for forgetPassword restpaswword function
+
+commit a57f0c7745e935ce05aec3818f80a62fd672d212
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Sun Oct 19 19:08:46 2025 +1300
+
+    Forgot Password needs to be implemented in the backend
+
+commit 60c51183fc4877d7b26f3d9652adc0cbec128915
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Sun Oct 19 18:36:43 2025 +1300
+
+    Changed UI for education modal
+
+commit 1ad5d006f402c576e1dc79cc4bf36c7b255b6921
+Merge: 1ab6008 6736be5
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Sat Oct 18 21:23:59 2025 +1300
+
+    Merge pull request #29 from sueyan9/feature/partlTeeth
+    
+    Feature/partl teeth
+
+commit 6736be5010d7d008d3d031ab48342915ca104d15
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Oct 18 21:20:48 2025 +1300
+
+    solve the chart flash issue- display after loading
+
+commit 6dfedd318b5bfa1690244c4a12727babb043dd80
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Oct 18 01:34:01 2025 +1300
+
+    ischild parameter missing when click the back button--fixed
+
+commit 5df3427afa40af7ae467b9b9f57868ab0afb6823
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Oct 18 01:21:54 2025 +1300
+
+    fix the dental chart display models
+
+commit 657d19d7ba2c3795830a4c9e5d9f224763416ee9
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Oct 18 00:03:03 2025 +1300
+
+    hide certain teeth when is child
+
+commit 136a354239b326b7d0b78bff0a3fae64a96b3ffc
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 17 20:47:30 2025 +1300
+
+    updated issues
+    
+    Fixed issue with children being able to sign into adult type account
+    Added childs name to dental chart
+    Changed daily quotes to daily tips
+
+commit 1ab60083f721c59eb795bac2393411e469caa539
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Fri Oct 17 19:43:36 2025 +1300
+
+    Update API base URL to production endpoint
+
+commit f2f662d383b45bd9c298eadd6a2bb9823a276f89
+Merge: e686f08 1c6028a
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Fri Oct 17 19:40:44 2025 +1300
+
+    Merge pull request #28 from sueyan9/feature/partlTeeth
+    
+    Feature/partl teeth, no conflicts
+
+commit 1c6028af3fb7926af35fb35e8dfa67561a8db552
+Merge: 16d0280 e686f08
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Oct 17 19:39:17 2025 +1300
+
+    solve conflicts
+
+commit b171e0aba606b47a4ecac0e327fba787ca720de0
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 17 16:46:41 2025 +1300
+
+    Update and Reset button added
+    
+    Functionality created and basic tests added
+
+commit 618af056eb4ae2e4a7acf647f3c9fd1978060988
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 17 14:01:44 2025 +1300
+
+    Update Button
+
+commit 0f2fa3ff5a5fe062629043b20d09fec3593e0b1d
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 17 11:09:24 2025 +1300
+
+    app icon + emergency contact
+
+commit d7f20690776064d1aa8fe8a3ae95650fe2a982ef
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 17 10:08:57 2025 +1300
+
+    fixed welcome page buttons and links
+
+commit 26755dbcd1f9d86c26f2cb602478c8367c0a2a45
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 22:46:18 2025 +1300
+
+    onboarding pages added
+
+commit 16d0280d8123c0599df7f59550cb9e059556f4e7
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 16 16:47:22 2025 +1300
+
+    update tooth partial erupted data flow
+
+commit 392877f3c6d16b935252876521bbeb5af1f20ed3
+Merge: d1125ad 85ed99b
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 16 15:15:36 2025 +1300
+
+    Merge branch 'will-collapsible-menus' into abby-testchange
+
+commit d1125ad174f5f6d4aa31988e6d5820124cf70437
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 16 13:54:11 2025 +1300
+
+    Fixed Child Account switching
+
+commit b5424dbbb310f63c5c82c3ec2040891a37fed469
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 16 13:03:08 2025 +1300
+
+    Fixed language navigation
+
+commit a905cba1f6c8f439d145ac654c44aa795e6ac9e7
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 12:17:45 2025 +1300
+
+    Added known allergies
+
+commit e3f186c0da0e954cb347c8cfc5bb5e69b3811f0d
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 12:11:57 2025 +1300
+
+    Backend fixes
+
+commit 85ed99b74b3542e2ff4ab00d581368f25d923909
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 16 11:36:22 2025 +1300
+
+    child account details made collapsible
+
+commit 9446fe3f66f65d06adb42cc02e64e9e188487498
+Merge: acbab5d e686f08
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 11:26:51 2025 +1300
+
+    Merge branch 'master' into abby-testchange
+
+commit e686f087e473d0f83666a3d7c36f10c2c7f4c135
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 11:17:38 2025 +1300
+
+    updated button
+
+commit 95846128dead5bff19cab927c4753bb116010f5f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 11:01:06 2025 +1300
+
+    button positioning fix
+
+commit acbab5d7c753acd74ef5b94032255d711a23a3b5
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 16 10:05:31 2025 +1300
+
+    made tabs collapsible
+
+commit 804212560586228e6a36e02f2a0a1271c2adc2e4
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:35:05 2025 +1300
+
+    final fix
+
+commit 60deaaefa536342959e09e32e25285ffaac46ec2
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:33:53 2025 +1300
+
+    fix
+
+commit 1cbeb564995d563e3586f37a4149aaaf4a91b8c3
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:32:37 2025 +1300
+
+    button fix
+
+commit 9ebd8a2876f9f9a5d3f206ba6a188c9ec82685cf
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:29:07 2025 +1300
+
+    learn more fix
+
+commit 2781c345cae3f8872d960955c0eda03155aced1e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:26:46 2025 +1300
+
+    nav bar fixes
+
+commit 4e32a5c5f2bcfa8a4411adfd43bfc8d36df26c5a
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:23:49 2025 +1300
+
+    nav fixes
+
+commit 554d822d1a3c71f86faa189c0026e8ca5b8d8634
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:22:58 2025 +1300
+
+    fixes
+
+commit 9b838cc2b88c6d40dfd6bca6b1b7b5eb74339880
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:21:42 2025 +1300
+
+    fixes
+
+commit 8fe6fe32952a4009a6588342763e90312405205f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:20:21 2025 +1300
+
+    nav bar fix
+
+commit 2b7c0c8f4cddefe314ed6f86abf2d77a4773767f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:18:29 2025 +1300
+
+    Nav bar fix
+
+commit 3546089bbba7312937e8fa69a20042589d46e535
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:16:31 2025 +1300
+
+    Tooth info fix
+
+commit c726e24d7e22a99490881d0543945df6cec53a15
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 16 00:15:01 2025 +1300
+
+    Treatment summary added to individual tooth
+
+commit 3ea0fb2df12863519e2c9b104cf13f42fa1ab2cc
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Oct 15 23:54:11 2025 +1300
+
+    Learn more button fixed
+
+commit d6b4d2903ca15892d50a4d33d24ed3c45fc14011
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Oct 15 17:18:29 2025 +1300
+
+    Added profile pictures via backend
+
+commit dd6bc0cd63d21380d53c4694fcdcb06c16499d63
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 18:16:04 2025 +1300
+
+    Restricted Access
+
+commit e7d17ff842290a6473ae1b16857dce24cc2398e3
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 16:03:11 2025 +1300
+
+    styling fixed
+
+commit cafc28bd7f31ef80a510adbd0f3c484b9e4e14cc
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 15:58:35 2025 +1300
+
+    Added month filters
+
+commit 848bc8282ad0711497a730b1497b2198a5858f0d
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 12:25:00 2025 +1300
+
+    Security adds
+    
+    No screenshots allowed added
+    Temp restricted access alert added -> add close functionality
+
+commit c2127bb5ea32cdf19e9afad60923dc724728ab9c
+Merge: 5ca1279 10b09cc
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 12:12:30 2025 +1300
+
+    Merge branch 'master' into abby-testchange
+
+commit 10b09cc988dd5f11ce71dd299519dc44ffd69849
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 11:44:26 2025 +1300
+
+    fix
+
+commit aee44936ba5fd32dd61b1ed786f6e4cc409d8afb
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:44:53 2025 +1300
+
+    vercel issue
+    
+    refused to deploy
+
+commit d9bcc65a3dcb4f535d933c15a5fbc01307aaf79b
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:42:56 2025 +1300
+
+    key fix
+
+commit 7475701f548689624495a2f2a9bc5e4a05f89d7e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:42:25 2025 +1300
+
+    last fix
+
+commit 5fc7bb77654ffdd16eb923c9b00add4ff6e36e85
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:39:56 2025 +1300
+
+    another fix
+
+commit 95af475d8e0bdff84c8db7b7b6a6b7158383d0dc
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:35:59 2025 +1300
+
+    fix
+
+commit 3634d55a540d96e885e196c5c928c390742b4a7f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:33:43 2025 +1300
+
+    Highlight fix
+    
+    added key to reset
+
+commit d500b82d7e2d711dabcd14d67ea3c32ca53cb63e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:28:11 2025 +1300
+
+    highlight fix
+
+commit 2a26f0eaedfbec64b794e66b8810079a18a34c7b
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:25:37 2025 +1300
+
+    Highlight issue fix
+
+commit 7533d349c14a40dcadbc0c3e5c33f08614b38580
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:20:31 2025 +1300
+
+    fix
+
+commit f93f21fb857c5579e16e5da4f313a70af7f1e418
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:18:00 2025 +1300
+
+    fix
+
+commit 45cd463351dd3f9b735ba5e742f518a40229e532
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:14:53 2025 +1300
+
+    highlight issue fix
+    
+    All clicked teeth showing as highlighted
+
+commit 8de3ac7accf84cb4549d44bf27c68a372989f2d5
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:10:48 2025 +1300
+
+    path fix
+
+commit 726f3dd71ab8f6f2b8014272185919491a8b2d80
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:02:01 2025 +1300
+
+    Mouth window position fix
+
+commit bccdb656313025bfa55b45aaa1b19cd4b6fa1559
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 10:00:33 2025 +1300
+
+    Window fix
+
+commit 7fbe9870370a9c298c10568b1ea9937ac4efa23c
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 09:58:53 2025 +1300
+
+    Fix window
+
+commit 5c2a4488581431c852f30b7e08e08a0258826873
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 13 09:54:42 2025 +1300
+
+    Mouth window
+
+commit 5ca1279dcf28712384e7dce3a3a44b2512154e29
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Oct 12 16:22:38 2025 +1300
+
+    added child account connection
+
+commit 4763ce5561a28cffb68fec2d1ee61a0ebc4f85ce
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Oct 12 16:00:09 2025 +1300
+
+    Fully fixed
+
+commit a10d0595e04ef6973d3cf7c5167e443df631248b
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sat Oct 11 00:30:02 2025 +1300
+
+    UI Fixes
+
+commit bb6203648ef283aed0206eb4de9502b87b7ea84e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 10 14:02:57 2025 +1300
+
+    Updated UI for pages
+
+commit b712aa00300ef883fc3a0af182e115aa573409eb
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 10 13:28:16 2025 +1300
+
+    Fix
+
+commit 4a18e49be46c0d3e43c362de85cd5b9b77f84b5b
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 10 12:43:13 2025 +1300
+
+    fix
+
+commit e2a0eeb51a347db4377fd0501b9a784dfafd605b
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 10 12:35:46 2025 +1300
+
+    Fix
+
+commit 2f35ab5a986259361d4229784124c8ee7bb5749f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 10 10:02:37 2025 +1300
+
+    other changes
+
+commit 24b8186de65fbc1a0788b955c9e1da596c63f35c
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 10 09:58:36 2025 +1300
+
+    Fixes
+
+commit 8118df0d642069d8459cf3b64d057a882ee6637e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 10 09:38:57 2025 +1300
+
+    Revert "auto add clinic code"
+    
+    This reverts commit 4a220087eab2dceeeae1baaf3dfbf17879e829d9.
+
+commit bfaa26d676b0443e10d11635a2f694000b1dc7d2
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 10 09:38:32 2025 +1300
+
+    Reapply "auto add clinic code"
+    
+    This reverts commit 037ecf5af8e379c4b6e155962bdcdd05ce4f57e3.
+
+commit f4cb16ac59ca0ca8ae1e51ea4e471c1f9df9a3a5
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 10 08:53:19 2025 +1300
+
+    Test
+
+commit 037ecf5af8e379c4b6e155962bdcdd05ce4f57e3
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 10 08:51:30 2025 +1300
+
+    Revert "auto add clinic code"
+    
+    This reverts commit 4a220087eab2dceeeae1baaf3dfbf17879e829d9.
+
+commit e0de7774a61fee0e4f243a9de90e5ced966195e3
+Merge: 1646e5a d109692
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 9 15:10:24 2025 +1300
+
+    Merge branch 'Zoya-ChildAccount-Changes' into clientshowcase-4
+
+commit d10969280b22a930a3e65d60896ab20c052be572
+Merge: 09871aa a4f9a07
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 9 15:09:11 2025 +1300
+
+    Merge branch 'master' into Zoya-ChildAccount-Changes
+
+commit 1646e5a630279bb271ab976098805e0ff5faf98b
+Merge: bf3dc5d 4a22008
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 9 14:57:42 2025 +1300
+
+    Merge branch 'will-loc-finder-and-clinic-change' into clientshowcase-4
+
+commit bf3dc5d201c7db6799d14501136387cb594e69e7
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 9 14:43:08 2025 +1300
+
+    Added import
+
+commit 1f42897ce2823fe3418944cc10629824899b0950
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 9 14:37:24 2025 +1300
+
+    Fixed Entypo
+
+commit 07bbff7a64abc38019025a54de501bb094ff0e5f
+Merge: 007ac6c 09871aa
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 9 14:32:23 2025 +1300
+
+    Merge branch 'Zoya-ChildAccount-Changes' into clientshowcase-4
+
+commit 007ac6ca3f504efe4f26818cc41edce74419fd3c
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 9 14:02:05 2025 +1300
+
+    Merge remote-tracking branch 'origin/clientshowcase-4' into Dexter-2/10/25
+
+commit 3ef2c78a92fa32dcefb92f8e4fcbd3cadbdfa513
+Merge: d4f05f4 42a67f7
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 9 13:48:28 2025 +1300
+
+    Merge branch 'clientshowcase-4' into Dexter-2/10/25
+
+commit d4f05f43bd2475c91f5dca0897392c71b8f94ee4
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 9 13:36:34 2025 +1300
+
+    updated 9/10/25
+
+commit 4a220087eab2dceeeae1baaf3dfbf17879e829d9
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 9 13:22:42 2025 +1300
+
+    auto add clinic code
+    
+    auto add clinic code to the change clinic modal.
+
+commit 42a67f724e85449c67e1bde8476c348b2e363b50
+Merge: 9b9991d a4f9a07
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 9 13:19:43 2025 +1300
+
+    Merge branch 'master' into clientshowcase-4
+
+commit a4f9a07fbe6549fce1017de2bb898440c7ad1d4e
+Merge: f69265e 7e38508
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Thu Oct 9 13:15:11 2025 +1300
+
+    Merge pull request #27 from sueyan9/updateAPI
+    
+    Update api
+
+commit 7e385088e8076767580da83ec67982068a8ca0db
+Merge: ad3bf04 f69265e
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Thu Oct 9 13:14:25 2025 +1300
+
+    Merge branch 'master' into updateAPI
+
+commit ad3bf049d41f6ff1eca62f4194fc73f60edae9fa
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 9 13:12:35 2025 +1300
+
+    toothinfotmation API update
+
+commit f6d2d538635254c7f0f8b9fb83516ac9486a1022
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 9 13:11:34 2025 +1300
+
+    added view all clinics
+
+commit e71a2dda83aa9122a75cdd956cdc12dc929c18d8
+Merge: 4d8e2e0 59c2932
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 9 12:43:35 2025 +1300
+
+    Merge remote-tracking branch 'origin/clientshowcase-4' into Dexter-2/10/25
+
+commit 8413d6b8279d0dc1e7214f8da3b14a443dd48b8d
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 9 12:40:55 2025 +1300
+
+    bug fix for clinic code
+
+commit 4d06c75da615423a083c1751e968e2968ee7ab6a
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 9 12:32:31 2025 +1300
+
+    list style fix
+
+commit 4d8e2e0afa673a3353d0ae2866743ceaac0d1e39
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 9 12:30:50 2025 +1300
+
+    update  UserAccountScreen
+
+commit 9b9991d87f93d66c3c0211a9725436f54eed7ef7
+Merge: 59c2932 1fe45ca
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 9 12:24:19 2025 +1300
+
+    Merge remote-tracking branch 'origin/johann-iteration-10' into clientshowcase-4
+
+commit 1fe45cae4d63ad9947fe27dde81292bae9f23a54
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Oct 9 12:22:53 2025 +1300
+
+    heart icon added
+
+commit 59c293267c1d9d6ab8c5005512639ad32d46a168
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 9 12:19:52 2025 +1300
+
+    Fix
+
+commit c6856ea7742906ad3f23cd8869cdf16657e9402e
+Merge: 4695a22 25ca0a2
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 9 12:16:48 2025 +1300
+
+    Merge remote-tracking branch 'origin/johann-iteration-10' into clientshowcase-4
+
+commit 25ca0a2083e1317bd99c6154deeccbd00ca53857
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Oct 9 12:15:49 2025 +1300
+
+    Insurance Infomation
+
+commit 09871aa8f4c7167aac61cfd4c1cb413e2df22195
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 9 11:54:17 2025 +1300
+
+    Child Profile - name changes implemented
+
+commit f69265e5338ba4806d1c8f40880048392cd16202
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 9 11:50:25 2025 +1300
+
+    update ip
+
+commit 4695a22bf3d33d2634248da2d75570e7474b38d1
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 9 11:35:44 2025 +1300
+
+    Fixed appointment
+
+commit d944b0b2a2b136330adac6a1f255593b29c2bb66
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 9 11:32:26 2025 +1300
+
+    Changed icon child screen
+
+commit ae3f9e363fcbd3a628ee20ed7d43e85382a506a5
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 9 11:28:38 2025 +1300
+
+    Fixed padding education page
+
+commit 624de0eaef6aed80a5cebf5299e158eaf75a54a4
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Oct 9 11:28:28 2025 +1300
+
+    auto complete in clinic change
+
+commit b621fa508ea75c201bb1e38e6194415847a5d91d
+Merge: a19667f 3a8c646
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 9 10:58:04 2025 +1300
+
+    Merge branch 'clientshowcase-4' of https://github.com/sueyan9/ToothMate_App_2025 into Zoya-ChildAccount-Changes
+
+commit 3a8c64667e961ddaecf6234904fd2c42dbbdb967
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 9 10:22:57 2025 +1300
+
+    Fixes
+
+commit 2c1134a70e234cf08b252dd3ff3fbc9860c319f6
+Merge: 30a0e0c bcde6fb
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 9 10:22:51 2025 +1300
+
+    Merge branch 'master' into clientshowcase-4
+
+commit ed6ebc40bc24b7f66e40c3c1103287d07a2b97b3
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 9 10:21:44 2025 +1300
+
+    update
+
+commit 58f4c889667062a515a2bbee89050344486ef4b5
+Merge: 8603e99 bcde6fb
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 9 09:58:07 2025 +1300
+
+    Merge branch 'master' into Dexter-2/10/25
+
+commit bcde6fb7140846ebf1cf321c68536b1bc91e1bee
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 9 00:00:13 2025 +1300
+
+     miniwindow update
+
+commit fc1b0ad0b8e260fc52938e1c16cc2063739f89e5
+Merge: 053c18e edcafd2
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Wed Oct 8 23:00:23 2025 +1300
+
+    Merge pull request #26 from sueyan9/feature/db-integration
+    
+    Feature/db integration
+
+commit edcafd20c908765b7ac99c60fe2ed6a1c41a6748
+Merge: 6e8d6de 053c18e
+Author: sueyan9 <409133742@qq.com>
+Date:   Wed Oct 8 22:56:31 2025 +1300
+
+    solve conflicts
+
+commit 6e8d6de3381501ab67192d79b29ab8464043e612
+Author: sueyan9 <409133742@qq.com>
+Date:   Wed Oct 8 22:28:40 2025 +1300
+
+     api changed from get to post
+
+commit 30a0e0c267606f0f9e74945162633231b0736465
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Oct 8 22:02:59 2025 +1300
+
+    test feature removed
+
+commit bbf211446090b2bf31f7fb85c91549c491af5c2f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Oct 8 22:02:37 2025 +1300
+
+    New features
+    
+    Fixed select purpose to be greyed out.
+    Change language again to request.
+    Splash only shows when not logged in.
+    Text fixed in signup and home.
+    Home page now linked to backend.
+    Added random quote to home page.
+    Book now links to modal with due date.
+
+commit a19667f82ef211a82a29fbdfae0ee27442b6917c
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Wed Oct 8 19:45:38 2025 +1300
+
+    Added context, added ChildAccountScreen, added parental controls
+
+commit befd07ff934c4ffb79b9b8c13861d2d55029e5c7
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 7 10:38:51 2025 +1300
+
+    Fixed appointment stuff
+    
+    Appointment card details and appointment creation
+
+commit ac643699b7741d15d04ca26a7f8c579cfb20c697
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 7 09:56:46 2025 +1300
+
+    Splash screen added
+    
+    Not fully designed yet
+
+commit a85acb3afe8bb1c1fe32ff7abe74fe10f6bbfc57
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Oct 7 09:29:15 2025 +1300
+
+    button change
+    
+    phone and email buttons that link directly to the phone
+
+commit 21c5c03c1ae6f3f94397f5d61fc4907aa2fcd1d4
+Merge: 4ff441d 8245557
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 6 13:01:30 2025 +1300
+
+    Merge branch 'abby-contact' into clientshowcase-4
+
+commit 4ff441dde10825d725d6b845efd08e327558f194
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 6 13:00:06 2025 +1300
+
+    Appointment issues fixed
+
+commit 8245557dcef4f88bf2096d7eb489e4f308c238c7
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 6 12:31:16 2025 +1300
+
+    fix
+
+commit d88fc3e6bcc273ef1d607ac5fed24d92ca94af93
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Oct 6 12:28:26 2025 +1300
+
+    Children selection added
+
+commit 75b25ee845dd6ccd6869d71aaeceb129aaa76416
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Oct 4 00:16:30 2025 +1300
+
+    update individual teeth info
+
+commit 591edbb1c0686e29d9e2c274cad30c8e334c31d9
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Oct 3 22:49:56 2025 +1300
+
+    fix duplicate API requests
+
+commit 97e1d3dd90fef555977718cb3e02bfc065ef69c8
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Oct 3 22:43:32 2025 +1300
+
+    update extracted tooth display models
+
+commit c02aeb116e35741f8e06d5d0904885f2ba3e0ae6
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Oct 3 21:33:44 2025 +1300
+
+    defaut selected treatments fix
+
+commit 5b0732452af5253673a9757dd1de3f1dc8e8d7ef
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Oct 3 20:12:48 2025 +1300
+
+    display the info for individual tooth
+
+commit 7aec3c289abc819752bf5b9dd7c9ca2e52a7492d
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 3 14:08:14 2025 +1300
+
+    Contact button added
+    
+    Allows for direct phone and email connection
+
+commit 053c18ec511cec056f9897394586d7cc75610762
+Merge: 0673e71 da109ba
+Author: Abby Sutton <108248386+abbysttn@users.noreply.github.com>
+Date:   Fri Oct 3 12:59:06 2025 +1300
+
+    Merge pull request #25 from sueyan9/abby-signup
+    
+    Signup fixed
+
+commit da109bad11f9b1fed7f39fcd3ade2c6a606383dd
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Oct 3 12:56:17 2025 +1300
+
+    Added all changes
+    
+    Users can now:
+    - Confirm their password
+    - Hide and see the inputted password
+    - See tips for both NHI and signup code on how to find them
+
+commit 67d7344e4746da02a34facddc10f58a338293657
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Oct 3 11:38:21 2025 +1300
+
+    tooth info windo
+
+commit 18313f69d8ee7260f95413177f6ac049d7af992d
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 2 23:16:12 2025 +1300
+
+    color coding finished
+
+commit be63604e4072c21b3a1611a5f5156657796deb51
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 2 22:31:20 2025 +1300
+
+    treatment api work
+
+commit 88489c91a796077940fda2b5a2b119a7057be1e1
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 2 17:21:44 2025 +1300
+
+    Changed child screen icon & naming
+
+commit dabe082cfb472a8586ef1a8d75c37bb5a5bd44ec
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 2 16:52:16 2025 +1300
+
+    Fixed tooth hero challenge UI + Maze game changes
+
+commit 15aeead145e2ceb3ecf229c55995d638a82d685a
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 2 16:13:47 2025 +1300
+
+    Fixed maze game
+
+commit 811df305baa20e7513b72196f67819c5a8e1d2ea
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Oct 2 14:59:15 2025 +1300
+
+    Fixed card title spacing
+
+commit 8603e9902061596ab85b0c13a8be9165afbcaef6
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 2 14:50:15 2025 +1300
+
+    update UserAccoutScreen
+
+commit 0673e71c8c4aec401ca9017722155cf8493961e5
+Merge: 5229f23 82ee84b
+Author: Abby Sutton <108248386+abbysttn@users.noreply.github.com>
+Date:   Thu Oct 2 13:40:06 2025 +1300
+
+    Merge pull request #24 from sueyan9/client-showcase3
+    
+    Iteration 9 | Client requested changes
+
+commit 82ee84b4dd2dafa702ebf797ed77862720cb2809
+Merge: 93e96ea 5229f23
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 2 13:38:23 2025 +1300
+
+    Merge branch 'master' into client-showcase3
+
+commit 758b80730d8b0d32336e55ebc2f945d95545b352
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 2 13:02:17 2025 +1300
+
+    update the schema
+
+commit b777fcbed067db56348dc676e6a2d8d11577910c
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Oct 2 10:34:36 2025 +1300
+
+    web transfer/get user id from RN
+
+commit 105aa6c0aff31dfcd830b05e03f6c3d8be70c8d5
+Author: sueyan9 <409133742@qq.com>
+Date:   Wed Oct 1 10:37:18 2025 +1300
+
+    update
+
+commit e0e3a7c5f328d5d4e5d5439ada4038dfb770c747
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 29 17:49:31 2025 +1300
+
+    backend api update
+
+commit ab8591b81d75c64dbc3fbe70ce905f06d23770db
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Aug 23 19:05:53 2025 +1200
+
+    define the routes for treatment/tooth/treatment
+
+commit 34ed11ddf1770a7c043274b7e55a754f48214b83
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Aug 21 14:50:55 2025 +1200
+
+    API for backend
+
+commit a0c9547e28f0a1245f44b654e57cf97c9eaabd78
+Author: sueyan9 <409133742@qq.com>
+Date:   Tue Aug 19 00:23:05 2025 +1200
+
+    build schema
+
+commit 966647bdd939b2afbb0dbc44f9ea81a06b83845b
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 29 19:17:36 2025 +1300
+
+    style adjust/add referrals
+
+commit 0592c78ba7cb5bb23a646025b9fd83018d743118
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 28 20:42:51 2025 +1300
+
+    solve conflict
+
+commit 1dd3c90d9ecdcc85a5f0205a671163219f1a764d
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Sep 26 17:12:41 2025 +1200
+
+    solve missing feature
+
+commit 654076a0090a0cdebc7d9e0570500d72cc36d2c1
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Sep 26 15:43:25 2025 +1200
+
+    solve the pdf duplicate with category
+
+commit cc49f6ab165eca7f311b46792465cd7fd136cfb4
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Sep 26 13:49:18 2025 +1200
+
+    fix the backend pdf schema/api/display pdf/ACC
+
+commit 5a4642b6283eed2841f8edee57645ade87492914
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Sep 25 20:42:33 2025 +1200
+
+     add ACC section
+
+commit d255cf4e9aa5ff811f07f8874f8e44ae3372c81a
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 15 17:13:52 2025 +1200
+
+    add the comments
+
+commit 12412668175df093dde68ea1af3fc1327d3c317f
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 15 16:23:17 2025 +1200
+
+    img view
+
+commit 15a28b4a18114c0186b8730ed0f8ba52fb7a2b72
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 15 15:14:26 2025 +1200
+
+    pdf view
+
+commit d51180a458f25a1d73427a48792a0a7ae8c7637b
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 15 10:13:30 2025 +1200
+
+    upgrade expo version
+
+commit 6b6d646d55d8146e60b655cab22c239932a4cd90
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 14 21:56:28 2025 +1200
+
+    api fix
+
+commit be9e966d3209a34152da2e4160e52d10418e4445
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 14 21:11:30 2025 +1200
+
+    Revert "images with list"
+    
+    This reverts commit 92e1f23d66cedd1d1c3940ab91f0af54f8391615.
+
+commit 3110695e95239162280113891f98dff3d624b9bb
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 14 19:40:00 2025 +1200
+
+    images with list
+
+commit b25586095f6ce482fd8e9e2363848e8ec871dfba
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 14 18:36:10 2025 +1200
+
+    view x-ray img
+
+commit 40ede732957a6f63461b52cb2401a6f99dbb6ec5
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Sep 13 21:13:14 2025 +1200
+
+    Add user assets feature
+
+commit ae45e3ed51820e71964e7def34b58db709ce3f5b
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 2 12:57:11 2025 +1300
+
+    updated 2 Oct 2025
+
+commit ef85ddb68264675b7c35ac190a0c787675ea12b2
+Merge: 5229f23 ba0a70a
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 2 12:05:24 2025 +1300
+
+    Merge branch 'Dexter-Final' into Dexter-2/10/25
+
+commit 5229f2362cfc1bbec9b10469bdfc2adaefe5bc5c
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 2 11:29:59 2025 +1300
+
+    Fixed language
+
+commit 93e96ea605e219bedff007719fc71abd76596456
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 2 11:27:48 2025 +1300
+
+    Fixed spelling
+
+commit 04ca3d8bb66c5fe14388dfae2c6b5c25856c27cb
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Oct 2 11:07:09 2025 +1300
+
+    Small changes
+
+commit ba0a70ae38f353e38efea877701fb96930ecbbb3
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Oct 2 10:57:01 2025 +1300
+
+    Updated tsconfig.json
+
+commit 410ea373dee7de432f469b527c09a3005324a059
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Tue Sep 30 12:57:29 2025 +1300
+
+    Revert "Merge branch 'master' into Dexter-Final"
+    
+    This reverts commit 7f707de277953e38ded1cee1970ae599faef4c31, reversing
+    changes made to fb64bb1f48ebe25558d6b1a5426d2e298f96dc2e.
+
+commit 7f707de277953e38ded1cee1970ae599faef4c31
+Merge: fb64bb1 0794387
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Tue Sep 30 12:34:19 2025 +1300
+
+    Merge branch 'master' into Dexter-Final
+
+commit 079438730a98aabf7ae84f762e3a4fc23d5889c8
+Merge: 8db620e ba04fc6
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Mon Sep 29 19:26:47 2025 +1300
+
+    Merge pull request #23 from sueyan9/feature/user-assets
+    
+    style adjust/add referrals，changed and solved the vercel deployment error
+
+commit ba04fc6890dbc3bb6f49efd7e33e50aa238f10b7
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 29 19:17:36 2025 +1300
+
+    style adjust/add referrals
+
+commit fb57d169d1740947ab64430da8c6b14bb6673dee
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Mon Sep 29 13:23:15 2025 +1300
+
+    Fixed bugs in child edu screen
+
+commit 4b9b4a6b4e7c7b4f9aae9c9b29a851de33769381
+Merge: 383eee8 8db620e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Sep 28 23:31:42 2025 +1300
+
+    Merge branch 'master' into client-showcase3
+
+commit 72fa33a83044717d0f94f680e4db63e197edb0e8
+Merge: 3351346 d73378a
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 28 21:59:27 2025 +1300
+
+     solve conflicts
+
+commit 383eee883d6b48f4a12861dce3df723a3aa89222
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Sep 28 21:53:00 2025 +1300
+
+    Update
+
+commit 97fa307b1a93b3efa7efdaaf4386347b9016f1d2
+Merge: 7266828 8bdb536
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Sep 28 21:52:27 2025 +1300
+
+    Merge branch 'abby-iteration9' into client-showcase3
+
+commit 8db620e8ce2129fed35a290a19831862ede0d927
+Merge: d73378a 742dedb
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Sun Sep 28 21:10:56 2025 +1300
+
+    Merge pull request #22 from sueyan9/feature/user-assets
+    
+    Feature/user assets
+
+commit 742dedb5498716dd4eaea0006a8ead7fba17347f
+Merge: 0fce8c5 d73378a
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 28 21:06:24 2025 +1300
+
+    package.jason fix
+
+commit d73378adb95624eab0274d073136ca649bb3e7c4
+Merge: f1ee57b d7e0e70
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 28 21:00:42 2025 +1300
+
+    Merge branch 'will-consent-and-location-finder'
+
+commit 0fce8c57b22fef2644fe184d7cf6ff2a6f382c2f
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 28 20:42:51 2025 +1300
+
+    solve conflict
+
+commit 068c317714127452c9fa04d1fa77835cac26d171
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Sun Sep 28 00:53:20 2025 +1200
+
+    Added child screen activities - has bugs to be fixed
+
+commit f499b6ce9ae7fab0908d3fe31bac950674e86752
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Sat Sep 27 21:09:28 2025 +1200
+
+    Added brushing timer on child education screen + other features
+
+commit 8bdb5362eb6db1c89339de81129bece62a3d3a51
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sat Sep 27 15:34:52 2025 +1200
+
+    Updates
+    
+    Added signin with NHI or email.
+    Added Cancellation note on appts
+    Added Confirmation to appts
+    Added Cooldown to creation of appts
+
+commit ade250d6f5b680b8ba64f072fb83f67cc029157a
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Sep 26 23:11:34 2025 +1200
+
+    Small fix
+
+commit 9fb074f745d215ffc375c57549b9c6ef3dddda48
+Merge: c58e94d 74bed8f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Sep 26 23:07:15 2025 +1200
+
+    Merge branch 'update-appointment' into abby-iteration9
+
+commit c58e94da408b02e668a5fd6edb86d445746427bb
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Sep 26 23:05:43 2025 +1200
+
+    Patient name added to appt
+
+commit 86e373b23e7288bf950cb0b4a175e301ea84b3f2
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Sep 26 17:12:41 2025 +1200
+
+    solve missing feature
+
+commit 1537b7b80f57d17dc63f35e40be43fa627e74506
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Sep 26 16:31:48 2025 +1200
+
+    Education content fix
+    
+    Fixed issue with educational content not showing within modal from the database - force the backend to pull it
+
+commit 5de5fafdf23f999f657cf854cd30c4bdc1dac2c4
+Merge: e29efce d7e0e70
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Sep 26 16:02:37 2025 +1200
+
+    Merge branch 'will-consent-and-location-finder' into 'feature/user-assets': resolve conflicts, keep PDF when/timestamps and X-ray badges; merge deps and rebuild lock
+
+commit e29efcebb899d91f1ae9536b5730a8353e08972a
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Sep 26 15:43:25 2025 +1200
+
+    solve the pdf duplicate with category
+
+commit 92294c751320fbf131dda847df47f09ad6bfc6d8
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Sep 26 13:57:01 2025 +1200
+
+    Fixes to content screen
+
+commit e9c50db1355fccb229d5fc55fc2bef6df00914ac
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Sep 26 13:49:18 2025 +1200
+
+    fix the backend pdf schema/api/display pdf/ACC
+
+commit f70c239f6f8ee04f7d4731a474bdab1131e32617
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Sep 26 13:38:25 2025 +1200
+
+    Signup code working
+    
+    Fully working with backend. Signin code is provided from database
+
+commit bad80a76c52e7723dbe4b58e2320b2d460cfefed
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Sep 25 20:42:33 2025 +1200
+
+     add ACC section
+
+commit f1ee57b1f52b527e0431ed4804200c6cf9758dca
+Merge: 7deae21 e46f337
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Thu Sep 25 17:54:09 2025 +1200
+
+    Merge pull request #21 from sueyan9/johann-iteration-9
+    
+    navagation feature---all checked , no conflicts
+
+commit fb64bb1f48ebe25558d6b1a5426d2e298f96dc2e
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Wed Sep 24 11:39:56 2025 +1200
+
+    Added Maori to languages
+
+commit 411e0905623e61e0de189cd1aef5e736ed5e2d7c
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Tue Sep 23 18:01:34 2025 +1200
+
+    Fixed navigation
+
+commit 8d3d5ac97ad93734b7b9e51a4e570a4aaa0b0909
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Tue Sep 23 17:08:17 2025 +1200
+
+    Added switch profile
+
+commit 726682897d0f5df9a107ca25a86ab6f51b0276fb
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 22 17:03:40 2025 +1200
+
+    css adjust
+
+commit d7e0e70a4bdb1cb88e288157bacb8ded66fbfe1b
+Merge: d1d5444 da07ea6
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Mon Sep 22 16:55:07 2025 +1200
+
+    Merge branch 'Will-Clinic-Info-Confirmation' into will-consent-and-location-finder
+
+commit 03d9ba822660e6c3571f18677feb8f87d45d2d7c
+Merge: 7cb60e3 7deae21
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 22 16:52:37 2025 +1200
+
+    slove mini window conflicts
+
+commit d1d54440e2edcddc2777c8cc630939344dca4ce8
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Mon Sep 22 15:36:53 2025 +1200
+
+    read from database.
+
+commit 0b6ee236a6b5da6e91f42b461fe1530c75fa3141
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Mon Sep 22 15:30:32 2025 +1200
+
+    added location finder screen and navigation.
+
+commit 7506e1771be451faa0ddfa584cd1c7044a4b2f0f
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Mon Sep 22 14:53:50 2025 +1200
+
+    added toothmates location card on home screen
+
+commit 7cb60e34d3d1e3a4f31030156778b4591c310214
+Merge: 1851842 16f3c4c
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 22 12:33:21 2025 +1200
+
+    conflicts of whole mouth solved
+
+commit 1851842d2a7629e5f1418d1833e94b982eda90c4
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 22 11:05:30 2025 +1200
+
+    install react-native-picker/picker
+
+commit 014fade512777321d0c9839e61f9434d780f5b2b
+Merge: 95aeeb4 74bed8f
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 22 11:02:10 2025 +1200
+
+    solve conflicts
+
+commit da07ea6e572703630b4da6db8e0f24222a16992b
+Merge: 34432f4 7deae21
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Sun Sep 21 17:33:22 2025 +1200
+
+    Merge branch 'master' into Will-Clinic-Info-Confirmation
+
+commit 7deae21c331dfc01dac1fdc060ebf8389ca342ab
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Sep 21 13:27:23 2025 +1200
+
+    Partial erupted teeth
+
+commit 39c9aa6b1044a4a998663411a6b4df52ac0ef060
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Sep 21 12:49:26 2025 +1200
+
+    quick fix of tooth info
+
+commit b6ec93bf1038305aba9231374e76a8fd5d26c3ad
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Sep 21 12:47:48 2025 +1200
+
+    Sign in/up styling
+
+commit 4c7c553f08e0b33b6561586bc60308dee821e2d3
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Sep 21 11:51:01 2025 +1200
+
+    small fixes
+
+commit 36f0a8ce42577b902b2ef2d5833a92be6b7cd14b
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Sep 21 11:47:24 2025 +1200
+
+    Back button fix
+    
+    Removed all old back buttons and added universal back button for individual teeth
+
+commit d168d3f793c98dc1ee0b18ca36eabc107af92118
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Sep 21 11:37:46 2025 +1200
+
+    Back button fix
+
+commit 74bed8f8bcb62ee87be0e3c52a3e90821f8ba0e2
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Sep 21 11:19:41 2025 +1200
+
+    Bug fix
+    
+    Fixed issue with appointments being created to the day before inputted date
+
+commit 34432f4d4b70ed908b87816f6e5dacd7da519ec8
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Sat Sep 20 17:28:24 2025 +1200
+
+    same clinic validation check
+
+commit c3070bfe577a525ed5d51527d65ee6442ef40d45
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Sat Sep 20 17:17:29 2025 +1200
+
+    clinic change consent agreement
+
+commit e46f337a7c0bfde9324fb9b17d2ef21822fa704f
+Author: Johann Guadalupe <bastiguadalupe@gmail.com>
+Date:   Sat Sep 20 17:06:12 2025 +1200
+
+    navagation feature
+
+commit 13bd8ef7a34284c3cb7d45bb57d615d8786259fe
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Sep 18 22:53:52 2025 +1200
+
+    add dentist dropdown list/30mins default solt time/setting purpose/limited selectable date and time to new appointment
+
+commit c10c085d3ad4262b4d03a34da6a780b32e155d73
+Author: William <williamb2312@hotmail.com>
+Date:   Wed Sep 17 20:42:11 2025 +1200
+
+    added linear gradient to EducationContentScreen.jsx
+    
+    added import to EducationContentScreen to temporarily fix crashing
+
+commit eee91980de88d064770d676f4e1f9e82151262eb
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Wed Sep 17 18:04:31 2025 +1200
+
+    change nav bar langauge
+
+commit da4551bfad26bfbdea075a48465ce4b39568aa51
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Wed Sep 17 11:31:34 2025 +1200
+
+    done just check with team
+
+commit 166a6734925bcfb309898de376943f2ee2735771
+Merge: cfbc560 97f76be
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Tue Sep 16 15:36:56 2025 +1200
+
+    Merge branch 'client-showcase2' into Dexter-notification
+
+commit cfbc56043f24b92a54fc3c89d1678f865cc9ec66
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Mon Sep 15 17:33:49 2025 +1200
+
+    a few changes needed but reminders work
+
+commit 95aeeb4398fbc3290150ffb493e2d9e0a59450f1
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 15 17:13:52 2025 +1200
+
+    add the comments
+
+commit 6dcf9c36ef2133dfdbe2469412e0c0030566c8a5
+Merge: c25cb4d 077bc83
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Mon Sep 15 16:46:08 2025 +1200
+
+    Merge branch 'master' into Dexter-notification
+
+commit c25cb4d065d44e765546a37f36ec341455e8a83d
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Mon Sep 15 16:42:55 2025 +1200
+
+    Notifications
+
+commit 077bc8332083adda87e3602bc06d615fe1d5439f
+Merge: 7e681d2 b844cc5
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Mon Sep 15 16:31:40 2025 +1200
+
+    Merge pull request #20 from sueyan9/chore/expo-sdk54-upgrade
+    
+    upgrade expo version
+
+commit b844cc540e4fe530ab26a6c27acb60e79e595b3f
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 15 10:13:30 2025 +1200
+
+    upgrade expo version
+
+commit 0555426ab2959381f607949431d364299bcaf40d
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 15 16:23:17 2025 +1200
+
+    img view
+
+commit 3e3bc82cce1ff4bc159e65f77b330a4724147023
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 15 15:14:26 2025 +1200
+
+    pdf view
+
+commit 052164903752d0ca2d8b4b32e1f0f7578ed8d31e
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Sep 15 10:13:30 2025 +1200
+
+    upgrade expo version
+
+commit 47451e3083c235eb7267dd1b385851ddee8363df
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 14 21:56:28 2025 +1200
+
+    api fix
+
+commit b4cc98a0fe61d2465328f371444850330f5ae8e5
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 14 21:11:30 2025 +1200
+
+    Revert "images with list"
+    
+    This reverts commit 92e1f23d66cedd1d1c3940ab91f0af54f8391615.
+
+commit 92e1f23d66cedd1d1c3940ab91f0af54f8391615
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 14 19:40:00 2025 +1200
+
+    images with list
+
+commit 922c9c34c4e25c5af210d874734d440df56326aa
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Sep 14 18:36:10 2025 +1200
+
+    view x-ray img
+
+commit 373fcffdc6fc2a9fd8487653e490dc2435392f89
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Sep 13 21:13:14 2025 +1200
+
+    Add user assets feature
+
+commit 7e681d274534ed1d08acdbccbd8c74e0c9f727f3
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Sep 12 22:09:36 2025 +1200
+
+    add dependencies
+
+commit 1105e1edef77a22b366d7cbf3847471b2842f380
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Fri Sep 12 18:45:01 2025 +1200
+
+    still have a bug to fix
+
+commit 16f3c4ca3237a5c2972cd5963d2268bdec4db1e2
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Sep 12 14:52:10 2025 +1200
+
+    mini window background css change
+
+commit 97f76bef4f314080601bcfc105444493b3e8f9e9
+Merge: ada6b03 5e0dcc1
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Sep 11 17:08:26 2025 +1200
+
+    Merge remote-tracking branch 'origin/client-showcase2' into client-showcase2
+
+commit 646eda142e666b35132f7f5de1df31ab6d577785
+Merge: 4eedd28 5e0dcc1
+Author: Abby Sutton <108248386+abbysttn@users.noreply.github.com>
+Date:   Thu Sep 11 17:05:18 2025 +1200
+
+    Merge pull request #19 from sueyan9/client-showcase2
+    
+    Iteration 8 | Full app updates
+
+commit 5e0dcc1cdc2b9205070f3a1bbd8aa3c05ae13738
+Merge: a98b862 25f2838
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Sep 11 17:00:20 2025 +1200
+
+    Merge branch 'abby-iteration9' into client-showcase2
+
+commit 4eedd28c680a604ba6633ea1d5e312aca40c9bf3
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Sep 11 16:59:07 2025 +1200
+
+    quick fix
+
+commit a98b8629884e660e795b3994b33a89ad0c7a7065
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Sep 11 16:57:31 2025 +1200
+
+    jest test for UserScreen.jsx
+
+commit bff8d94837d846812a602d0c75c42c983e7ceb14
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Sep 11 14:05:42 2025 +1200
+
+    update comments and change the mesh index
+
+commit e2cb95d1929d5c29e49e0c5dd83360b262cf9342
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Sep 11 13:56:44 2025 +1200
+
+    add whole mouth mini window on individual display page
+
+commit 25f28384dd2fc64cdeaf314278972d5b95bf7d0c
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Sep 11 13:45:04 2025 +1200
+
+    Updated app logo
+
+commit 7a8c91d1735cb6851a3f6217499b93a7ce5db66e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Sep 11 13:02:45 2025 +1200
+
+    App icon added
+
+commit ada6b03c02b9a81b20abe9312f36b76294d9a708
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Sep 9 08:43:52 2025 +1200
+
+    Fix for filter button
+
+commit 3d592527f1bc18e3ec515c8e29386d37f6197144
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Sep 8 23:47:15 2025 +1200
+
+    fix
+
+commit 3447faeb81a0f5a9cc538723e983bfc348dabb22
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Sep 8 23:36:22 2025 +1200
+
+    quick fix
+
+commit b59772a319fdea8b9145f7bcb4b7d0f6e922ef60
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Sep 8 23:22:55 2025 +1200
+
+    Fixes to dental chart
+    
+    - filter heading
+    - default view
+    - tick filtering
+    - deselect button
+
+commit 6cdc3ba0d6f3928c490b947798647fbc557cc3c0
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Sep 4 15:34:20 2025 +1200
+
+    not sure
+
+commit d73ccca1f76d1c8b9fc316a03cfc8cbb492cf286
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Sep 9 10:35:06 2025 +1200
+
+    Updated appointments
+
+commit 4943daaf40e0cf4cd31ccbf4de4ec9664c93209b
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Tue Sep 9 08:43:52 2025 +1200
+
+    Fix for filter button
+
+commit e8319fb674eb6ea7b88821771edb1f1528238048
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Sep 8 23:47:15 2025 +1200
+
+    fix
+
+commit 48cdda501c48f8c0b86284f796f987fb972c3fc7
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Sep 8 23:36:22 2025 +1200
+
+    quick fix
+
+commit 4e1c0e95f62165d8a399954a9fdbe767d13b9ec6
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Sep 8 23:22:55 2025 +1200
+
+    Fixes to dental chart
+    
+    - filter heading
+    - default view
+    - tick filtering
+    - deselect button
+
+commit 6fe9cfc2309963f2f1163476453da157db21735b
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Sep 5 12:41:30 2025 +1200
+
+    Clinic screen tests
+
+commit 75df09c56a76a7e6e772534fa8a886415f180fb1
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 16:49:23 2025 +1200
+
+    remote translate function and removed refreshKey function
+
+commit 9ca3c1310a041858bd0eb04e57dac91b8d408a34
+Merge: c1bff73 0563d94
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 16:35:22 2025 +1200
+
+    Merge branch 'client-showcase2' into Dexter-Translate-0.1
+
+commit c1bff730c9baab38db6b402a0468b1e0a2864089
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 16:08:09 2025 +1200
+
+    low key change
+
+commit 0563d9475c4646b322ad2eff1681068e09624647
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 15:04:54 2025 +1200
+
+    v0.30
+
+commit 4d3698a4d8c642ae0a6912fa53b871262403c0d1
+Merge: f1e9a9f 4ba67db
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Sep 4 14:56:52 2025 +1200
+
+    Merge branch 'education-from-backend' into client-showcase2
+
+commit f1e9a9f957ac4a6ee421ebbe2dc789b9ed360ec1
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Sep 4 14:56:43 2025 +1200
+
+    Tests fix
+
+commit 57b49627a217129433ac2acb049de88b1d79bdbb
+Merge: d92cb6b a40e6e3
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 14:47:40 2025 +1200
+
+    Merge remote-tracking branch 'origin/client-showcase2' into Dexter-Translate-0.1
+
+commit a40e6e30737baf339826242534c284ddf47186dc
+Merge: 81cb4ab 37e03ec
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Sep 4 14:37:06 2025 +1200
+
+    Merge branch 'master' into client-showcase2
+
+commit 81cb4ab0397dc415f92ae1ce55c6af7e60381213
+Merge: 1175204 0fdb6cc
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Sep 4 14:28:50 2025 +1200
+
+    Merge branch 'client-showcase2' into bookings
+
+commit d92cb6bba1c204d64e7d575373bc8c564bcdbba3
+Merge: f79aa6c 37e03ec
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 13:50:11 2025 +1200
+
+    Merge branch 'master' into Dexter-Translate-0.1
+
+commit f79aa6c69ab51eaba55b73cb73d5e654b560ad10
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 13:43:32 2025 +1200
+
+    added Dutch
+
+commit 37e03eca0219a1dd06e48729fbdea1f76ad5453b
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Sep 4 13:14:23 2025 +1200
+
+    point button to Appointment Page (ClinicScreen.jsx)
+
+commit 11752042de1afdd1003b663293743be6529a2a6f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Sep 4 13:11:26 2025 +1200
+
+    Fixed routes
+
+commit 07818cca5fb490732ba5cdad5deabc7c37ddd146
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Sep 4 13:09:31 2025 +1200
+
+    Update DentalChartScreen.jsx
+
+commit bba4de3b3136ad5003a57feed1cc42ef03a76511
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Sep 4 13:07:18 2025 +1200
+
+    another another fix
+
+commit 585a070d121abd7004be6f1af9b89a0e53b26b30
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Sep 4 13:03:44 2025 +1200
+
+    another fix
+
+commit 2002d0632c01ebef5ff410876e1ac30b66ee401a
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Sep 4 13:00:49 2025 +1200
+
+    button navigation fix
+
+commit e992f190d9a801c543112f3498816ab444d3ca2b
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Sep 4 12:54:15 2025 +1200
+
+    button to appointment page
+
+commit 5b407b7573204d251c520801947c5d47e43d8aa0
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 12:03:00 2025 +1200
+
+    update V0.2.0
+
+commit a7095cf06e5482b0e1b4cff1e60e61a1e340880e
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 10:56:15 2025 +1200
+
+    v.01
+
+commit 34b0a6cc7ec7348342f7de6000ec3fe83d440c1c
+Merge: 27c7f7d 0fdb6cc
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 10:55:51 2025 +1200
+
+    Merge remote-tracking branch 'origin/client-showcase2' into Dexter-Translate-0.1
+
+commit 27c7f7dd7987519e01a3c6a44663ad4d8852cf56
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Thu Sep 4 10:45:51 2025 +1200
+
+    updated
+    
+    small changes
+
+commit e09576e42f14c72db6061a7c91519b542e280145
+Merge: 0a75165 23f40c0
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Sep 4 10:37:24 2025 +1200
+
+    solve the conflicts of appointmrnt screen
+
+commit 0fdb6cc0a0e00f16400c414cfe5f301c44f884d7
+Merge: 2d5df6a a4d2eab
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Sep 4 10:11:15 2025 +1200
+
+    Merge branch 'Will-Update-Details' into client-showcase2
+
+commit a4d2eab2cf1728be0e67cf2c5a3ebb1b481afe69
+Merge: 71d8b69 3fbc5b5
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Sep 4 10:09:42 2025 +1200
+
+    Merge branch 'master' into Will-Update-Details
+
+commit 0a7516564d16d0655316c8cd051ce46e82767b3b
+Author: sueyan9 <409133742@qq.com>
+Date:   Wed Sep 3 23:40:32 2025 +1200
+
+    add appointment
+
+commit 4ba67db0bf50609707b64f8aed2b27c82a8579df
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Sep 3 23:25:25 2025 +1200
+
+    attempted fix
+
+commit 3816ee7e0d2b3f11e755e75e424488d8d51eb2a0
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Sep 3 22:59:36 2025 +1200
+
+    quick fixes
+
+commit 7fd348dd927df363a34f7231f0abfb7b3eab5dca
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Sep 3 22:55:31 2025 +1200
+
+    Favourites are localised
+
+commit 71d8b699973a33832424fd89ee2701280bb3a655
+Author: William <williamb2312@hotmail.com>
+Date:   Wed Sep 3 20:31:58 2025 +1200
+
+    clinic code change request
+
+commit 23f40c074349438e4e0e959c7363485020d5c517
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Sep 3 18:57:20 2025 +1200
+
+    fix?
+
+commit bfb56de7372d753701adb600cccb595b3a622b7a
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Sep 3 18:32:01 2025 +1200
+
+    Backend added
+    
+    Issue with pushing favourites
+
+commit 62e8711753cd0cefa24b13c02f2bef556468888c
+Author: XA1626 <132309726+XA1626@users.noreply.github.com>
+Date:   Tue Sep 2 16:08:25 2025 +1200
+
+    step 1 going:
+    change to homeScreen, EducationContent and educationscreen
+
+commit 02f074eb2d7822379c41b989cb733ca057cb163e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Aug 29 13:58:07 2025 +1200
+
+    aa and bb running
+
+commit 2d5df6a61116293e4d902c6f7018f014cbf475aa
+Merge: 27485b5 457a3d0
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 28 16:17:27 2025 +1200
+
+    Merge remote-tracking branch 'origin/abby-iteration8' into client-showcase2
+
+commit 27485b591dddcd31969ed91c84436af690db4f2a
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 28 16:13:41 2025 +1200
+
+    Merged Zoya-Education-Update into client-showcase2 with conflict resolution
+
+commit ff3fc217eb66035315e189a247a8decc27aeb541
+Merge: f6b87c4 593d2f4
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 28 16:05:16 2025 +1200
+
+    Merge branch 'Zoya-Education-Update' into client-showcase2
+
+commit 3fbc5b5a3152c331ee2417acd685a69c6a4abb58
+Merge: e0a626f 6622d8c
+Author: Johann Guadalupe <132259217+Johannesburgg16@users.noreply.github.com>
+Date:   Thu Aug 28 15:45:24 2025 +1200
+
+    Merge pull request #18 from sueyan9/feature/bottomfilterMenu
+    
+     filter menu move to bottom
+    all tested
+
+commit 6622d8c209c596afb9d6d4c9f376663b7bc6e7a0
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Aug 28 15:17:49 2025 +1200
+
+     filter menu move to bottom
+
+commit b78fd3451af5ce2f759a4ff70ac8985ae66ec069
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 15:15:52 2025 +1200
+
+    fix
+
+commit b973c562aa36386b143a652952cc03df39d64a6e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 15:15:34 2025 +1200
+
+    appointment creatings
+
+commit f6b87c4ae101843216beb10ce28e0d30186535c2
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 14:01:31 2025 +1200
+
+    error fix and merge
+
+commit bb0beb563742472ea2df0beb9af6b4c35540a02b
+Merge: 842eb29 e0a626f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 14:01:02 2025 +1200
+
+    Merge branch 'master' into client-showcase2
+
+commit 593d2f4937d4fe8e147fbabfdc98871372c7df40
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 28 14:00:16 2025 +1200
+
+    Quiz navigation fixed
+
+commit e0a626f020991783f6bffcb518e0ead21c4d96df
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 14:00:03 2025 +1200
+
+    Mouth movement fix
+
+commit 842eb2994be2da34947a019de3b07933aaf14b95
+Merge: 183f90c 47f9178
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 28 13:37:52 2025 +1200
+
+    Merge branch 'Will-Update-Details' into client-showcase2
+
+commit 47f91785779bdcb1fdb59d86516a43104a71a951
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 28 13:14:40 2025 +1200
+
+    change password logic
+    
+    change password button working and updating to the database.
+
+commit 88c78049b38d8cb887544655c6c1953508ef2a0d
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 28 12:56:35 2025 +1200
+
+    merged with abby
+
+commit c9541e2e684c9046243c9b0e16d3f00c50dfc810
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 28 12:54:32 2025 +1200
+
+    update details button to update personal information
+    
+    email actually updates in the database, but emergency contact phone + name, and address is hard coded
+
+commit eb3dcf40ad4ef9c807801f9d8a27741af44e9d8e
+Merge: 1777e44 f0236a1
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 28 12:39:00 2025 +1200
+
+    Merge remote-tracking branch 'origin/abby-iteration8' into Zoya-Education-Update
+
+commit 1777e44d7a52d802ac5e12b99538ba516f916757
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 28 12:37:29 2025 +1200
+
+    Quiz Added
+
+commit 457a3d0b4fe8cdf6f70268cf0806ae4b6a8f965b
+Merge: f0236a1 183f90c
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 12:33:25 2025 +1200
+
+    Merge remote-tracking branch 'origin/client-showcase2' into abby-iteration8
+
+commit f0236a1602e6205479cf1630a554a4c702e75b72
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 12:29:57 2025 +1200
+
+    updated
+
+commit 20d04eb29b901795c1dec0909c25c8046bc37db4
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 12:23:31 2025 +1200
+
+    updated
+
+commit c443ad801dc3f371ca1610bc8173cbe933d37559
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 11:56:40 2025 +1200
+
+    update
+
+commit 1ca821365301bc2b7c87bf93dc034a27da74771f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 11:52:47 2025 +1200
+
+    fixes again
+
+commit 60a12e27acb94b2b64ea6066e6616da0c9acedbf
+Merge: 5d7d773 87c3fb2
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 11:47:55 2025 +1200
+
+    Merge remote-tracking branch 'origin/Zoya-Education-Update' into abby-iteration8
+
+commit 5d7d77343cddf22ef92919b8ce5c2d5a962391fb
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 11:46:20 2025 +1200
+
+    education button fix
+
+commit 87c3fb2581d5dbda6e1d9dbd1d46467f7c9e9923
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 28 11:44:58 2025 +1200
+
+    Update styles for Education screens
+
+commit 6a6193d3d04ed345e4d55abd4e77db25a621c109
+Merge: 8d74bab ae60ee6
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 28 11:32:44 2025 +1200
+
+    Merge remote-tracking branch 'origin/abby-iteration8' into Zoya-Education-Update
+
+commit 8d74babca4b02e6fad57eaf64ef9250d1bb9931c
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 28 11:29:52 2025 +1200
+
+    Updated Education screens
+
+commit ae60ee6f1f1d6c472105c6c3f4f134cc5e81f303
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 28 11:28:27 2025 +1200
+
+    Iteration 8 fixes
+
+commit 183f90c1ecc23251f785526db6f5d2f5defc1eeb
+Merge: e1c6b58 04d257c
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Aug 28 11:16:24 2025 +1200
+
+    Merge branch 'master' of https://github.com/sueyan9/ToothMate into feature/appointments-modal
+
+commit 5921da6081cd2aeb3d414d000ef95fa05ce2c7a7
+Merge: 6480503 04d257c
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 28 11:14:44 2025 +1200
+
+    Merge branch 'master' into Will-Update-Details
+
+commit 6480503a45321df636dde4a8020cb10eef6edfba
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 28 11:13:43 2025 +1200
+
+    added new personal detail fields
+
+commit 04d257c1fc235f90fe5c01a42bc9652347565ee5
+Merge: 0a8d215 5bad8ec
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Aug 28 11:09:13 2025 +1200
+
+    Merge branch 'master' of https://github.com/sueyan9/ToothMate
+
+commit 0a8d2150a66a8737826ce634d2a8daf725582e6f
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Aug 28 11:08:46 2025 +1200
+
+    delete the unuse education button
+
+commit e1c6b58fe2f90b3d8184fa3d224f2f5b109f0475
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Aug 28 10:48:38 2025 +1200
+
+    pop window display in the middle
+
+commit e36ebb1314d2aedb20ef7a6a79673f9adfd828e1
+Merge: e33cf58 5bad8ec
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Aug 28 10:28:23 2025 +1200
+
+    Merge branch 'master' of https://github.com/sueyan9/ToothMate into feature/appointments-modal
+
+commit e33cf58011065c26e238324ad4f5abfc2f79340e
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Aug 28 10:26:41 2025 +1200
+
+    appointment detail window
+
+commit 5bad8ec3e4af34b459e9cfd3389d17f9ee7fd20d
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 28 10:24:52 2025 +1200
+
+    educationscreen fix
+
+commit e19a31bc25bae78fe0145f93992be873ebb2333b
+Author: sueyan9 <409133742@qq.com>
+Date:   Tue Aug 26 23:57:30 2025 +1200
+
+    pop up window for appointment info
+
+commit 335134608e7a49493385c75f6e966f52c633b7e4
+Author: sueyan9 <409133742@qq.com>
+Date:   Tue Aug 26 19:01:45 2025 +1200
+
+    use Backend API on dental chart and filter menu
+
+commit e2a94f16620e623e4438e1fd0fc7636fbff60713
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Aug 23 19:05:53 2025 +1200
+
+     define the routes for treatment/tooth/treatment
+
+commit fb87cb904b66d7066348d5c34374edf89e8b8680
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Aug 21 14:50:55 2025 +1200
+
+    API for backend
+
+commit 4593d87fbd4b71fc61ef5b60fc94cac7913b6d6c
+Author: sueyan9 <409133742@qq.com>
+Date:   Tue Aug 19 00:23:05 2025 +1200
+
+    build schema
+
+commit 9f495e5f793becea7af914efb155c5eb84c84eb0
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Aug 18 18:50:41 2025 +1200
+
+    still the clinic invite code ,but this time about kid signup logic and solve the back to parent issue
+
+commit 58a3c99c86c5b3a37c4906e2812588d4c7a6f20c
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Aug 23 19:11:31 2025 +1200
+
+    update tooth_number to llfm tooth from 33 to 36
+
+commit 4d7672ff4fb4a398b17e36a6625c4f0a8f825026
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Aug 22 13:57:44 2025 +1200
+
+    started fixes
+
+commit eb06399d8a5c30d5af1852c1f7c26a3014a51c51
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Aug 22 12:56:36 2025 +1200
+
+    Fixed tooth title size and tooth numbers
+
+commit 89a6b612ee1e19c0011f6a26940c91aba3cfdaf3
+Merge: dbac255 6755080
+Author: Abby Sutton <108248386+abbysttn@users.noreply.github.com>
+Date:   Thu Aug 21 15:24:52 2025 +1200
+
+    Merge pull request #17 from sueyan9/Client-Showcase
+    
+    Iteration 7 | Client Requested Changes
+
+commit 6755080dcce4db26ff20426df9372505e7809d86
+Merge: a150201 dbac255
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 21 15:22:33 2025 +1200
+
+    Merge branch 'master' into Client-Showcase
+
+commit 2f3e90b4248cb24bd617b0bdf223f32fc9d6567d
+Merge: a150201 dbac255
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 21 15:21:36 2025 +1200
+
+    Merge remote-tracking branch 'origin/master' into Zoya-Education-Update
+
+commit a150201be5e155d64268c1c4595340abaf9d33ad
+Author: Zoya M <130958431+zoyaxmah@users.noreply.github.com>
+Date:   Thu Aug 21 14:51:41 2025 +1200
+
+    Delete .env
+
+commit 4d18420fae74286cf9ae29d4786981638aa23fd3
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 21 14:04:09 2025 +1200
+
+    name change
+
+commit dbac25526fc1970ec5d07c9972d140953a2ead3b
+Merge: 0208318 d0eaefd
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Thu Aug 21 12:58:31 2025 +1200
+
+    Merge pull request #15 from sueyan9/johann-iteration-7
+    
+    Johann iteration 7,delete the .env , all good to go
+
+commit d0eaefdae30d24bb90a562eff1a7e5f7307dc2e6
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Thu Aug 21 12:57:23 2025 +1200
+
+    Delete .env
+
+commit cebc0061d74d6a2c3e932f383b1a841b4fa6dc20
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Aug 21 12:44:24 2025 +1200
+
+    gitignore
+
+commit 2712998cbca315b1bdd28a7914e4a698c82f02b9
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Aug 21 12:44:00 2025 +1200
+
+    native button - webview
+
+commit ca3fbbe736ef9798bdfcf6dab724838896c3e676
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 21 11:51:20 2025 +1200
+
+    Small fixes
+
+commit 5ad7ecad194826fc9e0631992e09023897bf6092
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Aug 21 11:49:58 2025 +1200
+
+    fix
+
+commit e0ec661eaaa124f16d489a8e84a85f90a4dbcab7
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 21 11:46:37 2025 +1200
+
+    Save package-lock.json changes before merging into Client-Showcase
+
+commit 794d8b3da9555d160147a863ebf44fc19333bd75
+Merge: bb4943a c2bf07f
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Thu Aug 21 11:35:37 2025 +1200
+
+    Merge remote-tracking branch 'origin/Client-Showcase' into Zoya-Education-Update
+
+commit eded24833f270b84d783bb5ffc4d46589ae1cec7
+Merge: b1fe800 0208318
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Aug 21 11:33:33 2025 +1200
+
+    Merge remote-tracking branch 'origin/master' into johann-iteration-7
+
+commit c2bf07fa210d0ed7689a47f971eff0836a7c4d6a
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 21 11:17:41 2025 +1200
+
+    Merge branch 'Client-Showcase' into abby-home-page
+    
+    Added universal profile picture
+
+commit 783cbc908c232481c96fd828c86a786280264a5c
+Merge: 457e02a 1311436
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 21 10:48:34 2025 +1200
+
+    Merge branch 'abby-home-page' into Client-Showcase
+
+commit b1fe800c0a958783d9e4c8df7d29d2620feb681d
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Aug 21 10:44:19 2025 +1200
+
+    react native button test
+
+commit 457e02a92e6dc8e949eeb39ef95d32919adf1904
+Merge: 701e087 9207227
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 21 10:10:31 2025 +1200
+
+    Merge branch 'Will-Profile' into Client-Showcase
+
+commit 9207227898f795bdea983a1d386eb26bb0ab79f7
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 21 07:43:04 2025 +1200
+
+    deleted .env
+
+commit f462afdb90547f5852175c90499effaa8b549081
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 21 07:42:34 2025 +1200
+
+    added icon
+
+commit 1d347f79187750272c687019e9bbf4c52a0ac992
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 21 07:27:37 2025 +1200
+
+    added 2 extra icons
+
+commit 71c3565eda29fdcb6d820881da7031a657c56818
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 21 01:16:22 2025 +1200
+
+    added profile pictures and pulling user information
+
+commit 13114366732ad525a3af91cd04591abb3e09f5af
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Wed Aug 20 23:11:01 2025 +1200
+
+    Added home screen
+
+commit bb4943a68eb6c1278ee16ce64ada5ae9f4936ab9
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Tue Aug 19 19:28:29 2025 +1200
+
+    Updated styles & flow for education screen
+
+commit 701e0871a76793fbc99494b04d4e757bcf14972f
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 14 15:19:09 2025 +1200
+
+    changed education content to filling
+
+commit f03026c37b4bdc25a6d57256045fde4030610277
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Aug 14 15:17:37 2025 +1200
+
+    button
+
+commit 550f7c7daedfaf6e1fe03ce03774a84dfc293214
+Merge: 55be059 0208318
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 14 15:03:59 2025 +1200
+
+    Merge branch 'master' into Client-Showcase
+
+commit 0208318dff28c56885357b588e1f5f9efc4d8080
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 14 14:40:11 2025 +1200
+
+    final final fix
+
+commit d5ccce9ee7af2c584185edaa2e698b41b4684af5
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 14 14:31:45 2025 +1200
+
+    arrow fix
+
+commit 6d5e514b88b0c916886e3d8c2e511b3b87669f32
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 14 14:21:20 2025 +1200
+
+    Individual tooth styling
+
+commit dea66f230debf1f41dd5049a927605969599c1fe
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 14 14:07:37 2025 +1200
+
+    Final mouth fix
+    
+    fixed back button on teeth
+
+commit 55be0598c77d853eb83055e280f0196d45a51fc1
+Merge: 13d03d4 db2800c
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 14 13:41:19 2025 +1200
+
+    Merge branch 'master' into Will-Iteration-7-Future-Appointments-V2
+
+commit db2800c72049ff1460c864722d39eb0f86e1502d
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 14 13:40:39 2025 +1200
+
+    Fixed mouth view
+
+commit 13d03d478be6a3b909241a64db5cc987a934ee97
+Merge: 6a451ef 5677fc0
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 14 13:33:45 2025 +1200
+
+    Merge branch 'Will-Iteration-7-Future-Appointments' into Will-Iteration-7-Future-Appointments-V2
+
+commit 6a451efe30614d3924906923f3b10bf16cd7057a
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 14 13:09:42 2025 +1200
+
+    Fixed issue with clear all treatments
+
+commit 59f40be7ea09bff4fec2a037ec064a9a6fb0384e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 14 12:38:41 2025 +1200
+
+    Fixed extraction
+
+commit c74afe9a6befea935d15c64efa5f16712ad31696
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 14 12:33:43 2025 +1200
+
+    Delete unneeded stuff
+
+commit dc1a618d5d6ff4b9aa84b15e62ad2ede1d32e31c
+Merge: b5607ee 6b5aa89
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Thu Aug 14 12:32:41 2025 +1200
+
+    Merge branch 'master' of https://github.com/sueyan9/ToothMate_App_2025
+
+commit 6b5aa89549243b41c28d02dff18e16d66b780746
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 14 11:10:14 2025 +1200
+
+    Fixed hidden description
+
+commit d74614a4589b997f2d89930819fe17bd2986baee
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Wed Aug 13 23:53:46 2025 +1200
+
+    view education button
+    
+    If the tooth has at least one treatment, it renders the green "View Education" button.
+    
+    Clicking the button sends a postMessage to your React Native DentalChartScreen.
+
+commit 63ce7f67b589fa5da26a97caf6e13bff5d134881
+Merge: e9e53f3 9bc093f
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Wed Aug 13 13:22:59 2025 +1200
+
+    Merge branch 'master' of https://github.com/sueyan9/ToothMate_App_2025
+
+commit 9bc093f2f439fa32344e1548048842f218c13ed2
+Merge: f938e80 72a7468
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Wed Aug 13 12:47:32 2025 +1200
+
+    Merge branch 'master' of github.com:sueyan9/ToothMate_App_2025
+
+commit f938e80597780389186a1c4a26856042c18e1099
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Wed Aug 13 12:45:19 2025 +1200
+
+    Updated FilterMenu component
+
+commit e9e53f37b0d18978e20ec15c78cc40a3003d7a78
+Merge: 9cd3fa9 72a7468
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Wed Aug 13 12:20:16 2025 +1200
+
+    Merge branch 'master' of https://github.com/sueyan9/ToothMate_App_2025
+
+commit 72a74686b9740f2b07b744397bb3f8aecdf09ab8
+Author: sueyan9 <409133742@qq.com>
+Date:   Wed Aug 13 12:06:09 2025 +1200
+
+    change param name
+
+commit c9d935388dab496dc598c22055235a23ec5f9996
+Author: sueyan9 <409133742@qq.com>
+Date:   Wed Aug 13 11:56:36 2025 +1200
+
+    Fix syntax error in FilterMenu.js
+
+commit b340b53c15462572e8480087fdf1f6f0d3e41066
+Author: sueyan9 <409133742@qq.com>
+Date:   Wed Aug 13 11:24:28 2025 +1200
+
+    ignore
+
+commit 9cd3fa96cd1770311faa3c9205951043e37181e5
+Merge: b5607ee 4bbda83
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Wed Aug 13 00:54:28 2025 +1200
+
+    Merge branch 'master' of https://github.com/sueyan9/ToothMate_App_2025
+
+commit 5677fc0eba171c64a8fae7989bd91ec0ea6ebb37
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Wed Aug 13 00:47:02 2025 +1200
+
+    Appointments Page
+    
+    Changed the Clinic Screen to Appointments. Appointments Page now consists of calendar where users can filter appointments by selecting dates on the calendar
+
+commit 4bbda83684c599881e001fded896599e2fe9b762
+Merge: cc8bf32 74cb271
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Tue Aug 12 22:22:28 2025 +1200
+
+    Merged master into Zoya-added-filters (has filtering updates)
+
+commit cc8bf323ac682760e764bb3aef263776bc5bc0da
+Author: notzoya <qpg1900@autuni.ac.nz>
+Date:   Tue Aug 12 21:46:09 2025 +1200
+
+    Added filtering options for treatments
+
+commit 48db49d78afb5165116489b1111065fa7e28e2a6
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Tue Aug 12 17:23:14 2025 +1200
+
+    Update styles.css
+
+commit 778be6e94240e482af3995f85a4d077e573fb282
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Tue Aug 12 16:14:38 2025 +1200
+
+    email check bug
+    
+    email field in the sign up screen now checks the database for same email entered into the field and displays a status message and errors appropriately.
+
+commit 74cb271f5f5d359b35c31614d92b5d545f0985eb
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon Aug 11 00:22:44 2025 +1200
+
+    change the router routes
+
+commit 1eca08eff93635b894016f617b6833941f0e4d3a
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Aug 10 23:47:14 2025 +1200
+
+    fix MongoDB config and server startup for Render deployment
+
+commit c229834e514a444c45ec927370a72f35fbd4aeef
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Aug 10 23:40:48 2025 +1200
+
+    fix port configuration for Render deployment
+
+commit 55cebb8b22909bca312b0e8c5ec7530925dc610c
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Aug 10 23:27:04 2025 +1200
+
+    Remove .vercel files
+
+commit 684e0586301993a9c052437044ad7cec8a5764da
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Aug 10 23:20:59 2025 +1200
+
+    fix backend package.jason file ,add script start to deploy render
+
+commit b6d0054ecf3df0c35811459b13273edb958e7df2
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Aug 8 13:10:10 2025 +1200
+
+    Final mouth fix
+    
+    Fixed placement of mouth and words to make readability better
+
+commit bd6f72a854b8d7f73e43d70cc2286602a7463912
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Aug 8 13:04:31 2025 +1200
+
+    Mouth fix
+
+commit 91105c7035ba947ea55709327a5e6ffb4a3bafd5
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Fri Aug 8 12:50:42 2025 +1200
+
+    Iteration 7 | Quick fix to dental chart
+
+commit 8a0831c0e0909d175b03cc5242c94c8fe49a1213
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Aug 7 13:49:25 2025 +1200
+
+    unit test for search bar
+    
+    Test case 4: ensuring search works and filters out readings
+    test case 5: No readings show when search term does not match
+
+commit d2f96fced33d6397197898830be7405798187163
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 7 13:31:42 2025 +1200
+
+    Updated child filtering
+
+commit a2d322819574d45f4193c9b64fa187cfeb9647f4
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 7 11:36:59 2025 +1200
+
+    Update app.json
+
+commit 4c775afcbd218f4a9f0f948168e31f29ad78f677
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 7 11:13:33 2025 +1200
+
+    updated
+
+commit 85feb8863b725150fb5e261b031b1ea5aaa65d75
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Aug 7 17:13:47 2025 +1200
+
+     mistake
+
+commit 4590980a72b66f02ae6bde080b1412571e56d790
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Aug 2 19:24:19 2025 +1200
+
+    feat: move WebView URL to .env file for better configuration management
+
+commit 0abbbba30256e305e69c663f0834569a185ba265
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Aug 1 23:56:03 2025 +1200
+
+    deploy dental chart to vercel
+
+commit 399beb200d85ff1468c0fb8134b50c507c56a9c0
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Mon Jul 28 15:55:37 2025 +1200
+
+    fixed sign in button CSS
+
+commit 3db1cb88c7eb7fc09965be0a6db7102c589ab7a4
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Mon Jul 28 15:28:57 2025 +1200
+
+    Sign up Screen NHI fix
+    
+    requireAuth.js
+    - Added Validation, Error Handling, Debug Logging
+    
+    App.jsx:
+    - changed intialRouteName="mainFlow" to initialRouteName="ResolveAuth"
+    
+    NHI Fix in Signup page:
+    - Added Use State and NHI validation function in SignupScreen.jsx
+
+commit eee0642844af492cec87949745930f7c0cff28e1
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Jul 26 23:06:06 2025 +1200
+
+    cssfix: signout button and container
+
+commit d328378a06decaf12dba853fc15d0e93000aed50
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Fri Jul 25 13:56:17 2025 +1200
+
+    Update README.md
+    
+    update
+
+commit a07a3d79ea413a5645a2f861aa0dce5e071787a0
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Jul 25 13:18:29 2025 +1200
+
+    Remove unwanted code from PR
+
+commit 15038bb690bdcf764dcabc55ba25c28d4119411a
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Jul 13 14:11:29 2025 +1200
+
+    Iteration 5 | updated nav bar
+
+commit 8a43dbf4f63e19c4bda68fca8069b0fd3a00299f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sat Jul 12 22:48:34 2025 +1200
+
+    Iteration 5 | Education tab
+    
+    Added education template - does not yet work with backend
+    Fixed nav bar with new icons and styling
+
+commit 44e3fa31f77cbffd39ae1962c1940f3b796fe17e
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Jul 5 21:26:55 2025 +1200
+
+    slove the filter menu not showing issue
+
+commit cdb9a83751c4eac86af509e30fd72e08ac5b9e7e
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Sat Jul 5 19:58:54 2025 +1200
+
+    Update AuthContext.js
+
+commit 000ce16e43877c5792d92b405b277b96f3471398
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Sat Jul 5 19:56:37 2025 +1200
+
+    Update src/context/AuthContext/AuthContext.js
+    
+    no need , we use parentid all the time.
+
+commit b5607eeb9434b42c4070a21edf2d0185cbc7d7c5
+Merge: 817306d ea3ab44
+Author: Johann Guadalupe <132259217+Johannesburgg16@users.noreply.github.com>
+Date:   Thu Aug 7 13:59:59 2025 +1200
+
+    Merge pull request #13 from sueyan9/abby-iter6-update
+    
+    Iteration 6 client changes
+
+commit ea3ab44ae67ad48c6fab3af354ce59354fe44371
+Author: JohannGuadalupe <bastiguadalupe@gmail.com>
+Date:   Thu Aug 7 13:49:25 2025 +1200
+
+    unit test for search bar
+    
+    Test case 4: ensuring search works and filters out readings
+    test case 5: No readings show when search term does not match
+
+commit 1ca5b82bebe157d2a75a7094b386f18db094a409
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 7 13:31:42 2025 +1200
+
+    Updated child filtering
+
+commit 43fa9fe641b619bf281573fc800fc3157e761503
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 7 11:36:59 2025 +1200
+
+    Update app.json
+
+commit 7e13c2b8f09979b72ef6ef32fb5aa066cdc331b1
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu Aug 7 11:13:33 2025 +1200
+
+    updated
+
+commit 817306d358b21096adecd9347b126495e501cb4e
+Merge: 91c0b42 2ffeaae
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Sat Aug 2 19:27:07 2025 +1200
+
+    Merge pull request #12 from sueyan9/web-project-vercel
+    
+    deploy dental chart to vercel, and write url to .env file for better configuration management
+
+commit 2ffeaaeca84a3fdcb02533a654c9168a6101f726
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Aug 2 19:24:19 2025 +1200
+
+    feat: move WebView URL to .env file for better configuration management
+
+commit 02f15efca58a33f7c397f9de101e14e9f966c7bf
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Aug 1 23:56:03 2025 +1200
+
+    deploy dental chart to vercel
+
+commit 91c0b421466389ec8d9b2f9978dcacdd8c0b575a
+Merge: 8459260 2dee21a
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Thu Jul 31 10:20:55 2025 +1200
+
+    Merge pull request #11 from sueyan9/WillSignUp
+    
+    Sign Up/In CSS and NHI field fix
+
+commit 2dee21a37dea8def0cdd6cb34db0fa7e42c26a71
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Mon Jul 28 15:55:37 2025 +1200
+
+    fixed sign in button CSS
+
+commit d30aebc6d32c33f575ef8a7059e88aad977ee1eb
+Author: William Sukjaem <133365639+Willsu00@users.noreply.github.com>
+Date:   Mon Jul 28 15:28:57 2025 +1200
+
+    Sign up Screen NHI fix
+    
+    requireAuth.js
+    - Added Validation, Error Handling, Debug Logging
+    
+    App.jsx:
+    - changed intialRouteName="mainFlow" to initialRouteName="ResolveAuth"
+    
+    NHI Fix in Signup page:
+    - Added Use State and NHI validation function in SignupScreen.jsx
+
+commit b9b19c2125f751eec8ef7cdf9541b954263d1637
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Jul 26 23:06:06 2025 +1200
+
+    cssfix: signout button and container
+
+commit 8459260a46e32b8c41baec09908d4d2e73788d67
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Fri Jul 25 13:56:17 2025 +1200
+
+    Update README.md
+    
+    update
+
+commit bfbf14d3e3511bf78789280faf7b82fde47ded46
+Merge: 746e873 22e535e
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Fri Jul 25 13:21:35 2025 +1200
+
+    Merge pull request #10 from sueyan9/iteration5-test
+    
+    test:education screen
+
+commit 22e535ebf2909b66094e497b70a098890804914d
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Jul 25 13:18:29 2025 +1200
+
+    Remove unwanted code from PR
+
+commit 746e8739b04a2bab016c71e81a56a7bdbd7c7509
+Merge: 5925824 e1c4727
+Author: Abby Sutton <108248386+abbysttn@users.noreply.github.com>
+Date:   Wed Jul 23 22:54:08 2025 +1200
+
+    Merge pull request #9 from sueyan9/AbbyEdu
+    
+    Iteration 5 | Education tab
+
+commit e1c4727e15a483caf62e7f878c618aed421f0acf
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Jul 13 14:11:29 2025 +1200
+
+    Iteration 5 | updated nav bar
+
+commit 5c65be84c10c86d49469398b4bbd94b184ae15a7
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sat Jul 12 22:48:34 2025 +1200
+
+    Iteration 5 | Education tab
+    
+    Added education template - does not yet work with backend
+    Fixed nav bar with new icons and styling
+
+commit 5925824b11ed1a5c0649b2e9edcbb56c27e36b44
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Jul 5 21:26:55 2025 +1200
+
+    slove the filter menu not showing issue
+
+commit 80fc8d75f83df090066521e1129c18f8fa29e830
+Merge: 0e44cca 071e9ea
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Sat Jul 5 20:00:01 2025 +1200
+
+    Merge pull request #8 from sueyan9/feat/clinic
+    
+    still the clinic invite code ,but this time about kid signup logic an…
+
+commit 071e9eab55b92b3d6b500b0d686c1427ea970950
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Sat Jul 5 19:58:54 2025 +1200
+
+    Update AuthContext.js
+
+commit 7594db03ab830840c38d95ce5c12d3c2b02680cf
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Sat Jul 5 19:56:37 2025 +1200
+
+    Update src/context/AuthContext/AuthContext.js
+    
+    no need , we use parentid all the time.
+    
+    Co-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>
+
+commit 76f35c246cc972eb3a68d2cc7810ad8d14d4828a
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Jul 5 19:48:48 2025 +1200
+
+    still the clinic invite code ,but this time about kid signup logic and solve the back to parent issue
+
+commit c6ac8662ce930527f84b1f17a7c087c99121de49
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat Jul 5 19:48:48 2025 +1200
+
+    still the clinic invite code ,but this time about kid signup logic and solve the back to parent issue
+
+commit 0e44cca620f488d99a9bcde615e288825312cbe1
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Jul 4 23:44:25 2025 +1200
+
+    slove the clinic saved logic,should be the clinic id saved into the user table (not the clinic invite code)
+
+commit 2d207e6cb647c5b823dd2cb4c5118e1d8d8ce845
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Jul 4 23:44:25 2025 +1200
+
+    slove the clinic saved logic,should be the clinic id saved into the user table (not the clinic invite code)
+
+commit 62437e1092ad58f14d34a9a4af5d7016e61c1d30
+Merge: bce3baf 6dcc7c7
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Fri Jul 4 20:25:03 2025 +1200
+
+    Merge pull request #7 from sueyan9/feat/clinic
+    
+    change choose clinic to invite code
+
+commit 52663b81d0f5a1c69afc62cc7ad1d0553ecfc549
+Merge: d8dc1fe 47e3db1
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Fri Jul 4 20:25:03 2025 +1200
+
+    Merge pull request #7 from sueyan9/feat/clinic
+    
+    change choose clinic to invite code
+
+commit 6dcc7c70e7079bd230d097ad59b75c1f4557c083
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Jul 3 23:30:29 2025 +1200
+
+    change choose clinic to invite code
+
+commit 47e3db14999bd217c8d21c8ab3511d236dbfd42b
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Jul 3 23:30:29 2025 +1200
+
+    change choose clinic to invite code
+
+commit bce3bafd6aee2e83ada16b38df9c1d9fc1841c66
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Jul 3 21:33:08 2025 +1200
+
+    slove conflicts with switch account from kid to parents
+
+commit d8dc1febe00a9044009c5edfd63c031dc43c71d8
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Jul 3 21:33:08 2025 +1200
+
+    slove conflicts with switch account from kid to parents
+
+commit e8ae0ceeecf6c73b52017c5fed6cd840bd169bec
+Merge: 86e0744 f04410c
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Jul 3 21:11:15 2025 +1200
+
+    Merge remote-tracking branch 'origin/master'
+    
+    # Conflicts:
+    #       App.jsx
+    #       src/api/axios.js
+    #       src/screens/DentalChartScreen/DentalChartScreen.jsx
+
+commit 766b32cc7358f976ce6a755e854cfa4a56fa52f2
+Merge: ea6cc5f 8c1f967
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Jul 3 21:11:15 2025 +1200
+
+    Merge remote-tracking branch 'origin/master'
+    
+    # Conflicts:
+    #       App.jsx
+    #       src/api/axios.js
+    #       src/screens/DentalChartScreen/DentalChartScreen.jsx
+
+commit 86e07448acf40e2aa8c00264ae8595c04c1319ad
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Jul 3 21:07:17 2025 +1200
+
+    rollback the singnin screen code
+
+commit ea6cc5f45ee759cb122bfbca18a287d588afa553
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Jul 3 21:07:17 2025 +1200
+
+    rollback the singnin screen code
+
+commit f04410cb046a1d854cb5af1d4270bc165c99a623
+Merge: 63c8e2d 44cdee9
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Thu Jul 3 20:23:19 2025 +1200
+
+    Merge pull request #3 from sueyan9/feature/kidAccount
+    
+    Feature/kid account
+
+commit 8c1f967ab5f7400b37a7e7388ccdec50667ed8ee
+Merge: 13bdd21 d4643db
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Thu Jul 3 20:23:19 2025 +1200
+
+    Merge pull request #3 from sueyan9/feature/kidAccount
+    
+    Feature/kid account
+
+commit 44cdee9e7d09469d759fb9b9723fc0829257749c
+Merge: 7baa058 63c8e2d
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Wed Jul 2 23:22:39 2025 +1200
+
+    Merge branch 'master' into feature/kidAccount
+
+commit d4643db3f66ae08f1752d7ec32a82877ecd9817b
+Merge: 435edea 13bdd21
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Wed Jul 2 23:22:39 2025 +1200
+
+    Merge branch 'master' into feature/kidAccount
+
+commit 63c8e2d7982c451bff2ec71fe80d57274f78e7c2
+Merge: 65e5c1f 90230ad
+Author: Abby Sutton <108248386+abbysttn@users.noreply.github.com>
+Date:   Mon Jun 30 11:51:01 2025 +1200
+
+    Merge pull request #6 from sueyan9/AbbyUpdate
+    
+    Iteration 4 | Individual Tooth Information
+
+commit 13bdd21100b4e45e149a02773184aa1c1189fd99
+Merge: 1968fbf 9924cc3
+Author: Abby Sutton <108248386+abbysttn@users.noreply.github.com>
+Date:   Mon Jun 30 11:51:01 2025 +1200
+
+    Merge pull request #6 from sueyan9/AbbyUpdate
+    
+    Iteration 4 | Individual Tooth Information
+
+commit 90230ad23d82afb5a8026245fe6b2c52cfeb6ec2
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Jun 30 11:49:56 2025 +1200
+
+    Fixes
+
+commit 9924cc38feb6f5ceaa64590fd032db67d77e75ec
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Jun 30 11:49:56 2025 +1200
+
+    Fixes
+
+commit 57dfaa87974f6cacdf72cbbdb1c07cc9e4295840
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Jun 30 11:47:31 2025 +1200
+
+    Iteration 4 | file fixes
+
+commit 27103f39f280767240e67b966199d745c66c703c
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Jun 30 11:47:31 2025 +1200
+
+    Iteration 4 | file fixes
+
+commit 4072bcd44bedc11194e2adfb1477f8f24ccec114
+Merge: 144a875 65e5c1f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Jun 30 11:24:12 2025 +1200
+
+    Merge branch 'master' into AbbyUpdate
+
+commit 8c05b2fec1dd7fdbcca10ae22875608c19fb2422
+Merge: 144a875 1968fbf
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Jun 30 11:24:12 2025 +1200
+
+    Merge branch 'master' into AbbyUpdate
+
+commit 144a875b3b7268125034f5000f87bc87ed56b476
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon Jun 30 10:56:26 2025 +1200
+
+    Iteration 4 | Fixed filter test file
+
+commit bb939f2accce96dc1f7fbf390828bee21198a54e
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Jun 29 18:54:31 2025 +1200
+
+    WIP: 修改 axios.js 和 DentalChartScreen.jsx
+
+commit f370557886ea772bfe8a873b2c342ef49178cb41
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun Jun 29 18:54:31 2025 +1200
+
+    WIP: 修改 axios.js 和 DentalChartScreen.jsx
+
+commit 586bc3436868d6994f279a01321c33581653f41a
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Jun 29 15:44:51 2025 +1200
+
+    Iteration 4 | Testing added for information and child
+
+commit 7ff3d05f479d152d087f604b357bdb2f7b585a9e
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun Jun 29 13:59:38 2025 +1200
+
+    Iteration 4 | Updated to use JSON file
+
+commit 7baa0580e54b9b40a94af66ef382a81640a52074
+Merge: 6caff72 65e5c1f
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Fri Jun 20 22:10:59 2025 +1200
+
+    Merge branch 'master' into feature/kidAccount
+
+commit 435edea83917fa2fd9ddfff5df4ef88c5e648885
+Merge: 6caff72 1968fbf
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Fri Jun 20 22:10:59 2025 +1200
+
+    Merge branch 'master' into feature/kidAccount
+
+commit 6caff72dd82837befc27639e643337322e8beb9a
+Author: sueyan9 <409133742@qq.com>
+Date:   Fri Jun 20 21:18:52 2025 +1200
+
+    feat:switch chart mode based on user type
+
+commit 26966710fa59dcdb333b1e28fa048af9825daef3
+Author: sueyan9 <409133742@qq.com>
+Date:   Tue Jun 17 22:49:58 2025 +1200
+
+    display tooth info
+
+commit bf1c4518c7e986fd2eb4bee97b475618b439413d
+Author: sueyan9 <409133742@qq.com>
+Date:   Tue Jun 17 22:10:46 2025 +1200
+
+    individual teeth info display
+
+commit 892955bd1bfe07b3e5df8dc4924685236f854b3b
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu Jun 5 15:25:05 2025 +1200
+
+    kid teeth color coding
+
+commit ae2b6319cb5407db36ddc46d81de38cac3969451
+Author: sueyan9 <409133742@qq.com>
+Date:   Wed Jun 4 23:50:30 2025 +1200
+
+    kid whole mouth 3D
+
+commit 65e5c1f162cec18c78770a4888270a2b9f0b8e0a
+Merge: 2c8c281 0eaef39
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Tue May 27 20:54:03 2025 +1200
+
+    Merge pull request #1 from sueyan9/Abby
+    
+    Abby
+
+commit 1968fbf4d922acd069e922fa55a4a56e384b82f8
+Merge: 05d3770 a8d0f9f
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Tue May 27 20:54:03 2025 +1200
+
+    Merge pull request #1 from sueyan9/Abby
+    
+    Abby
+
+commit 0eaef399333e71465a7fe1f9cf47ac232812c953
+Merge: 5ad6ab8 2c8c281
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Tue May 27 20:52:50 2025 +1200
+
+    Merge branch 'master' into Abby
+
+commit a8d0f9f957ea4f8c19a215ed05217329868ecf90
+Merge: 5ad6ab8 05d3770
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Tue May 27 20:52:50 2025 +1200
+
+    Merge branch 'master' into Abby
+
+commit 55f52e1961c2eede8b83301b68b0c78d9c100de8
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon May 26 16:28:39 2025 +1200
+
+    git action/test
+
+commit 5ad6ab8ba1f0cc06c044c592a3f9a8a371bcb82f
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon May 26 16:24:59 2025 +1200
+
+    Iteration 2 | Finalised unit tests
+
+commit f2a04b05de527d18f523ab248cbf947a83dacdbb
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon May 26 15:47:30 2025 +1200
+
+    adjust test
+
+commit a879f67629ac931619fb84574fbb4f78cb81b1f3
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon May 26 15:32:17 2025 +1200
+
+    wholemouth.test
+
+commit 9b34479c7bd94e7c0517c9c6f7e3642e3e90ba3f
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon May 26 14:27:47 2025 +1200
+
+    wholeMouth.test
+
+commit 2c8c281b05a00a09f01fe7908d7dc130f09f3cbf
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Mon May 26 13:01:11 2025 +1200
+
+    Update ci.yml
+
+commit 05d377014394674e27f4418eb0ac736bdaedb2ec
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Mon May 26 13:01:11 2025 +1200
+
+    Update ci.yml
+
+commit 43200a27b5af845dea67d317898ea90a646289e8
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Mon May 26 12:21:08 2025 +1200
+
+    Create ci.yml
+
+commit f2af3c9f1a20a4bcf062a2e2bcde2b38b2d25deb
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Mon May 26 12:21:08 2025 +1200
+
+    Create ci.yml
+
+commit 08bfd46a02bc0b2eaac0d54a8c80c0820feadb73
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Mon May 26 11:56:59 2025 +1200
+
+    Update README.md
+
+commit 24a02b4e57dfafc47564a2a2890e0d8d041416d1
+Author: sueyan9 <129370767+sueyan9@users.noreply.github.com>
+Date:   Mon May 26 11:56:59 2025 +1200
+
+    Update README.md
+
+commit 586b4c8383cb451bfa1db4a210877d14e3dde16e
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon May 26 11:24:02 2025 +1200
+
+    test
+
+commit 08c3cfc7f9cc055968df831f42ca9505f0648653
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon May 26 10:53:45 2025 +1200
+
+    Iteration 2 | Testing acceptance criteria
+
+commit b955c17c99e1c7b01a61b346919157640477efe9
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu May 22 17:31:35 2025 +1200
+
+    JestTest:FilterMenu.js
+
+commit 142af27137b4154c9c0dffa8f505e8c585e1c8cd
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu May 22 11:26:33 2025 +1200
+
+    chore: update react-dental-chart from Abby branch
+
+commit 2f8f7b3f811928b67d7ca03c5d67418d86d82265
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu May 22 11:19:47 2025 +1200
+
+    Iteration 2 | Updated Colours
+
+commit f05b60026be910909e47839d5a6c8b586de0bce7
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun May 18 22:04:48 2025 +1200
+
+    CSS adjust:label under 3D chart
+
+commit a9696485f093bb45a6c6e71518ecebe7aa07bc65
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun May 18 20:23:20 2025 +1200
+
+    color coding --whole mouth
+
+commit 462298bd8654ff7b808426f88032b01bcbc14fce
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu May 22 10:25:31 2025 +1200
+
+    Iteration 2 | Tooth Data Array
+    
+    Added Array for getting tooth data from the backend - hardcoded for now.
+
+commit 7033fb784ef478f73325d1f18ac663c39f64e3fe
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Mon May 19 16:27:10 2025 +1200
+
+    Iteration 2 | Tooth Filtering Feature
+    
+    Added sticky filtering + icons to go back to main chart area.
+
+commit d2612e4f1033c70e60785aab6a60d4281d93123d
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun May 18 22:04:48 2025 +1200
+
+    CSS adjust:label under 3D chart
+
+commit 852b314ca036b41d7cd3c5dd533814d4691b0cb1
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun May 18 21:17:52 2025 +1200
+
+    Update comments and remove header title
+
+commit fd34094af03c321b7631b26954f85828d894101c
+Author: sueyan9 <409133742@qq.com>
+Date:   Sun May 18 20:23:20 2025 +1200
+
+    color coding --whole mouth
+
+commit 8e997596e3b1fefc1e2b52308057b17e3a8aab58
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Sun May 18 15:33:46 2025 +1200
+
+    Iteration 2 | Tooth Colouring V2
+    
+    Tooth Colouring and Missing Teeth Feature. Also started adding in back components and changed colouring of screen.
+
+commit 9b4c21bc078807a327b21747ca09a541c36b7b28
+Author: Abby Sutton <abbysutton09@gmail.com>
+Date:   Thu May 15 13:06:17 2025 +1200
+
+    Iteration 2 | Tooth Colouring Feature
+
+commit 3cf68b1e840775602f8249c0c0bb5ac0733e66f9
+Author: sueyan9 <409133742@qq.com>
+Date:   Mon May 12 12:40:33 2025 +1200
+
+    use H5web pages upgrade App
+
+commit d70d026dc0403acf8abd7a09b9d8a790d4e3aa99
+Author: sueyan9 <409133742@qq.com>
+Date:   Sat May 10 20:49:27 2025 +1200
+
+    switch from ngrok to local IP for development access
+
+commit 7c8490b4fa034d9f825aef397333d5504ad76e79
+Author: sueyan9 <409133742@qq.com>
+Date:   Thu May 8 11:28:00 2025 +1200
+
+    first commit

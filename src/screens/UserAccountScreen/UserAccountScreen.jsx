@@ -1453,7 +1453,7 @@ const {
 
           {/* ACC Documents */}
           <Collapsible
-              title="My ACC Documents"
+              title={t("My ACC Documents")}
               icon="shield-checkmark-outline"
               count={accDocs.length}
               defaultOpen={false}

@@ -15,6 +15,21 @@
   "Library": "Biblioteca",
   "Clinic": "Clínica",
   "Education": "Educación",
+  "My Mouth": "Mi Boca",
+  "Note from Dentist:": "Nota de la dentista:",
+  "No notes for this appointment.": "No hay notas para esta cita.",
+  "Next Oral Checkup Due:": "Próxima revisión dental:",
+  "Daily Oral Health Tip:": "Consejo diario sobre salud bucal:",
+  "Feb 2026": "Febrero 2026",
+  "Book Now": "Reservar Ahora",
+  "Look At My Mouth": "Mira Mi Boca",
+
+  "Brush twice daily for 2 minutes each time.": "Cepíllese los dientes dos veces al día durante 2 minutos cada vez.",
+  "Floss every day to remove plaque between teeth.": "Usa hilo dental todos los días para eliminar la placa entre los dientes.",
+  "Drink water instead of sugary drinks.": "Bebe agua en lugar de bebidas azucaradas.",
+  "Milk strengthens teeth and builds enamel.": "La leche fortalece los dientes y refuerza el esmalte.",
+  "Sugar-free gum helps fight cavities.": "El chicle sin azúcar ayuda a combatir las caries.",
+  "Visit your dentist every 6 months.": "Visita a tu dentista cada 6 meses.",
 
   "_comment_auth": "=== Authentication/Sign Out ===",
   "Sign Out": "Cerrar Sesión",
@@ -47,6 +62,17 @@
   "Choose Profile Picture": "Elegir Foto de Perfil",
   "Change Profile Picture": "Cambiar Foto de Perfil",
   "Change Clinic": "Cambiar Clínica",
+  "Insurance Information": "Información del seguro",
+  "My X-ray Images": "Mis imágenes de rayos X",
+  "My Invoices": "Mis facturas",
+  "My ACC Documents": "Mis documentos de ACC",
+  "My Referrals": "Mis referencias",
+  "Clinic Address": "Dirección de la clínica",
+  "Clinic Phone": "Teléfono de la clínica",
+  "Known Allergies": "Alergias conocidas",
+  "Insurance Provider": "Proveedor de seguros",
+  "Insurance Number": "Número de seguro",
+  "Set Parental Control Code": "Configurar código de control parental",
 
   "_comment_appointment": "=== Appointment Screen ===",
   "Appointment Date": "Fecha de Cita",
@@ -88,5 +114,6 @@
   "Checkup": "Revisión",
   "Root Canal": "Endodoncia",
   "Crown Placement": "Colocación de Corona",
-  "Extraction": "Extracción"
+  "Extraction": "Extracción",
+  "Request Clinic Change": "Solicitar cambio de clínica"
 }
