@@ -48,6 +48,25 @@ const tryLocalSignin = dispatch => async () => {
   console.log('tryLocalSignin - id:', id);
   console.log('tryLocalSignin - parentId:', parentId);
 
+  try {
+    const autoLoginResponse = await axiosApi.post('/qrAutoLogin', {});
+    
+    await AsyncStorage.setItem('token', autoLoginResponse.data.token);
+    await AsyncStorage.setItem('id', autoLoginResponse.data.id);
+    
+    dispatch({ 
+      type: 'signin', 
+      payload: { 
+        token: autoLoginResponse.data.token, 
+        id: autoLoginResponse.data.id 
+      } 
+    });
+    navigate('mainFlow', { screen: 'AccountFlow' });
+    return;
+  } catch (autoLoginErr) {
+    console.log('Auto-login not available, proceeding with normal login');
+  }
+
   if (token) {
     try {
       const isChildResponse = await axiosApi.get(`/isChild/${id}`);
@@ -71,7 +90,7 @@ const tryLocalSignin = dispatch => async () => {
       navigate('loginFlow');
     }
   } else {
-    navigate('loginFlow');
+    navigate('Welcome');
   }
 };
 
@@ -381,6 +400,29 @@ const resetPassword = dispatch => async ({ userId, newPassword }) => {
   }
 };
 
+const qrAutoLogin = dispatch => async () => {
+  try {
+    const response = await axiosApi.post('/qrAutoLogin', {});
+    
+    await AsyncStorage.setItem('token', response.data.token);
+    await AsyncStorage.setItem('id', response.data.id);
+    
+    dispatch({
+      type: 'signin',
+      payload: { token: response.data.token, id: response.data.id },
+    });
+    
+    navigate('mainFlow', { screen: 'AccountFlow' });
+    
+  } catch (err) {
+    console.error('QR auto-login error:', err);
+    dispatch({
+      type: 'add_error',
+      payload: err.response?.data?.error || 'Auto-login failed',
+    });
+  }
+};
+
 export const { Provider, Context } = createDataContext(
     authReducer,
     {
@@ -399,6 +441,7 @@ export const { Provider, Context } = createDataContext(
       findUserByEmailOrNhi,
       verifySignupCodeForReset,
       resetPassword,
+      qrAutoLogin,
     },
     { token: null, errorMessage: '', id: null },
 );

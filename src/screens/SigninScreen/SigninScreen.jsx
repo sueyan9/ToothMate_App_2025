@@ -1,5 +1,5 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import ToothLogo from '../../../assets/tooth_icon.png';
@@ -9,13 +9,26 @@ import styles from './styles';
 
 const SigninScreen = props => {
   const navigation = useNavigation();
+  const route = useRoute();
 
-  const { state, signin, clearErrorMessage } = useContext(AuthContext);
+  const { state, signin, clearErrorMessage, qrAutoLogin } = useContext(AuthContext);
 
   const [emailOrNhi, setEmailOrNhi] = useState('');
   const [password, setPassword] = useState('');
+  const [autoLoggingIn, setAutoLoggingIn] = useState(false);
 
   const handleSignin = () => signin({ emailOrNhi, password });
+
+  useEffect(() => {
+    const checkQRAccess = async () => {
+      if (route.params?.qrAccess === true) {
+        setAutoLoggingIn(true);
+        await qrAutoLogin();
+        setAutoLoggingIn(false);
+      }
+    };
+    checkQRAccess();
+  }, [route.params?.qrAccess])
 
   // 使用 useFocusEffect 来清除错误消息
   useFocusEffect(
@@ -23,6 +36,21 @@ const SigninScreen = props => {
         clearErrorMessage();
       }, [])
   );
+
+  if (autoLoggingIn) {
+    return (
+      <View style={styles.container}>
+        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: '50%', marginBottom: 32}}>
+          <Image source={ToothLogo} style={styles.icon}/>
+          <Text style={styles.titleTextStyle}> ToothMate </Text>
+        </View>
+        <ActivityIndicator size="large" color="#0066cc" />
+        <Text style={{textAlign: 'center', marginTop: 20, fontSize: 16}}>
+          Loading demo account...
+        </Text>
+      </View>
+    );
+  }
 
   return (
       <View style={styles.container}>

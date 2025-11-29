@@ -52,7 +52,7 @@ export default StyleSheet.create({
     },
     carouselImage: {
         height: 300,
-        width: width - 40,
+        width: 200,
         resizeMode: 'contain',
         justifyContent: 'center',
         alignItems: 'center',

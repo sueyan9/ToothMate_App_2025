@@ -1,52 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
-import { useRef, useState } from 'react';
-import { Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import styles from './styles';
 
 
 const WelcomeScreen = props => {
     const navigation = useNavigation();
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const scrollViewRef = useRef(null);
-    const {width} = Dimensions.get('window');
-
-    const textItems = [
-        "See your complete mouth history - past treatments, current status, and upcoming appointments all in one place.",
-        "Learn about oral health at your own pace with expert-backed articles and guides.",
-        "Make dental care fun for kids with games, quizzes, and badges.",
-        "Stay connected with your dental team and bridge the gap between visits."
-    ];
-
-    const carouselImages = [
-        require('../../../assets/dental_chart.png'),
-        require('../../../assets/education.png'),
-        require('../../../assets/kids.png'),
-        require('../../../assets/linked.png')
-    ];
-
-    const handleScroll = (event) => {
-        const contentOffsetX = event.nativeEvent.contentOffset.x;
-        const index = Math.round(contentOffsetX / width);
-
-        setCurrentIndex(index);
-    };
-
-    const handleDotPress = (index) => {
-        setCurrentIndex(index);
-        scrollViewRef.current?.scrollTo({
-            x: index * width,
-            animated: true,
-        });
-    };
-
-    const handleNext = () => {
-        const nextIndex = currentIndex + 1;
-        if (nextIndex < textItems.length) {
-            handleDotPress(nextIndex);
-        } else {
-            handleDotPress(0);
-        }
-    };
 
 
     return (
@@ -67,41 +25,16 @@ const WelcomeScreen = props => {
                     source={require('../../../assets/wavy_vector.png')}
                     style={styles.wavyBackground}
                 />
-                <ScrollView
-                    ref={scrollViewRef}
-                    horizontal
-                    pagingEnabled
-                    scrollEventThrottle={16}
-                    onScroll={handleScroll}
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.carousel}
-                >
-                    {carouselImages.map((image, index) => (
-                        <Image
-                            key={index}
-                            source={image}
-                            style={[styles.carouselImage, { width }]}
-                        />
-                    ))}
-                </ScrollView>
+                
+                <Image
+                    source={require('../../../assets/tooth_icon.png')}
+                    style={styles.carouselImage}
+                />
             </View>
 
             <Text style={styles.descriptionText}>
-                {textItems[currentIndex]}
+                See your complete mouth history - past treatments, current status, and upcoming appointments all in one place.
             </Text>
-
-            <View style={styles.dotsContainer}>
-                {textItems.map((_, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[
-                            styles.dot,
-                            currentIndex === index && styles.activeDot,
-                        ]}
-                        onPress={() => handleDotPress(index)}
-                    />
-                ))}
-            </View>
 
             <View style={styles.buttonContainer}>
             <TouchableOpacity style={{flex: 1}} onPress={() => navigation.navigate('loginFlow', { screen: 'Signup' })}>

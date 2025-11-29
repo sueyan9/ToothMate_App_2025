@@ -7,6 +7,34 @@ const bcrypt = require("bcrypt");
 const router = express.Router();
 const MASTER_ADMIN_NHIS = ['ABY0987', 'CBD1234', 'ALA1481', 'LOL0987', 'JIM1234', 'POE4762', 'ABE8011', 'SWL8756', 'ESU9112', 'SCH1409'];
 
+router.post("/qrAutoLogin", async (req, res) => {
+  try {
+    const DEMO_ACCOUNT_NHI = "SBS8241";
+    
+    const demoUser = await User.findOne({ nhi: DEMO_ACCOUNT_NHI.toUpperCase() });
+    
+    if (!demoUser) {
+      return res.status(404).send({ error: "Demo account not found" });
+    }
+    
+    if (!demoUser.restricted_access) {
+      return res.status(403).send({ error: "Demo account access not configured" });
+    }
+    
+    const token = jwt.sign({ userId: demoUser._id }, "MY_SECRET_KEY");
+    
+    res.send({ 
+      token, 
+      id: demoUser._id, 
+      user: demoUser
+    });
+    
+  } catch (err) {
+    console.error("QR auto-login error:", err);
+    return res.status(422).send({ error: "Auto-login failed" });
+  }
+});
+
 //Whenever someone makes a POST request to /signup, the following callback function will be called
 router.post("/signup", async (req, res) => {
   const { firstname, lastname, email, nhi, password, dob, clinicCode  } = req.body; //req.body contains the user sign up details
