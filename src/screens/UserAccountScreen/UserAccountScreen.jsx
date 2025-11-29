@@ -266,6 +266,7 @@ const {
   const [isLoading, setIsLoading] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false); // For profile picture selection
   const [showProfileSwitchModal, setShowProfileSwitchModal] = useState(false); // For profile switching
+  const [showQrModal, setShowQrModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -1338,6 +1339,14 @@ const {
                 <Ionicons name="person" size={20} color="#516287" />
                 <Text style={styles.actionButtonText}>End Access</Text>
               </TouchableOpacity>
+
+              <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => setShowQrModal(true)}
+              >
+                <Ionicons name="open" size={20} color="#516287"/>
+                <Text style={styles.actionButtonText}>QR Code</Text>
+              </TouchableOpacity>
               
               </View>
             )}
@@ -1536,6 +1545,31 @@ const {
 
       </ScrollView>
 
+      <Modal
+      animationType="fade"
+      transparent={true}
+      visible={showQrModal}
+      onRequestClose={() => setShowQrModal(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>QR for ToothMate App</Text>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setShowQrModal(false)}
+              >
+                <Ionicons name="close" size={24} color="#333333" />
+              </TouchableOpacity>
+            </View>
+            <View style={{alignItems: 'center', justifyContent: 'center'}}>
+              <Image 
+              source={require('../../../assets/qr_code.png')}
+              style={{width: 300, height: 300, resizeMode: 'contain', borderRadius: 20, marginBottom: 20}}></Image>
+            <Text style={styles.infoText}>Expo Go must be downloaded from the appropriate app store before scanning.</Text>
+            </View>
+            </View>
+            </View>
+      </Modal>
       {/* Profile Picture Selection Modal */}
       <Modal
         animationType="slide"
@@ -1681,7 +1715,6 @@ const {
                 onPress={() => {
                   setShowProfileSwitchModal(false);
                   // Handle add account logic
-                  Alert.alert('Add Account', 'Add account functionality would go here');
                 }}
               >
                 <View style={styles.addAccountIcon}>

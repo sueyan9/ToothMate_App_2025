@@ -193,12 +193,17 @@ const MainFlow = () => {
                 const isProfileInner =
                     currentTab.name === 'Profile' &&
                     ['images', 'allimages', 'invoice'].includes(currentNestedRoute?.name);
+
+                const titleName = () => {
+                    const title = currentTab.name === "DentalChart" ? '' : 'ToothMate';
+                    return title;
+                }
                 
                 return {
                     headerShown: !isProfileInner,
                     ...( !isProfileInner ? {
                         headerLeft: () => <UpdateButton />,
-                        headerTitle: 'ToothMate',
+                        headerTitle: titleName(),
                         headerStyle: {
                             backgroundColor: !isViewingIndividualContent ? '#E9F1F8' : '#FFFDF6',
                             borderBottomWidth: 0,

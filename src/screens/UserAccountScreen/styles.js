@@ -18,6 +18,11 @@ export default StyleSheet.create({
     fontSize: 16,
     color: '#333333',
   },
+  infoText: {
+    fontSize: 12,
+    color: "#516287",
+    textAlign: 'center'
+  },
 
   // Header
   header: {

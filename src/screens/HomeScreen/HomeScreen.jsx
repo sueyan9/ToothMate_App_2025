@@ -124,6 +124,10 @@ const HomeScreen = () => {
                 }
 
                 await AsyncStorage.removeItem('activeProfileFirstName');
+
+                if (details.firstname) {
+                    await AsyncStorage.setItem('activeProfileFirstName', details.firstname);
+                }
             } catch (error) {
                 console.error('Error fetching user data:', error);
             } finally {
@@ -132,7 +136,7 @@ const HomeScreen = () => {
             };
     
             fetchUserData();
-        }, [details?.nhi, childDetails?.length])
+        }, [details?.nhi, details.firstname, childDetails?.length])
         );
 
         if (isLoading) {
