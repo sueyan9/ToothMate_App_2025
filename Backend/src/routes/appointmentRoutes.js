@@ -125,7 +125,7 @@ router.patch('/Appointments/:id/confirm', async (req, res) => {
 
 router.delete('/Appointments/test-data/all', async (req, res) => {
   try {
-    const result = await Appointment.deleteMany({ test_data: false });
+    const result = await Appointment.deleteMany({ protected: { $ne: true} });
 
     res.json({
       success: true,
